@@ -1,0 +1,8 @@
+[package]
+name = "sre-common"
+version = "2.2.3"
+edition = "2021"
+
+[dependencies]
+core-util = { path = "../core-util" }
+cstd      = { path = "../cstd"    }
