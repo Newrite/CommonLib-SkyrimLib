@@ -50,7 +50,7 @@ impl LogType {
         let win_res = match self {
             Self::Window(ico) | Self::Both(ico) => {
                 let res = MessageBoxA(
-                    0,
+                    core::ptr::null_mut(),
                     msg.as_ptr().cast(),
                     SKSEPlugin_Version.name.as_ptr().cast(),
                     *ico
@@ -88,7 +88,7 @@ pub (in crate) fn open() {
         let mut path: windows_sys::core::PWSTR = core::ptr::null_mut();
 
         // Add the path to the users documents folder to the buffer.
-        assert!(SHGetKnownFolderPath(&FOLDERID_Documents, 0, 0, &mut path) == S_OK);
+        assert!(SHGetKnownFolderPath(&FOLDERID_Documents, 0, core::ptr::null_mut(), &mut path) == S_OK);
         buf.write_w_str(WideStr::from_ptr(path)).unwrap();
         CoTaskMemFree(path.cast());
     }
