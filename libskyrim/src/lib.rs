@@ -362,6 +362,7 @@ pub mod plugin_api {
 // loader has finished we instead terminate using the C standard abort() function.
 
 // Private, since it only provides a panic implementation.
+/*
 mod errors {
     use core_util::RacyCell;
     use crate::log;
@@ -402,3 +403,4 @@ mod errors {
         }
     }
 }
+*/
