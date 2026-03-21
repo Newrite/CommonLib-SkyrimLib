@@ -1,17 +1,31 @@
 -- set minimum xmake version
 set_xmakever("3.0.0")
 
--- Глобальные правила (решает проблемы с линковкой в разных режимах)
 add_rules("mode.debug", "mode.release")
 
--- 1. ГЛОБАЛЬНЫЕ КОНФИГУРАЦИИ ИГРЫ
-set_config("skyrim_se", true)
-set_config("skyrim_ae", false)
-set_config("skyrim_vr", false)
-set_config("skse_xbyak", true)
+-- 1. ОБЪЯВЛЯЕМ ОПЦИИ (ЗНАЧЕНИЯ ПРИДУТ ИЗ RUST BUILD.RS)
+option("skyrim_se")
+    set_default(true)
+    set_showmenu(true)
+option_end()
+
+option("skyrim_ae")
+    set_default(true)
+    set_showmenu(true)
+option_end()
+
+option("skyrim_vr")
+    set_default(false)
+    set_showmenu(true)
+option_end()
+
+option("skse_xbyak")
+    set_default(true)
+    set_showmenu(true)
+option_end()
 
 -- ФИКС: Объявляем дефайны глобально ДО всего остального,
--- чтобы они применились и к нашему коду, и к PCH
+-- проверяя переданные из Rust опции
 if get_config("skyrim_se") then add_defines("ENABLE_SKYRIM_SE=1") end
 if get_config("skyrim_ae") then add_defines("ENABLE_SKYRIM_AE=1") end
 if get_config("skyrim_vr") then add_defines("ENABLE_SKYRIM_VR=1") end
@@ -27,6 +41,7 @@ package("commonlibsse-ng")
 
     on_install(function (package)
         local configs = {}
+        -- Передаем опции дальше в сборку самого CommonLib-NG
         table.insert(configs, "--skyrim_se="  .. (get_config("skyrim_se")  and "y" or "n"))
         table.insert(configs, "--skyrim_ae="  .. (get_config("skyrim_ae")  and "y" or "n"))
         table.insert(configs, "--skyrim_vr="  .. (get_config("skyrim_vr")  and "y" or "n"))

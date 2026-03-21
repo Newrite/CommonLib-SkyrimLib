@@ -7,6 +7,15 @@ edition = "2021"
 core-util  = { path = "../core-util"  }
 cstd       = { path = "../cstd"     }
 
+[features]
+# По умолчанию собираем универсальный плагин для SE и AE
+default = ["se", "ae"]
+
+# Доступные флаги компиляции
+se = []
+ae = []
+vr = []
+
 [dependencies.windows-sys]
 version = "0.61.2"
 features = [
