@@ -12,6 +12,8 @@ extern crate alloc;
 pub mod log;
 pub mod ini;
 pub mod ffi;
+pub mod relocation;
+pub mod offsets;
 
 // Needed for macros
 pub use core;
