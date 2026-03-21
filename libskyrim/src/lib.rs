@@ -17,8 +17,8 @@ pub mod offsets;
 pub mod re;
 
 // Needed for macros
-pub use core;
-pub use core_util;
+pub extern crate core;
+pub extern crate core_util;
 
 use core::ffi::CStr;
 use core_util::RacyCell;
