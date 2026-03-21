@@ -12,8 +12,6 @@
 pub mod plugin_api {
     use core::ffi::{c_char, c_void};
 
-    use crate::version::Version;
-
     /// Plugin interface IDs.
     #[repr(u32)]
     pub enum InterfaceId {
@@ -38,14 +36,14 @@ pub mod plugin_api {
     pub struct PluginInfo {
         pub info_version: u32,
         pub name: *const c_char,
-        pub version: Option<Version>
+        pub version: u32, // УБРАЛИ Option<Version>
     }
 
     /// See SKSE notes. The functions may only be called during specific phases.
     #[repr(C)]
     pub struct SkseInterface {
-        pub skse_version: Option<Version>,
-        pub runtime_version: Option<Version>,
+        pub skse_version: u32, // УБРАЛИ Option
+        pub runtime_version: u32, // УБРАЛИ Option
         pub editor_version: u32,
         pub is_editor: u32,
         pub query_interface: unsafe extern "system" fn(InterfaceId) -> *mut c_void,
@@ -88,15 +86,15 @@ pub mod plugin_api {
     /// Plugin info exported to skse for AE.
     #[repr(C)]
     pub struct SksePluginVersionData {
-        pub data_version: u32, // Self::VERSION
-        pub plugin_version: Version,
-        pub name: [c_char; 256], // Plugin name (can be empty).
-        pub author: [c_char; 256], // Author name (can be empty).
-        pub support_email: [c_char; 252], // Not shown to users. For SKSE team to contact mod maker.
+        pub data_version: u32,
+        pub plugin_version: u32, // УБРАЛИ Version
+        pub name: [c_char; 256],
+        pub author: [c_char; 256],
+        pub support_email: [c_char; 252],
         pub version_indep_ex: u32,
         pub version_indep: u32,
-        pub compat_versions: [Option<Version>; 16], // None-terminated.
-        pub se_version_required: Option<Version> // Minimum SKSE version required.
+        pub compat_versions: [u32; 16], // УБРАЛИ Option<Version>
+        pub se_version_required: u32, // УБРАЛИ Option
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

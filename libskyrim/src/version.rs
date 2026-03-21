@@ -22,7 +22,6 @@ impl Version {
     }
 
     pub const fn from_packed(packed: u32) -> Self {
-        if packed == 0 { panic!("Версия не может быть 0.0.0.0"); }
         Self(packed)
     }
 
