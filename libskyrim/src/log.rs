@@ -19,7 +19,7 @@ use windows_sys::Win32::Foundation::{MAX_PATH, S_OK};
 
 // Импорты для точного времени
 use windows_sys::Win32::System::SystemInformation::GetSystemTimePreciseAsFileTime;
-use windows_sys::Win32::System::Timezone::{FileTimeToLocalFileTime, FileTimeToSystemTime};
+use windows_sys::Win32::System::Time::{FileTimeToSystemTime, SystemTimeToTzSpecificLocalTime};
 use windows_sys::Win32::Foundation::{FILETIME, SYSTEMTIME};
 
 #[doc(hidden)]
@@ -110,28 +110,27 @@ pub fn write(
     let file_name = file.rsplit('\\').next().unwrap_or(file);
     let file_name = file_name.rsplit('/').next().unwrap_or(file_name);
 
+    // 1. Получаем высокоточное UTC время (FILETIME)
     let mut ft: FILETIME = unsafe { core::mem::zeroed() };
     unsafe { GetSystemTimePreciseAsFileTime(&mut ft) };
 
-    let mut local_ft: FILETIME = unsafe { core::mem::zeroed() };
-    unsafe { FileTimeToLocalFileTime(&ft, &mut local_ft) };
-
-    let mut st: SYSTEMTIME = unsafe { core::mem::zeroed() };
-    unsafe { FileTimeToSystemTime(&local_ft, &mut st) };
-
-    let combined = ((local_ft.dwHighDateTime as u64) << 32) | (local_ft.dwLowDateTime as u64);
+    // Микросекунды достаем напрямую из UTC, так как смещение часового пояса не влияет на доли секунд
+    let combined = ((ft.dwHighDateTime as u64) << 32) | (ft.dwLowDateTime as u64);
     let microseconds = (combined / 10) % 1_000_000;
 
-    // Формируем блок [Файл:Строка] ВМЕСТЕ со скобками
-    let loc_str = format!("[{}:{}]", file_name, line);
+    // 2. Конвертируем FILETIME (UTC) в SYSTEMTIME (UTC)
+    let mut st_utc: SYSTEMTIME = unsafe { core::mem::zeroed() };
+    unsafe { FileTimeToSystemTime(&ft, &mut st_utc) };
 
-    // Автоматически достаем имя плагина (в вашем случае "skse-hello-rust")
+    // 3. Конвертируем SYSTEMTIME (UTC) в локальное время (с учетом летнего/зимнего времени)
+    let mut st: SYSTEMTIME = unsafe { core::mem::zeroed() };
+    unsafe { SystemTimeToTzSpecificLocalTime(core::ptr::null(), &st_utc, &mut st) };
+
+    // Формируем блок [Файл:Строка]
+    let loc_str = format!("[{}:{}]", file_name, line);
     let plugin_name = unsafe { CStr::from_ptr(SKSEPlugin_Version.name.as_ptr()).to_str().unwrap_or("Unknown") };
 
-    // Идеальное форматирование:
-    // [{plugin_name}] - всегда первым
-    // [{время}] - фиксированный размер
-    // {:<25} - выравнивает loc_str по левому краю на 25 символов (пробелы будут СНАРУЖИ скобок)
+    // Идеальное форматирование!
     buf.write_fmt(format_args!(
         "[{}] [{:04}-{:02}-{:02} {:02}:{:02}:{:02}.{:06}] {:<25} ",
         plugin_name,
