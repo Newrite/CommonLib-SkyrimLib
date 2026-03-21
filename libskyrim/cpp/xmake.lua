@@ -1,53 +1,63 @@
 -- set minimum xmake version
 set_xmakever("3.0.0")
 
--- Создаем локальный пакет для CommonLibSSE-NG, который собирается через сам Xmake
-package("commonlibsse-ng-custom")
-    set_homepage("https://github.com/alandtse/CommonLibVR")
-    set_description("CommonLibVR/SSE NG branch (built via xmake)")
+-- Глобальные правила (решает проблемы с линковкой в разных режимах)
+add_rules("mode.debug", "mode.release")
 
-    -- Указываем URL репозитория
-    add_urls("https://github.com/alandtse/CommonLibVR.git")
+-- 1. ГЛОБАЛЬНЫЕ КОНФИГУРАЦИИ ИГРЫ
+set_config("skyrim_se", true)
+set_config("skyrim_ae", false)
+set_config("skyrim_vr", false)
+set_config("skse_xbyak", true)
 
-    -- Указываем ветку
-    add_versions("ng", "ng")
+-- ФИКС: Объявляем дефайны глобально ДО всего остального,
+-- чтобы они применились и к нашему коду, и к PCH
+if get_config("skyrim_se") then add_defines("ENABLE_SKYRIM_SE=1") end
+if get_config("skyrim_ae") then add_defines("ENABLE_SKYRIM_AE=1") end
+if get_config("skyrim_vr") then add_defines("ENABLE_SKYRIM_VR=1") end
+if get_config("skse_xbyak") then add_defines("SKSE_SUPPORT_XBYAK=1") end
 
-    -- Передаем опции из оригинального xmake.lua CommonLib-а
-    add_configs("skyrim_se", {description = "Enable SE", default = true, type = "boolean"})
-    add_configs("skyrim_ae", {description = "Enable AE", default = true, type = "boolean"})
-    add_configs("skyrim_vr", {description = "Enable VR", default = false, type = "boolean"})
+-- 2. ОПРЕДЕЛЯЕМ КАСТОМНЫЙ ПАКЕТ
+package("commonlibsse-ng")
+    add_urls("https://github.com/alandtse/CommonLibVR.git", { branch = "ng" })
 
-    -- Если оригинальный проект требует этих пакетов для сборки (из твоего лога)
-    add_deps("directxmath", "directxtk", "spdlog")
+    add_deps("directxmath 2024.02", "directxtk 24.2.0")
+    add_deps("spdlog v1.16.0", { configs = { header_only = false, wchar = true, std_format = true } })
+    add_deps("xbyak v7.06")
 
     on_install(function (package)
         local configs = {}
+        table.insert(configs, "--skyrim_se="  .. (get_config("skyrim_se")  and "y" or "n"))
+        table.insert(configs, "--skyrim_ae="  .. (get_config("skyrim_ae")  and "y" or "n"))
+        table.insert(configs, "--skyrim_vr="  .. (get_config("skyrim_vr")  and "y" or "n"))
+        table.insert(configs, "--skse_xbyak=" .. (get_config("skse_xbyak") and "y" or "n"))
 
-        -- Пробрасываем флаги в сборку CommonLib
-        if package:config("skyrim_se") then table.insert(configs, "--skyrim_se=y") else table.insert(configs, "--skyrim_se=n") end
-        if package:config("skyrim_ae") then table.insert(configs, "--skyrim_ae=y") else table.insert(configs, "--skyrim_ae=n") end
-        if package:config("skyrim_vr") then table.insert(configs, "--skyrim_vr=y") else table.insert(configs, "--skyrim_vr=n") end
-
-        -- ВАЖНО: Мы используем package.tools.xmake, а не cmake!
-        -- Xmake скачает код, увидит внутри xmake.lua и сам соберет его!
         import("package.tools.xmake").install(package, configs)
     end)
 package_end()
 
--- Требуем наш пакет (он соберется автоматически при первом запуске)
-add_requires("commonlibsse-ng-custom")
+-- 3. ТРЕБУЕМ НАШ ПАКЕТ
+add_requires("commonlibsse-ng")
 
--- Наша цель (мост)
+-- 4. НАША ЦЕЛЬ (C++ Мост для Rust)
 target("commonlib_bridge")
     set_kind("static")
-    set_languages("c++20")
+    set_languages("c++23")
+
+    -- ФИКС MSVC: Включаем новый препроцессор и строгое соответствие C++
+    if is_plat("windows") then
+        add_cxxflags("cl::/Zc:preprocessor", "cl::/permissive-", "cl::/EHsc")
+    end
+
+    -- Отключаем предупреждения
+    add_cxxflags("/wd4005", "/wd4061", "/wd4068", "/wd4200", "/wd4201")
 
     add_includedirs("include")
     set_pcxxheader("include/PCH.h")
 
-    -- Подключаем собранный CommonLib
-    add_packages("commonlibsse-ng-custom")
+    -- Подключаем пакет
+    add_packages("commonlibsse-ng")
 
-    -- Исходник моста (ffi)
+    -- Исходники моста
     add_headerfiles("include/**.h", "include/**.hpp")
     add_files("src/**.cpp")

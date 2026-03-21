@@ -3,8 +3,7 @@
 extern "C" {
     // 1. Инициализация CommonLib
     void init_commonlib(const void* skse_interface) {
-        SKSE::Init((const SKSE::LoadInterface*)skse_interface);
-        SKSE::AllocTrampoline(128); // Выделяем 128 байт под хуки (хватит на десятки хуков)
+            SKSE::Init((const SKSE::LoadInterface*)skse_interface);
     }
 
     // 2. Получение адреса
@@ -24,5 +23,10 @@ extern "C" {
 
     uintptr_t commonlib_write_call5(uintptr_t src, uintptr_t dst) {
         return SKSE::GetTrampoline().write_call<5>(src, dst);
+    }
+
+    // Выделение памяти под трамплин
+    void commonlib_alloc_trampoline(size_t size) {
+            SKSE::AllocTrampoline(size);
     }
 }

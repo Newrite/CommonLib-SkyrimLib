@@ -7,4 +7,5 @@ extern "C" {
     pub fn commonlib_safe_write(addr: usize, data: *const u8, len: usize);
     pub fn commonlib_write_branch5(src: usize, dst: usize) -> usize;
     pub fn commonlib_write_call5(src: usize, dst: usize) -> usize;
+    pub fn commonlib_alloc_trampoline(size: usize);
 }

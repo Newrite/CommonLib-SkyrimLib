@@ -8,7 +8,6 @@
 #![no_std]
 extern crate alloc;
 
-pub mod patcher;
 pub mod log;
 pub mod ini;
 pub mod ffi;
@@ -180,6 +179,16 @@ pub mod version {
     /// Gets the currently running SKSE version.
     pub fn current_skse() -> SkseVersion {
         *RUNNING_SKSE_VERSION
+    }
+}
+
+pub mod trampoline {
+    /// Выделяет память под Xbyak/Iced-x86 хуки через SKSE Branch Pool.
+    /// Вызывать нужно один раз при старте плагина.
+    pub fn alloc_trampoline(size: usize) {
+        unsafe {
+            crate::ffi::commonlib_alloc_trampoline(size);
+        }
     }
 }
 
