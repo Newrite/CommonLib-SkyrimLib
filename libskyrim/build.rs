@@ -11,11 +11,6 @@ fn main() {
     // Xmake-пакеты тоже линкуются статически. Укажем Rust найти их
     println!("cargo:rustc-link-lib=static=commonlibsse-ng");
 
-    // fmt обычно уже включен в spdlog или линкуется автоматически,
-    // но если возникнут undefined references, оставьте
-    println!("cargo:rustc-link-lib=static=fmt");
-    println!("cargo:rustc-link-lib=static=spdlog");
-
     println!("cargo:rustc-link-lib=version");
     println!("cargo:rustc-link-lib=user32");
 
