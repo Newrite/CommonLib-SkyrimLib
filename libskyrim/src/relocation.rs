@@ -1,6 +1,6 @@
 use core::ffi::c_void;
 use crate::ffi;
-use crate::version::{current_runtime, RUNTIME_VERSION_1_5_97};
+use crate::runtime;
 
 /// Адресация в памяти Скайрима
 pub struct Relocation;
@@ -62,12 +62,11 @@ impl VariantID {
 
     /// Возвращает нужный ID в зависимости от запущенной версии игры.
     pub fn id(&self) -> usize {
-        // Упрощенная проверка: если версия <= 1.5.97, то это SE. Иначе AE.
-        // (Для VR потребуется отдельная проверка, если вы его поддерживаете)
-        if current_runtime() <= RUNTIME_VERSION_1_5_97 {
-            self.se
-        } else {
+        // Теперь проверка версии выглядит максимально лаконично и безопасно:
+        if runtime::is_ae() {
             self.ae
+        } else {
+            self.se // Для SE (1.5.97 и ниже)
         }
     }
 

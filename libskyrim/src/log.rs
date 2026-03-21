@@ -8,7 +8,7 @@
 
 use core::fmt::{Arguments, Write};
 use core::ffi::CStr;
-use alloc::format; // Используем аллокатор для красивого выравнивания строк
+use alloc::format;
 
 use cstd::io::File;
 use core_util::{Later, RacyCell, StringBuffer, WideStringBuffer, WideStr};
@@ -25,8 +25,8 @@ use windows_sys::Win32::Foundation::{FILETIME, SYSTEMTIME};
 #[doc(hidden)]
 pub use windows_sys::Win32::UI::WindowsAndMessaging::{MB_ICONERROR, MB_ICONWARNING};
 
+use crate::runtime::CURRENT_VERSION;
 use crate::SKSEPlugin_Version;
-use crate::version;
 
 #[doc(hidden)]
 pub enum LogType {
@@ -81,10 +81,10 @@ pub (in crate) fn open() {
         buf.write_w_str(WideStr::from_ptr(path)).unwrap();
         CoTaskMemFree(path.cast());
     }
-
+    
     buf.write_fmt(format_args!(
         "\\My Games\\{}\\SKSE\\{}.log",
-        version::current_runtime().save_folder(),
+        (*CURRENT_VERSION).save_folder(), // Разыменовываем Later и вызываем наш метод
         unsafe { CStr::from_ptr(SKSEPlugin_Version.name.as_ptr()).to_str().unwrap() }
     )).unwrap();
 

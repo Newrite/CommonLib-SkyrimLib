@@ -6,7 +6,6 @@ edition = "2021"
 [dependencies]
 core-util  = { path = "../core-util"  }
 cstd       = { path = "../cstd"     }
-sre-common = { path = "../sre-common" }
 
 [dependencies.windows-sys]
 version = "0.61.2"

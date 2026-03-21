@@ -1,8 +1,7 @@
 //!
 //! @file lib.rs
-//! @author Andrew Spaulding (Kasplat).
+//! @author Andrew Spaulding (Kasplat) / Обновлено под CommonLib-NG
 //! @brief Module runtime loader and environment for libskyrim.
-//! @bug No known bugs.
 //!
 
 #![no_std]
@@ -16,6 +15,11 @@ pub mod relocation;
 pub mod offsets;
 pub mod re;
 
+// Наши новые модули
+pub mod version;
+pub mod runtime;
+pub mod skse64;
+
 // Needed for macros
 pub extern crate core;
 pub extern crate core_util;
@@ -23,41 +27,49 @@ pub extern crate core_util;
 use core::ffi::CStr;
 use core_util::RacyCell;
 
-use crate::version::{RUNNING_GAME_VERSION, RUNNING_SKSE_VERSION, RUNTIME_VERSION_1_5_97};
-use crate::version::{PACKED_SKSE_VERSION, CURRENT_RELEASE_RUNTIME};
-use crate::plugin_api::{SkseInterface, SksePluginVersionData, PluginInfo, PLUGIN_HANDLE};
+// Подтягиваем интерфейсы из модуля skse64
+use crate::skse64::plugin_api::{PluginInfo, SkseInterface, SksePluginVersionData};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Core plugin loader
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 extern "Rust" {
-    /// Entry point for plugins using this crate.
+    /// Точка входа в ваш пользовательский плагин (skse-hello-rust)
     fn skse_plugin_rust_entry(skse: &SkseInterface) -> Result<(), ()>;
 
-    /// Used to name the log file.
+    /// Генерируется макросом plugin_version_data!
     pub (in crate) static SKSEPlugin_Version: SksePluginVersionData;
 }
 
-/// Initializes SKSE logging and addressing.
+/// Общая инициализация (вызывается из Query и Load)
 unsafe fn init_skse(skse: *const SkseInterface) -> bool {
     static DO_ONCE: RacyCell<Option<bool>> = RacyCell::new(None);
     if let Some(ret) = *DO_ONCE.get() {
         return ret;
     }
 
-    RUNNING_SKSE_VERSION.init((*skse).skse_version.unwrap());
-    RUNNING_GAME_VERSION.init((*skse).runtime_version.unwrap());
-
+    // Инициализируем систему логов
     log::open();
 
-    assert!(!skse.is_null());
+    if skse.is_null() {
+        *DO_ONCE.get() = Some(false);
+        return false;
+    }
+
     if (*skse).is_editor != 0 {
         *DO_ONCE.get() = Some(false);
         return false;
     }
 
-    PLUGIN_HANDLE.init(((*skse).get_plugin_handle)());
+    // Инициализируем наш новый менеджер рантайма!
+    if let Some(runtime_ver) = (*skse).runtime_version {
+        crate::runtime::init(runtime_ver);
+    } else {
+        return false;
+    }
+
+    plugin_api::PLUGIN_HANDLE.init(((*skse).get_plugin_handle)());
     plugin_api::init_listener(skse.as_ref().unwrap());
 
     *DO_ONCE.get() = Some(true);
@@ -78,18 +90,13 @@ pub unsafe extern "system" fn SKSEPlugin_Query(
         version: Some(SKSEPlugin_Version.plugin_version)
     };
 
-    if (*skse).runtime_version.unwrap() <= RUNTIME_VERSION_1_5_97 {
-        skse_message!("Plugin query complete, marking as compatible.");
-        true
-    } else {
-        skse_message!("Unknown game version. Marking as incompatible.");
-        false
-    }
+    // CommonLib-NG плагины поддерживают все версии, поэтому просто возвращаем true
+    skse_message!("Plugin query complete.");
+    true
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> bool {
-    // Prevent reinit.
     static DO_ONCE: RacyCell<bool> = RacyCell::new(true);
     if !*DO_ONCE.get() {
         skse_message!("Cannot reinitialize library!");
@@ -100,24 +107,21 @@ pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> boo
 
     if !init_skse(skse) { return false; }
 
-    // Инициализация CommonLib-NG
+    // Инициализируем C++ часть CommonLib-NG
     crate::ffi::init_commonlib(skse as *const core::ffi::c_void);
 
-    // УБРАНО: reloc::RelocAddr::base(), так как мы полагаемся на CommonLib
+    let game_ver = (*skse).runtime_version.unwrap();
+    let skse_ver = (*skse).skse_version.unwrap();
+
     skse_message!(
-        "{} {:?} ({})\n\
-         Compiled: SKSE64 {}, Skyrim SE {}\n\
-         Running: SKSE64 {}, Skyrim SE {}",
+        "{} v{}\nRunning on Skyrim SE/AE {}, SKSE {}",
         CStr::from_ptr(SKSEPlugin_Version.name.as_ptr()).to_str().unwrap_or("Unknown"),
         SKSEPlugin_Version.plugin_version,
-        core::option_env!("LIBSKYRIM_PLUGIN_VC_VERSION").unwrap_or("unversioned"),
-        PACKED_SKSE_VERSION,
-        CURRENT_RELEASE_RUNTIME,
-        (*skse).skse_version.unwrap(),
-        (*skse).runtime_version.unwrap()
+        game_ver,
+        skse_ver
     );
 
-    // УБРАНО: SKSE_LOADER_DONE. Любая паника внутри плагина отработает штатно.
+    // Вызываем код вашего плагина!
     if let Ok(_) = skse_plugin_rust_entry(skse.as_ref().unwrap()) {
         true
     } else {
@@ -126,19 +130,8 @@ pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> boo
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Runtime extensions of SKSE modules
+// Вспомогательные модули библиотеки
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-pub mod version {
-    pub use sre_common::skse64::version::*;
-    use core_util::Later;
-
-    pub (in crate) static RUNNING_GAME_VERSION: Later<SkseVersion> = Later::new();
-    pub (in crate) static RUNNING_SKSE_VERSION: Later<SkseVersion> = Later::new();
-
-    pub fn current_runtime() -> SkseVersion { *RUNNING_GAME_VERSION }
-    pub fn current_skse() -> SkseVersion { *RUNNING_SKSE_VERSION }
-}
 
 pub mod trampoline {
     pub fn alloc_trampoline(size: usize) {
@@ -152,16 +145,13 @@ pub mod plugin_api {
     use core::ffi::c_char;
     use alloc::vec::Vec;
 
-    pub use sre_common::skse64::plugin_api::*;
+    // Подтягиваем типы из skse64
+    pub use crate::skse64::plugin_api::*;
     use core_util::{Later, RacyCell};
-
-    use crate::plugin_api;
-    use crate::version::SkseVersion;
+    use crate::version::Version;
 
     const VEC_INIT: Vec<fn(&Message)> = Vec::new();
-
-    static SKSE_HANDLERS: RacyCell<[Vec<fn(&Message)>; Message::SKSE_MAX]>
-                                                    = RacyCell::new([VEC_INIT; Message::SKSE_MAX]);
+    static SKSE_HANDLERS: RacyCell<[Vec<fn(&Message)>; Message::SKSE_MAX]> = RacyCell::new([VEC_INIT; Message::SKSE_MAX]);
 
     pub (in crate) static PLUGIN_HANDLE: Later<PluginHandle> = Later::new();
 
@@ -169,7 +159,7 @@ pub mod plugin_api {
         unsafe {
             let msg_if = (skse.query_interface)(InterfaceId::Messaging) as *mut SkseMessagingInterface;
             ((*msg_if).register_listener)(
-                plugin_api::handle(),
+                handle(),
                 "SKSE\0".as_bytes().as_ptr() as *const c_char,
                 skse_listener
             );
@@ -200,11 +190,12 @@ pub mod plugin_api {
             pub static SKSEPlugin_Version: $crate::plugin_api::SksePluginVersionData =
             $crate::plugin_api::SksePluginVersionData {
                 data_version: $crate::plugin_api::SksePluginVersionData::VERSION,
-                plugin_version: $crate::version::SkseVersion::new(
-                    $crate::plugin_api::unsigned_from_str($crate::core::env!("CARGO_PKG_VERSION_MAJOR")),
-                    $crate::plugin_api::unsigned_from_str($crate::core::env!("CARGO_PKG_VERSION_MINOR")),
-                    $crate::plugin_api::unsigned_from_str($crate::core::env!("CARGO_PKG_VERSION_PATCH")),
-                    $crate::plugin_api::unsigned_from_str($crate::core::env!("CARGO_PKG_VERSION_PRE"))
+                // Используем наш новый Version
+                plugin_version: $crate::version::Version::new(
+                    $crate::plugin_api::unsigned_from_str($crate::core::env!("CARGO_PKG_VERSION_MAJOR")) as u16,
+                    $crate::plugin_api::unsigned_from_str($crate::core::env!("CARGO_PKG_VERSION_MINOR")) as u16,
+                    $crate::plugin_api::unsigned_from_str($crate::core::env!("CARGO_PKG_VERSION_PATCH")) as u16,
+                    0 // Build number
                 ),
                 name: $crate::plugin_api::make_str($crate::core::env!("CARGO_CRATE_NAME")),
                 author: $crate::plugin_api::make_str($author),
@@ -246,7 +237,7 @@ pub mod plugin_api {
     }
 
     #[doc(hidden)]
-    pub const fn make_vers<const N: usize>(v: &[SkseVersion]) -> [Option<SkseVersion>; N] {
+    pub const fn make_vers<const N: usize>(v: &[Version]) -> [Option<Version>; N] {
         let mut ret = [None; N];
         assert!(v.len() <= (N - 1), "Too many compatible versions!");
         let mut i = 0;
@@ -265,59 +256,3 @@ pub mod plugin_api {
         }
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Skyrim runtime environment panic implementation
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Provides an implementation of panic which shows a pop-up message and logs an error when called.
-// The implementation will also abort using a system exception during the plugin loading phase,
-// which the AE version of SKSE can catch.
-//
-// Note that there is a bug in the AE version of SKSE which means that we cannot always abort using
-// a system exception, as doing so in later phases will cause SKSE to misbehave. Thus, once the
-// loader has finished we instead terminate using the C standard abort() function.
-
-// Private, since it only provides a panic implementation.
-/*
-mod errors {
-    use core_util::RacyCell;
-    use crate::log;
-
-    extern "system" {
-        /// Halts the loading of a SKSE plugin.
-        fn stop_plugin() -> !;
-    }
-
-    // C standard abort, for post-load panics.
-    #[link(name = "msvcrt")]
-    extern "C" { fn abort() -> !; }
-
-    // Implement stop_plugin().
-    core::arch::global_asm! {
-        include_str!("stop_plugin.S"),
-        options(att_syntax)
-    }
-
-    pub (in crate) static SKSE_LOADER_DONE: RacyCell<bool> = RacyCell::new(false);
-
-    /// Stops the loading of the plugin when called during the load phase.
-    #[panic_handler]
-    fn skse_panic(
-        info: &core::panic::PanicInfo<'_>
-    ) -> ! {
-        log::skse_fatal!("{}", info);
-        unsafe {
-            // After loading has finished, it's not safe to halt the plugin by throwing an
-            // exception. This is due to a bug in SKSE where exceptions are caught and then ignored
-            // if they are thrown during the messaging phases. As such, we abort on panic if it
-            // happens after the loading phase has finished.
-            if *SKSE_LOADER_DONE.get() {
-                abort();
-            } else {
-                stop_plugin();
-            }
-        }
-    }
-}
-*/
