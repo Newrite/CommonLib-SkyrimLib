@@ -6,10 +6,6 @@
 #include <SKSE/SKSE.h>
 #include <SKSE/API.h>
 
-
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/pattern_formatter.h"
-
 namespace logger = SKSE::log;
 namespace stl = SKSE::stl;
 using namespace std::literals;
