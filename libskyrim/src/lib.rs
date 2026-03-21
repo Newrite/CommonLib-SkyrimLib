@@ -42,6 +42,38 @@ extern "Rust" {
     pub (in crate) static SKSEPlugin_Version: SksePluginVersionData;
 }
 
+unsafe fn init_runtime_only(skse: *const SkseInterface) -> bool {
+    if skse.is_null() { return false; }
+
+    if let Some(runtime_ver) = (*skse).runtime_version {
+        if !crate::runtime::CURRENT_VERSION.is_init() {
+            crate::runtime::init(runtime_ver);
+        }
+        true
+    } else {
+        false
+    }
+}
+
+unsafe fn init_full(skse: *const SkseInterface) -> bool {
+    static DONE: RacyCell<bool> = RacyCell::new(false);
+    if *DONE.get() { return true; }
+
+    if !init_runtime_only(skse) { return false; }
+
+    log::open(); // Логи открываем только при загрузке
+
+    if (*skse).is_editor != 0 { return false; }
+
+    plugin_api::PLUGIN_HANDLE.init(((*skse).get_plugin_handle)());
+
+    // ВАЖНО: Инициализируем сообщения ТОЛЬКО ЗДЕСЬ
+    plugin_api::init_listener(skse.as_ref().unwrap());
+
+    *DONE.get() = true;
+    true
+}
+
 /// Общая инициализация (вызывается из Query и Load)
 unsafe fn init_skse(skse: *const SkseInterface) -> bool {
     static DO_ONCE: RacyCell<Option<bool>> = RacyCell::new(None);
@@ -81,7 +113,7 @@ pub unsafe extern "system" fn SKSEPlugin_Query(
     skse: *const SkseInterface,
     info: *mut PluginInfo
 ) -> bool {
-    if !init_skse(skse) { return false; }
+    if !init_runtime_only(skse) { return false; }
     assert!(!info.is_null());
 
     *info = PluginInfo {
@@ -97,17 +129,9 @@ pub unsafe extern "system" fn SKSEPlugin_Query(
 
 #[no_mangle]
 pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> bool {
-    static DO_ONCE: RacyCell<bool> = RacyCell::new(true);
-    if !*DO_ONCE.get() {
-        skse_message!("Cannot reinitialize library!");
-        return false;
-    } else {
-        *DO_ONCE.get() = false;
-    }
+    // Тут уже инициализируем логи, сообщения и остальное
+    if !init_full(skse) { return false; }
 
-    if !init_skse(skse) { return false; }
-
-    // Инициализируем C++ часть CommonLib-NG
     crate::ffi::init_commonlib(skse as *const core::ffi::c_void);
 
     let game_ver = (*skse).runtime_version.unwrap();
@@ -121,7 +145,6 @@ pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> boo
         skse_ver
     );
 
-    // Вызываем код вашего плагина!
     if let Ok(_) = skse_plugin_rust_entry(skse.as_ref().unwrap()) {
         true
     } else {
