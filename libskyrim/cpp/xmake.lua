@@ -32,6 +32,7 @@ package("commonlibsse-ng-custom")
         -- Xmake скачает код, увидит внутри xmake.lua и сам соберет его!
         import("package.tools.xmake").install(package, configs)
     end)
+package_end()
 
 -- Требуем наш пакет (он соберется автоматически при первом запуске)
 add_requires("commonlibsse-ng-custom")
