@@ -42,6 +42,8 @@ target("commonlib_bridge")
     set_kind("static")
     set_languages("c++23")
 
+    set_pcxxheader("PCH.h")
+
     -- Подключаем собранный CommonLib
     add_packages("commonlibsse-ng-custom")
 
