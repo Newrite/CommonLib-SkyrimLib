@@ -40,7 +40,7 @@ add_requires("commonlibsse-ng-custom")
 -- Наша цель (мост)
 target("commonlib_bridge")
     set_kind("static")
-    set_languages("c++23")
+    set_languages("c++20")
 
     add_includedirs("include")
     set_pcxxheader("include/PCH.h")
