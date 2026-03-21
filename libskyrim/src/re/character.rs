@@ -1,6 +1,6 @@
 ﻿use core_util::abstract_type;
 use crate::offsets::offsets_vtable::VTABLE_Character;
-use crate::relocation::VariantID;
+use crate::relocation::{VariantID, VariantOffset};
 
 abstract_type! {
     /// RE::Character
@@ -12,5 +12,5 @@ impl Character {
     pub const VTABLE: &'static [VariantID] = &VTABLE_Character;
 
     // Индекс функции Update в таблице виртуальных функций (0xAD = 173)
-    pub const VFUNC_UPDATE_IDX: usize = 0xAD;
+    pub const VFUNC_UPDATE_IDX: VariantOffset = VariantOffset::new(0xAD, 0xAF);
 }
