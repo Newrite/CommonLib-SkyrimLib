@@ -14,6 +14,7 @@ pub mod ini;
 pub mod ffi;
 pub mod relocation;
 pub mod offsets;
+pub mod re;
 
 // Needed for macros
 pub use core;
