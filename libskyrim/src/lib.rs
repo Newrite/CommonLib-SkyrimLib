@@ -122,6 +122,44 @@ pub mod trampoline {
     }
 }
 
+pub mod task {
+    use alloc::boxed::Box;
+    use core::ffi::c_void;
+    use crate::ffi;
+
+    /// Внутренний обработчик, который вызывается из C++
+    /// Он распаковывает замыкание из void* и исполняет его.
+    extern "C" fn task_runner<F: FnOnce()>(data: *mut c_void) {
+        // Восстанавливаем Box из сырого указателя.
+        // В конце области видимости он автоматически очистит память (Dispose)!
+        let closure = unsafe { Box::from_raw(data as *mut F) };
+        closure();
+    }
+
+    /// Добавляет задачу в главную очередь игры (выполняется в основном потоке).
+    pub fn add_task<F>(f: F)
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        // Упаковываем замыкание в Box и превращаем в сырой указатель (чтобы Rust его не удалил)
+        let data = Box::into_raw(Box::new(f)) as *mut c_void;
+        unsafe {
+            ffi::commonlib_add_task(task_runner::<F>, data);
+        }
+    }
+
+    /// Добавляет задачу в очередь UI (безопасно для работы со Scaleform/меню).
+    pub fn add_ui_task<F>(f: F)
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        let data = Box::into_raw(Box::new(f)) as *mut c_void;
+        unsafe {
+            ffi::commonlib_add_ui_task(task_runner::<F>, data);
+        }
+    }
+}
+
 pub mod plugin_api {
     use core::ffi::c_char;
     use alloc::vec::Vec;

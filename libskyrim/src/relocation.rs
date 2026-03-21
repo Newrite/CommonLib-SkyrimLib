@@ -205,3 +205,30 @@ macro_rules! define_call_hook {
         }
     };
 }
+
+/// Макрос для генерации константы индекса и метода вызова виртуальной функции.
+#[macro_export]
+macro_rules! virtual_method {
+    (
+        // Описание константы: видимость, имя, тип и значение
+        $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
+        
+        // Описание функции: видимость, имя, аргументы и (опционально) возвращаемый тип
+        $fn_vis:vis fn $func_name:ident($($arg_name:ident: $arg_ty:ty),*) $(-> $ret:ty)?
+    ) => {
+        // 1. Генерируем саму константу (чтобы к ней можно было обратиться из define_vtable_hook!)
+        $const_vis const $const_name: $const_ty = $const_expr;
+
+        // 2. Генерируем удобный метод для вызова этой функции
+        #[inline(always)]
+        $fn_vis fn $func_name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            use $crate::relocation::IntoOffset;
+            unsafe {
+                let vtable = *(self as *const _ as *const *const usize);
+                let func_ptr = vtable.add(Self::$const_name.into_offset());
+                let func: extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)? = core::mem::transmute(*func_ptr);
+                func(self $(, $arg_name)*)
+            }
+        }
+    };
+}

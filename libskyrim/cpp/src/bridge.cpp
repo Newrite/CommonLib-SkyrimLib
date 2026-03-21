@@ -57,4 +57,19 @@ extern "C" {
         REL::Relocation<uintptr_t> vtable(vtable_addr);
         return vtable.write_vfunc(idx, new_func);
     }
+
+    // 6. Задачи (Task Interface)
+    void commonlib_add_task(void (*cb)(void*), void* data) {
+        // Захватываем указатели по значению [=] и вызываем внутри задачи
+        SKSE::GetTaskInterface()->AddTask([=]() {
+            cb(data);
+        });
+    }
+
+    void commonlib_add_ui_task(void (*cb)(void*), void* data) {
+        SKSE::GetTaskInterface()->AddUITask([=]() {
+            cb(data);
+        });
+    }
+
 }
