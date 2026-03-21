@@ -3,7 +3,7 @@
 extern "C" {
     // 1. Инициализация CommonLib
     void init_commonlib(const void* skse_interface) {
-            SKSE::Init((const SKSE::LoadInterface*)skse_interface);
+        SKSE::Init((const SKSE::LoadInterface*)skse_interface);
     }
 
     // 2. Получение адреса
@@ -27,6 +27,6 @@ extern "C" {
 
     // Выделение памяти под трамплин
     void commonlib_alloc_trampoline(size_t size) {
-            SKSE::AllocTrampoline(size);
+        SKSE::AllocTrampoline(size);
     }
 }

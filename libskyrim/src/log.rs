@@ -8,6 +8,7 @@
 
 use core::fmt::{Arguments, Write};
 use core::ffi::CStr;
+use alloc::format; // Используем аллокатор для красивого выравнивания строк
 
 use cstd::io::File;
 use core_util::{Later, RacyCell, StringBuffer, WideStringBuffer, WideStr};
@@ -16,13 +17,17 @@ use windows_sys::Win32::System::Com::CoTaskMemFree;
 use windows_sys::Win32::UI::Shell::{SHGetKnownFolderPath, FOLDERID_Documents};
 use windows_sys::Win32::Foundation::{MAX_PATH, S_OK};
 
+// Импорты для точного времени
+use windows_sys::Win32::System::SystemInformation::GetSystemTimePreciseAsFileTime;
+use windows_sys::Win32::System::Timezone::{FileTimeToLocalFileTime, FileTimeToSystemTime};
+use windows_sys::Win32::Foundation::{FILETIME, SYSTEMTIME};
+
 #[doc(hidden)]
 pub use windows_sys::Win32::UI::WindowsAndMessaging::{MB_ICONERROR, MB_ICONWARNING};
 
 use crate::SKSEPlugin_Version;
 use crate::version;
 
-// Enumeration to determine how an error will be presented to the user.
 #[doc(hidden)]
 pub enum LogType {
     File,
@@ -30,23 +35,11 @@ pub enum LogType {
     Both(u32)
 }
 
-/// The size of the string buffer for writing output to files. Sized to be large enough to hold the
-/// max amount of text most text editors can handle on one line.
 const BUF_SIZE: usize = 8192;
-
-/// The global file we log our output to.
 static LOG_FILE: Later<RacyCell<File>> = Later::new();
 
 impl LogType {
-    //
-    // Attempts to write a message to the requested log types.
-    //
-    // Note that this function does not panic, since it may be called from the panic impl.
-    //
-    unsafe fn log(
-        &self,
-        msg: &CStr
-    ) -> Result<(), ()> {
+    unsafe fn log(&self, msg: &CStr) -> Result<(), ()> {
         let win_res = match self {
             Self::Window(ico) | Self::Both(ico) => {
                 let res = MessageBoxA(
@@ -55,7 +48,6 @@ impl LogType {
                     SKSEPlugin_Version.name.as_ptr().cast(),
                     *ico
                 );
-
                 if res == 0 { Err(()) } else { Ok(()) }
             },
             _ => Ok(())
@@ -78,16 +70,13 @@ impl LogType {
     }
 }
 
-/// Opens a log file under the plugins name in the SKSE log directory.
 pub (in crate) fn open() {
     let mut buf: WideStringBuffer<BUF_SIZE> = WideStringBuffer::new();
 
     unsafe {
-        // SAFETY: The buffer is empty, and its size is larger than MAX_PATH (260).
         assert!(BUF_SIZE > MAX_PATH as usize);
         let mut path: windows_sys::core::PWSTR = core::ptr::null_mut();
 
-        // Add the path to the users documents folder to the buffer.
         assert!(SHGetKnownFolderPath(&FOLDERID_Documents, 0, core::ptr::null_mut(), &mut path) == S_OK);
         buf.write_w_str(WideStr::from_ptr(path)).unwrap();
         CoTaskMemFree(path.cast());
@@ -105,101 +94,153 @@ pub (in crate) fn open() {
     ).unwrap()));
 
     unsafe {
-        // SAFETY: Single threaded library, protected from double init by skse.
-        // Add the BOM to the file to mark it as UTF-8.
         (*LOG_FILE.get()).write(&cstd::io::UTF8_BOM).unwrap();
     }
 }
 
-// Logs a message to the requested log types.
 #[doc(hidden)]
 pub fn write(
     log_type: LogType,
+    file: &str,
+    line: u32,
     args: Arguments<'_>
 ) {
     let mut buf = StringBuffer::<BUF_SIZE>::new();
+
+    let file_name = file.rsplit('\\').next().unwrap_or(file);
+    let file_name = file_name.rsplit('/').next().unwrap_or(file_name);
+
+    let mut ft: FILETIME = unsafe { core::mem::zeroed() };
+    unsafe { GetSystemTimePreciseAsFileTime(&mut ft) };
+
+    let mut local_ft: FILETIME = unsafe { core::mem::zeroed() };
+    unsafe { FileTimeToLocalFileTime(&ft, &mut local_ft) };
+
+    let mut st: SYSTEMTIME = unsafe { core::mem::zeroed() };
+    unsafe { FileTimeToSystemTime(&local_ft, &mut st) };
+
+    let combined = ((local_ft.dwHighDateTime as u64) << 32) | (local_ft.dwLowDateTime as u64);
+    let microseconds = (combined / 10) % 1_000_000;
+
+    // Формируем блок [Файл:Строка] ВМЕСТЕ со скобками
+    let loc_str = format!("[{}:{}]", file_name, line);
+
+    // Автоматически достаем имя плагина (в вашем случае "skse-hello-rust")
+    let plugin_name = unsafe { CStr::from_ptr(SKSEPlugin_Version.name.as_ptr()).to_str().unwrap_or("Unknown") };
+
+    // Идеальное форматирование:
+    // [{plugin_name}] - всегда первым
+    // [{время}] - фиксированный размер
+    // {:<25} - выравнивает loc_str по левому краю на 25 символов (пробелы будут СНАРУЖИ скобок)
+    buf.write_fmt(format_args!(
+        "[{}] [{:04}-{:02}-{:02} {:02}:{:02}:{:02}.{:06}] {:<25} ",
+        plugin_name,
+        st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, microseconds,
+        loc_str
+    )).unwrap();
+
     buf.write_fmt(args).unwrap();
     buf.write_str("\n").unwrap();
+
     unsafe {
-        // SAFETY: This library is single threaded.
         log_type.log(buf.as_c_str()).unwrap();
     }
 }
 
-//
-// Logs a fatal error, opening a message box as well.
-//
-// Called from panic, so we have to be extra careful not to panic again.
-//
 #[doc(hidden)]
 pub fn fatal(
     log_type: LogType,
+    file: &str,
+    line: u32,
     args: Arguments<'_>
 ) {
     let mut buf = StringBuffer::<BUF_SIZE>::new();
-    // SAFETY: This library is single threaded.
+
+    let file_name = file.rsplit('\\').next().unwrap_or(file);
+    let file_name = file_name.rsplit('/').next().unwrap_or(file_name);
+    let loc_str = format!("[{}:{}]", file_name, line);
+    let plugin_name = unsafe { CStr::from_ptr(SKSEPlugin_Version.name.as_ptr()).to_str().unwrap_or("Unknown") };
+
     unsafe {
-        if buf.write_fmt(args).is_err() || buf.write_str("\n").is_err() {
-            let _ = log_type.log(
-                core_util::cstr!("The plugin encountered an unknown fatal error.\n")
-            );
+        if buf.write_fmt(format_args!("[{}] [FATAL ERROR] {:<25} ", plugin_name, loc_str)).is_err() ||
+           buf.write_fmt(args).is_err() ||
+           buf.write_str("\n").is_err() {
+            let _ = log_type.log(core_util::cstr!("The plugin encountered an unknown fatal error.\n"));
         } else {
             let _ = log_type.log(buf.as_c_str());
         }
     }
 }
 
+// ── МАКРОСЫ ──────────────────────────────────────────────────────────────────
+// Изменил `( $($fmt:expr),* )` на `( $($arg:tt)* )`.
+// Это стандартный синтаксис Rust, который позволяет писать `skse_message!("HP: {}", 100)`.
+// Также они теперь прозрачно пробрасывают текущий файл и строку.
+
 #[macro_export]
 macro_rules! skse_message {
-    ( $($fmt:expr),* ) => {
-        $crate::log::write($crate::log::LogType::File, $crate::core::format_args!($($fmt),*));
+    ( $($arg:tt)* ) => {
+        $crate::log::write(
+            $crate::log::LogType::File,
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
+        );
     };
 }
 
 #[macro_export]
 macro_rules! skse_warning {
-    ( $($fmt:expr),* => window ) => {
+    ( window, $($arg:tt)* ) => {
         $crate::log::write(
             $crate::log::LogType::Window($crate::log::MB_ICONWARNING),
-            $crate::core::format_args!($($fmt),*)
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
         );
     };
-    ( $($fmt:expr),* => log ) => {
+    ( log, $($arg:tt)* ) => {
         $crate::log::write(
             $crate::log::LogType::File,
-            $crate::core::format_args!($($fmt),*)
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
         );
     };
-    ( $($fmt:expr),* ) => {
+    ( $($arg:tt)* ) => {
         $crate::log::write(
             $crate::log::LogType::Both($crate::log::MB_ICONWARNING),
-            $crate::core::format_args!($($fmt),*)
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
         );
     };
 }
 
 #[macro_export]
 macro_rules! skse_fatal {
-    ( $($fmt:expr),* => window ) => {
+    ( window, $($arg:tt)* ) => {
         $crate::log::fatal(
             $crate::log::LogType::Window($crate::log::MB_ICONERROR),
-            $crate::core::format_args!($($fmt),*)
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
         );
     };
-    ( $($fmt:expr),* => log ) => {
+    ( log, $($arg:tt)* ) => {
         $crate::log::fatal(
             $crate::log::LogType::File,
-            $crate::core::format_args!($($fmt),*)
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
         );
     };
-    ( $($fmt:expr),* ) => {
+    ( $($arg:tt)* ) => {
         $crate::log::fatal(
             $crate::log::LogType::Both($crate::log::MB_ICONERROR),
-            $crate::core::format_args!($($fmt),*)
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
         );
     };
 }
-
-pub use skse_message;
-pub use skse_warning;
-pub use skse_fatal;
