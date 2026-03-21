@@ -8,25 +8,21 @@
 #![no_std]
 extern crate alloc;
 
-pub use sre_common::skse64::reloc;
 pub mod patcher;
 pub mod log;
 pub mod ini;
+pub mod ffi;
 
 // Needed for macros
 pub use core;
 
 use core::ffi::CStr;
-use core::ptr;
-
-use windows_sys::Win32::System::LibraryLoader::GetModuleHandleA;
 
 use core_util::RacyCell;
 
 use crate::version::{RUNNING_GAME_VERSION, RUNNING_SKSE_VERSION, RUNTIME_VERSION_1_5_97};
 use crate::version::{PACKED_SKSE_VERSION, CURRENT_RELEASE_RUNTIME};
 use crate::plugin_api::{SkseInterface, SksePluginVersionData, PluginInfo, PLUGIN_HANDLE};
-use crate::reloc::RelocAddr;
 use crate::errors::SKSE_LOADER_DONE;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,9 +52,6 @@ unsafe fn init_skse(
     if let Some(ret) = *DO_ONCE.get() {
         return ret;
     }
-
-    // Initialize the relocation manager with the base address of skyrims binary.
-    RelocAddr::init_manager(unsafe { GetModuleHandleA(ptr::null_mut()) as usize });
 
     // Set running version to the given value.
     RUNNING_SKSE_VERSION.init((*skse).skse_version.unwrap());
@@ -133,6 +126,8 @@ pub unsafe extern "system" fn SKSEPlugin_Load(
 
     // If we're running on an AE version, we haven't done this yet.
     if !init_skse(skse) { return false; }
+
+    crate::ffi::init_commonlib(skse as *const core::ffi::c_void);
 
     // Log runtime/skse info.
     skse_message!(

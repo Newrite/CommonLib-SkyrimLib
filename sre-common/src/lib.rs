@@ -6,5 +6,4 @@
 
 #![no_std]
 
-pub mod versiondb;
 pub mod skse64;
