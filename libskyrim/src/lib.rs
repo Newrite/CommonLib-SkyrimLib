@@ -8,6 +8,7 @@
 #![no_std]
 extern crate alloc;
 
+#[macro_use]
 pub mod log;
 pub mod ini;
 pub mod ffi;
@@ -74,10 +75,10 @@ pub unsafe extern "system" fn SKSEPlugin_Query(
     };
 
     if (*skse).runtime_version.unwrap() <= RUNTIME_VERSION_1_5_97 {
-        log::skse_message!("Plugin query complete, marking as compatible.");
+        skse_message!("Plugin query complete, marking as compatible.");
         true
     } else {
-        log::skse_message!("Unknown game version. Marking as incompatible.");
+        skse_message!("Unknown game version. Marking as incompatible.");
         false
     }
 }
@@ -87,7 +88,7 @@ pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> boo
     // Prevent reinit.
     static DO_ONCE: RacyCell<bool> = RacyCell::new(true);
     if !*DO_ONCE.get() {
-        log::skse_message!("Cannot reinitialize library!");
+        skse_message!("Cannot reinitialize library!");
         return false;
     } else {
         *DO_ONCE.get() = false;
@@ -99,7 +100,7 @@ pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> boo
     crate::ffi::init_commonlib(skse as *const core::ffi::c_void);
 
     // УБРАНО: reloc::RelocAddr::base(), так как мы полагаемся на CommonLib
-    log::skse_message!(
+    skse_message!(
         "{} {:?} ({})\n\
          Compiled: SKSE64 {}, Skyrim SE {}\n\
          Running: SKSE64 {}, Skyrim SE {}",
