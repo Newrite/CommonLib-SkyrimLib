@@ -42,10 +42,12 @@ target("commonlib_bridge")
     set_kind("static")
     set_languages("c++23")
 
-    set_pcxxheader("PCH.h")
+    add_includedirs("include")
+    set_pcxxheader("include/PCH.h")
 
     -- Подключаем собранный CommonLib
     add_packages("commonlibsse-ng-custom")
 
     -- Исходник моста (ffi)
-    add_files("bridge.cpp")
+    add_headerfiles("include/**.h", "include/**.hpp")
+    add_files("src/**.cpp")
