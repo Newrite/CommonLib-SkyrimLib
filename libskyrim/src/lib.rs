@@ -49,23 +49,23 @@ unsafe fn init_skse(skse: *const SkseInterface) -> bool {
         return ret;
     }
 
-    // Инициализируем систему логов
-    log::open();
+    if skse.is_null() { return false; }
 
-    if skse.is_null() {
-        *DO_ONCE.get() = Some(false);
+    // СНАЧАЛА инициализируем рантайм, так как логи могут зависеть от него (пути к файлам)
+    if let Some(runtime_ver) = (*skse).runtime_version {
+        // Проверяем, не инициализировано ли уже (на всякий случай)
+        if !crate::runtime::CURRENT_VERSION.is_init() {
+            crate::runtime::init(runtime_ver);
+        }
+    } else {
         return false;
     }
+
+    // Теперь открываем логи (теперь они точно знают, в какую папку писать)
+    log::open();
 
     if (*skse).is_editor != 0 {
         *DO_ONCE.get() = Some(false);
-        return false;
-    }
-
-    // Инициализируем наш новый менеджер рантайма!
-    if let Some(runtime_ver) = (*skse).runtime_version {
-        crate::runtime::init(runtime_ver);
-    } else {
         return false;
     }
 
