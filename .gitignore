@@ -1,2 +1,3 @@
 target
-libskyrim\cpp\.xmake
+libskyrim/cpp/.xmake
+libskyrim/target
