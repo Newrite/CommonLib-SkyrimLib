@@ -169,7 +169,7 @@ macro_rules! define_vtable_hook {
                         $index,
                         $hook_func as usize
                     );
-                    ORIGINAL.init(core::mem::transmute(orig_addr));
+                    ORIGINAL.init(::core::mem::transmute(orig_addr));
                 }
             }
         }
