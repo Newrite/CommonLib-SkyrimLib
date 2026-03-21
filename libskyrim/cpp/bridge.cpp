@@ -1,3 +1,11 @@
+#include <cstdint>
+#include <cstddef>
+#include <array>
+#include <string>
+#include <string_view>
+#include <stdexcept>
+#include <compare>
+
 #include <REL/Relocation.h>
 #include <SKSE/Trampoline.h>
 #include <SKSE/SKSE.h>
