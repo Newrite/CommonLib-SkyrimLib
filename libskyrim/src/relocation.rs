@@ -124,3 +124,54 @@ pub unsafe fn skyrim_cast<T: RttiType, U: RttiType>(from: *mut T) -> *mut U {
 
     result as *mut U
 }
+
+/// Макрос для элегантного создания перехватов виртуальных функций (VTable Hooks).
+/// Автоматически генерирует модуль, хранилище оригинальной функции,
+/// сигнатуру `extern "C"` и метод `install()`.
+#[macro_export]
+macro_rules! define_vtable_hook {
+    (
+        // Имя для нашего хука (создаст одноименный модуль)
+        $vis:vis $hook_name:ident {
+            vtable: $vtable:expr,
+            index: $index:expr,
+            // Сигнатура функции (поддерживает аргументы и опциональный возвращаемый тип)
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        #[allow(non_snake_case)]
+        $vis mod $hook_name {
+            use super::*; // Подтягиваем типы (Character и т.д.) из родительского файла
+
+            // 1. Автоматически создаем правильный тип функции
+            type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
+
+            // 2. Глобальное хранилище для оригинала (скрыто от пользователя)
+            static ORIGINAL: $crate::core_util::Later<Signature> = $crate::core_util::Later::new();
+
+            // 3. Безопасная обертка для вызова оригинала из тела хука
+            #[inline(always)]
+            pub fn original($($arg_name: $arg_type),*) $(-> $ret)? {
+                (*ORIGINAL)($($arg_name),*)
+            }
+
+            // 4. Сама функция-перехватчик с правильным ABI (extern "C")
+            extern "C" fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? {
+                $body
+            }
+
+            // 5. Функция установки, которая сама делает transmute и write_vfunc
+            pub fn install() {
+                unsafe {
+                    let vtable_addr = $vtable.address();
+                    let orig_addr = $crate::relocation::Relocation::write_vfunc(
+                        vtable_addr,
+                        $index,
+                        $hook_func as usize
+                    );
+                    ORIGINAL.init(core::mem::transmute(orig_addr));
+                }
+            }
+        }
+    };
+}
