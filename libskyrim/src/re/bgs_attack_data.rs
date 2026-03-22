@@ -2,7 +2,6 @@ use crate::re::NiRef;
 use crate::re::NiRefObject;
 
 core_util::abstract_type! {
-    #[derive(Debug)]
     pub type BGSAttackData;
 }
 

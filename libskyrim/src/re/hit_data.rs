@@ -43,7 +43,6 @@ bitflags::bitflags! {
 
 /// C++ `RE::HitData`
 #[repr(C)]
-#[derive(Debug)]
 pub struct HitData {
     pub hit_position: NiPoint3,           // 00
     pub hit_direction: NiPoint3,          // 0C

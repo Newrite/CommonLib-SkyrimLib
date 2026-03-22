@@ -10,7 +10,6 @@ use core::ops::{Deref, DerefMut};
 use core::ptr;
 
 use crate::re::ni_ref_object::NiRef;
-use crate::re::TESObjectWEAP;
 
 /// C++ `RE::NiPointer<T>`.
 ///
@@ -19,7 +18,6 @@ use crate::re::TESObjectWEAP;
 ///
 /// Layout: `{ _ptr: *mut T }` — 0x8 bytes (one pointer).
 #[repr(transparent)]
-#[derive(Debug)]
 pub struct NiPointer<T: NiRef> {
     _ptr: *mut T,
 }
