@@ -1,19 +1,12 @@
-//! Reverse engineered Skyrim engine types.
-
-#[inline(always)]
-pub fn malloc<T>() -> *mut T {
-    unsafe { crate::ffi::commonlib_malloc(core::mem::size_of::<T>()) as *mut T }
-}
-
-#[inline(always)]
-pub fn free<T>(ptr: *mut T) {
-    unsafe { crate::ffi::commonlib_free(ptr as *mut _) }
-}
+//! =============================================================================
+//! Этот файл сгенерирован АВТОМАТИЧЕСКИ скриптом `scripts/generate_re_mod.py`.
+//! Не редактируйте его вручную, иначе изменения будут потеряны при перегенерации.
+//! =============================================================================
 
 pub mod actor;
 pub mod actor_values;
-pub mod bgs_attack_data;
 pub mod base_form_component;
+pub mod bgs_attack_data;
 pub mod bgs_biped_object_form;
 pub mod bgs_block_bash_data;
 pub mod bgs_body_part_defs;
@@ -31,13 +24,13 @@ pub mod bgs_save_form_buffer;
 pub mod bgs_sound_descriptor_form;
 pub mod bgs_texture_set;
 pub mod bgs_voice_type;
-pub mod biped_anim;
-pub mod biped_objects;
 pub mod bhk_attachment_collision_object;
 pub mod bhk_blend_collision_object;
 pub mod bhk_limited_hinge_constraint;
 pub mod bhk_ni_collision_object;
 pub mod bhk_rigid_body;
+pub mod biped_anim;
+pub mod biped_objects;
 pub mod bs_core_types;
 pub mod bs_dynamic_tri_shape;
 pub mod bs_fade_node;
@@ -129,8 +122,8 @@ pub mod weapon_animation_graph_manager_holder;
 
 pub use actor::*;
 pub use actor_values::*;
-pub use bgs_attack_data::*;
 pub use base_form_component::*;
+pub use bgs_attack_data::*;
 pub use bgs_biped_object_form::*;
 pub use bgs_block_bash_data::*;
 pub use bgs_body_part_defs::*;
@@ -148,13 +141,13 @@ pub use bgs_save_form_buffer::*;
 pub use bgs_sound_descriptor_form::*;
 pub use bgs_texture_set::*;
 pub use bgs_voice_type::*;
-pub use biped_anim::*;
-pub use biped_objects::*;
 pub use bhk_attachment_collision_object::*;
 pub use bhk_blend_collision_object::*;
 pub use bhk_limited_hinge_constraint::*;
 pub use bhk_ni_collision_object::*;
 pub use bhk_rigid_body::*;
+pub use biped_anim::*;
+pub use biped_objects::*;
 pub use bs_core_types::*;
 pub use bs_dynamic_tri_shape::*;
 pub use bs_fade_node::*;
