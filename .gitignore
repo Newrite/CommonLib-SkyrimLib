@@ -2,3 +2,4 @@ target
 libskyrim/cpp/.xmake
 libskyrim/target
 libskyrim/cpp/build
+.idea

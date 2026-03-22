@@ -16,24 +16,24 @@ extern crate alloc;
 
 pub mod mem {
     use alloc::alloc::{GlobalAlloc, Layout};
+    use core::ffi::c_void;
 
-    // Since we're in a no_std environment, we need to define a memory
-    // allocator for the alloc crate to use.
-    pub struct SystemAlloc;
+    // Наш новый аллокатор
+    pub struct SkyrimAllocator;
 
-    // These are defined in CRT, but not in libc.
-    #[link(name = "msvcrt")]
+    // Ссылаемся на функции из нашего C++ моста (commonlib_bridge)
     extern "C" {
-        fn _aligned_malloc(size: usize, align: usize) -> *mut u8;
-        fn _aligned_free(ptr: *mut u8);
+        fn commonlib_aligned_alloc(alignment: usize, size: usize) -> *mut c_void;
+        fn commonlib_aligned_free(ptr: *mut c_void);
     }
 
-    unsafe impl GlobalAlloc for SystemAlloc {
+    unsafe impl GlobalAlloc for SkyrimAllocator {
         unsafe fn alloc(
             &self,
             layout: Layout
         ) -> *mut u8 {
-            _aligned_malloc(layout.size(), layout.align())
+            // Движок Скайрима сам выделит память
+            commonlib_aligned_alloc(layout.align(), layout.size()) as *mut u8
         }
 
         unsafe fn dealloc(
@@ -41,12 +41,14 @@ pub mod mem {
             ptr: *mut u8,
             _layout: Layout
         ) {
-            _aligned_free(ptr);
+            // Движок Скайрима сам ее освободит
+            commonlib_aligned_free(ptr as *mut c_void);
         }
     }
 
+    // Говорим компилятору Rust использовать SkyrimAllocator для всего проекта!
     #[global_allocator]
-    pub static A: SystemAlloc = SystemAlloc;
+    pub static A: SkyrimAllocator = SkyrimAllocator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

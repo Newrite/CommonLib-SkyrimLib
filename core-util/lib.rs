@@ -104,6 +104,54 @@ macro_rules! abstract_type {
     };
 }
 
+#[macro_export]
+macro_rules! inherit {
+    // Вариант 1: Одинарное наследование (Главный родитель)
+    // Пример: inherit!(NiObject : NiRefObject);
+    ($derived:ident : $base:ident) => {
+        impl core::ops::Deref for $derived {
+            type Target = $base;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                // Предполагается, что первое поле всегда называется `base`
+                &self.base
+            }
+        }
+
+        impl core::ops::DerefMut for $derived {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.base
+            }
+        }
+
+        impl AsRef<$base> for $derived {
+            #[inline(always)]
+            fn as_ref(&self) -> &$base {
+                &self.base
+            }
+        }
+    };
+
+    // Вариант 2: Множественное наследование (Боковые родители)
+    // Пример: inherit!(TESObjectREFR => BSHandleRefObject, handle_ref_obj);
+    ($derived:ident => $base:ident, $field:ident) => {
+        impl AsRef<$base> for $derived {
+            #[inline(always)]
+            fn as_ref(&self) -> &$base {
+                &self.$field
+            }
+        }
+
+        impl AsMut<$base> for $derived {
+            #[inline(always)]
+            fn as_mut(&mut self) -> &mut $base {
+                &mut self.$field
+            }
+        }
+    };
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // C string FFI
 ////////////////////////////////////////////////////////////////////////////////////////////////////

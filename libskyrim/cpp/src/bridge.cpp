@@ -72,4 +72,22 @@ extern "C" {
         });
     }
 
+    // Выделение памяти через движок Скайрима
+    void* commonlib_malloc(size_t size) {
+        return RE::malloc(size);
+    }
+
+    void* commonlib_aligned_alloc(size_t alignment, size_t size) {
+        return RE::aligned_alloc(alignment, size);
+    }
+
+    // Освобождение памяти
+    void commonlib_free(void* ptr) {
+        RE::free(ptr);
+    }
+
+    void commonlib_aligned_free(void* ptr) {
+        RE::aligned_free(ptr);
+    }
+
 }

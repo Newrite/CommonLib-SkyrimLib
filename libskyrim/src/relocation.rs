@@ -212,7 +212,7 @@ macro_rules! virtual_method {
     (
         // Описание константы: видимость, имя, тип и значение
         $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
-        
+
         // Описание функции: видимость, имя, аргументы и (опционально) возвращаемый тип
         $fn_vis:vis fn $func_name:ident($($arg_name:ident: $arg_ty:ty),*) $(-> $ret:ty)?
     ) => {
@@ -231,4 +231,98 @@ macro_rules! virtual_method {
             }
         }
     };
+}
+
+/// Макрос для доступа к глобальным переменным игры по ID из Address Library.
+#[macro_export]
+macro_rules! relocation_variable {
+    // --- ВАРИАНТ 1: Ссылка на значение (&'static T) ---
+
+    // Без инлайна (через префикс @no_inline)
+    ( @no_inline $vis:vis fn $name:ident() -> &'static $ty:ty => $id:expr ) => {
+        $vis fn $name() -> &'static $ty {
+            $crate::relocation_variable!(@body $name, $ty, $id)
+        }
+    };
+
+    // По стандарту (с #[inline])
+    ( $vis:vis fn $name:ident() -> &'static $ty:ty => $id:expr ) => {
+        #[inline]
+        $vis fn $name() -> &'static $ty {
+            $crate::relocation_variable!(@body $name, $ty, $id)
+        }
+    };
+
+    // --- ВАРИАНТ 2: Указатель на объект (*mut T) ---
+
+    // Без инлайна (через префикс @no_inline)
+    ( @no_inline $vis:vis fn $name:ident() -> *mut $ty:ty => $id:expr, is_ptr ) => {
+        $vis fn $name() -> *mut $ty {
+            $crate::relocation_variable!(@body_ptr $name, $ty, $id)
+        }
+    };
+
+    // По стандарту (с #[inline])
+    ( $vis:vis fn $name:ident() -> *mut $ty:ty => $id:expr, is_ptr ) => {
+        #[inline]
+        $vis fn $name() -> *mut $ty {
+            $crate::relocation_variable!(@body_ptr $name, $ty, $id)
+        }
+    };
+
+    // --- Внутренние помощники, чтобы не дублировать логику ---
+    (@body $name:ident, $ty:ty, $id:expr) => {{
+        use $crate::relocation::IntoAddress;
+        let addr = $id.into_address();
+        if addr == 0 {
+            panic!(concat!("Failed to resolve address for: ", stringify!($name)));
+        }
+        unsafe { &*(addr as *const $ty) }
+    }};
+
+    (@body_ptr $name:ident, $ty:ty, $id:expr) => {{
+        use $crate::relocation::IntoAddress;
+        let addr = $id.into_address();
+        if addr == 0 {
+            return core::ptr::null_mut();
+        }
+        unsafe { *(addr as *const *mut $ty) }
+    }};
+}
+
+#[macro_export]
+macro_rules! relocation_func {
+    // Без инлайна
+    ( @no_inline $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),*) $(-> $ret:ty)? => $id:expr ) => {
+        $vis fn $name($($arg_name: $arg_ty),*) $(-> $ret)? {
+            // Передаем стрелочку и тип возврата как единый опциональный блок: $(-> $ret)?
+            $crate::relocation_func!(@body $name, ($($arg_ty),*), ($($arg_name),*), $(-> $ret)?, $id)
+        }
+    };
+
+    // По стандарту (с #[inline])
+    ( $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),*) $(-> $ret:ty)? => $id:expr ) => {
+        #[inline]
+        $vis fn $name($($arg_name: $arg_ty),*) $(-> $ret)? {
+            $crate::relocation_func!(@body $name, ($($arg_ty),*), ($($arg_name),*), $(-> $ret)?, $id)
+        }
+    };
+
+    // Внутренний помощник для вызова
+    (@body $name:ident, ($($arg_types:ty),*), ($($arg_names:ident),*), $(-> $ret:ty)?, $id:expr) => {{
+        use $crate::relocation::IntoAddress;
+
+        let addr = $id.into_address();
+        if addr == 0 {
+            panic!(concat!("Failed to resolve function address for: ", stringify!($name)));
+        }
+
+        unsafe {
+            // Теперь компилятор корректно подставит "-> type" (если есть) или ничего
+            type Signature = unsafe extern "C-unwind" fn($($arg_types),*) $(-> $ret)?;
+
+            let func: Signature = core::mem::transmute(addr);
+            func($($arg_names),*)
+        }
+    }};
 }
