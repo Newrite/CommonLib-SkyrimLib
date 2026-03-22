@@ -26,13 +26,13 @@ impl BGSKeywordForm {
     pub const VTABLE: &'static [VariantID] = &VTABLE_BGSKeywordForm;
 
     virtual_method! {
-        pub const VFUNC_HAS_KEYWORD: usize = 0x04;
-        pub fn has_keyword(keyword: *const BGSKeyword) -> bool
+        pub const HAS_KEYWORD: usize = 0x04;
+        pub fn has_keyword(this: &BGSKeywordForm, keyword: *const BGSKeyword) -> bool
     }
 
     virtual_method! {
-        pub const VFUNC_GET_DEFAULT_KEYWORD: usize = 0x05;
-        pub fn get_default_keyword() -> *mut BGSKeyword
+        pub const GET_DEFAULT_KEYWORD: usize = 0x05;
+        pub fn get_default_keyword(this: &BGSKeywordForm) -> *mut BGSKeyword
     }
     
     pub fn get_num_keywords(&self) -> u32 {

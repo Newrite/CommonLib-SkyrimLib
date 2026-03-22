@@ -1,5 +1,29 @@
-use core_util::abstract_type;
+use core_util::inherit;
+use crate::offsets::offsets_rtti::RTTI_TESTexture;
+use crate::offsets::offsets_vtable::VTABLE_TESTexture;
+use crate::re::tes_texture::TESTexture;
+use crate::relocation::{RttiType, VariantID};
+use crate::virtual_method;
 
-abstract_type! {
-    pub type TESIcon;
+#[repr(C)]
+pub struct TESIcon {
+    pub base: TESTexture,
+}
+
+const _: () = assert!(core::mem::size_of::<TESIcon>() == 0x10);
+
+impl RttiType for TESIcon {
+    const RTTI: VariantID = RTTI_TESTexture;
+}
+
+inherit!(TESIcon : TESTexture);
+
+impl TESIcon {
+    pub const RTTI: VariantID = RTTI_TESTexture;
+    pub const VTABLE: &'static [VariantID] = &VTABLE_TESTexture;
+
+    virtual_method! {
+        pub const GET_DEFAULT_PATH: usize = 0x06;
+        pub fn get_default_path(this: &TESIcon) -> *const core::ffi::c_char
+    }
 }
