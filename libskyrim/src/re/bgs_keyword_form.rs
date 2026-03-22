@@ -2,17 +2,17 @@ use crate::offsets::offsets_rtti::RTTI_BGSKeywordForm;
 use crate::offsets::offsets_vtable::VTABLE_BGSKeywordForm;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::BGSKeyword;
-use crate::relocation::{VariantID, RttiType};
-use core_util::inherit;
+use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use core_util::inherit;
 
 /// C++ `RE::BGSKeywordForm`
 #[repr(C)]
 pub struct BGSKeywordForm {
-    pub base: BaseFormComponent,  // 00
+    pub base: BaseFormComponent,        // 00
     pub keywords: *mut *mut BGSKeyword, // 08 - KWDA
-    pub num_keywords: u32,        // 10 - KSIZ
-    pub pad14: u32,               // 14
+    pub num_keywords: u32,              // 10 - KSIZ
+    pub pad14: u32,                     // 14
 }
 
 const _: () = assert!(core::mem::size_of::<BGSKeywordForm>() == 0x18);
@@ -46,11 +46,19 @@ impl BGSKeywordForm {
             unsafe { core::slice::from_raw_parts(self.keywords, self.num_keywords as usize) }
         }
     }
+
+    #[inline]
+    pub fn get_default_keyword_ref(&self) -> Option<&BGSKeyword> {
+        // SAFETY: get_default_keyword returns a valid pointer to a keyword or null
+        unsafe { self.get_default_keyword(self).as_ref() }
+    }
 }
 
 pub trait BGSKeywordFormExt {
     fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
-    fn get_default_keyword(&self) -> *mut BGSKeyword;
+    fn get_default_keyword_ref(&self) -> Option<&BGSKeyword>;
+    fn get_num_keywords(&self) -> u32;
+    fn get_keywords(&self) -> &[*mut BGSKeyword];
 }
 
 impl<T: AsRef<BGSKeywordForm>> BGSKeywordFormExt for T {
@@ -58,10 +66,17 @@ impl<T: AsRef<BGSKeywordForm>> BGSKeywordFormExt for T {
         self.as_ref().has_keyword(self.as_ref(), keyword)
     }
 
-    fn get_default_keyword(&self) -> *mut BGSKeyword {
-        self.as_ref().get_default_keyword(self.as_ref())
+    fn get_default_keyword_ref(&self) -> Option<&BGSKeyword> {
+        self.as_ref().get_default_keyword_ref()
+    }
+
+    fn get_num_keywords(&self) -> u32 {
+        self.as_ref().get_num_keywords()
+    }
+
+    fn get_keywords(&self) -> &[*mut BGSKeyword] {
+        self.as_ref().get_keywords()
     }
 }
-
 
 inherit!(BGSKeywordForm : BaseFormComponent);

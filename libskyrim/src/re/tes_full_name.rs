@@ -36,6 +36,31 @@ impl TESFullName {
     crate::relocation_func! {
         pub fn set_full_name(this: &mut TESFullName, name: *const core::ffi::c_char) => VariantID::new(22318, 22791, 0)
     }
+
+    #[inline]
+    pub fn get_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_full_name())
+    }
+}
+
+pub trait TESFullNameExt {
+    fn get_name_as_str(&self) -> &str;
+    fn get_full_name_length(&self) -> u32;
+    fn set_full_name(&mut self, name: *const core::ffi::c_char);
+}
+
+impl<T: AsRef<TESFullName> + AsMut<TESFullName>> TESFullNameExt for T {
+    fn get_name_as_str(&self) -> &str {
+        self.as_ref().get_name_as_str()
+    }
+
+    fn get_full_name_length(&self) -> u32 {
+        self.as_ref().get_full_name_length()
+    }
+
+    fn set_full_name(&mut self, name: *const core::ffi::c_char) {
+        TESFullName::set_full_name(self.as_mut(), name)
+    }
 }
 
 inherit!(TESFullName : BaseFormComponent);

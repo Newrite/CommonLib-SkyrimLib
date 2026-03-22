@@ -1,4 +1,5 @@
 ---
+name: inheritance-mapper
 description: Load this skill when working with C++ class hierarchies, multiple
   inheritance, vtable layouts, mixin offsets, or tracing parent class chains.
 ---

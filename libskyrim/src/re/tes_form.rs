@@ -542,6 +542,99 @@ impl TESForm {
     crate::relocation_variable! {
         pub fn get_all_forms_editor_id_map_lock() -> &'static *mut crate::re::bs_read_write_lock::BSReadWriteLock => VariantID::new(514361, 400518, 0)
     }
+
+    #[inline]
+    pub fn get_form_editor_id_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_form_editor_id())
+    }
+
+    #[inline]
+    pub fn get_object_type_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_object_type_name())
+    }
+}
+
+pub trait TESFormExt {
+    fn get_form_type(&self) -> FormType;
+    fn get_form_flags(&self) -> RecordFlags;
+    fn get_form_id(&self) -> FormID;
+    fn is(&self, form_type: FormType) -> bool;
+    fn is_deleted(&self) -> bool;
+    fn get_weight(&self) -> f32;
+    fn set_player_knows(&self, known: bool);
+
+    fn get_form_editor_id_as_str(&self) -> &str;
+    fn get_object_type_name_as_str(&self) -> &str;
+
+    // Selected virtuals
+    fn initialize_data(&mut self);
+    fn clear_data(&mut self);
+    fn load(&mut self, mod_file: *mut TESFile) -> bool;
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer);
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer);
+    fn activate(&mut self, target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool;
+}
+
+impl<T: AsRef<TESForm> + AsMut<TESForm>> TESFormExt for T {
+    fn get_form_type(&self) -> FormType {
+        self.as_ref().get_form_type()
+    }
+
+    fn get_form_flags(&self) -> RecordFlags {
+        self.as_ref().get_form_flags()
+    }
+
+    fn get_form_id(&self) -> FormID {
+        self.as_ref().get_form_id()
+    }
+
+    fn is(&self, form_type: FormType) -> bool {
+        self.as_ref().is(form_type)
+    }
+
+    fn is_deleted(&self) -> bool {
+        self.as_ref().is_deleted()
+    }
+
+    fn get_weight(&self) -> f32 {
+        TESForm::get_weight(self.as_ref())
+    }
+
+    fn set_player_knows(&self, known: bool) {
+        TESForm::set_player_knows(self.as_ref(), known)
+    }
+
+    fn get_form_editor_id_as_str(&self) -> &str {
+        self.as_ref().get_form_editor_id_as_str()
+    }
+
+    fn get_object_type_name_as_str(&self) -> &str {
+        self.as_ref().get_object_type_name_as_str()
+    }
+
+    fn initialize_data(&mut self) {
+        self.as_mut().initialize_data()
+    }
+
+    fn clear_data(&mut self) {
+        self.as_mut().clear_data()
+    }
+
+    fn load(&mut self, mod_file: *mut TESFile) -> bool {
+        self.as_mut().load(mod_file)
+    }
+
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer) {
+        self.as_mut().save_game(buf)
+    }
+
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer) {
+        self.as_mut().load_game(buf)
+    }
+
+    fn activate(&mut self, target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool {
+        self.as_mut().activate(target_ref, activator_ref, arg3, object, target_count)
+    }
 }
 
 // ─── Fast Form Downcasting ─────────────────────────────────────────────

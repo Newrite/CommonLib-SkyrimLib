@@ -43,6 +43,36 @@ impl TESModel {
         pub const VFUNC_GET_AS_MODEL_TEXTURE_SWAP: usize = 0x06;
         pub fn get_as_model_texture_swap() -> *mut crate::re::TESModelTextureSwap
     }
+
+    #[inline]
+    pub fn get_model_as_str(&self) -> &str {
+        crate::core_util::ptr_to_str(self.get_model())
+    }
+}
+
+pub trait TESModelExt {
+    fn get_model(&self) -> *const core::ffi::c_char;
+    fn set_model(&mut self, model: *const core::ffi::c_char);
+    fn get_as_model_texture_swap(&mut self) -> *mut crate::re::TESModelTextureSwap;
+    fn get_model_as_str(&self) -> &str;
+}
+
+impl<T: AsRef<TESModel> + AsMut<TESModel>> TESModelExt for T {
+    fn get_model(&self) -> *const core::ffi::c_char {
+        self.as_ref().get_model()
+    }
+
+    fn set_model(&mut self, model: *const core::ffi::c_char) {
+        self.as_mut().set_model(model)
+    }
+
+    fn get_as_model_texture_swap(&mut self) -> *mut crate::re::TESModelTextureSwap {
+        self.as_mut().get_as_model_texture_swap()
+    }
+
+    fn get_model_as_str(&self) -> &str {
+        self.as_ref().get_model_as_str()
+    }
 }
 
 inherit!(TESModel : BaseFormComponent);

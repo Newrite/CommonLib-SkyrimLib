@@ -1,6 +1,5 @@
 use bitflags::bitflags;
 use core_util::inherit;
-use crate::virtual_method;
 
 use crate::offsets::offsets_rtti::RTTI_TESObjectWEAP;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectWEAP;
@@ -35,11 +34,8 @@ use crate::re::bgs_impact_data_set::BGSImpactDataSet;
 use crate::re::tes_object_stat::TESObjectSTAT;
 // use crate::re::actor_values::ActorValue;
 
-// External types for methods
 use crate::re::ni_av_object::NiAVObject;
-use crate::re::tes_file::TESFile;
-use crate::re::bgs_save_form_buffer::BGSSaveFormBuffer;
-use crate::re::bgs_load_form_buffer::BGSLoadFormBuffer;
+
 // use crate::re::bgs_keyword::BGSKeyword;
 
 #[repr(u32)]
@@ -410,4 +406,113 @@ impl TESObjectWEAP {
     pub fn is_crossbow(&self) -> bool {
         self.weapon_data.animation_type == WeaponType::Crossbow as u8
     }
+
+    #[inline]
+    pub fn get_fire_node_ptr(&self, root: *mut NiAVObject) -> *mut NiAVObject {
+        Self::get_fire_node(self, root)
+    }
+
+    /// SAFETY: root and returned pointer must be valid or null
+    #[inline]
+    pub fn get_fire_node_ref(&self, root: *mut NiAVObject) -> Option<&NiAVObject> {
+        unsafe { Self::get_fire_node(self, root).as_ref() }
+    }
 }
+
+pub trait TESObjectWEAPExt {
+    fn get_speed(&self) -> f32;
+    fn get_reach(&self) -> f32;
+    fn get_stagger(&self) -> f32;
+    fn get_min_range(&self) -> f32;
+    fn get_max_range(&self) -> f32;
+    fn get_crit_damage(&self) -> u16;
+    fn get_fire_node_ptr(&self, root: *mut NiAVObject) -> *mut NiAVObject;
+    fn get_fire_node_ref(&self, root: *mut NiAVObject) -> Option<&NiAVObject>;
+    fn get_node_name(&self, dst_buff: *mut core::ffi::c_char);
+    fn get_weapon_type(&self) -> WeaponType;
+    fn is_bound(&self) -> bool;
+    fn is_melee(&self) -> bool;
+    fn is_ranged(&self) -> bool;
+    fn is_hand_to_hand_melee(&self) -> bool;
+    fn is_one_handed_sword(&self) -> bool;
+    fn is_one_handed_dagger(&self) -> bool;
+    fn is_one_handed_axe(&self) -> bool;
+    fn is_one_handed_mace(&self) -> bool;
+    fn is_two_handed_sword(&self) -> bool;
+    fn is_two_handed_axe(&self) -> bool;
+    fn is_bow(&self) -> bool;
+    fn is_staff(&self) -> bool;
+    fn is_crossbow(&self) -> bool;
+}
+
+impl<T: AsRef<TESObjectWEAP>> TESObjectWEAPExt for T {
+    fn get_speed(&self) -> f32 {
+        self.as_ref().get_speed()
+    }
+    fn get_reach(&self) -> f32 {
+        self.as_ref().get_reach()
+    }
+    fn get_stagger(&self) -> f32 {
+        self.as_ref().get_stagger()
+    }
+    fn get_min_range(&self) -> f32 {
+        self.as_ref().get_min_range()
+    }
+    fn get_max_range(&self) -> f32 {
+        self.as_ref().get_max_range()
+    }
+    fn get_crit_damage(&self) -> u16 {
+        self.as_ref().get_crit_damage()
+    }
+    fn get_fire_node_ptr(&self, root: *mut NiAVObject) -> *mut NiAVObject {
+        self.as_ref().get_fire_node_ptr(root)
+    }
+    fn get_fire_node_ref(&self, root: *mut NiAVObject) -> Option<&NiAVObject> {
+        self.as_ref().get_fire_node_ref(root)
+    }
+    fn get_node_name(&self, dst_buff: *mut core::ffi::c_char) {
+        self.as_ref().get_node_name(dst_buff)
+    }
+    fn get_weapon_type(&self) -> WeaponType {
+        self.as_ref().get_weapon_type()
+    }
+    fn is_bound(&self) -> bool {
+        self.as_ref().is_bound()
+    }
+    fn is_melee(&self) -> bool {
+        self.as_ref().is_melee()
+    }
+    fn is_ranged(&self) -> bool {
+        self.as_ref().is_ranged()
+    }
+    fn is_hand_to_hand_melee(&self) -> bool {
+        self.as_ref().is_hand_to_hand_melee()
+    }
+    fn is_one_handed_sword(&self) -> bool {
+        self.as_ref().is_one_handed_sword()
+    }
+    fn is_one_handed_dagger(&self) -> bool {
+        self.as_ref().is_one_handed_dagger()
+    }
+    fn is_one_handed_axe(&self) -> bool {
+        self.as_ref().is_one_handed_axe()
+    }
+    fn is_one_handed_mace(&self) -> bool {
+        self.as_ref().is_one_handed_mace()
+    }
+    fn is_two_handed_sword(&self) -> bool {
+        self.as_ref().is_two_handed_sword()
+    }
+    fn is_two_handed_axe(&self) -> bool {
+        self.as_ref().is_two_handed_axe()
+    }
+    fn is_bow(&self) -> bool {
+        self.as_ref().is_bow()
+    }
+    fn is_staff(&self) -> bool {
+        self.as_ref().is_staff()
+    }
+    fn is_crossbow(&self) -> bool {
+        self.as_ref().is_crossbow()
+    }
+}

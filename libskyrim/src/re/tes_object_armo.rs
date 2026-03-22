@@ -118,8 +118,34 @@ impl TESObjectARMO {
         todo!("Requires TESObjectARMA full translation")
     }
 
-    // RELOCATION_ID SE: 24232, AE: 24736
     crate::relocation_func! {
-        pub fn init_worn_armor(this: &mut TESObjectARMO, a_actor: *mut crate::re::Actor, a_biped: *mut core::ffi::c_void) => crate::relocation::VariantID::new(24232, 24736, 0)
+        pub fn init_worn_armor(this: *mut TESObjectARMO, a_actor: *mut crate::re::Actor, a_biped: *mut core::ffi::c_void) => crate::relocation::VariantID::new(24232, 24736, 0)
+    }
+}
+
+pub trait TESObjectARMOExt {
+    fn get_armor_rating(&self) -> f32;
+    fn get_armor_addon(&self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA;
+    fn get_armor_addon_by_mask(&self, a_race: *mut crate::re::TESRace, a_slot: crate::re::BipedObjectSlot) -> *mut TESObjectARMA;
+    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut core::ffi::c_void);
+}
+
+impl<T: AsRef<TESObjectARMO>> TESObjectARMOExt for T {
+    fn get_armor_rating(&self) -> f32 {
+        self.as_ref().get_armor_rating()
+    }
+
+    fn get_armor_addon(&self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
+        self.as_ref().get_armor_addon(a_race)
+    }
+
+    fn get_armor_addon_by_mask(&self, a_race: *mut crate::re::TESRace, a_slot: crate::re::BipedObjectSlot) -> *mut TESObjectARMA {
+        self.as_ref().get_armor_addon_by_mask(a_race, a_slot)
+    }
+
+    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut core::ffi::c_void) {
+        let ptr = self.as_ref() as *const TESObjectARMO as *mut TESObjectARMO;
+        // SAFETY: ptr is derived from a valid AsRef<TESObjectARMO>
+        unsafe { TESObjectARMO::init_worn_armor(ptr, a_actor, a_biped) };
     }
 }

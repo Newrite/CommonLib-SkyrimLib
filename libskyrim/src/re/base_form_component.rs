@@ -38,3 +38,28 @@ impl BaseFormComponent {
         pub fn copy_component(rhs: *mut BaseFormComponent)
     }
 }
+
+pub trait BaseFormComponentExt {
+    fn dtor(&mut self);
+    fn initialize_data_component(&mut self);
+    fn clear_data_component(&mut self);
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent);
+}
+
+impl<T: AsRef<BaseFormComponent> + AsMut<BaseFormComponent>> BaseFormComponentExt for T {
+    fn dtor(&mut self) {
+        self.as_mut().dtor()
+    }
+
+    fn initialize_data_component(&mut self) {
+        self.as_mut().initialize_data_component()
+    }
+
+    fn clear_data_component(&mut self) {
+        self.as_mut().clear_data_component()
+    }
+
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent) {
+        self.as_mut().copy_component(rhs)
+    }
+}

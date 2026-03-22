@@ -71,11 +71,11 @@ Before finishing any RE class translation, verify ALL items:
     impl MyMixin {
         virtual_method! {
             pub const DO_THING: usize = 0x04;
-            pub fn do_thing(this: &MyMixin, arg: *const ArgType) -> bool
+            pub fn do_thing(arg: *const ArgType) -> bool
         }
         virtual_method! {
             pub const GET_ITEM: usize = 0x05;
-            pub fn get_item(this: &MyMixin) -> *mut ItemType
+            pub fn get_item() -> *mut ItemType
         }
     }
 
@@ -88,10 +88,10 @@ Before finishing any RE class translation, verify ALL items:
     // Step 3 — Blanket impl for any type that AsRef's this mixin
     impl<T: AsRef<MyMixin>> MyMixinExt for T {
         fn do_thing(&self, arg: *const ArgType) -> bool {
-            self.as_ref().do_thing(self.as_ref(), arg)
+            self.as_ref().do_thing(arg)
         }
         fn get_item(&self) -> *mut ItemType {
-            self.as_ref().get_item(self.as_ref())
+            self.as_ref().get_item()
         }
     }
 

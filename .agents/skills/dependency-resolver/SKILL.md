@@ -1,4 +1,5 @@
 ---
+name: dependency-resolver
 description: Load when processing #include dependencies in C++ headers,
   checking if Rust translations exist, creating stubs, or updating mod.rs.
 ---

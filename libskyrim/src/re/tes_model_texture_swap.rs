@@ -35,6 +35,25 @@ impl RttiType for TESModelTextureSwap {
 impl TESModelTextureSwap {
     pub const RTTI: VariantID = RTTI_TESModelTextureSwap;
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESModelTextureSwap;
+
+    #[inline]
+    pub fn get_alternate_textures(&self) -> &[AlternateTexture] {
+        if self.alternate_textures.is_null() || self.num_alternate_textures == 0 {
+            &[]
+        } else {
+            unsafe { core::slice::from_raw_parts(self.alternate_textures, self.num_alternate_textures as usize) }
+        }
+    }
+}
+
+pub trait TESModelTextureSwapExt {
+    fn get_alternate_textures(&self) -> &[AlternateTexture];
+}
+
+impl<T: AsRef<TESModelTextureSwap>> TESModelTextureSwapExt for T {
+    fn get_alternate_textures(&self) -> &[AlternateTexture] {
+        self.as_ref().get_alternate_textures()
+    }
 }
 
 inherit!(TESModelTextureSwap : TESModel);
