@@ -22,12 +22,12 @@
 // For macros.
 pub use core;
 
-use core::fmt;
-use core::ffi::CStr;
-use core::sync::atomic::{AtomicBool, Ordering};
 use core::cell::UnsafeCell;
+use core::ffi::{c_char, CStr};
+use core::fmt;
 use core::mem::MaybeUninit;
 use core::ops::Deref;
+use core::sync::atomic::{AtomicBool, Ordering};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Macros
@@ -225,6 +225,23 @@ macro_rules! write_at_offset {
     };
 }
 
+pub trait SafePtrExt {
+    type Target;
+    fn get_ref<'a>(self) -> Option<&'a Self::Target>;
+    fn get_mut<'a>(self) -> Option<&'a mut Self::Target>;
+}
+
+impl<T> SafePtrExt for *const T {
+    type Target = T;
+    #[inline(always)] fn get_ref<'a>(self) -> Option<&'a T> { unsafe { self.as_ref() } }
+    #[inline(always)] fn get_mut<'a>(self) -> Option<&'a mut T> { None }
+}
+
+impl<T> SafePtrExt for *mut T {
+    type Target = T;
+    #[inline(always)] fn get_ref<'a>(self) -> Option<&'a T> { unsafe { self.as_ref() } }
+    #[inline(always)] fn get_mut<'a>(self) -> Option<&'a mut T> { unsafe { self.as_mut() } }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // C string FFI
@@ -234,9 +251,8 @@ macro_rules! write_at_offset {
 #[macro_export]
 macro_rules! cstr {
     ( $str:literal ) => {
-        $crate::core::ffi::CStr::from_bytes_until_nul(
-            $crate::core::concat!($str, "\0").as_bytes()
-        ).unwrap()
+        $crate::core::ffi::CStr::from_bytes_until_nul($crate::core::concat!($str, "\0").as_bytes())
+            .unwrap()
     };
 }
 
@@ -258,9 +274,7 @@ pub struct WideStr([u16]);
 impl WideStr {
     /// Creates a wide char from a slice. The slice must only contain NUL as its last byte, and must
     /// be null terminated.
-    pub const fn from_slice<'a>(
-        s: &'a [u16]
-    ) -> &'a Self {
+    pub const fn from_slice<'a>(s: &'a [u16]) -> &'a Self {
         assert!(s[s.len() - 1] == 0);
 
         // Must not contain NULL.
@@ -271,24 +285,20 @@ impl WideStr {
         }
 
         // SAFETY: WideStr is declared as transparent.
-        unsafe {
-            &*(s as *const [u16] as *const Self)
-        }
+        unsafe { &*(s as *const [u16] as *const Self) }
     }
 
     /// Creates a wide char from a pointer. The given string must be NUL terminated.
-    pub unsafe fn from_ptr<'a>(
-        s: *const u16
-    ) -> &'a Self {
+    pub unsafe fn from_ptr<'a>(s: *const u16) -> &'a Self {
         let mut wchars = 0;
-        while *s.add(wchars) != 0 { wchars += 1 }
+        while *s.add(wchars) != 0 {
+            wchars += 1
+        }
         Self::from_slice(core::slice::from_raw_parts::<'a, u16>(s, wchars + 1))
     }
 
     /// Returns the wide char string as a pointer.
-    pub const fn as_ptr(
-        &self
-    ) -> *const u16 {
+    pub const fn as_ptr(&self) -> *const u16 {
         self.0.as_ptr()
     }
 }
@@ -303,43 +313,43 @@ impl WideStr {
 ///
 pub struct WideStringBuffer<const SIZE: usize> {
     buf: [u16; SIZE],
-    len: usize
+    len: usize,
 }
 
 impl<const SIZE: usize> WideStringBuffer<SIZE> {
     /// Creates an empty wide string buffer.
     pub const fn new() -> Self {
-        Self { buf: [0; SIZE], len: 0 }
+        Self {
+            buf: [0; SIZE],
+            len: 0,
+        }
     }
 
     /// Converts the contents of the buffer to a WideStr.
-    pub fn as_w_str(
-        &self
-    ) -> &WideStr {
+    pub fn as_w_str(&self) -> &WideStr {
         WideStr::from_slice(self.buf.split_at(self.len + 1).0)
     }
 
     /// Writes a wide string to the buffer, if there is room for it.
-    pub fn write_w_str(
-        &mut self,
-        s: &WideStr
-    ) -> Result<(), fmt::Error> {
+    pub fn write_w_str(&mut self, s: &WideStr) -> Result<(), fmt::Error> {
         if s.0.len() + self.len > SIZE - 1 {
             return Err(fmt::Error);
         }
 
         // Copy, including NUL.
-        self.buf.split_at_mut(self.len).1.split_at_mut(s.0.len()).0.copy_from_slice(&s.0);
+        self.buf
+            .split_at_mut(self.len)
+            .1
+            .split_at_mut(s.0.len())
+            .0
+            .copy_from_slice(&s.0);
         self.len += s.0.len() - 1;
         Ok(())
     }
 }
 
 impl<const SIZE: usize> fmt::Write for WideStringBuffer<SIZE> {
-    fn write_str(
-        &mut self,
-        s: &str
-    ) -> Result<(), fmt::Error> {
+    fn write_str(&mut self, s: &str) -> Result<(), fmt::Error> {
         if s.encode_utf16().count() >= SIZE - self.len {
             return Err(fmt::Error);
         }
@@ -364,36 +374,48 @@ impl<const SIZE: usize> fmt::Write for WideStringBuffer<SIZE> {
 ///
 pub struct StringBuffer<const SIZE: usize> {
     buf: [u8; SIZE],
-    len: usize
+    len: usize,
 }
 
 impl<const SIZE: usize> StringBuffer<SIZE> {
     /// Creates a new, empty, string buffer.
     pub const fn new() -> Self {
-        Self { buf: [0; SIZE], len: 0 }
+        Self {
+            buf: [0; SIZE],
+            len: 0,
+        }
     }
 
     /// Converts the contents of the buffer to a CStr.
-    pub fn as_c_str(
-        &self
-    ) -> &CStr {
+    pub fn as_c_str(&self) -> &CStr {
         CStr::from_bytes_with_nul(self.buf.split_at(self.len + 1).0).unwrap()
     }
 }
 
 impl<const SIZE: usize> fmt::Write for StringBuffer<SIZE> {
-    fn write_str(
-        &mut self,
-        s: &str
-    ) -> Result<(), fmt::Error> {
+    fn write_str(&mut self, s: &str) -> Result<(), fmt::Error> {
         if s.len() + self.len > SIZE - 1 {
             return Err(fmt::Error);
         }
 
-        self.buf.split_at_mut(self.len).1.split_at_mut(s.len()).0.copy_from_slice(s.as_bytes());
+        self.buf
+            .split_at_mut(self.len)
+            .1
+            .split_at_mut(s.len())
+            .0
+            .copy_from_slice(s.as_bytes());
         self.len += s.len();
         self.buf[self.len] = 0; // Always null terminate.
         Ok(())
+    }
+}
+
+#[inline]
+pub fn ptr_to_str<'a>(ptr: *const c_char) -> &'a str {
+    if ptr.is_null() {
+        "<null>"
+    } else {
+        unsafe { CStr::from_ptr(ptr) }.to_str().unwrap_or("<invalid utf8>")
     }
 }
 
@@ -401,14 +423,12 @@ impl<const SIZE: usize> fmt::Write for StringBuffer<SIZE> {
 
 // Converts a UTF-8 string to a statically sized array of UTF-16.
 #[doc(hidden)]
-pub const fn create_utf16_string<const DIM: usize>(
-    s: &'static str
-) -> [u16; DIM] {
-    let b       = s.as_bytes();
+pub const fn create_utf16_string<const DIM: usize>(s: &'static str) -> [u16; DIM] {
+    let b = s.as_bytes();
     let mut ret = [0; DIM];
 
-    let mut b_i : usize = 0;
-    let mut w_i : usize = 0;
+    let mut b_i: usize = 0;
+    let mut w_i: usize = 0;
     while b_i < b.len() {
         if b[b_i] & 0x80 == 0 {
             ret[w_i] = b[b_i] as u16;
@@ -419,8 +439,9 @@ pub const fn create_utf16_string<const DIM: usize>(
         } else if b[b_i] & 0xF0 == 0xE0 {
             assert!(b[b_i + 1] & 0xC0 == 0x80);
             assert!(b[b_i + 2] & 0xC0 == 0x80);
-            ret[w_i] = (((b[b_i] & 0x0F) as u16) << 12) | (((b[b_i + 1] & 0x3F) as u16) << 6)
-                                                        | ((b[b_i + 2] & 0x3F) as u16);
+            ret[w_i] = (((b[b_i] & 0x0F) as u16) << 12)
+                | (((b[b_i + 1] & 0x3F) as u16) << 6)
+                | ((b[b_i + 2] & 0x3F) as u16);
             assert!(ret[w_i] & 0xF800 != 0xD8);
             b_i += 2;
         } else {
@@ -428,11 +449,12 @@ pub const fn create_utf16_string<const DIM: usize>(
             assert!(b[b_i + 1] & 0xC0 == 0x80);
             assert!(b[b_i + 2] & 0xC0 == 0x80);
             assert!(b[b_i + 3] & 0xC0 == 0x80);
-            ret[w_i]     = 0xD800 | (((b[b_i] & 0x03) as u16) << 8)
-                                  | (((b[b_i + 1] & 0x3F) as u16) << 2)
-                                  | (((b[b_i + 2] & 0x30) as u16) >> 4);
-            ret[w_i + 1] = 0xDC00 | (((b[b_i + 2] & 0x0F) as u16) << 6)
-                                  | ((b[b_i + 3] & 0x3F) as u16);
+            ret[w_i] = 0xD800
+                | (((b[b_i] & 0x03) as u16) << 8)
+                | (((b[b_i + 1] & 0x3F) as u16) << 2)
+                | (((b[b_i + 2] & 0x30) as u16) >> 4);
+            ret[w_i + 1] =
+                0xDC00 | (((b[b_i + 2] & 0x0F) as u16) << 6) | ((b[b_i + 3] & 0x3F) as u16);
             w_i += 1;
             b_i += 3;
         }
@@ -447,13 +469,11 @@ pub const fn create_utf16_string<const DIM: usize>(
 
 // Counts the number of UTF-16 code points in a UTF-8 string.
 #[doc(hidden)]
-pub const fn get_utf16_len(
-    s: &'static str
-) -> usize {
+pub const fn get_utf16_len(s: &'static str) -> usize {
     let b = s.as_bytes();
 
-    let mut code_points : usize = 0;
-    let mut i           : usize = 0;
+    let mut code_points: usize = 0;
+    let mut i: usize = 0;
     while i < b.len() {
         if b[i] & 0x80 == 0 {
             code_points += 1;
@@ -490,7 +510,7 @@ pub const fn get_utf16_len(
 /// The core later structure. It is illegal to deref it before initialization.
 pub struct Later<T> {
     is_init: AtomicBool,
-    pl: UnsafeCell<MaybeUninit<T>>
+    pl: UnsafeCell<MaybeUninit<T>>,
 }
 
 /// An unsafe cell which implements Sync.
@@ -504,33 +524,28 @@ impl<T> Later<T> {
     pub const fn new() -> Self {
         Self {
             is_init: AtomicBool::new(false),
-            pl: UnsafeCell::new(MaybeUninit::uninit())
+            pl: UnsafeCell::new(MaybeUninit::uninit()),
         }
     }
 
     /// Initializes a later structure.
-    pub fn init(
-        &self,
-        pl: T
-    ) {
+    pub fn init(&self, pl: T) {
         assert!(!self.is_init.swap(true, Ordering::Relaxed));
         // SAFETY: We have ensured that we are the only object initializing the data.
-        unsafe { (*self.pl.get()).write(pl); }
+        unsafe {
+            (*self.pl.get()).write(pl);
+        }
     }
 
     /// Checks if the instance has been initialized.
-    pub fn is_init(
-        &self
-    ) -> bool {
+    pub fn is_init(&self) -> bool {
         self.is_init.load(Ordering::Relaxed)
     }
 }
 
 impl<T> Deref for Later<T> {
     type Target = T;
-    fn deref(
-        &self
-    ) -> &Self::Target {
+    fn deref(&self) -> &Self::Target {
         assert!(self.is_init.load(Ordering::Relaxed));
         // SAFETY: We have ensured that the object is initialized.
         unsafe { (*self.pl.get()).assume_init_ref() }
@@ -538,12 +553,12 @@ impl<T> Deref for Later<T> {
 }
 
 impl<T> Drop for Later<T> {
-    fn drop(
-        &mut self
-    ) {
+    fn drop(&mut self) {
         if *self.is_init.get_mut() {
             // SAFETY: We have ensured that the object is initialized.
-            unsafe { (*self.pl.get()).assume_init_drop(); }
+            unsafe {
+                (*self.pl.get()).assume_init_drop();
+            }
         }
     }
 }
@@ -555,16 +570,12 @@ unsafe impl<T: Sync> Sync for Later<T> {}
 
 impl<T> RacyCell<T> {
     /// Creates a new racy cell.
-    pub const fn new(
-        pl: T
-    ) -> Self {
+    pub const fn new(pl: T) -> Self {
         Self(UnsafeCell::new(pl))
     }
 
     /// Gets a pointer to the cells data.
-    pub fn get(
-        &self
-    ) -> *mut T {
+    pub fn get(&self) -> *mut T {
         self.0.get()
     }
 }
