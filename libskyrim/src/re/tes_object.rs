@@ -1,4 +1,4 @@
-﻿use bitflags::bitflags;
+use bitflags::bitflags;
 use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_TESObject;
 use crate::offsets::offsets_vtable::VTABLE_TESObject;
@@ -11,12 +11,14 @@ use crate::virtual_method;
 
 bitflags! {
     #[repr(transparent)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, bytemuck::Zeroable)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct ChangeFlags: u32 {
-        const OBJECT_VALUE = 1 << 1;
-        const OBJECT_FULL_NAME = 1 << 2;
+        const NONE = 0;
+        const FORM_FLAGS = 1 << 0;
     }
 }
+
+unsafe impl bytemuck::Zeroable for ChangeFlags {}
 
 #[repr(C)]
 pub struct TESObject {

@@ -152,6 +152,80 @@ macro_rules! inherit {
     };
 }
 
+// core_util/src/ptr.rs
+
+/// Deref raw pointer → &mut T (panics in debug if null)
+#[macro_export]
+macro_rules! deref_ptr {
+    ($ptr:expr) => {{
+        debug_assert!(!$ptr.is_null(), "deref_ptr: null pointer");
+        unsafe { &mut *$ptr }
+    }};
+}
+
+/// Deref raw pointer → &T (panics in debug if null)
+#[macro_export]
+macro_rules! deref_ptr_ref {
+    ($ptr:expr) => {{
+        debug_assert!(!$ptr.is_null(), "deref_ptr_ref: null pointer");
+        unsafe { &*$ptr }
+    }};
+}
+
+/// Safe deref → Option<&mut T>  (None if null)
+/// Use when pointer CAN be null by engine contract
+#[macro_export]
+macro_rules! try_deref_ptr {
+    ($ptr:expr) => {
+        unsafe { $ptr.as_mut() }
+    };
+}
+
+/// Safe deref → Option<&T>  (None if null)
+#[macro_export]
+macro_rules! try_deref_ptr_ref {
+    ($ptr:expr) => {
+        unsafe { $ptr.as_ref() }
+    };
+}
+
+/// Call a method on a nullable pointer, return Option<R>
+/// Usage: call_ptr!(actor_ptr, get_base_object())
+#[macro_export]
+macro_rules! call_ptr {
+    ($ptr:expr, $method:ident ( $($arg:expr),* )) => {
+        unsafe { $ptr.as_mut() }.map(|p| p.$method($($arg),*))
+    };
+}
+
+/// Cast *mut T → *mut U via transmute offset
+/// Usage: ptr_cast!(raw_ptr, ActorBase)
+#[macro_export]
+macro_rules! ptr_cast {
+    ($ptr:expr, $ty:ty) => {
+        $ptr as *mut $ty
+    };
+}
+
+/// Read a field at a raw byte offset from a pointer
+/// Usage: read_at_offset!(ptr, 0x10, u32)
+#[macro_export]
+macro_rules! read_at_offset {
+    ($ptr:expr, $offset:expr, $ty:ty) => {
+        unsafe { *(($ptr as *const u8).add($offset) as *const $ty) }
+    };
+}
+
+/// Write a value at a raw byte offset from a pointer
+/// Usage: write_at_offset!(ptr, 0x10, value, u32)
+#[macro_export]
+macro_rules! write_at_offset {
+    ($ptr:expr, $offset:expr, $val:expr, $ty:ty) => {
+        unsafe { *(($ptr as *mut u8).add($offset) as *mut $ty) = $val }
+    };
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // C string FFI
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -94,7 +94,7 @@ const _: () = assert!(core::mem::size_of::<RangedData>() == 0x1C);
 
 bitflags! {
     #[repr(transparent)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, bytemuck::Zeroable)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct WeapFlags2: u16 {
         const NONE = 0;
         const PLAYER_ONLY = 1 << 0;
@@ -113,9 +113,11 @@ bitflags! {
     }
 }
 
+unsafe impl bytemuck::Zeroable for WeapFlags2 {}
+
 bitflags! {
     #[repr(transparent)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, bytemuck::Zeroable)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct AttackAnimation: u8 {
         const ATTACK_LEFT = 26;
         const ATTACK_RIGHT = 32;
@@ -138,9 +140,11 @@ bitflags! {
     }
 }
 
+unsafe impl bytemuck::Zeroable for AttackAnimation {}
+
 bitflags! {
     #[repr(transparent)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, bytemuck::Zeroable)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct WeapFlags1: u8 {
         const NONE = 0;
         const IGNORES_NORMAL_WEAPON_RESISTANCE = 1 << 0;
@@ -153,6 +157,8 @@ bitflags! {
         const NON_PLAYABLE = 1 << 7;
     }
 }
+
+unsafe impl bytemuck::Zeroable for WeapFlags1 {}
 
 #[repr(C)]
 #[derive(bytemuck::Zeroable)]
@@ -181,12 +187,14 @@ const _: () = assert!(core::mem::size_of::<WeaponData>() == 0x38);
 
 bitflags! {
     #[repr(transparent)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, bytemuck::Zeroable)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct CritFlags: u8 {
         const NONE = 0;
         const ON_DEATH = 1 << 0;
     }
 }
+
+unsafe impl bytemuck::Zeroable for CritFlags {}
 
 #[repr(C)]
 #[derive(bytemuck::Zeroable)]
@@ -213,7 +221,7 @@ const _: () = assert!(core::mem::size_of::<ScopeArt>() == 0x30);
 
 bitflags! {
     #[repr(transparent)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, bytemuck::Zeroable)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct RecordFlags: u32 {
         const NON_PLAYABLE = 1 << 2;
         const HAS_INHERITED_FROM_TEMPLATE = 1 << 3;
@@ -221,6 +229,8 @@ bitflags! {
         const IGNORED = 1 << 12;
     }
 }
+
+unsafe impl bytemuck::Zeroable for RecordFlags {}
 
 
 #[repr(C)]
@@ -310,17 +320,19 @@ impl TESObjectWEAP {
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESObjectWEAP;
 
     // override (TESBoundObject)
-    /*
-        pub fn initialize_data(this: &TESObjectWEAP) -> ()
-        pub fn clear_data(this: &TESObjectWEAP) -> ()
-        pub fn load(this: &TESObjectWEAP, a_mod: *mut TESFile) -> bool
-        pub fn save_game(this: &TESObjectWEAP, a_buf: *mut BGSSaveFormBuffer) -> ()
-        pub fn load_game(this: &TESObjectWEAP, a_buf: *mut BGSLoadFormBuffer) -> ()
-        pub fn init_item_impl(this: &TESObjectWEAP) -> ()
-        pub fn get_description_owner_file(this: &TESObjectWEAP) -> *mut TESFile
-        pub fn get_playable(this: &TESObjectWEAP) -> bool
-        pub fn get_object_type_name(this: &TESObjectWEAP) -> *const core::ffi::c_char
-    */
+    // void InitializeData() override;                    // 04
+    // void ClearData() override;                         // 05
+    // bool Load(TESFile* a_mod) override;                // 06
+    // void SaveGame(BGSSaveFormBuffer* a_buf) override;  // 0E
+    // void LoadGame(BGSLoadFormBuffer* a_buf) override;  // 0F
+    // void InitItemImpl() override;                      // 13
+    // TESFile* GetDescriptionOwnerFile() const override; // 14
+    // bool GetPlayable() const override;                 // 19
+    // const char* GetObjectTypeName() const override;    // 39
+
+    // ADDED: gap-fill
+    // override (BGSKeywordForm)
+    // BGSKeyword* GetDefaultKeyword() const override;    // 05
 
     pub fn get_speed(&self) -> f32 { self.weapon_data.speed }
     pub fn get_reach(&self) -> f32 { self.weapon_data.reach }
@@ -329,15 +341,15 @@ impl TESObjectWEAP {
     pub fn get_max_range(&self) -> f32 { self.weapon_data.max_range }
     pub fn get_crit_damage(&self) -> u16 { self.critical_data.damage }
     
+    // ADDED: gap-fill
+    // RELOCATION_ID SE: 17689, AE: 18098
     crate::relocation_func! {
         pub fn get_fire_node(this: &TESObjectWEAP, root: *mut NiAVObject) -> *mut NiAVObject => VariantID::new(17689, 18098, 0)
     }
 
-    pub fn get_node_name(&self, dst_buff: *mut core::ffi::c_char) {
-        unsafe {
-            // "Weapon  (%08X)"
-            let _ = libc::sprintf(dst_buff, core_util::cstr!("Weapon  (%08X)").as_ptr(), self.base.base.base.form_id);
-        }
+    pub fn get_node_name(&self, _dst_buff: *mut core::ffi::c_char) {
+        // "Weapon  (%08X)"
+        // TODO: ("impl using libskyrim string formatting")
     }
 
     pub fn get_weapon_type(&self) -> WeaponType {

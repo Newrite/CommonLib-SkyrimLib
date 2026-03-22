@@ -1,2 +1,1 @@
-core_util::abstract_type! { pub type TESObjectREFR; }
-
+crate::core_util::abstract_type! { pub type TESObjectREFR; }

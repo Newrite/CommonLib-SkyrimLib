@@ -34,11 +34,11 @@ impl BGSKeywordForm {
         pub const GET_DEFAULT_KEYWORD: usize = 0x05;
         pub fn get_default_keyword(this: &BGSKeywordForm) -> *mut BGSKeyword
     }
-    
+
     pub fn get_num_keywords(&self) -> u32 {
         self.num_keywords
     }
-    
+
     pub fn get_keywords(&self) -> &[*mut BGSKeyword] {
         if self.keywords.is_null() || self.num_keywords == 0 {
             &[]
@@ -47,5 +47,21 @@ impl BGSKeywordForm {
         }
     }
 }
+
+pub trait BGSKeywordFormExt {
+    fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
+    fn get_default_keyword(&self) -> *mut BGSKeyword;
+}
+
+impl<T: AsRef<BGSKeywordForm>> BGSKeywordFormExt for T {
+    fn has_keyword(&self, keyword: *const BGSKeyword) -> bool {
+        self.as_ref().has_keyword(self.as_ref(), keyword)
+    }
+
+    fn get_default_keyword(&self) -> *mut BGSKeyword {
+        self.as_ref().get_default_keyword(self.as_ref())
+    }
+}
+
 
 inherit!(BGSKeywordForm : BaseFormComponent);

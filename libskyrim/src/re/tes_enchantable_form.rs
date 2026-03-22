@@ -27,8 +27,13 @@ impl TESEnchantableForm {
     pub const RTTI: VariantID = RTTI_TESEnchantableForm;
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESEnchantableForm;
 
+    // override (BaseFormComponent)
+    // void InitializeDataComponent() override;                // 01
+    // void ClearDataComponent() override;                     // 02
+    // void CopyComponent(BaseFormComponent* a_rhs) override;  // 03
+
     virtual_method! {
         pub const GET_CASTING_TYPE: usize = 0x04;
-        pub fn get_casting_type(this: &TESEnchantableForm) -> CastingType
+        pub fn get_casting_type() -> CastingType
     }
 }

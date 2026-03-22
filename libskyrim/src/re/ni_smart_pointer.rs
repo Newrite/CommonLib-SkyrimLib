@@ -10,6 +10,7 @@ use core::ops::{Deref, DerefMut};
 use core::ptr;
 
 use crate::re::ni_ref_object::NiRef;
+use crate::re::TESObjectWEAP;
 
 /// C++ `RE::NiPointer<T>`.
 ///
@@ -42,6 +43,10 @@ impl<T: NiRef> NiPointer<T> {
             (*ptr).inc_ref();
         }
         Self { _ptr: ptr }
+    }
+
+    pub fn weapon(weap: *mut TESObjectWEAP) {
+        
     }
 
     /// Creates a `NiPointer` from a raw pointer **without** incrementing the refcount.
