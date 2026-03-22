@@ -506,8 +506,13 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// # Safety
     /// The caller must ensure the data pointer is valid.
     pub unsafe fn clear(&mut self) {
-        if !self.is_empty() {
-            self.change_size(0);
+        let old_size = self.len();
+        if old_size > 0 {
+            let data = self.data_mut();
+            for i in 0..old_size {
+                ptr::drop_in_place(data.add(i as usize));
+            }
+            self.base.set_size(0);
         }
     }
 
@@ -535,7 +540,7 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// The caller must ensure the data pointer is valid.
     pub unsafe fn release(&mut self) {
         self.clear();
-        self.change_capacity(0);
+        self.change_capacity(0); // change_capacity тоже не должен иметь where T: Zeroable!
     }
 
     // ── Private helpers ──────────────────────────────────────────────────
