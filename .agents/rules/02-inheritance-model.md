@@ -3,24 +3,110 @@ trigger: always_on
 description: C++ to Rust inheritance translation rules. Always apply when working with structs.
 ---
 
+---
+trigger: always_on
+description: C++ to Rust inheritance translation rules. Always apply when working with structs.
+---
+
+## GENERATION CHECKLIST (run for every file)
+
+Before finishing any RE class translation, verify ALL items:
+
+- [ ] Every struct has `#[repr(C)]`
+- [ ] Every struct has a size assertion
+- [ ] Every mixin field has an offset assertion
+- [ ] Every field has a C++ offset comment
+- [ ] **If this class has virtual methods AND is used as mixin → Extension Trait MUST be written**
+- [ ] Extension Trait includes ALL virtual methods — not just some
+- [ ] No mixin methods re-declared on child impl
+
+---
+
 ## Layout Rules
+
 - ALL structs: `#[repr(C)]`
-- Primary base: first field named `base`, then `inherit!(Child : Parent)`
-- Mixin: field at exact C++ offset, then `inherit!(Child => Mixin, field_name)`
-- Mixin methods: ONLY via Extension Traits (e.g. `FullNameExt`), never directly on child
+- Primary base (offset 0x00): first field named `base`, then `inherit!(Child : Parent)`
+- Mixin (non-zero offset): field at exact C++ offset, then `inherit!(Child => Mixin, field_name)`
+- **Mixin with virtual methods: MUST have Extension Trait in its own file — no exceptions**
+
+### How to tell mixin from primary base
+
+| Situation | Rule |
+|---|---|
+| Base occupies offset `0x00` | Primary base → `inherit!(Child : Parent)` |
+| Base occupies non-zero offset | Mixin → `inherit!(Child => Mixin, field)` + **Extension Trait required** |
+
+---
+
+## Extension Trait (MANDATORY — triggers automatically)
+
+**TRIGGER:** You are writing a class that:
+1. Has `virtual_method!` blocks, AND
+2. Is (or will be) used as a mixin field at non-zero offset in ANY child class
+
+→ **Immediately write the Extension Trait in the same file.** Do not wait.
+→ If unsure whether it will be used as mixin — write the trait anyway. Cost is zero, missing it breaks child types.
+
+### Full pattern (copy exactly, substitute names):
+
+    // Step 1 — virtual methods on the mixin's own impl (always present)
+    impl BGSKeywordForm {
+        virtual_method! {
+            pub const HAS_KEYWORD: usize = 0x04;
+            pub fn has_keyword(this: &BGSKeywordForm, keyword: *const BGSKeyword) -> bool
+        }
+        virtual_method! {
+            pub const GET_DEFAULT_KEYWORD: usize = 0x05;
+            pub fn get_default_keyword(this: &BGSKeywordForm) -> *mut BGSKeyword
+        }
+    }
+
+    // Step 2 — Extension Trait: exposes ALL virtual methods ergonomically
+    pub trait BGSKeywordFormExt {
+        fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
+        fn get_default_keyword(&self) -> *mut BGSKeyword;
+    }
+
+    // Step 3 — Blanket impl for any type that AsRef's this mixin
+    impl<T: AsRef<BGSKeywordForm>> BGSKeywordFormExt for T {
+        fn has_keyword(&self, keyword: *const BGSKeyword) -> bool {
+            self.as_ref().has_keyword(self.as_ref(), keyword)
+        }
+        fn get_default_keyword(&self) -> *mut BGSKeyword {
+            self.as_ref().get_default_keyword(self.as_ref())
+        }
+    }
+
+    // Step 4 — In child file: inherit! generates AsRef<BGSKeywordForm> automatically
+    inherit!(TESObjectWEAP => BGSKeywordForm, keyword_form);
+    // Now TESObjectWEAP has .has_keyword(...) and .get_default_keyword() via the trait
+
+### Rules
+
+- Trait name = `<MixinName>Ext` — always, no exceptions
+- Defined in the **mixin's** `.rs` file, never in the child's file
+- Include **ALL** virtual methods from `impl MixinName` — missing any breaks usability
+- Non-virtual helpers (e.g. `get_num_keywords`) go on `impl MixinName` only — NOT in trait
+- Child NEVER re-declares mixin methods in its own `impl` block
+- `pub use mixin_name::*` in `mod.rs` re-exports both struct and trait automatically
+
+---
 
 ## Field Offset Comments (MANDATORY)
+
 Every field in a `#[repr(C)]` struct MUST have its C++ offset as a comment:
 
     pub struct TESDescription {
-        pub base: BaseFormComponent, // 00
-        pub file_offset: u32,        // 08
+        pub base: BaseFormComponent,               // 00
+        pub file_offset: u32,                      // 08
         pub description_text: BGSLocalizedStringDL, // 0C
     }
 
 - Copy offset comments directly from the C++ header
 - Never omit them — they are the only way to verify ABI correctness at a glance
 - Exception: vtable fields are NOT commented with offset — `virtual_method!` handles indexing
+
+---
 
 ## Mandatory Assertions (every struct, no exceptions)
 
@@ -32,14 +118,20 @@ Offset assertion — for every mixin field:
 
     const _: () = assert!(core::mem::offset_of!(StructName, mixin_field) == 0xOFFSET);
 
+---
+
 ## Virtual Functions
+
 - NEVER calculate vtable pointers manually
 - ALWAYS use `virtual_method!` macro
 - Import: `use crate::offsets::offsets_vtable::VTABLE_ClassName;`
 - `RelocateVirtual(0xSE, 0xAE, this, args)` in .cpp — record BOTH indices as comment:
   `// vtbl SE: 0xA6, AE: 0xA8` directly above the `virtual_method!` block
 
+---
+
 ## Override Comments (MANDATORY)
+
 When a class overrides virtual methods from a parent, document them as comments
 inside the `impl` block — even if the implementation goes through `relocation_func!`
 or is inherited automatically. Pattern:
@@ -59,7 +151,10 @@ Rules:
 - Group all overrides together at the top of the impl block
 - If override is fully virtual (no Rust body needed), the comment IS the translation
 
+---
+
 ## Const / Non-Const Overload Pairs
+
 C++ frequently declares both `T* GetFoo()` and `const T* GetFoo() const`.
 Translate BOTH — never drop the const variant:
 
@@ -71,7 +166,10 @@ Translate BOTH — never drop the const variant:
 If both overloads delegate to a private helper (e.g. `GetFooImpl()`):
 translate the helper as `fn get_foo_impl(&self) -> *const T` (private, no `pub`).
 
+---
+
 ## Static Methods
+
 C++ `static RetType ClassName::Method(Args)` has no `this`.
 Translate as associated function — no `&self` or `&mut self`:
 
@@ -81,72 +179,3 @@ Translate as associated function — no `&self` or `&mut self`:
 
 NEVER omit static methods — they are invisible in .h if defined only in .cpp.
 Always check .cpp for them explicitly.
-
-
-## Extension Trait Pattern (Mixin Method Access)
-
-When a mixin class (e.g. `BGSKeywordForm`) has virtual methods that child classes
-inherit, those methods are NOT put directly on the child. Instead, create an
-Extension Trait so any `T: AsRef<MixinType>` gets the methods automatically.
-
-### Structure (mandatory pattern, follow exactly):
-
-**Step 1** — virtual methods go on the mixin's own `impl` block:
-
-    impl BGSKeywordForm {
-        virtual_method! {
-            pub const HAS_KEYWORD: usize = 0x04;
-            pub fn has_keyword(this: &BGSKeywordForm, keyword: *const BGSKeyword) -> bool
-        }
-    }
-
-**Step 2** — Extension Trait defined in the same file as the mixin:
-
-    pub trait BGSKeywordFormExt {
-        fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
-        fn get_default_keyword(&self) -> *mut BGSKeyword;
-    }
-
-**Step 3** — Blanket impl for any type that `AsRef`s the mixin:
-
-    impl<T: AsRef<BGSKeywordForm>> BGSKeywordFormExt for T {
-        fn has_keyword(&self, keyword: *const BGSKeyword) -> bool {
-            self.as_ref().has_keyword(self.as_ref(), keyword)
-        }
-        fn get_default_keyword(&self) -> *mut BGSKeyword {
-            self.as_ref().get_default_keyword(self.as_ref())
-        }
-    }
-
-**Step 4** — Child struct gets `inherit!` for the mixin field,
-which auto-generates `AsRef<BGSKeywordForm>`:
-
-    inherit!(TESObjectWEAP => BGSKeywordForm, keyword_form);
-
-This gives `TESObjectWEAP` access to `.has_keyword(...)` via the trait —
-no explicit cast needed.
-
-### Rules:
-- Extension Trait name = `<MixinName>Ext` (e.g. `BGSKeywordFormExt`)
-- Trait is defined in the MIXIN's .rs file, not the child's
-- Include ALL virtual methods of the mixin in the trait — no exceptions
-- Non-virtual helper methods (e.g. `get_num_keywords`) go directly on
-  `impl MixinType` only — they do NOT need to be in the Extension Trait
-- Child NEVER re-declares mixin methods in its own impl block
-
-### File Placement Rules for Extension Traits
-
-- Extension Trait is defined in the MIXIN's file, not the child's:
-  `libskyrim/src/re/bgs_keyword_form.rs` contains both `BGSKeywordForm` and `BGSKeywordFormExt`
-
-- Child files do NOT need explicit imports for Extension Traits:
-  `pub use bgs_keyword_form::*` in `mod.rs` already re-exports both the struct and the trait
-
-- For explicit method calls in child scope, import the trait directly:
-  `use crate::re::BGSKeywordFormExt;`
-
-- If a child inherits multiple mixins, import each Extension Trait separately:
-
-      use crate::re::BGSKeywordFormExt;
-      use crate::re::TESFullNameExt;
-      use crate::re::TESModelExt;

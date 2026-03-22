@@ -292,24 +292,59 @@ macro_rules! relocation_variable {
 
 #[macro_export]
 macro_rules! relocation_func {
-    // Без инлайна
-    ( @no_inline $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),*) $(-> $ret:ty)? => $id:expr ) => {
+    // --- NON-SELF VARIANTS ---
+
+    // No inline
+    ( @no_inline $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         $vis fn $name($($arg_name: $arg_ty),*) $(-> $ret)? {
-            // Передаем стрелочку и тип возврата как единый опциональный блок: $(-> $ret)?
             $crate::relocation_func!(@body $name, ($($arg_ty),*), ($($arg_name),*), $(-> $ret)?, $id)
         }
     };
 
-    // По стандарту (с #[inline])
-    ( $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),*) $(-> $ret:ty)? => $id:expr ) => {
+    // Default (inline)
+    ( $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         #[inline]
         $vis fn $name($($arg_name: $arg_ty),*) $(-> $ret)? {
             $crate::relocation_func!(@body $name, ($($arg_ty),*), ($($arg_name),*), $(-> $ret)?, $id)
         }
     };
 
-    // Внутренний помощник для вызова
-    (@body $name:ident, ($($arg_types:ty),*), ($($arg_names:ident),*), $(-> $ret:ty)?, $id:expr) => {{
+    // --- &SELF VARIANTS ---
+
+    // No inline
+    ( @no_inline $vis:vis fn $name:ident(&self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
+        $vis fn $name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::relocation_func!(@body $name, (*const Self $(, $arg_ty)*), (self as *const Self $(, $arg_name)*), $(-> $ret)?, $id)
+        }
+    };
+
+    // Default (inline)
+    ( $vis:vis fn $name:ident(&self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
+        #[inline]
+        $vis fn $name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::relocation_func!(@body $name, (*const Self $(, $arg_ty)*), (self as *const Self $(, $arg_name)*), $(-> $ret)?, $id)
+        }
+    };
+
+    // --- &MUT SELF VARIANTS ---
+
+    // No inline
+    ( @no_inline $vis:vis fn $name:ident(&mut self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
+        $vis fn $name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::relocation_func!(@body $name, (*mut Self $(, $arg_ty)*), (self as *mut Self $(, $arg_name)*), $(-> $ret)?, $id)
+        }
+    };
+
+    // Default (inline)
+    ( $vis:vis fn $name:ident(&mut self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
+        #[inline]
+        $vis fn $name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::relocation_func!(@body $name, (*mut Self $(, $arg_ty)*), (self as *mut Self $(, $arg_name)*), $(-> $ret)?, $id)
+        }
+    };
+
+    // --- INTERNAL HELPER ---
+    (@body $name:ident, ($($arg_types:ty),*), ($($arg_names:expr),*), $(-> $ret:ty)?, $id:expr) => {{
         use $crate::relocation::IntoAddress;
 
         let addr = $id.into_address();
@@ -318,10 +353,7 @@ macro_rules! relocation_func {
         }
 
         unsafe {
-            // Теперь компилятор корректно подставит "-> type" (если есть) или ничего
-            type Signature = unsafe extern "C-unwind" fn($($arg_types),*) $(-> $ret)?;
-
-            let func: Signature = core::mem::transmute(addr);
+            let func: unsafe extern "C-unwind" fn($($arg_types),*) $(-> $ret)? = core::mem::transmute(addr);
             func($($arg_names),*)
         }
     }};

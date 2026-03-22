@@ -1,8 +1,22 @@
+//! Reverse engineered Skyrim engine types.
+
+#[inline(always)]
+pub fn malloc<T>() -> *mut T {
+    unsafe { crate::ffi::commonlib_malloc(core::mem::size_of::<T>()) as *mut T }
+}
+
+#[inline(always)]
+pub fn free<T>(ptr: *mut T) {
+    unsafe { crate::ffi::commonlib_free(ptr as *mut _) }
+}
+
 pub mod actor;
 pub mod actor_values;
+pub mod bgs_attack_data;
 pub mod base_form_component;
 pub mod bgs_biped_object_form;
 pub mod bgs_block_bash_data;
+pub mod bgs_body_part_defs;
 pub mod bgs_destructible_object_form;
 pub mod bgs_equip_type;
 pub mod bgs_impact_data_set;
@@ -50,7 +64,10 @@ pub mod form;
 pub mod form_enum_string;
 pub mod form_traits;
 pub mod form_type;
+pub mod hit_data;
 pub mod i_form_factory;
+pub mod inventory_entry_data;
+pub mod magic_item;
 pub mod magic_system;
 pub mod memory_manager;
 pub mod ni_alpha_property;
@@ -107,13 +124,16 @@ pub mod tes_texture;
 pub mod tes_value_form;
 pub mod tes_water_form;
 pub mod tes_weight_form;
+pub mod vats_command;
 pub mod weapon_animation_graph_manager_holder;
 
 pub use actor::*;
 pub use actor_values::*;
+pub use bgs_attack_data::*;
 pub use base_form_component::*;
 pub use bgs_biped_object_form::*;
 pub use bgs_block_bash_data::*;
+pub use bgs_body_part_defs::*;
 pub use bgs_destructible_object_form::*;
 pub use bgs_equip_type::*;
 pub use bgs_impact_data_set::*;
@@ -161,7 +181,10 @@ pub use form::*;
 pub use form_enum_string::*;
 pub use form_traits::*;
 pub use form_type::*;
+pub use hit_data::*;
 pub use i_form_factory::*;
+pub use inventory_entry_data::*;
+pub use magic_item::*;
 pub use magic_system::*;
 pub use memory_manager::*;
 pub use ni_alpha_property::*;
@@ -218,4 +241,5 @@ pub use tes_texture::*;
 pub use tes_value_form::*;
 pub use tes_water_form::*;
 pub use tes_weight_form::*;
+pub use vats_command::*;
 pub use weapon_animation_graph_manager_holder::*;

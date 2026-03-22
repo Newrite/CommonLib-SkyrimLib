@@ -18,7 +18,8 @@ use crate::re::TESObjectWEAP;
 /// implement `NiRef` (e.g., `NiRefObject`, `BSHandleRefObject`).
 ///
 /// Layout: `{ _ptr: *mut T }` — 0x8 bytes (one pointer).
-#[repr(C)]
+#[repr(transparent)]
+#[derive(Debug)]
 pub struct NiPointer<T: NiRef> {
     _ptr: *mut T,
 }
@@ -43,10 +44,6 @@ impl<T: NiRef> NiPointer<T> {
             (*ptr).inc_ref();
         }
         Self { _ptr: ptr }
-    }
-
-    pub fn weapon(weap: *mut TESObjectWEAP) {
-        
     }
 
     /// Creates a `NiPointer` from a raw pointer **without** incrementing the refcount.
