@@ -120,3 +120,58 @@ impl BGSBipedObjectForm {
         self.biped_model_data.biped_object_slots = a_mask;
     }
 }
+
+pub trait BGSBipedObjectFormExt {
+    fn add_slot_to_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot;
+    fn get_armor_type(&self) -> ArmorType;
+    fn get_slot_mask(&self) -> BipedObjectSlot;
+    fn has_part_of(&self, a_flag: BipedObjectSlot) -> bool;
+    fn is_clothing(&self) -> bool;
+    fn is_heavy_armor(&self) -> bool;
+    fn is_light_armor(&self) -> bool;
+    fn is_shield(&self) -> bool;
+    fn remove_slot_from_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot;
+    fn set_slot_mask(&mut self, a_mask: BipedObjectSlot);
+}
+
+impl<T: AsRef<BGSBipedObjectForm> + AsMut<BGSBipedObjectForm>> BGSBipedObjectFormExt for T {
+    fn add_slot_to_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot {
+        self.as_mut().add_slot_to_mask(a_slot)
+    }
+
+    fn get_armor_type(&self) -> ArmorType {
+        self.as_ref().get_armor_type()
+    }
+
+    fn get_slot_mask(&self) -> BipedObjectSlot {
+        self.as_ref().get_slot_mask()
+    }
+
+    fn has_part_of(&self, a_flag: BipedObjectSlot) -> bool {
+        self.as_ref().has_part_of(a_flag)
+    }
+
+    fn is_clothing(&self) -> bool {
+        self.as_ref().is_clothing()
+    }
+
+    fn is_heavy_armor(&self) -> bool {
+        self.as_ref().is_heavy_armor()
+    }
+
+    fn is_light_armor(&self) -> bool {
+        self.as_ref().is_light_armor()
+    }
+
+    fn is_shield(&self) -> bool {
+        self.as_ref().is_shield()
+    }
+
+    fn remove_slot_from_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot {
+        self.as_mut().remove_slot_from_mask(a_slot)
+    }
+
+    fn set_slot_mask(&mut self, a_mask: BipedObjectSlot) {
+        self.as_mut().set_slot_mask(a_mask)
+    }
+}

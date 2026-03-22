@@ -1,10 +1,10 @@
 use crate::offsets::offsets_rtti::RTTI_TESFullName;
 use crate::offsets::offsets_vtable::VTABLE_TESFullName;
-use crate::re::bs_fixed_string::BSFixedString;
 use crate::re::base_form_component::BaseFormComponent;
-use crate::relocation::{VariantID, RttiType};
-use core_util::inherit;
+use crate::re::bs_fixed_string::BSFixedString;
+use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use core_util::inherit;
 
 /// C++ `RE::TESFullName`
 #[repr(C)]
@@ -47,6 +47,7 @@ pub trait TESFullNameExt {
     fn get_name_as_str(&self) -> &str;
     fn get_full_name_length(&self) -> u32;
     fn set_full_name(&mut self, name: *const core::ffi::c_char);
+    fn get_full_name(&self) -> *const core::ffi::c_char;
 }
 
 impl<T: AsRef<TESFullName> + AsMut<TESFullName>> TESFullNameExt for T {
@@ -60,6 +61,10 @@ impl<T: AsRef<TESFullName> + AsMut<TESFullName>> TESFullNameExt for T {
 
     fn set_full_name(&mut self, name: *const core::ffi::c_char) {
         TESFullName::set_full_name(self.as_mut(), name)
+    }
+
+    fn get_full_name(&self) -> *const core::ffi::c_char {
+        self.as_ref().get_full_name()
     }
 }
 

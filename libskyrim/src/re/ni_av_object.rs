@@ -30,18 +30,8 @@ const _: () = assert!(core::mem::size_of::<NiUpdateData>() == 0x8);
 
 #[repr(C)]
 pub struct PerformOpFunc {
-    pub base: crate::re::ni_object::NiObject,
+    pub vtable: *const (),
 }
-// Using NiObject as base placeholder for vtable and size 0x10.
-// PerformOpFunc is probably just a single vtable pointer though (size 0x8).
-// So wait, I'll use a `#[repr(C)] pub struct PerformOpFunc { pub vtable: *const () }`
-// Actually wait!
-// In C++ it is:
-//     class PerformOpFunc {
-//         virtual ~PerformOpFunc(); // 00
-//         virtual bool operator()(NiAVObject* a_object); // 01
-//     };
-//     static_assert(sizeof(PerformOpFunc) == 0x8);
 
 bitflags! {
     #[repr(transparent)]
@@ -225,51 +215,180 @@ impl NiAVObject {
         pub fn on_visible(a_process: *mut NiCullingProcess, a_alpha_group_index: i32)
     }
 
-    // ADDED: gap-fill
-    // Method implementations using RELOCATION_ID
-    
     // RELOCATION_ID SE: 25482, AE: 26022
     relocation_func! {
-        pub fn get_collision_object(this: &NiAVObject) -> *mut core::ffi::c_void => VariantID::new(25482, 26022, 0)
+        pub fn get_collision_object(&self) -> *mut core::ffi::c_void => VariantID::new(25482, 26022, 0)
     }
 
     // RELOCATION_ID SE: 15547, AE: 15723
     relocation_func! {
-        pub fn remove_decals(this: &mut NiAVObject) => VariantID::new(15547, 15723, 0)
+        pub fn remove_decals(&mut self) => VariantID::new(15547, 15723, 0)
     }
 
     // RELOCATION_ID SE: 76170, AE: 77998
     relocation_func! {
-        pub fn set_collision_layer(this: &mut NiAVObject, a_collision_layer: u32) => VariantID::new(76170, 77998, 0)
+        pub fn set_collision_layer(&mut self, a_collision_layer: u32) => VariantID::new(76170, 77998, 0)
     }
 
     // RELOCATION_ID SE: 76171, AE: 77999
     relocation_func! {
-        pub fn set_collision_layer_and_group(this: &mut NiAVObject, a_collision_layer: u32, a_group: u32) => VariantID::new(76171, 77999, 0)
+        pub fn set_collision_layer_and_group(&mut self, a_collision_layer: u32, a_group: u32) => VariantID::new(76171, 77999, 0)
     }
 
     // RELOCATION_ID SE: 76033, AE: 77866
     relocation_func! {
-        pub fn set_motion_type(this: &mut NiAVObject, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool => VariantID::new(76033, 77866, 0)
+        pub fn set_motion_type(&mut self, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool => VariantID::new(76033, 77866, 0)
     }
 
     // RELOCATION_ID SE: 68900, AE: 70251
     relocation_func! {
-        pub fn update(this: &mut NiAVObject, a_data: *mut NiUpdateData) => VariantID::new(68900, 70251, 0)
+        pub fn update(&mut self, a_data: *mut NiUpdateData) => VariantID::new(68900, 70251, 0)
     }
 
     // RELOCATION_ID SE: 76271, AE: 78103
     relocation_func! {
-        pub fn update_rigid_constraints(this: &mut NiAVObject, a_enable: bool, a_arg2: u8, a_arg3: u32) => VariantID::new(76271, 78103, 0)
+        pub fn update_rigid_constraints(&mut self, a_enable: bool, a_arg2: u8, a_arg3: u32) => VariantID::new(76271, 78103, 0)
     }
-    
-    // ADDED: gap-fill
-    // Runtime data accessors
     
     runtime_data_accessor! {
         pub fn get_flags() -> NiAVObjectFlags {
             se_ae: 0x0F4,
             vr: 0x10C
         }
+    }
+}
+
+impl AsRef<NiAVObject> for NiAVObject {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self { self }
+}
+
+impl AsMut<NiAVObject> for NiAVObject {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self { self }
+}
+
+pub trait NiAVObjectExt {
+    fn update_controllers(&mut self, a_data: *mut NiUpdateData);
+    fn perform_op(&mut self, a_func: *mut core::ffi::c_void);
+    fn attach_property(&mut self, a_property: *mut NiAlphaProperty);
+    fn set_material_needs_update(&mut self, a_needs_update: bool);
+    fn set_default_material_needs_update_flag(&mut self, a_flag: bool);
+    fn get_object_by_name(&mut self, a_name: *const BSFixedString) -> *mut NiAVObject;
+    fn set_selective_update_flags(&mut self, a_selective_update: *mut bool, a_selective_update_transforms: bool, a_rigid: *mut bool);
+    fn update_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32);
+    fn update_selected_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32);
+    fn update_rigid_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32);
+    fn update_world_bound(&mut self);
+    fn update_world_data(&mut self, a_data: *mut NiUpdateData);
+    fn update_transform_and_bounds(&mut self, a_data: *mut NiUpdateData);
+    fn pre_attach_update(&mut self, a_parent: *mut NiNode, a_data: *mut NiUpdateData);
+    fn post_attach_update(&mut self);
+    fn on_visible(&mut self, a_process: *mut NiCullingProcess, a_alpha_group_index: i32);
+    fn get_collision_object(&self) -> *mut core::ffi::c_void;
+    fn remove_decals(&mut self);
+    fn set_collision_layer(&mut self, a_collision_layer: u32);
+    fn set_collision_layer_and_group(&mut self, a_collision_layer: u32, a_group: u32);
+    fn set_motion_type(&mut self, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool;
+    fn update(&mut self, a_data: *mut NiUpdateData);
+    fn update_rigid_constraints(&mut self, a_enable: bool, a_arg2: u8, a_arg3: u32);
+    fn get_flags(&self) -> NiAVObjectFlags;
+}
+
+impl<T: AsRef<NiAVObject> + AsMut<NiAVObject>> NiAVObjectExt for T {
+    fn update_controllers(&mut self, a_data: *mut NiUpdateData) {
+        NiAVObject::update_controllers(self.as_mut(), a_data)
+    }
+
+    fn perform_op(&mut self, a_func: *mut core::ffi::c_void) {
+        NiAVObject::perform_op(self.as_mut(), a_func)
+    }
+
+    fn attach_property(&mut self, a_property: *mut NiAlphaProperty) {
+        NiAVObject::attach_property(self.as_mut(), a_property)
+    }
+
+    fn set_material_needs_update(&mut self, a_needs_update: bool) {
+        NiAVObject::set_material_needs_update(self.as_mut(), a_needs_update)
+    }
+
+    fn set_default_material_needs_update_flag(&mut self, a_flag: bool) {
+        NiAVObject::set_default_material_needs_update_flag(self.as_mut(), a_flag)
+    }
+
+    fn get_object_by_name(&mut self, a_name: *const BSFixedString) -> *mut NiAVObject {
+        NiAVObject::get_object_by_name(self.as_mut(), a_name)
+    }
+
+    fn set_selective_update_flags(&mut self, a_selective_update: *mut bool, a_selective_update_transforms: bool, a_rigid: *mut bool) {
+        NiAVObject::set_selective_update_flags(self.as_mut(), a_selective_update, a_selective_update_transforms, a_rigid)
+    }
+
+    fn update_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32) {
+        NiAVObject::update_downward_pass(self.as_mut(), a_data, a_arg2)
+    }
+
+    fn update_selected_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32) {
+        NiAVObject::update_selected_downward_pass(self.as_mut(), a_data, a_arg2)
+    }
+
+    fn update_rigid_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32) {
+        NiAVObject::update_rigid_downward_pass(self.as_mut(), a_data, a_arg2)
+    }
+
+    fn update_world_bound(&mut self) {
+        NiAVObject::update_world_bound(self.as_mut())
+    }
+
+    fn update_world_data(&mut self, a_data: *mut NiUpdateData) {
+        NiAVObject::update_world_data(self.as_mut(), a_data)
+    }
+
+    fn update_transform_and_bounds(&mut self, a_data: *mut NiUpdateData) {
+        NiAVObject::update_transform_and_bounds(self.as_mut(), a_data)
+    }
+
+    fn pre_attach_update(&mut self, a_parent: *mut NiNode, a_data: *mut NiUpdateData) {
+        NiAVObject::pre_attach_update(self.as_mut(), a_parent, a_data)
+    }
+
+    fn post_attach_update(&mut self) {
+        NiAVObject::post_attach_update(self.as_mut())
+    }
+
+    fn on_visible(&mut self, a_process: *mut NiCullingProcess, a_alpha_group_index: i32) {
+        NiAVObject::on_visible(self.as_mut(), a_process, a_alpha_group_index)
+    }
+
+    fn get_collision_object(&self) -> *mut core::ffi::c_void {
+        NiAVObject::get_collision_object(self.as_ref())
+    }
+
+    fn remove_decals(&mut self) {
+        NiAVObject::remove_decals(self.as_mut())
+    }
+
+    fn set_collision_layer(&mut self, a_collision_layer: u32) {
+        NiAVObject::set_collision_layer(self.as_mut(), a_collision_layer)
+    }
+
+    fn set_collision_layer_and_group(&mut self, a_collision_layer: u32, a_group: u32) {
+        NiAVObject::set_collision_layer_and_group(self.as_mut(), a_collision_layer, a_group)
+    }
+
+    fn set_motion_type(&mut self, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool {
+        NiAVObject::set_motion_type(self.as_mut(), a_motion_type, a_recurse, a_force, a_allow_activate)
+    }
+
+    fn update(&mut self, a_data: *mut NiUpdateData) {
+        NiAVObject::update(self.as_mut(), a_data)
+    }
+
+    fn update_rigid_constraints(&mut self, a_enable: bool, a_arg2: u8, a_arg3: u32) {
+        NiAVObject::update_rigid_constraints(self.as_mut(), a_enable, a_arg2, a_arg3)
+    }
+
+    fn get_flags(&self) -> NiAVObjectFlags {
+        unsafe { *NiAVObject::get_flags(self.as_ref()) }
     }
 }

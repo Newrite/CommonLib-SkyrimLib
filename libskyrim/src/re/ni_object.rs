@@ -204,7 +204,7 @@ impl NiObject {
 
     // RELOCATION_ID SE: 68838, AE: 70190
     relocation_func! {
-        pub fn process_clone(this: &mut NiObject, a_cloning: *mut NiCloningProcess) => VariantID::new(68838, 70190, 0)
+        pub fn process_clone(&mut self, a_cloning: *mut NiCloningProcess) => VariantID::new(68838, 70190, 0)
     }
 
     virtual_method! {
@@ -249,11 +249,221 @@ impl NiObject {
 
     // RELOCATION_ID SE: 68835, AE: 70187
     relocation_func! {
-        pub fn clone(this: &mut NiObject) -> *mut NiObject => VariantID::new(68835, 70187, 0)
+        pub fn clone(&mut self) -> *mut NiObject => VariantID::new(68835, 70187, 0)
     }
 
     // RELOCATION_ID SE: 68839, AE: 70191
     relocation_func! {
-        pub fn create_deep_copy(this: &mut NiObject, a_object: &mut NiPointer<NiObject>) => VariantID::new(68839, 70191, 0)
+        pub fn create_deep_copy(&mut self, a_object: &mut NiPointer<NiObject>) => VariantID::new(68839, 70191, 0)
+    }
+}
+
+impl AsRef<NiObject> for NiObject {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self { self }
+}
+
+impl AsMut<NiObject> for NiObject {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self { self }
+}
+
+pub trait NiObjectExt {
+    fn destructor(&mut self);
+    fn get_rtti(&self) -> *const NiRTTI;
+    fn as_node(&mut self) -> *mut NiNode;
+    fn as_switch_node(&mut self) -> *mut NiSwitchNode;
+    fn as_fade_node(&mut self) -> *mut BSFadeNode;
+    fn as_multi_bound_node(&mut self) -> *mut BSMultiBoundNode;
+    fn as_geometry(&mut self) -> *mut BSGeometry;
+    fn as_tri_strips(&mut self) -> *mut NiTriStrips;
+    fn as_tri_shape(&mut self) -> *mut BSTriShape;
+    fn as_segmented_tri_shape(&mut self) -> *mut BSSegmentedTriShape;
+    fn as_sub_index_tri_shape(&mut self) -> *mut BSSubIndexTriShape;
+    fn as_dynamic_tri_shape(&mut self) -> *mut BSDynamicTriShape;
+    fn as_ni_geometry(&mut self) -> *mut NiGeometry;
+    fn as_ni_tri_based_geom(&mut self) -> *mut NiTriBasedGeom;
+    fn as_ni_tri_shape(&mut self) -> *mut NiTriShape;
+    fn as_particles_geom(&mut self) -> *mut NiParticles;
+    fn as_lines_geom(&mut self) -> *mut BSLines;
+    fn as_bhk_ni_collision_object(&mut self) -> *mut bhkNiCollisionObject;
+    fn as_bhk_blend_collision_object(&mut self) -> *mut bhkBlendCollisionObject;
+    fn as_bhk_attachment_collision_object(&mut self) -> *mut bhkAttachmentCollisionObject;
+    fn as_bhk_rigid_body(&mut self) -> *mut bhkRigidBody;
+    fn as_bhk_limited_hinge_constraint(&mut self) -> *mut bhkLimitedHingeConstraint;
+    fn create_clone(&mut self, a_cloning: *mut NiCloningProcess) -> *mut NiObject;
+    fn load_binary(&mut self, a_stream: *mut NiStream);
+    fn link_object(&mut self, a_stream: *mut NiStream);
+    fn register_streamables(&mut self, a_stream: *mut NiStream) -> bool;
+    fn save_binary(&mut self, a_stream: *mut NiStream);
+    fn is_equal(&mut self, a_object: *mut NiObject) -> bool;
+    fn process_clone(&mut self, a_cloning: *mut NiCloningProcess);
+    fn process_clone_v(&mut self, a_cloning: *mut NiCloningProcess);
+    fn post_link_object(&mut self, a_stream: *mut NiStream);
+    fn stream_can_skip(&self) -> bool;
+    fn get_streamable_rtti(&self) -> *const NiRTTI;
+    fn get_block_allocation_size(&self) -> u32;
+    fn get_group(&mut self) -> *mut NiObjectGroup;
+    fn set_group(&mut self, a_group: *mut NiObjectGroup);
+    fn as_ni_controller_manager(&mut self) -> *mut NiControllerManager;
+    fn clone(&mut self) -> *mut NiObject;
+    fn create_deep_copy(&mut self, a_object: &mut NiPointer<NiObject>);
+}
+
+impl<T: AsRef<NiObject> + AsMut<NiObject>> NiObjectExt for T {
+    fn destructor(&mut self) {
+        NiObject::destructor(self.as_mut())
+    }
+
+    fn get_rtti(&self) -> *const NiRTTI {
+        NiObject::get_rtti(self.as_ref())
+    }
+
+    fn as_node(&mut self) -> *mut NiNode {
+        NiObject::as_node(self.as_mut())
+    }
+
+    fn as_switch_node(&mut self) -> *mut NiSwitchNode {
+        NiObject::as_switch_node(self.as_mut())
+    }
+
+    fn as_fade_node(&mut self) -> *mut BSFadeNode {
+        NiObject::as_fade_node(self.as_mut())
+    }
+
+    fn as_multi_bound_node(&mut self) -> *mut BSMultiBoundNode {
+        NiObject::as_multi_bound_node(self.as_mut())
+    }
+
+    fn as_geometry(&mut self) -> *mut BSGeometry {
+        NiObject::as_geometry(self.as_mut())
+    }
+
+    fn as_tri_strips(&mut self) -> *mut NiTriStrips {
+        NiObject::as_tri_strips(self.as_mut())
+    }
+
+    fn as_tri_shape(&mut self) -> *mut BSTriShape {
+        NiObject::as_tri_shape(self.as_mut())
+    }
+
+    fn as_segmented_tri_shape(&mut self) -> *mut BSSegmentedTriShape {
+        NiObject::as_segmented_tri_shape(self.as_mut())
+    }
+
+    fn as_sub_index_tri_shape(&mut self) -> *mut BSSubIndexTriShape {
+        NiObject::as_sub_index_tri_shape(self.as_mut())
+    }
+
+    fn as_dynamic_tri_shape(&mut self) -> *mut BSDynamicTriShape {
+        NiObject::as_dynamic_tri_shape(self.as_mut())
+    }
+
+    fn as_ni_geometry(&mut self) -> *mut NiGeometry {
+        NiObject::as_ni_geometry(self.as_mut())
+    }
+
+    fn as_ni_tri_based_geom(&mut self) -> *mut NiTriBasedGeom {
+        NiObject::as_ni_tri_based_geom(self.as_mut())
+    }
+
+    fn as_ni_tri_shape(&mut self) -> *mut NiTriShape {
+        NiObject::as_ni_tri_shape(self.as_mut())
+    }
+
+    fn as_particles_geom(&mut self) -> *mut NiParticles {
+        NiObject::as_particles_geom(self.as_mut())
+    }
+
+    fn as_lines_geom(&mut self) -> *mut BSLines {
+        NiObject::as_lines_geom(self.as_mut())
+    }
+
+    fn as_bhk_ni_collision_object(&mut self) -> *mut bhkNiCollisionObject {
+        NiObject::as_bhk_ni_collision_object(self.as_mut())
+    }
+
+    fn as_bhk_blend_collision_object(&mut self) -> *mut bhkBlendCollisionObject {
+        NiObject::as_bhk_blend_collision_object(self.as_mut())
+    }
+
+    fn as_bhk_attachment_collision_object(&mut self) -> *mut bhkAttachmentCollisionObject {
+        NiObject::as_bhk_attachment_collision_object(self.as_mut())
+    }
+
+    fn as_bhk_rigid_body(&mut self) -> *mut bhkRigidBody {
+        NiObject::as_bhk_rigid_body(self.as_mut())
+    }
+
+    fn as_bhk_limited_hinge_constraint(&mut self) -> *mut bhkLimitedHingeConstraint {
+        NiObject::as_bhk_limited_hinge_constraint(self.as_mut())
+    }
+
+    fn create_clone(&mut self, a_cloning: *mut NiCloningProcess) -> *mut NiObject {
+        NiObject::create_clone(self.as_mut(), a_cloning)
+    }
+
+    fn load_binary(&mut self, a_stream: *mut NiStream) {
+        NiObject::load_binary(self.as_mut(), a_stream)
+    }
+
+    fn link_object(&mut self, a_stream: *mut NiStream) {
+        NiObject::link_object(self.as_mut(), a_stream)
+    }
+
+    fn register_streamables(&mut self, a_stream: *mut NiStream) -> bool {
+        NiObject::register_streamables(self.as_mut(), a_stream)
+    }
+
+    fn save_binary(&mut self, a_stream: *mut NiStream) {
+        NiObject::save_binary(self.as_mut(), a_stream)
+    }
+
+    fn is_equal(&mut self, a_object: *mut NiObject) -> bool {
+        NiObject::is_equal(self.as_mut(), a_object)
+    }
+
+    fn process_clone(&mut self, a_cloning: *mut NiCloningProcess) {
+        NiObject::process_clone(self.as_mut(), a_cloning)
+    }
+
+    fn process_clone_v(&mut self, a_cloning: *mut NiCloningProcess) {
+        NiObject::process_clone_v(self.as_mut(), a_cloning)
+    }
+
+    fn post_link_object(&mut self, a_stream: *mut NiStream) {
+        NiObject::post_link_object(self.as_mut(), a_stream)
+    }
+
+    fn stream_can_skip(&self) -> bool {
+        NiObject::stream_can_skip(self.as_ref())
+    }
+
+    fn get_streamable_rtti(&self) -> *const NiRTTI {
+        NiObject::get_streamable_rtti(self.as_ref())
+    }
+
+    fn get_block_allocation_size(&self) -> u32 {
+        NiObject::get_block_allocation_size(self.as_ref())
+    }
+
+    fn get_group(&mut self) -> *mut NiObjectGroup {
+        NiObject::get_group(self.as_mut())
+    }
+
+    fn set_group(&mut self, a_group: *mut NiObjectGroup) {
+        NiObject::set_group(self.as_mut(), a_group)
+    }
+
+    fn as_ni_controller_manager(&mut self) -> *mut NiControllerManager {
+        NiObject::as_ni_controller_manager(self.as_mut())
+    }
+
+    fn clone(&mut self) -> *mut NiObject {
+        NiObject::clone(self.as_mut())
+    }
+
+    fn create_deep_copy(&mut self, a_object: &mut NiPointer<NiObject>) {
+        NiObject::create_deep_copy(self.as_mut(), a_object)
     }
 }
