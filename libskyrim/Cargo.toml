@@ -7,6 +7,7 @@ edition = "2021"
 core-util  = { path = "../core-util"  }
 cstd       = { path = "../cstd"     }
 bitflags = "2.11.0"
+bytemuck = { version = "1.25.0", features = ["derive"] }
 
 [features]
 # По умолчанию собираем универсальный плагин для SE и AE

@@ -60,9 +60,12 @@ pub trait BSTHash {
     fn bst_hash(&self) -> u32;
 }
 
-/// Blanket implementation for all `Copy` types that are `Sized`.
-/// Hashes over the raw bytes of the value, exactly like C++ `BSCRC32`.
-impl<T: Copy + Sized> BSTHash for T {
+// В начале crc.rs:
+// use bytemuck::NoUninit;
+
+/// Blanket implementation for all types that are safe to hash by raw bytes.
+/// `bytemuck::NoUninit` guarantees the type has no padding bytes (which would cause random hash collisions).
+impl<T: Copy + Sized + bytemuck::NoUninit> BSTHash for T {
     #[inline]
     fn bst_hash(&self) -> u32 {
         let ptr = self as *const T as *const u8;

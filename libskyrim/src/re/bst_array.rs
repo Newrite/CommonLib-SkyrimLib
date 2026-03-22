@@ -13,6 +13,7 @@ use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::mem::{ManuallyDrop, MaybeUninit};
 use core::ptr;
+use bytemuck::Zeroable;
 
 use crate::re::scrap_heap::ScrapHeap;
 
@@ -366,7 +367,7 @@ unsafe impl BSTArrayAllocator for BSScrapArrayAllocator {
 pub struct BSTArray<T, A: BSTArrayAllocator = BSTArrayHeapAllocator> {
     allocator: A,
     base: BSTArrayBase,
-    _marker: PhantomData<T>,
+    _marker: PhantomData<*mut T>,
 }
 
 /// Default capacity for new allocations (Beth default).
@@ -514,9 +515,15 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// New elements are zero-initialized.
     ///
     /// # Safety
-    /// The caller must ensure T is safe to zero-initialize,
-    /// and the data pointer is valid.
-    pub unsafe fn resize(&mut self, new_size: u32) {
+    /// The caller must ensure the data pointer is valid.
+    ///
+    /// # Compile Error
+    /// This will fail to compile if `T` is a complex C++ class (like `TESForm`)
+    /// that cannot be safely zero-initialized.
+    pub unsafe fn resize(&mut self, new_size: u32)
+    where
+        T: Zeroable
+    {
         if new_size != self.len() {
             self.change_size(new_size);
         }
@@ -576,15 +583,17 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
         self.set_allocator_traits_typed(new_data, new_capacity);
     }
 
-    /// Change the size (count of active elements), constructing or destroying as needed.
-    unsafe fn change_size(&mut self, new_size: u32) {
+    /// Change the size, constructing or destroying as needed.
+    unsafe fn change_size(&mut self, new_size: u32)
+    where
+        T: Zeroable
+    {
         if new_size > self.capacity() {
             self.grow_capacity_to(new_size);
         }
 
         let old_size = self.len();
         if new_size > old_size {
-            // Zero-initialize new elements (matches C++ construct_at with default ctor)
             let data = self.data_mut();
             ptr::write_bytes(
                 data.add(old_size as usize) as *mut u8,
@@ -592,7 +601,6 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
                 (new_size - old_size) as usize * core::mem::size_of::<T>(),
             );
         } else if new_size < old_size {
-            // Drop elements beyond new_size
             let data = self.data_mut();
             for i in new_size..old_size {
                 ptr::drop_in_place(data.add(i as usize));

@@ -21,6 +21,8 @@ use crate::re::scrap_heap::ScrapHeap;
 // end of a chain. The actual sentinel pointer is stored in each table's
 // `_sentinel` field and is initialized at construction time (C++ side).
 // `entry.next == sentinel` → "end of chain" (vs null → "empty slot").
+//
+static BST_SCATTER_TABLE_SENTINEL: [u8; 4] = [0xDE, 0xAD, 0xBE, 0xEF];
 
 // ─── Parent Structs ──────────────────────────────────────────────────────────
 
@@ -172,6 +174,13 @@ pub struct BSTScatterTableHeapAllocator {
 
 const _: () = assert!(core::mem::size_of::<BSTScatterTableHeapAllocator>() == 0x10);
 
+impl Default for BSTScatterTableHeapAllocator {
+    #[inline(always)]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BSTScatterTableHeapAllocator {
     pub const fn new() -> Self {
         Self {
@@ -236,6 +245,13 @@ impl BSTScatterTableScrapAllocator {
             _allocator: allocator,
             _entries: ptr::null_mut(),
         }
+    }
+}
+
+impl Default for BSTScatterTableScrapAllocator {
+    #[inline(always)]
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -452,10 +468,25 @@ impl<T, A, P> BSTScatterTable<T, A, P>
 where
     T: BSTScatterTableTraits,
     T::Key: BSTHash + PartialEq,
-    A: BSTScatterTableAllocatorTrait,
+    A: BSTScatterTableAllocatorTrait + Default,
     P: BSTScatterTableParent + Default,
 {
     // ── Public API ───────────────────────────────────────────────────────
+
+    /// Creates a new empty scatter table.
+    pub fn new() -> Self {
+        Self {
+            _parent: P::default(),
+            // Явный каст: берем сырой указатель на u8 из массива,
+            // а затем приводим его к типизированному указателю на Entry.
+            _sentinel: BST_SCATTER_TABLE_SENTINEL.as_ptr() as *const BSTScatterTableEntry<T::Value>,
+            _allocator: A::default(),
+        }
+    }
+
+    fn default() -> Self {
+            Self::new()
+    }
 
     /// Returns the number of elements in the table.
     #[inline(always)]
