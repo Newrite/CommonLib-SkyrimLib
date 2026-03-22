@@ -1,9 +1,8 @@
-﻿use core::sync::atomic::{AtomicU32, Ordering};
+use core::sync::atomic::{AtomicU32, Ordering};
 use crate::{virtual_method, relocation_variable};
 use crate::relocation::{VariantID, RttiType};
 use crate::offsets::offsets_rtti::RTTI_NiRefObject;
 use crate::offsets::offsets_vtable::VTABLE_NiRefObject;
-use core::ops::{Deref, DerefMut};
 
 #[repr(C)]
 pub struct NiRefObject {
@@ -40,7 +39,6 @@ impl NiRefObject {
     #[inline(always)]
     pub fn dec_ref_count(&self) {
         if self.ref_count.fetch_sub(1, Ordering::AcqRel) == 1 {
-            // Безопасно передаем управление деструктору движка Скайрима
             self.delete_this();
         }
     }
@@ -50,6 +48,9 @@ impl NiRefObject {
     }
 }
 
+/// Trait for intrusive reference counting.
+/// Implemented by `NiRefObject` and `BSHandleRefObject`.
+/// Required bound for `NiPointer<T>`.
 pub trait NiRef {
     fn inc_ref(&self);
     fn dec_ref(&self);
@@ -60,46 +61,4 @@ impl NiRef for NiRefObject {
     fn inc_ref(&self) { self.inc_ref_count(); }
     #[inline(always)]
     fn dec_ref(&self) { self.dec_ref_count(); }
-}
-
-#[repr(transparent)]
-pub struct NiPointer<T: NiRef> {
-    ptr: *mut T,
-}
-
-impl<T: NiRef> NiPointer<T> {
-    #[inline(always)]
-    pub unsafe fn from_raw(ptr: *mut T) -> Self { Self { ptr } }
-    #[inline(always)]
-    pub fn get(&self) -> *mut T { self.ptr }
-    #[inline(always)]
-    pub fn into_raw(self) -> *mut T {
-        let ptr = self.ptr;
-        core::mem::forget(self);
-        ptr
-    }
-}
-
-impl<T: NiRef> Clone for NiPointer<T> {
-    fn clone(&self) -> Self {
-        if !self.ptr.is_null() { unsafe { (*self.ptr).inc_ref(); } }
-        Self { ptr: self.ptr }
-    }
-}
-
-impl<T: NiRef> Drop for NiPointer<T> {
-    fn drop(&mut self) {
-        if !self.ptr.is_null() { unsafe { (*self.ptr).dec_ref(); } }
-    }
-}
-
-impl<T: NiRef> Deref for NiPointer<T> {
-    type Target = T;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target { unsafe { &*self.ptr } }
-}
-
-impl<T: NiRef> DerefMut for NiPointer<T> {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target { unsafe { &mut *self.ptr } }
-}
+}

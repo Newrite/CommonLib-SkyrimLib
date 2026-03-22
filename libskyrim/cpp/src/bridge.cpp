@@ -90,4 +90,32 @@ extern "C" {
         RE::aligned_free(ptr);
     }
 
+    void* commonlib_calloc(size_t count, size_t size) {
+        return RE::calloc(count, size);
+    }
+
+    void* commonlib_realloc(void* ptr, size_t new_size) {
+        return RE::realloc(ptr, new_size);
+    }
+
+    // ── MemoryManager ────────────────────────────────────────────────────────
+
+    void* commonlib_memory_manager_get_singleton() {
+        return RE::MemoryManager::GetSingleton();
+    }
+
+    void* commonlib_memory_manager_get_thread_scrap_heap(void* mgr) {
+        return static_cast<RE::MemoryManager*>(mgr)->GetThreadScrapHeap();
+    }
+
+    // ── ScrapHeap ────────────────────────────────────────────────────────────
+
+    void* commonlib_scrap_heap_allocate(void* heap, size_t size, size_t alignment) {
+        return static_cast<RE::ScrapHeap*>(heap)->Allocate(size, alignment);
+    }
+
+    void commonlib_scrap_heap_deallocate(void* heap, void* mem) {
+        static_cast<RE::ScrapHeap*>(heap)->Deallocate(mem);
+    }
+
 }
