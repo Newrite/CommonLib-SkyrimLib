@@ -1,12 +1,12 @@
+use crate::re::bgs_body_part_defs::LimbEnum;
 use crate::re::Actor;
 use crate::re::ActorHandle;
 use crate::re::ActorValue;
 use crate::re::BGSAttackData;
-use crate::re::bgs_body_part_defs::LimbEnum;
 use crate::re::InventoryEntryData;
 use crate::re::MagicItem;
-use crate::re::NiPointer;
 use crate::re::NiPoint3;
+use crate::re::NiPointer;
 use crate::re::ObjectRefHandle;
 use crate::re::SpellItem;
 use crate::re::TESObjectWEAP;
@@ -44,33 +44,33 @@ bitflags::bitflags! {
 /// C++ `RE::HitData`
 #[repr(C)]
 pub struct HitData {
-    pub hit_position: NiPoint3,           // 00
-    pub hit_direction: NiPoint3,          // 0C
-    pub aggressor: ActorHandle,           // 18
-    pub target: ActorHandle,              // 1C
-    pub source_ref: ObjectRefHandle,      // 20
-    pub pad24: u32,                       // 24
+    pub hit_position: NiPoint3,                // 00
+    pub hit_direction: NiPoint3,               // 0C
+    pub aggressor: ActorHandle,                // 18
+    pub target: ActorHandle,                   // 1C
+    pub source_ref: ObjectRefHandle,           // 20
+    pub pad24: u32,                            // 24
     pub attack_data: NiPointer<BGSAttackData>, // 28
-    pub weapon: *mut TESObjectWEAP,       // 30
-    pub critical_effect: *mut MagicItem,  // 38
-    pub attack_data_spell: *mut SpellItem, // 40
-    pub vats_command: *mut VATSCommand,   // 48
-    pub total_damage: f32,                // 50
-    pub physical_damage: f32,             // 54
-    pub targeted_limb_damage: f32,        // 58
-    pub percent_blocked: f32,             // 5C
-    pub resisted_physical_damage: f32,    // 60
-    pub resisted_typed_damage: f32,       // 64
-    pub stagger: f32,                     // 68
-    pub sneak_attack_bonus: f32,          // 6C
-    pub bonus_health_damage_mult: f32,    // 70
-    pub push_back: f32,                   // 74
-    pub reflected_damage: f32,            // 78
-    pub critical_damage_mult: f32,        // 7C
-    pub flags: HitFlag,                   // 80
-    pub equip_index: u32,                 // 84
-    pub skill: ActorValue,                // 88
-    pub damage_limb: LimbEnum,            // 8C
+    pub weapon: *mut TESObjectWEAP,            // 30
+    pub critical_effect: *mut MagicItem,       // 38
+    pub attack_data_spell: *mut SpellItem,     // 40
+    pub vats_command: *mut VATSCommand,        // 48
+    pub total_damage: f32,                     // 50
+    pub physical_damage: f32,                  // 54
+    pub targeted_limb_damage: f32,             // 58
+    pub percent_blocked: f32,                  // 5C
+    pub resisted_physical_damage: f32,         // 60
+    pub resisted_typed_damage: f32,            // 64
+    pub stagger: f32,                          // 68
+    pub sneak_attack_bonus: f32,               // 6C
+    pub bonus_health_damage_mult: f32,         // 70
+    pub push_back: f32,                        // 74
+    pub reflected_damage: f32,                 // 78
+    pub critical_damage_mult: f32,             // 7C
+    pub flags: HitFlag,                        // 80
+    pub equip_index: u32,                      // 84
+    pub skill: ActorValue,                     // 88
+    pub damage_limb: LimbEnum,                 // 8C
 }
 
 const _: () = assert!(core::mem::size_of::<HitData>() == 0x90);
@@ -93,14 +93,20 @@ impl HitData {
         weapon: *mut InventoryEntryData,
         is_left_hand: bool,
     ) -> *mut Self {
-        let hit_data = crate::re::malloc::<Self>();
-        if !hit_data.is_null() {
-            unsafe {
+        unsafe {
+            // Выделяем память через MemoryManager Скайрима
+            let size = core::mem::size_of::<Self>();
+            let hit_data = crate::ffi::commonlib_malloc(size) as *mut Self;
+
+            if !hit_data.is_null() {
+                // Инициализируем объект движковым конструктором
                 (*hit_data).ctor();
+                // Заполняем данные
                 (*hit_data).populate(aggressor, target, weapon, is_left_hand);
             }
+
+            hit_data
         }
-        hit_data
     }
 
     // RELOCATION_ID SE: 42826, AE: 43995
