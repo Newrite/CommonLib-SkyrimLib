@@ -1,5 +1,5 @@
 use bitflags::bitflags;
-use core_util::inherit;
+use core_util::{Enum, inherit};
 
 use crate::offsets::offsets_rtti::RTTI_TESObjectWEAP;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectWEAP;
@@ -29,10 +29,12 @@ use crate::re::tes_description::TESDescription;
 // Opaque types for pointers
 use crate::re::spell_item::SpellItem;
 use crate::re::tes_model::TESModel;
+use crate::re::tes_effect_shader::TESEffectShader;
 use crate::re::bgs_sound_descriptor_form::BGSSoundDescriptorForm;
 use crate::re::bgs_impact_data_set::BGSImpactDataSet;
 use crate::re::tes_object_stat::TESObjectSTAT;
-// use crate::re::actor_values::ActorValue;
+use crate::re::actor_values::ActorValue;
+use crate::re::sound_levels::SoundLevel;
 
 use crate::re::ni_av_object::NiAVObject;
 
@@ -47,6 +49,20 @@ pub enum WeaponHitBehavior {
     NoDismemberOrExplode = 3,
 }
 
+core_util::impl_enumset_type!(WeaponHitBehavior => u32);
+
+impl TryFrom<u32> for WeaponHitBehavior {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        if value <= Self::NoDismemberOrExplode as u32 {
+            Ok(unsafe { core::mem::transmute::<u32, Self>(value) })
+        } else {
+            Err(())
+        }
+    }
+}
+
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum WeaponRumblePattern {
@@ -54,6 +70,20 @@ pub enum WeaponRumblePattern {
     PeriodicSquare = 1,
     PeriodicTriangle = 2,
     PeriodicSawtooth = 3,
+}
+
+core_util::impl_enumset_type!(WeaponRumblePattern => u32);
+
+impl TryFrom<u32> for WeaponRumblePattern {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        if value <= Self::PeriodicSawtooth as u32 {
+            Ok(unsafe { core::mem::transmute::<u32, Self>(value) })
+        } else {
+            Err(())
+        }
+    }
 }
 
 #[repr(u32)]
@@ -72,6 +102,29 @@ pub enum WeaponType {
     Total = 10,
 }
 
+core_util::impl_enumset_type!(WeaponType => u8);
+core_util::impl_enumset_type!(WeaponType => u32);
+
+impl TryFrom<u8> for WeaponType {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        Self::try_from(value as u32)
+    }
+}
+
+impl TryFrom<u32> for WeaponType {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        if value <= Self::Total as u32 {
+            Ok(unsafe { core::mem::transmute::<u32, Self>(value) })
+        } else {
+            Err(())
+        }
+    }
+}
+
 #[repr(C)]
 #[derive(bytemuck::Zeroable)]
 pub struct RangedData {
@@ -87,6 +140,18 @@ pub struct RangedData {
 }
 
 const _: () = assert!(core::mem::size_of::<RangedData>() == 0x1C);
+
+impl RangedData {
+    #[inline(always)]
+    pub const fn rumble_pattern_storage(&self) -> Enum<WeaponRumblePattern, u32> {
+        Enum::from_underlying(self.rumble_pattern)
+    }
+
+    #[inline(always)]
+    pub fn try_get_rumble_pattern(&self) -> Option<WeaponRumblePattern> {
+        self.rumble_pattern_storage().get()
+    }
+}
 
 bitflags! {
     #[repr(transparent)]
@@ -111,32 +176,58 @@ bitflags! {
 
 unsafe impl bytemuck::Zeroable for WeapFlags2 {}
 
-bitflags! {
-    #[repr(transparent)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub struct AttackAnimation: u8 {
-        const ATTACK_LEFT = 26;
-        const ATTACK_RIGHT = 32;
-        const ATTACK3 = 38;
-        const ATTACK4 = 44;
-        const ATTACK5 = 50;
-        const ATTACK7 = 62;
-        const ATTACK8 = 68;
-        const ATTACK_LOOP = 74;
-        const ATTACK_SPIN = 80;
-        const ATTACK_SPIN2 = 86;
-        const PLACE_MINE = 97;
-        const PLACE_MINE2 = 103;
-        const ATTACK_THROW = 109;
-        const ATTACK_THROW2 = 115;
-        const ATTACK_THROW3 = 121;
-        const ATTACK_THROW4 = 127;
-        const ATTACK_THROW5 = 133;
-        const DEFAULT = 255;
-    }
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum AttackAnimation {
+    AttackLeft = 26,
+    AttackRight = 32,
+    Attack3 = 38,
+    Attack4 = 44,
+    Attack5 = 50,
+    Attack7 = 62,
+    Attack8 = 68,
+    AttackLoop = 74,
+    AttackSpin = 80,
+    AttackSpin2 = 86,
+    PlaceMine = 97,
+    PlaceMine2 = 103,
+    AttackThrow = 109,
+    AttackThrow2 = 115,
+    AttackThrow3 = 121,
+    AttackThrow4 = 127,
+    AttackThrow5 = 133,
+    Default = 255,
 }
 
-unsafe impl bytemuck::Zeroable for AttackAnimation {}
+core_util::impl_enumset_type!(AttackAnimation => u8);
+
+impl TryFrom<u8> for AttackAnimation {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        match value {
+            26 => Ok(Self::AttackLeft),
+            32 => Ok(Self::AttackRight),
+            38 => Ok(Self::Attack3),
+            44 => Ok(Self::Attack4),
+            50 => Ok(Self::Attack5),
+            62 => Ok(Self::Attack7),
+            68 => Ok(Self::Attack8),
+            74 => Ok(Self::AttackLoop),
+            80 => Ok(Self::AttackSpin),
+            86 => Ok(Self::AttackSpin2),
+            97 => Ok(Self::PlaceMine),
+            103 => Ok(Self::PlaceMine2),
+            109 => Ok(Self::AttackThrow),
+            115 => Ok(Self::AttackThrow2),
+            121 => Ok(Self::AttackThrow3),
+            127 => Ok(Self::AttackThrow4),
+            133 => Ok(Self::AttackThrow5),
+            255 => Ok(Self::Default),
+            _ => Err(()),
+        }
+    }
+}
 
 bitflags! {
     #[repr(transparent)]
@@ -181,6 +272,68 @@ pub struct WeaponData {
 
 const _: () = assert!(core::mem::size_of::<WeaponData>() == 0x38);
 
+impl WeaponData {
+    #[inline(always)]
+    pub const fn hit_behavior_storage(&self) -> Enum<WeaponHitBehavior, u32> {
+        Enum::from_underlying(self.hit_behavior)
+    }
+
+    #[inline(always)]
+    pub fn try_get_hit_behavior(&self) -> Option<WeaponHitBehavior> {
+        self.hit_behavior_storage().get()
+    }
+
+    #[inline(always)]
+    pub const fn skill_storage(&self) -> Enum<ActorValue, u32> {
+        Enum::from_underlying(self.skill)
+    }
+
+    #[inline(always)]
+    pub fn try_get_skill(&self) -> Option<ActorValue> {
+        self.skill_storage().get()
+    }
+
+    #[inline(always)]
+    pub const fn resistance_storage(&self) -> Enum<ActorValue, u32> {
+        Enum::from_underlying(self.resistance)
+    }
+
+    #[inline(always)]
+    pub fn try_get_resistance(&self) -> Option<ActorValue> {
+        self.resistance_storage().get()
+    }
+
+    #[inline(always)]
+    pub const fn attack_animation_storage(&self) -> Enum<AttackAnimation, u8> {
+        Enum::from_underlying(self.attack_animation)
+    }
+
+    #[inline(always)]
+    pub fn try_get_attack_animation(&self) -> Option<AttackAnimation> {
+        self.attack_animation_storage().get()
+    }
+
+    #[inline(always)]
+    pub const fn embedded_weapon_av_storage(&self) -> Enum<ActorValue, u8> {
+        Enum::from_underlying(self.embedded_weapon_av)
+    }
+
+    #[inline(always)]
+    pub fn try_get_embedded_weapon_av(&self) -> Option<ActorValue> {
+        self.embedded_weapon_av_storage().get()
+    }
+
+    #[inline(always)]
+    pub const fn animation_type_storage(&self) -> Enum<WeaponType, u8> {
+        Enum::from_underlying(self.animation_type)
+    }
+
+    #[inline(always)]
+    pub fn try_get_animation_type(&self) -> Option<WeaponType> {
+        self.animation_type_storage().get()
+    }
+}
+
 bitflags! {
     #[repr(transparent)]
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -209,7 +362,7 @@ const _: () = assert!(core::mem::size_of::<CriticalData>() == 0x18);
 #[repr(C)]
 pub struct ScopeArt {
     pub unk00: TESModel, // 00 
-    pub unk28: *mut core::ffi::c_void, // 28 - TESEffectShader* EIDT
+    pub unk28: *mut TESEffectShader, // 28 - EIDT
 }
 
 const _: () = assert!(core::mem::size_of::<ScopeArt>() == 0x30);
@@ -348,9 +501,13 @@ impl TESObjectWEAP {
         // TODO: ("impl using libskyrim string formatting")
     }
 
+    #[inline(always)]
+    pub fn try_get_weapon_type(&self) -> Option<WeaponType> {
+        self.weapon_data.try_get_animation_type()
+    }
+
     pub fn get_weapon_type(&self) -> WeaponType {
-        // animation_type is u8 inside EnumSet
-        unsafe { core::mem::transmute::<u32, WeaponType>(self.weapon_data.animation_type as u32) }
+        self.try_get_weapon_type().unwrap_or(WeaponType::Total)
     }
 
     pub fn is_bound(&self) -> bool {
@@ -358,53 +515,75 @@ impl TESObjectWEAP {
     }
 
     pub fn is_melee(&self) -> bool {
-        let ty = self.get_weapon_type();
-        matches!(ty, WeaponType::HandToHandMelee | WeaponType::OneHandSword | WeaponType::OneHandDagger | WeaponType::OneHandAxe | WeaponType::OneHandMace | WeaponType::TwoHandSword | WeaponType::TwoHandAxe)
+        matches!(
+            self.try_get_weapon_type(),
+            Some(
+                WeaponType::HandToHandMelee
+                    | WeaponType::OneHandSword
+                    | WeaponType::OneHandDagger
+                    | WeaponType::OneHandAxe
+                    | WeaponType::OneHandMace
+                    | WeaponType::TwoHandSword
+                    | WeaponType::TwoHandAxe
+            )
+        )
     }
 
     pub fn is_ranged(&self) -> bool {
-        let ty = self.get_weapon_type();
-        matches!(ty, WeaponType::Bow | WeaponType::Staff | WeaponType::Crossbow)
+        matches!(
+            self.try_get_weapon_type(),
+            Some(WeaponType::Bow | WeaponType::Staff | WeaponType::Crossbow)
+        )
     }
 
     pub fn is_hand_to_hand_melee(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::HandToHandMelee as u8
+        self.weapon_data.animation_type_storage() == WeaponType::HandToHandMelee
     }
 
     pub fn is_one_handed_sword(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::OneHandSword as u8
+        self.weapon_data.animation_type_storage() == WeaponType::OneHandSword
     }
 
     pub fn is_one_handed_dagger(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::OneHandDagger as u8
+        self.weapon_data.animation_type_storage() == WeaponType::OneHandDagger
     }
 
     pub fn is_one_handed_axe(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::OneHandAxe as u8
+        self.weapon_data.animation_type_storage() == WeaponType::OneHandAxe
     }
 
     pub fn is_one_handed_mace(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::OneHandMace as u8
+        self.weapon_data.animation_type_storage() == WeaponType::OneHandMace
     }
 
     pub fn is_two_handed_sword(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::TwoHandSword as u8
+        self.weapon_data.animation_type_storage() == WeaponType::TwoHandSword
     }
 
     pub fn is_two_handed_axe(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::TwoHandAxe as u8
+        self.weapon_data.animation_type_storage() == WeaponType::TwoHandAxe
     }
 
     pub fn is_bow(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::Bow as u8
+        self.weapon_data.animation_type_storage() == WeaponType::Bow
     }
 
     pub fn is_staff(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::Staff as u8
+        self.weapon_data.animation_type_storage() == WeaponType::Staff
     }
 
     pub fn is_crossbow(&self) -> bool {
-        self.weapon_data.animation_type == WeaponType::Crossbow as u8
+        self.weapon_data.animation_type_storage() == WeaponType::Crossbow
+    }
+
+    #[inline(always)]
+    pub const fn sound_level_storage(&self) -> Enum<SoundLevel, u32> {
+        Enum::from_underlying(self.sound_level)
+    }
+
+    #[inline(always)]
+    pub fn try_get_sound_level(&self) -> Option<SoundLevel> {
+        self.sound_level_storage().get()
     }
 
     #[inline]
@@ -429,6 +608,8 @@ pub trait TESObjectWEAPExt {
     fn get_fire_node_ptr(&self, root: *mut NiAVObject) -> *mut NiAVObject;
     fn get_fire_node_ref(&self, root: *mut NiAVObject) -> Option<&NiAVObject>;
     fn get_node_name(&self, dst_buff: *mut core::ffi::c_char);
+    fn try_get_sound_level(&self) -> Option<SoundLevel>;
+    fn try_get_weapon_type(&self) -> Option<WeaponType>;
     fn get_weapon_type(&self) -> WeaponType;
     fn is_bound(&self) -> bool;
     fn is_melee(&self) -> bool;
@@ -473,6 +654,12 @@ impl<T: AsRef<TESObjectWEAP>> TESObjectWEAPExt for T {
     fn get_node_name(&self, dst_buff: *mut core::ffi::c_char) {
         self.as_ref().get_node_name(dst_buff)
     }
+    fn try_get_sound_level(&self) -> Option<SoundLevel> {
+        self.as_ref().try_get_sound_level()
+    }
+    fn try_get_weapon_type(&self) -> Option<WeaponType> {
+        self.as_ref().try_get_weapon_type()
+    }
     fn get_weapon_type(&self) -> WeaponType {
         self.as_ref().get_weapon_type()
     }
@@ -515,4 +702,4 @@ impl<T: AsRef<TESObjectWEAP>> TESObjectWEAPExt for T {
     fn is_crossbow(&self) -> bool {
         self.as_ref().is_crossbow()
     }
-}
+}

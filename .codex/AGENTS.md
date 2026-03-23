@@ -522,8 +522,3 @@ This is REQUIRED. Silent omission is a bug, not a shortcut.
 Use as many agent turns as needed. Output EVERY method.
 If class has 100+ virtual functions — translate all 100+.
 Never summarize, never truncate, never defer to "remaining methods follow the same pattern".
-
-## Qwen Added Memories
-- Override виртуальные методы в C++ НЕ требуют добавления virtual_method! блоков в Rust — нужно только добавлять комментарии `// override (ParentName)` с указанием vtable index в impl блоке. virtual_method! добавляется только если метод имеет реализацию через RELOCATION_ID или RelocateVirtual в .cpp.
-- virtual_method! добавляется в трёх случаях: 1) метод имеет реализацию через RELOCATION_ID в .cpp, 2) метод использует RelocateVirtual в .cpp, 3) класс добавляет собственный новый виртуальный метод (не override родительского). Только override комментарии без virtual_method! пишутся когда метод чисто виртуальный override без собственной реализации в .cpp.
-- При работе с Extension Trait для RE mixin'ов: 1) Никогда не удалять методы из Extension Trait если они есть в impl — особенно relocation_func! методы 2) При использовании типов в макросах (relocation_func!, virtual_method!) указывать точный Rust тип параметра из C++ подписи (например BSTSmartPointer<BipedAnim> вместо *mut c_void) 3) Extension Trait должен включать ВСЕ публичные методы из impl блока

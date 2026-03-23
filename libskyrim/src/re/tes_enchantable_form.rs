@@ -5,7 +5,7 @@ use crate::re::enchantment_item::EnchantmentItem;
 use crate::re::magic_system::CastingType;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
-use core_util::inherit;
+use core_util::{Enum, inherit};
 
 #[repr(C)]
 pub struct TESEnchantableForm {
@@ -38,6 +38,16 @@ impl TESEnchantableForm {
         pub fn get_casting_type() -> CastingType
     }
 
+    #[inline(always)]
+    pub const fn casting_type_storage(&self) -> Enum<CastingType, u16> {
+        Enum::from_underlying(self.casting_type)
+    }
+
+    #[inline(always)]
+    pub fn try_casting_type(&self) -> Option<CastingType> {
+        self.casting_type_storage().get()
+    }
+
     #[inline]
     pub fn get_enchantment(&self) -> Option<&EnchantmentItem> {
         // SAFETY: form_enchanting is a pointer to an engine-owned object or null
@@ -46,16 +56,26 @@ impl TESEnchantableForm {
 }
 
 pub trait TESEnchantableFormExt {
+    fn casting_type_storage(&self) -> Enum<CastingType, u16>;
     fn get_enchantment(&self) -> Option<&EnchantmentItem>;
     fn get_casting_type(&self) -> CastingType;
+    fn try_casting_type(&self) -> Option<CastingType>;
 }
 
 impl<T: AsRef<TESEnchantableForm>> TESEnchantableFormExt for T {
+    fn casting_type_storage(&self) -> Enum<CastingType, u16> {
+        self.as_ref().casting_type_storage()
+    }
+
     fn get_enchantment(&self) -> Option<&EnchantmentItem> {
         self.as_ref().get_enchantment()
     }
 
     fn get_casting_type(&self) -> CastingType {
         self.as_ref().get_casting_type()
+    }
+
+    fn try_casting_type(&self) -> Option<CastingType> {
+        self.as_ref().try_casting_type()
     }
 }

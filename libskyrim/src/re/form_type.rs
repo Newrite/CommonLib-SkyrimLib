@@ -312,8 +312,31 @@ impl FormType {
     }
 }
 
+impl TryFrom<u8> for FormType {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        Self::try_from(value as u32)
+    }
+}
+
+impl TryFrom<u32> for FormType {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        if value <= Self::VolumetricLighting as u32 {
+            Ok(unsafe { core::mem::transmute::<u32, Self>(value) })
+        } else {
+            Err(())
+        }
+    }
+}
+
 impl fmt::Display for FormType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_str())
     }
 }
+
+core_util::impl_enumset_type!(FormType => u32);
+core_util::impl_enumset_type!(FormType => u8);

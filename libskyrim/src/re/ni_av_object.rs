@@ -10,6 +10,7 @@ use crate::relocation::{VariantID, RttiType};
 
 use crate::re::ni_object_net::NiObjectNET;
 use crate::re::ni_node::NiNode;
+use crate::re::bhk_collision_object::bhkCollisionObject;
 use crate::re::ni_collision_object::NiCollisionObject;
 use crate::re::ni_transform::NiTransform;
 use crate::re::ni_bound::NiBound;
@@ -128,7 +129,7 @@ impl NiAVObject {
     // vtbl SE: 0x26, AE: 0x27
     virtual_method! {
         pub const VFUNC_PERFORM_OP: usize = 0x26;
-        pub fn perform_op(a_func: *mut core::ffi::c_void)
+        pub fn perform_op(a_func: *mut PerformOpFunc)
     }
 
     // vtbl SE: 0x27, AE: 0x28
@@ -217,7 +218,7 @@ impl NiAVObject {
 
     // RELOCATION_ID SE: 25482, AE: 26022
     relocation_func! {
-        pub fn get_collision_object(&self) -> *mut core::ffi::c_void => VariantID::new(25482, 26022, 0)
+        pub fn get_collision_object(&self) -> *mut bhkCollisionObject => VariantID::new(25482, 26022, 0)
     }
 
     // RELOCATION_ID SE: 15547, AE: 15723
@@ -270,7 +271,7 @@ impl AsMut<NiAVObject> for NiAVObject {
 
 pub trait NiAVObjectExt {
     fn update_controllers(&mut self, a_data: *mut NiUpdateData);
-    fn perform_op(&mut self, a_func: *mut core::ffi::c_void);
+    fn perform_op(&mut self, a_func: *mut PerformOpFunc);
     fn attach_property(&mut self, a_property: *mut NiAlphaProperty);
     fn set_material_needs_update(&mut self, a_needs_update: bool);
     fn set_default_material_needs_update_flag(&mut self, a_flag: bool);
@@ -285,7 +286,7 @@ pub trait NiAVObjectExt {
     fn pre_attach_update(&mut self, a_parent: *mut NiNode, a_data: *mut NiUpdateData);
     fn post_attach_update(&mut self);
     fn on_visible(&mut self, a_process: *mut NiCullingProcess, a_alpha_group_index: i32);
-    fn get_collision_object(&self) -> *mut core::ffi::c_void;
+    fn get_collision_object(&self) -> *mut bhkCollisionObject;
     fn remove_decals(&mut self);
     fn set_collision_layer(&mut self, a_collision_layer: u32);
     fn set_collision_layer_and_group(&mut self, a_collision_layer: u32, a_group: u32);
@@ -300,7 +301,7 @@ impl<T: AsRef<NiAVObject> + AsMut<NiAVObject>> NiAVObjectExt for T {
         NiAVObject::update_controllers(self.as_mut(), a_data)
     }
 
-    fn perform_op(&mut self, a_func: *mut core::ffi::c_void) {
+    fn perform_op(&mut self, a_func: *mut PerformOpFunc) {
         NiAVObject::perform_op(self.as_mut(), a_func)
     }
 
@@ -360,7 +361,7 @@ impl<T: AsRef<NiAVObject> + AsMut<NiAVObject>> NiAVObjectExt for T {
         NiAVObject::on_visible(self.as_mut(), a_process, a_alpha_group_index)
     }
 
-    fn get_collision_object(&self) -> *mut core::ffi::c_void {
+    fn get_collision_object(&self) -> *mut bhkCollisionObject {
         NiAVObject::get_collision_object(self.as_ref())
     }
 

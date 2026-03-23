@@ -9,8 +9,8 @@ use core_util::inherit;
 /// C++ `RE::TESFullName`
 #[repr(C)]
 pub struct TESFullName {
-    pub base: BaseFormComponent,  // 00
-    pub full_name: BSFixedString, // 08 - FULL
+    pub base: BaseFormComponent,  // 0x00
+    pub full_name: BSFixedString, // 0x08 - FULL
 }
 
 const _: () = assert!(core::mem::size_of::<TESFullName>() == 0x10);
@@ -33,6 +33,8 @@ impl TESFullName {
         pub fn get_full_name() -> *const core::ffi::c_char
     }
 
+    // RELOCATION_ID SE: 22318, AE: 22791
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_func! {
         pub fn set_full_name(this: &mut TESFullName, name: *const core::ffi::c_char) => VariantID::new(22318, 22791, 0)
     }

@@ -170,6 +170,34 @@ pub enum ActorValue {
     Total = 164,
 }
 
+core_util::impl_enumset_type!(ActorValue => i32);
+core_util::impl_enumset_type!(ActorValue => u32);
+core_util::impl_enumset_type!(ActorValue => u8);
+
+impl TryFrom<u8> for ActorValue {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        if value <= Self::Total as u8 {
+            Ok(unsafe { core::mem::transmute::<i32, Self>(value as i32) })
+        } else {
+            Err(())
+        }
+    }
+}
+
+impl TryFrom<u32> for ActorValue {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        if value <= Self::Total as u32 {
+            Ok(unsafe { core::mem::transmute::<i32, Self>(value as i32) })
+        } else {
+            Err(())
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u32)]
 pub enum ActorValueModifier {
@@ -179,3 +207,5 @@ pub enum ActorValueModifier {
 
     Total = 3,
 }
+
+core_util::impl_enumset_type!(ActorValueModifier => u32);

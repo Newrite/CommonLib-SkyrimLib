@@ -6,6 +6,7 @@ use crate::relocation::VariantID;
 
 use crate::re::bs_intrusive_ref_counted::BSIntrusiveRefCounted;
 use crate::re::bs_pointer_handle::ObjectRefHandle;
+use crate::re::bst_smart_pointer::BSTSmartPointerIntrusiveRefCountable;
 use crate::re::biped_objects::BIPED_OBJECTS_TOTAL;
 use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::weapon_animation_graph_manager_holder::WeaponAnimationGraphManagerHolder;
@@ -39,6 +40,26 @@ pub struct BIPOBJECT {
     pub weapon_manager: *mut WeaponAnimationGraphManagerHolder, // 60 - BSTSmartPointer
     pub unk68: u64,                                             // 68
     pub unk70: *mut core::ffi::c_void,                          // 70
+}
+
+impl BSTSmartPointerIntrusiveRefCountable for BipedAnim {
+    #[inline(always)]
+    fn bst_inc_ref(&self) {
+        self.base.inc_ref();
+    }
+
+    #[inline(always)]
+    fn bst_dec_ref(&self) -> u32 {
+        self.base.dec_ref()
+    }
+
+    #[inline(always)]
+    unsafe fn bst_delete(&self) {
+        crate::relocation_func! {
+            fn dtor_impl(this: *mut BipedAnim) => VariantID::new(15491, 15656, 0)
+        }
+        dtor_impl(self as *const Self as *mut Self);
+    }
 }
 
 const _: () = assert!(core::mem::size_of::<BIPOBJECT>() == 0x78);

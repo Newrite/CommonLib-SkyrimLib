@@ -32,6 +32,20 @@ pub enum CastingType {
     Scroll = 3,
 }
 
+core_util::impl_enumset_type!(CastingType => u16);
+
+impl TryFrom<u16> for CastingType {
+    type Error = ();
+
+    fn try_from(value: u16) -> Result<Self, Self::Error> {
+        if value <= Self::Scroll as u16 {
+            Ok(unsafe { core::mem::transmute::<u32, Self>(value as u32) })
+        } else {
+            Err(())
+        }
+    }
+}
+
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Delivery {

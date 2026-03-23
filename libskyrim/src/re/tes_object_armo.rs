@@ -3,12 +3,14 @@ use crate::offsets::offsets_vtable::VTABLE_TESObjectARMO;
 
 use crate::core_util::inherit;
 use crate::re::BGSBipedObjectForm;
+use crate::re::bgs_biped_object_form::BGSBipedObjectFormExt;
 use crate::re::BGSBlockBashData;
 use crate::re::BGSDestructibleObjectForm;
 use crate::re::BGSEquipType;
 use crate::re::BGSKeywordForm;
 use crate::re::BGSPickupPutdownSounds;
 use crate::re::BSTArray;
+use crate::re::BSTSmartPointer;
 use crate::re::TESBipedModelForm;
 use crate::re::TESBoundObject;
 use crate::re::TESDescription;
@@ -18,6 +20,7 @@ use crate::re::TESObjectARMA;
 use crate::re::TESRaceForm;
 use crate::re::TESValueForm;
 use crate::re::TESWeightForm;
+use crate::re::biped_anim::BipedAnim;
 
 bitflags::bitflags! {
     #[repr(transparent)]
@@ -109,17 +112,44 @@ impl TESObjectARMO {
     }
 
     pub fn get_armor_addon(&self, _a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
-        // TODO: VERIFY - requires TESObjectARMA method IsValidRace to translate properly
-        todo!("Requires TESObjectARMA full translation")
+        if _a_race.is_null() {
+            return core::ptr::null_mut();
+        }
+
+        for &current_addon in unsafe { self.armor_addons.as_slice() } {
+            if current_addon.is_null() {
+                continue;
+            }
+
+            if unsafe { (*current_addon).is_valid_race(_a_race) } {
+                return current_addon;
+            }
+        }
+
+        core::ptr::null_mut()
     }
 
     pub fn get_armor_addon_by_mask(&self, _a_race: *mut crate::re::TESRace, _a_slot: crate::re::BipedObjectSlot) -> *mut TESObjectARMA {
-        // TODO: VERIFY - requires TESObjectARMA method IsValidRace and HasPartOf to translate properly
-        todo!("Requires TESObjectARMA full translation")
+        if _a_race.is_null() {
+            return core::ptr::null_mut();
+        }
+
+        for &current_addon in unsafe { self.armor_addons.as_slice() } {
+            if current_addon.is_null() {
+                continue;
+            }
+
+            let current_addon_ref = unsafe { &*current_addon };
+            if current_addon_ref.is_valid_race(_a_race) && current_addon_ref.has_part_of(_a_slot) {
+                return current_addon;
+            }
+        }
+
+        core::ptr::null_mut()
     }
 
     crate::relocation_func! {
-        pub fn init_worn_armor(this: *mut TESObjectARMO, a_actor: *mut crate::re::Actor, a_biped: *mut core::ffi::c_void) => crate::relocation::VariantID::new(24232, 24736, 0)
+        pub fn init_worn_armor(this: *mut TESObjectARMO, a_actor: *mut crate::re::Actor, a_biped: *mut BSTSmartPointer<BipedAnim>) => crate::relocation::VariantID::new(24232, 24736, 0)
     }
 }
 
@@ -127,7 +157,7 @@ pub trait TESObjectARMOExt {
     fn get_armor_rating(&self) -> f32;
     fn get_armor_addon(&self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA;
     fn get_armor_addon_by_mask(&self, a_race: *mut crate::re::TESRace, a_slot: crate::re::BipedObjectSlot) -> *mut TESObjectARMA;
-    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut core::ffi::c_void);
+    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut BSTSmartPointer<BipedAnim>);
 }
 
 impl<T: AsRef<TESObjectARMO>> TESObjectARMOExt for T {
@@ -143,9 +173,8 @@ impl<T: AsRef<TESObjectARMO>> TESObjectARMOExt for T {
         self.as_ref().get_armor_addon_by_mask(a_race, a_slot)
     }
 
-    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut core::ffi::c_void) {
+    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut BSTSmartPointer<BipedAnim>) {
         let ptr = self.as_ref() as *const TESObjectARMO as *mut TESObjectARMO;
-        // SAFETY: ptr is derived from a valid AsRef<TESObjectARMO>
-        unsafe { TESObjectARMO::init_worn_armor(ptr, a_actor, a_biped) };
+        TESObjectARMO::init_worn_armor(ptr, a_actor, a_biped);
     }
 }

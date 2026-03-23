@@ -21,6 +21,10 @@
 
 // For macros.
 pub use core;
+pub mod enum_value;
+pub mod enum_set;
+pub use enum_value::*;
+pub use enum_set::*;
 
 use core::cell::UnsafeCell;
 use core::ffi::{c_char, CStr};

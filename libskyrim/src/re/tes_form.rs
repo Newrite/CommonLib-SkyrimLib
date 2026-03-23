@@ -1,4 +1,4 @@
-use core_util::inherit;
+use core_util::{Enum, inherit};
 use bitflags::bitflags;
 
 use crate::re::base_form_component::BaseFormComponent;
@@ -141,9 +141,18 @@ impl TESForm {
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESForm;
 
     #[inline(always)]
+    pub const fn form_type_storage(&self) -> Enum<FormType, u8> {
+        Enum::from_underlying(self.form_type)
+    }
+
+    #[inline(always)]
+    pub fn try_get_form_type(&self) -> Option<FormType> {
+        self.form_type_storage().get()
+    }
+
+    #[inline(always)]
     pub fn get_form_type(&self) -> FormType {
-        // Safe to transmute or cast because Enum is repr(u32) but values fit in u8
-        unsafe { core::mem::transmute::<u32, FormType>(self.form_type as u32) }
+        self.try_get_form_type().unwrap_or(FormType::None)
     }
 
     // ─── Virtual Methods ───────────────────────────────────────────────────
@@ -509,36 +518,52 @@ impl TESForm {
 
     // ─── Relocated Engine Functions ────────────────────────────────────────
 
+    // RELOCATION_ID SE: 14509, AE: 14667
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_func! {
         pub fn add_compile_index(id: *mut FormID, file: *mut TESFile) => VariantID::new(14509, 14667, 0)
     }
 
+    // RELOCATION_ID SE: 14809, AE: 14988
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_func! {
-        pub fn get_weight(this: &TESForm) -> f32 => VariantID::new(14809, 14988, 0)
+        pub fn get_weight(&self) -> f32 => VariantID::new(14809, 14988, 0)
     }
 
+    // RELOCATION_ID SE: 14467, AE: 14623
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_func! {
-        pub fn set_file(this: &TESForm, file: *mut TESFile) => VariantID::new(14467, 14623, 0)
+        pub fn set_file(&self, file: *mut TESFile) => VariantID::new(14467, 14623, 0)
     }
 
+    // RELOCATION_ID SE: 14482, AE: 14639
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_func! {
-        pub fn set_player_knows(this: &TESForm, known: bool) => VariantID::new(14482, 14639, 0)
+        pub fn set_player_knows(&self, known: bool) => VariantID::new(14482, 14639, 0)
     }
 
     // ─── Global Variables (Maps) ───────────────────────────────────────────
 
+    // RELOCATION_ID SE: 514351, AE: 400507
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_variable! {
         pub fn get_all_forms_map() -> &'static *mut crate::re::bst_hash_map::BSTHashMap<FormID, *mut TESForm> => VariantID::new(514351, 400507, 0)
     }
 
+    // RELOCATION_ID SE: 514360, AE: 400517
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_variable! {
         pub fn get_all_forms_map_lock() -> &'static *mut crate::re::bs_read_write_lock::BSReadWriteLock => VariantID::new(514360, 400517, 0)
     }
 
+    // RELOCATION_ID SE: 514352, AE: 400509
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_variable! {
         pub fn get_all_forms_by_editor_id_map() -> &'static *mut crate::re::bst_hash_map::BSTHashMap<BSFixedString, *mut TESForm> => VariantID::new(514352, 400509, 0)
     }
 
+    // RELOCATION_ID SE: 514361, AE: 400518
+    // TODO: VERIFY - VR ID unknown
     crate::relocation_variable! {
         pub fn get_all_forms_editor_id_map_lock() -> &'static *mut crate::re::bs_read_write_lock::BSReadWriteLock => VariantID::new(514361, 400518, 0)
     }
@@ -642,4 +667,3 @@ impl<T: AsRef<TESForm> + AsMut<TESForm>> TESFormExt for T {
 impl FormCastable for TESForm {
     const TARGET_FORM_TYPE: FormType = FormType::None;
 }
-

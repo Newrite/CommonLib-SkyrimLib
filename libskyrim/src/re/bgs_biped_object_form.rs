@@ -53,15 +53,15 @@ pub enum ArmorType {
 
 #[repr(C)]
 pub struct BIPED_MODEL {
-    pub biped_object_slots: BipedObjectSlot, // 00
-    pub armor_type: ArmorType,               // 04
+    pub biped_object_slots: BipedObjectSlot, // 0x00
+    pub armor_type: ArmorType,               // 0x04
 }
 const _: () = assert!(core::mem::size_of::<BIPED_MODEL>() == 0x8);
 
 #[repr(C)]
 pub struct BGSBipedObjectForm {
-    pub base: BaseFormComponent,       // 00
-    pub biped_model_data: BIPED_MODEL, // 08 - BOD2
+    pub base: BaseFormComponent,       // 0x00
+    pub biped_model_data: BIPED_MODEL, // 0x08 - BOD2
 }
 const _: () = assert!(core::mem::size_of::<BGSBipedObjectForm>() == 0x10);
 

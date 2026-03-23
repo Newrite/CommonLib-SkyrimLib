@@ -2,12 +2,14 @@ use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_BGSEquipType;
 use crate::offsets::offsets_vtable::VTABLE_BGSEquipType;
 use crate::re::base_form_component::BaseFormComponent;
+use crate::re::bgs_equip_slot::BGSEquipSlot;
 use crate::relocation::{RttiType, VariantID};
+use crate::virtual_method;
 
 #[repr(C)]
 pub struct BGSEquipType {
     pub base: BaseFormComponent, // 00
-    pub equip_slot: *mut core::ffi::c_void, // 08 - BGSEquipSlot*
+    pub equip_slot: *mut BGSEquipSlot, // 08 - ETYP
 }
 
 const _: () = assert!(core::mem::size_of::<BGSEquipType>() == 0x10);
@@ -26,4 +28,14 @@ impl BGSEquipType {
     // void InitializeDataComponent() override;                // 01
     // void ClearDataComponent() override;                     // 02
     // void CopyComponent(BaseFormComponent* a_rhs) override;  // 03
+
+    virtual_method! {
+        pub const GET_EQUIP_SLOT: usize = 0x04;
+        pub fn get_equip_slot() -> *mut BGSEquipSlot
+    }
+
+    virtual_method! {
+        pub const SET_EQUIP_SLOT: usize = 0x05;
+        pub fn set_equip_slot(slot: *mut BGSEquipSlot)
+    }
 }

@@ -7,6 +7,7 @@ use crate::relocation::{VariantID, RttiType};
 
 use crate::re::ni_object::NiObject;
 use crate::re::bs_fixed_string::BSFixedString;
+use crate::re::ni_extra_data::NiExtraData;
 use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::ni_time_controller::NiTimeController;
 
@@ -15,7 +16,7 @@ pub struct NiObjectNET {
     pub base: NiObject,                      // 00
     pub name: BSFixedString,                  // 10
     pub controllers: NiPointer<NiTimeController>, // 18
-    pub extra: *mut *mut core::ffi::c_void,   // 20 - NiExtraData
+    pub extra: *mut *mut NiExtraData,         // 20
     pub extra_data_size: u16,                // 28
     pub max_size: u16,                       // 2A
     pub pad2c: u32,                          // 2C

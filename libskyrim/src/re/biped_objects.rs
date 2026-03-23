@@ -53,6 +53,8 @@ pub enum BipedObject {
     Quiver = 41,
 }
 
+core_util::impl_enumset_type!(BipedObject => u32);
+
 impl BipedObject {
     pub const NONE: u32 = u32::MAX;
     pub const EDITOR_TOTAL: usize = 32;
