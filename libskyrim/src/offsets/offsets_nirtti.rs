@@ -2,7 +2,8 @@
 #![allow(non_upper_case_globals)]
 use crate::relocation::VariantID;
 
-pub const NiRTTI_BGSAddonNodeSoundHandleExtra: VariantID = VariantID::new(514633, 400793, 0x2f8a838);
+pub const NiRTTI_BGSAddonNodeSoundHandleExtra: VariantID =
+    VariantID::new(514633, 400793, 0x2f8a838);
 pub const NiRTTI_BGSDecalNode: VariantID = VariantID::new(514417, 400564, 0x1f891a0);
 pub const NiRTTI_BSAnimGroupSequence: VariantID = VariantID::new(514462, 400606, 0x1f89358);
 pub const NiRTTI_BSAnimInteractionMarker: VariantID = VariantID::new(524679, 411294, 0x317cbd8);
@@ -10,8 +11,10 @@ pub const NiRTTI_BSAnimNote: VariantID = VariantID::new(524418, 410999, 0x316d6c
 pub const NiRTTI_BSAnimNotes: VariantID = VariantID::new(524419, 411000, 0x316d6d0);
 pub const NiRTTI_BSBehaviorGraphExtraData: VariantID = VariantID::new(524621, 411261, 0x317ca20);
 pub const NiRTTI_BSBlastNode: VariantID = VariantID::new(524598, 411238, 0x317c900);
-pub const NiRTTI_BSBlendTreadTransfInterpolator: VariantID = VariantID::new(524358, 410939, 0x316d3a0);
-pub const NiRTTI_BSBloodSplatterShaderProperty: VariantID = VariantID::new(527906, 414853, 0x34851a0);
+pub const NiRTTI_BSBlendTreadTransfInterpolator: VariantID =
+    VariantID::new(524358, 410939, 0x316d3a0);
+pub const NiRTTI_BSBloodSplatterShaderProperty: VariantID =
+    VariantID::new(527906, 414853, 0x34851a0);
 pub const NiRTTI_BSBodyMorphOffsetsExtraData: VariantID = VariantID::new(524620, 411260, 0x317ca10);
 pub const NiRTTI_BSBoneLODExtraData: VariantID = VariantID::new(524706, 411326, 0x317e668);
 pub const NiRTTI_BSBoneMap: VariantID = VariantID::new(524677, 411292, 0x317cbc0);
@@ -21,16 +24,20 @@ pub const NiRTTI_BSCubeMapCamera: VariantID = VariantID::new(528279, 415229, 0x3
 pub const NiRTTI_BSCullingProcess: VariantID = VariantID::new(524626, 411266, 0x317ca58);
 pub const NiRTTI_BSDamageStage: VariantID = VariantID::new(524600, 411240, 0x317c920);
 pub const NiRTTI_BSDebrisNode: VariantID = VariantID::new(524599, 411239, 0x317c910);
-pub const NiRTTI_BSDecalPlacementVectorExtraData: VariantID = VariantID::new(524710, 411330, 0x317e6a8);
+pub const NiRTTI_BSDecalPlacementVectorExtraData: VariantID =
+    VariantID::new(524710, 411330, 0x317e6a8);
 pub const NiRTTI_BSDismemberSkinInstance: VariantID = VariantID::new(523941, 410521, 0x316be60);
-pub const NiRTTI_BSDistantObjectLargeRefExtraData: VariantID = VariantID::new(524689, 411304, 0x317cc48);
+pub const NiRTTI_BSDistantObjectLargeRefExtraData: VariantID =
+    VariantID::new(524689, 411304, 0x317cc48);
 pub const NiRTTI_BSDistantTreeShaderProperty: VariantID = VariantID::new(528220, 415170, 0x34d5fa0);
 pub const NiRTTI_BSDoorHavokController: VariantID = VariantID::new(517601, 404129, 0x2fff478);
 pub const NiRTTI_BSDynamicLines: VariantID = VariantID::new(528362, 415308, 0x36f1a80);
 pub const NiRTTI_BSDynamicTriShape: VariantID = VariantID::new(523953, 410533, 0x316bee0);
 pub const NiRTTI_BSEffectShaderProperty: VariantID = VariantID::new(527834, 414781, 0x3424340);
-pub const NiRTTI_BSEffectShaderPropertyColorController: VariantID = VariantID::new(528413, 415359, 0x36f1bc0);
-pub const NiRTTI_BSEffectShaderPropertyFloatController: VariantID = VariantID::new(528411, 415357, 0x36f1ba8);
+pub const NiRTTI_BSEffectShaderPropertyColorController: VariantID =
+    VariantID::new(528413, 415359, 0x36f1bc0);
+pub const NiRTTI_BSEffectShaderPropertyFloatController: VariantID =
+    VariantID::new(528411, 415357, 0x36f1ba8);
 pub const NiRTTI_BSFaceGenAnimationData: VariantID = VariantID::new(515540, 401677, 0x2fc6670);
 pub const NiRTTI_BSFaceGenBaseMorphExtraData: VariantID = VariantID::new(515562, 401737, 0x2fccbb8);
 pub const NiRTTI_BSFaceGenModelExtraData: VariantID = VariantID::new(515558, 401733, 0x2fccb90);
@@ -45,7 +52,8 @@ pub const NiRTTI_BSFogProperty: VariantID = VariantID::new(528312, 415262, 0x34d
 pub const NiRTTI_BSFrustumFOVController: VariantID = VariantID::new(524424, 411005, 0x316d720);
 pub const NiRTTI_BSFurnitureMarkerNode: VariantID = VariantID::new(524633, 411273, 0x317caa0);
 pub const NiRTTI_BSGeometry: VariantID = VariantID::new(523951, 410531, 0x316bec8);
-pub const NiRTTI_BSGeometryListCullingProcess: VariantID = VariantID::new(524686, 411301, 0x317cc20);
+pub const NiRTTI_BSGeometryListCullingProcess: VariantID =
+    VariantID::new(524686, 411301, 0x317cc20);
 pub const NiRTTI_BSGrabIKNote: VariantID = VariantID::new(524420, 411001, 0x316d6e0);
 pub const NiRTTI_BSGrassShaderProperty: VariantID = VariantID::new(527760, 414683, 0x3423e58);
 pub const NiRTTI_BSInstanceTriShape: VariantID = VariantID::new(524722, 411342, 0x317e770);
@@ -55,9 +63,12 @@ pub const NiRTTI_BSLODTriShape: VariantID = VariantID::new(524017, 410597, 0x316
 pub const NiRTTI_BSLagBoneController: VariantID = VariantID::new(524718, 411338, 0x317e720);
 pub const NiRTTI_BSLeafAnimNode: VariantID = VariantID::new(527635, 414564, 0x3422f78);
 pub const NiRTTI_BSLightingShaderProperty: VariantID = VariantID::new(527752, 414675, 0x3423e20);
-pub const NiRTTI_BSLightingShaderPropertyColorController: VariantID = VariantID::new(528400, 415346, 0x36f1b70);
-pub const NiRTTI_BSLightingShaderPropertyFloatController: VariantID = VariantID::new(528394, 415340, 0x36f1b40);
-pub const NiRTTI_BSLightingShaderPropertyUShortController: VariantID = VariantID::new(528397, 415343, 0x36f1b58);
+pub const NiRTTI_BSLightingShaderPropertyColorController: VariantID =
+    VariantID::new(528400, 415346, 0x36f1b70);
+pub const NiRTTI_BSLightingShaderPropertyFloatController: VariantID =
+    VariantID::new(528394, 415340, 0x36f1b40);
+pub const NiRTTI_BSLightingShaderPropertyUShortController: VariantID =
+    VariantID::new(528397, 415343, 0x36f1b58);
 pub const NiRTTI_BSLines: VariantID = VariantID::new(528361, 415307, 0x36f1a70);
 pub const NiRTTI_BSLookIKNote: VariantID = VariantID::new(524421, 411002, 0x316d6f0);
 pub const NiRTTI_BSMasterParticleSystem: VariantID = VariantID::new(524698, 411318, 0x317e618);
@@ -71,9 +82,12 @@ pub const NiRTTI_BSMultiBoundRoom: VariantID = VariantID::new(524552, 411150, 0x
 pub const NiRTTI_BSMultiBoundShape: VariantID = VariantID::new(524611, 411251, 0x317c998);
 pub const NiRTTI_BSMultiBoundSphere: VariantID = VariantID::new(524612, 411252, 0x317c9a8);
 pub const NiRTTI_BSMultiIndexTriShape: VariantID = VariantID::new(528364, 415310, 0x36f1aa0);
-pub const NiRTTI_BSMultiStreamInstanceTriShape: VariantID = VariantID::new(524606, 411246, 0x317c968);
-pub const NiRTTI_BSMultiTargetTreadTransfController: VariantID = VariantID::new(524062, 410643, 0x316c4c8);
-pub const NiRTTI_BSNiAlphaPropertyTestRefController: VariantID = VariantID::new(528414, 415360, 0x36f1bd0);
+pub const NiRTTI_BSMultiStreamInstanceTriShape: VariantID =
+    VariantID::new(524606, 411246, 0x317c968);
+pub const NiRTTI_BSMultiTargetTreadTransfController: VariantID =
+    VariantID::new(524062, 410643, 0x316c4c8);
+pub const NiRTTI_BSNiAlphaPropertyTestRefController: VariantID =
+    VariantID::new(528414, 415360, 0x36f1bd0);
 pub const NiRTTI_BSNiNode: VariantID = VariantID::new(524721, 411341, 0x317e760);
 pub const NiRTTI_BSNodeReferences: VariantID = VariantID::new(524709, 411329, 0x317e698);
 pub const NiRTTI_BSNonUniformScaleExtraData: VariantID = VariantID::new(524719, 411339, 0x317e730);
@@ -83,9 +97,11 @@ pub const NiRTTI_BSOcclusionShape: VariantID = VariantID::new(524577, 411194, 0x
 pub const NiRTTI_BSOrderedNode: VariantID = VariantID::new(528360, 415306, 0x36f1a60);
 pub const NiRTTI_BSPSysArrayEmitter: VariantID = VariantID::new(524601, 411241, 0x317c930);
 pub const NiRTTI_BSPSysHavokUpdateModifier: VariantID = VariantID::new(524468, 411049, 0x316d850);
-pub const NiRTTI_BSPSysInheritVelocityModifier: VariantID = VariantID::new(524534, 411113, 0x316dc08);
+pub const NiRTTI_BSPSysInheritVelocityModifier: VariantID =
+    VariantID::new(524534, 411113, 0x316dc08);
 pub const NiRTTI_BSPSysLODModifier: VariantID = VariantID::new(528416, 415362, 0x36f1bf0);
-pub const NiRTTI_BSPSysMultiTargetEmitterCtlr: VariantID = VariantID::new(524684, 411299, 0x317cc08);
+pub const NiRTTI_BSPSysMultiTargetEmitterCtlr: VariantID =
+    VariantID::new(524684, 411299, 0x317cc08);
 pub const NiRTTI_BSPSysRecycleBoundModifier: VariantID = VariantID::new(524533, 411112, 0x316dbf8);
 pub const NiRTTI_BSPSysScaleModifier: VariantID = VariantID::new(524717, 411337, 0x317e710);
 pub const NiRTTI_BSPSysSimpleColorModifier: VariantID = VariantID::new(528415, 415361, 0x36f1be0);
@@ -95,13 +111,16 @@ pub const NiRTTI_BSParabolicCullingProcess: VariantID = VariantID::new(528534, 4
 pub const NiRTTI_BSParentVelocityModifier: VariantID = VariantID::new(524711, 411331, 0x317e6b8);
 pub const NiRTTI_BSParticleShaderProperty: VariantID = VariantID::new(527992, 414937, 0x3485758);
 pub const NiRTTI_BSParticleSystemManager: VariantID = VariantID::new(524629, 411269, 0x317ca78);
-pub const NiRTTI_BSPlayerDistanceCheckController: VariantID = VariantID::new(517602, 404130, 0x2fff488);
+pub const NiRTTI_BSPlayerDistanceCheckController: VariantID =
+    VariantID::new(517602, 404130, 0x2fff488);
 pub const NiRTTI_BSPortal: VariantID = VariantID::new(524617, 411257, 0x317c9e8);
 pub const NiRTTI_BSPortalSharedNode: VariantID = VariantID::new(524618, 411258, 0x317c9f8);
-pub const NiRTTI_BSProceduralLightningController: VariantID = VariantID::new(524703, 411323, 0x317e640);
+pub const NiRTTI_BSProceduralLightningController: VariantID =
+    VariantID::new(524703, 411323, 0x317e640);
 pub const NiRTTI_BSRangeNode: VariantID = VariantID::new(524594, 411234, 0x317c6c8);
 pub const NiRTTI_BSReference: VariantID = VariantID::new(524708, 411328, 0x317e688);
-pub const NiRTTI_BSRotAccumTransfInterpolator: VariantID = VariantID::new(524422, 411003, 0x316d700);
+pub const NiRTTI_BSRotAccumTransfInterpolator: VariantID =
+    VariantID::new(524422, 411003, 0x316d700);
 pub const NiRTTI_BSSceneGraph: VariantID = VariantID::new(524681, 411296, 0x317cbf0);
 pub const NiRTTI_BSSegmentedTriShape: VariantID = VariantID::new(524019, 410599, 0x316c318);
 pub const NiRTTI_BSShaderAccumulator: VariantID = VariantID::new(527798, 414751, 0x3424080);
@@ -144,26 +163,34 @@ pub const NiRTTI_NiBSBoneLODController: VariantID = VariantID::new(524623, 41126
 pub const NiRTTI_NiBSPNode: VariantID = VariantID::new(523993, 410573, 0x316c188);
 pub const NiRTTI_NiBSplineBasisData: VariantID = VariantID::new(524386, 410967, 0x316d4c8);
 pub const NiRTTI_NiBSplineColorInterpolator: VariantID = VariantID::new(524388, 410969, 0x316d4e8);
-pub const NiRTTI_NiBSplineCompColorInterpolator: VariantID = VariantID::new(524389, 410970, 0x316d4f8);
-pub const NiRTTI_NiBSplineCompFloatInterpolator: VariantID = VariantID::new(524390, 410971, 0x316d508);
-pub const NiRTTI_NiBSplineCompPoint3Interpolator: VariantID = VariantID::new(524391, 410972, 0x316d518);
-pub const NiRTTI_NiBSplineCompTransformInterpolator: VariantID = VariantID::new(524392, 410973, 0x316d528);
+pub const NiRTTI_NiBSplineCompColorInterpolator: VariantID =
+    VariantID::new(524389, 410970, 0x316d4f8);
+pub const NiRTTI_NiBSplineCompFloatInterpolator: VariantID =
+    VariantID::new(524390, 410971, 0x316d508);
+pub const NiRTTI_NiBSplineCompPoint3Interpolator: VariantID =
+    VariantID::new(524391, 410972, 0x316d518);
+pub const NiRTTI_NiBSplineCompTransformInterpolator: VariantID =
+    VariantID::new(524392, 410973, 0x316d528);
 pub const NiRTTI_NiBSplineData: VariantID = VariantID::new(524387, 410968, 0x316d4d8);
 pub const NiRTTI_NiBSplineFloatInterpolator: VariantID = VariantID::new(524393, 410974, 0x316d538);
 pub const NiRTTI_NiBSplineInterpolator: VariantID = VariantID::new(524459, 411040, 0x316d7c8);
 pub const NiRTTI_NiBSplinePoint3Interpolator: VariantID = VariantID::new(524394, 410975, 0x316d548);
-pub const NiRTTI_NiBSplineTransformInterpolator: VariantID = VariantID::new(524395, 410976, 0x316d558);
+pub const NiRTTI_NiBSplineTransformInterpolator: VariantID =
+    VariantID::new(524395, 410976, 0x316d558);
 pub const NiRTTI_NiBackToFrontAccumulator: VariantID = VariantID::new(524025, 410604, 0x316c360);
 pub const NiRTTI_NiBillboardNode: VariantID = VariantID::new(523959, 410539, 0x316bf28);
 pub const NiRTTI_NiBinaryExtraData: VariantID = VariantID::new(523991, 410571, 0x316c168);
-pub const NiRTTI_NiBlendAccumTransformInterpolator: VariantID = VariantID::new(524352, 410933, 0x316d370);
+pub const NiRTTI_NiBlendAccumTransformInterpolator: VariantID =
+    VariantID::new(524352, 410933, 0x316d370);
 pub const NiRTTI_NiBlendBoolInterpolator: VariantID = VariantID::new(524379, 410960, 0x316d458);
 pub const NiRTTI_NiBlendColorInterpolator: VariantID = VariantID::new(524380, 410961, 0x316d468);
 pub const NiRTTI_NiBlendFloatInterpolator: VariantID = VariantID::new(524349, 410930, 0x316d338);
 pub const NiRTTI_NiBlendInterpolator: VariantID = VariantID::new(524060, 410641, 0x316c4a8);
 pub const NiRTTI_NiBlendPoint3Interpolator: VariantID = VariantID::new(524381, 410962, 0x316d478);
-pub const NiRTTI_NiBlendQuaternionInterpolator: VariantID = VariantID::new(524382, 410963, 0x316d488);
-pub const NiRTTI_NiBlendTransformInterpolator: VariantID = VariantID::new(524348, 410929, 0x316d328);
+pub const NiRTTI_NiBlendQuaternionInterpolator: VariantID =
+    VariantID::new(524382, 410963, 0x316d488);
+pub const NiRTTI_NiBlendTransformInterpolator: VariantID =
+    VariantID::new(524348, 410929, 0x316d328);
 pub const NiRTTI_NiBoolData: VariantID = VariantID::new(524383, 410964, 0x316d498);
 pub const NiRTTI_NiBoolInterpController: VariantID = VariantID::new(524463, 411044, 0x316d808);
 pub const NiRTTI_NiBoolInterpolator: VariantID = VariantID::new(524384, 410965, 0x316d4a8);
@@ -191,7 +218,8 @@ pub const NiRTTI_NiFloatInterpController: VariantID = VariantID::new(524461, 411
 pub const NiRTTI_NiFloatInterpolator: VariantID = VariantID::new(524339, 410920, 0x316d2b8);
 pub const NiRTTI_NiFloatsExtraData: VariantID = VariantID::new(523996, 410576, 0x316c1b8);
 pub const NiRTTI_NiFloatsExtraDataController: VariantID = VariantID::new(524397, 410978, 0x316d578);
-pub const NiRTTI_NiFloatsExtraDataPoint3Controller: VariantID = VariantID::new(524398, 410979, 0x316d588);
+pub const NiRTTI_NiFloatsExtraDataPoint3Controller: VariantID =
+    VariantID::new(524398, 410979, 0x316d588);
 pub const NiRTTI_NiFogProperty: VariantID = VariantID::new(523997, 410577, 0x316c1c8);
 pub const NiRTTI_NiGeometry: VariantID = VariantID::new(523978, 410558, 0x316c0f0);
 pub const NiRTTI_NiGeometryData: VariantID = VariantID::new(523949, 410529, 0x316beb0);
@@ -209,13 +237,16 @@ pub const NiRTTI_NiLookAtInterpolator: VariantID = VariantID::new(524403, 410984
 pub const NiRTTI_NiMeshPSysData: VariantID = VariantID::new(524481, 411062, 0x316d8f8);
 pub const NiRTTI_NiMeshParticleSystem: VariantID = VariantID::new(524470, 411051, 0x316d868);
 pub const NiRTTI_NiMorphData: VariantID = VariantID::new(524404, 410985, 0x316d5f0);
-pub const NiRTTI_NiMultiTargetTransformController: VariantID = VariantID::new(524061, 410642, 0x316c4b8);
+pub const NiRTTI_NiMultiTargetTransformController: VariantID =
+    VariantID::new(524061, 410642, 0x316c4b8);
 pub const NiRTTI_NiNode: VariantID = VariantID::new(523900, 410481, 0x316ab78);
 pub const NiRTTI_NiObject: VariantID = VariantID::new(523891, 410472, 0x316ab08);
 pub const NiRTTI_NiObjectNET: VariantID = VariantID::new(523910, 410491, 0x316ad08);
 pub const NiRTTI_NiPSysAgeDeathModifier: VariantID = VariantID::new(524486, 411067, 0x316d948);
-pub const NiRTTI_NiPSysAirFieldAirFrictionCtlr: VariantID = VariantID::new(524482, 411063, 0x316d908);
-pub const NiRTTI_NiPSysAirFieldInheritVelocityCtlr: VariantID = VariantID::new(524483, 411064, 0x316d918);
+pub const NiRTTI_NiPSysAirFieldAirFrictionCtlr: VariantID =
+    VariantID::new(524482, 411063, 0x316d908);
+pub const NiRTTI_NiPSysAirFieldInheritVelocityCtlr: VariantID =
+    VariantID::new(524483, 411064, 0x316d918);
 pub const NiRTTI_NiPSysAirFieldModifier: VariantID = VariantID::new(524484, 411065, 0x316d928);
 pub const NiRTTI_NiPSysAirFieldSpreadCtlr: VariantID = VariantID::new(524485, 411066, 0x316d938);
 pub const NiRTTI_NiPSysBombModifier: VariantID = VariantID::new(524487, 411068, 0x316d958);
@@ -231,12 +262,17 @@ pub const NiRTTI_NiPSysDragModifier: VariantID = VariantID::new(524494, 411075, 
 pub const NiRTTI_NiPSysEmitter: VariantID = VariantID::new(524475, 411056, 0x316d8a0);
 pub const NiRTTI_NiPSysEmitterCtlr: VariantID = VariantID::new(524466, 411047, 0x316d830);
 pub const NiRTTI_NiPSysEmitterCtlrData: VariantID = VariantID::new(524495, 411076, 0x316d9d8);
-pub const NiRTTI_NiPSysEmitterDeclinationCtlr: VariantID = VariantID::new(524496, 411077, 0x316d9e8);
-pub const NiRTTI_NiPSysEmitterDeclinationVarCtlr: VariantID = VariantID::new(524497, 411078, 0x316d9f8);
-pub const NiRTTI_NiPSysEmitterInitialRadiusCtlr: VariantID = VariantID::new(524498, 411079, 0x316da08);
+pub const NiRTTI_NiPSysEmitterDeclinationCtlr: VariantID =
+    VariantID::new(524496, 411077, 0x316d9e8);
+pub const NiRTTI_NiPSysEmitterDeclinationVarCtlr: VariantID =
+    VariantID::new(524497, 411078, 0x316d9f8);
+pub const NiRTTI_NiPSysEmitterInitialRadiusCtlr: VariantID =
+    VariantID::new(524498, 411079, 0x316da08);
 pub const NiRTTI_NiPSysEmitterLifeSpanCtlr: VariantID = VariantID::new(524499, 411080, 0x316da18);
-pub const NiRTTI_NiPSysEmitterPlanarAngleCtlr: VariantID = VariantID::new(524500, 411081, 0x316da28);
-pub const NiRTTI_NiPSysEmitterPlanarAngleVarCtlr: VariantID = VariantID::new(524501, 411082, 0x316da38);
+pub const NiRTTI_NiPSysEmitterPlanarAngleCtlr: VariantID =
+    VariantID::new(524500, 411081, 0x316da28);
+pub const NiRTTI_NiPSysEmitterPlanarAngleVarCtlr: VariantID =
+    VariantID::new(524501, 411082, 0x316da38);
 pub const NiRTTI_NiPSysEmitterSpeedCtlr: VariantID = VariantID::new(524502, 411083, 0x316da48);
 pub const NiRTTI_NiPSysFieldAttenuationCtlr: VariantID = VariantID::new(524503, 411084, 0x316da58);
 pub const NiRTTI_NiPSysFieldMagnitudeCtlr: VariantID = VariantID::new(524504, 411085, 0x316da68);
@@ -247,9 +283,11 @@ pub const NiRTTI_NiPSysGravityModifier: VariantID = VariantID::new(524467, 41104
 pub const NiRTTI_NiPSysGravityStrengthCtlr: VariantID = VariantID::new(524507, 411088, 0x316da98);
 pub const NiRTTI_NiPSysGrowFadeModifier: VariantID = VariantID::new(524508, 411089, 0x316daa8);
 pub const NiRTTI_NiPSysInitialRotAngleCtlr: VariantID = VariantID::new(524509, 411090, 0x316dab8);
-pub const NiRTTI_NiPSysInitialRotAngleVarCtlr: VariantID = VariantID::new(524510, 411091, 0x316dac8);
+pub const NiRTTI_NiPSysInitialRotAngleVarCtlr: VariantID =
+    VariantID::new(524510, 411091, 0x316dac8);
 pub const NiRTTI_NiPSysInitialRotSpeedCtlr: VariantID = VariantID::new(524511, 411092, 0x316dad8);
-pub const NiRTTI_NiPSysInitialRotSpeedVarCtlr: VariantID = VariantID::new(524512, 411093, 0x316dae8);
+pub const NiRTTI_NiPSysInitialRotSpeedVarCtlr: VariantID =
+    VariantID::new(524512, 411093, 0x316dae8);
 pub const NiRTTI_NiPSysMeshEmitter: VariantID = VariantID::new(524513, 411094, 0x316daf8);
 pub const NiRTTI_NiPSysMeshUpdateModifier: VariantID = VariantID::new(524479, 411060, 0x316d8d8);
 pub const NiRTTI_NiPSysModifier: VariantID = VariantID::new(524478, 411059, 0x316d8c8);
@@ -265,7 +303,8 @@ pub const NiRTTI_NiPSysRotationModifier: VariantID = VariantID::new(524525, 4111
 pub const NiRTTI_NiPSysSpawnModifier: VariantID = VariantID::new(524526, 411105, 0x316db90);
 pub const NiRTTI_NiPSysSphereEmitter: VariantID = VariantID::new(524527, 411106, 0x316dba0);
 pub const NiRTTI_NiPSysSphericalCollider: VariantID = VariantID::new(524528, 411107, 0x316dbb0);
-pub const NiRTTI_NiPSysTurbulenceFieldModifier: VariantID = VariantID::new(524529, 411108, 0x316dbc0);
+pub const NiRTTI_NiPSysTurbulenceFieldModifier: VariantID =
+    VariantID::new(524529, 411108, 0x316dbc0);
 pub const NiRTTI_NiPSysUpdateCtlr: VariantID = VariantID::new(524480, 411061, 0x316d8e8);
 pub const NiRTTI_NiPSysVolumeEmitter: VariantID = VariantID::new(524535, 411114, 0x316dc18);
 pub const NiRTTI_NiPSysVortexFieldModifier: VariantID = VariantID::new(524530, 411109, 0x316dbd0);
@@ -325,11 +364,13 @@ pub const NiRTTI_WeaponObject: VariantID = VariantID::new(525102, 411577, 0x3188
 pub const NiRTTI_bhkAabbPhantom: VariantID = VariantID::new(525121, 411596, 0x3188180);
 pub const NiRTTI_bhkAction: VariantID = VariantID::new(525160, 411637, 0x3188368);
 pub const NiRTTI_bhkAngularDashpotAction: VariantID = VariantID::new(525243, 411719, 0x3189318);
-pub const NiRTTI_bhkAttachmentCollisionObject: VariantID = VariantID::new(525101, 411576, 0x31880a0);
+pub const NiRTTI_bhkAttachmentCollisionObject: VariantID =
+    VariantID::new(525101, 411576, 0x31880a0);
 pub const NiRTTI_bhkAutoWater: VariantID = VariantID::new(516226, 402390, 0x2fe9890);
 pub const NiRTTI_bhkAvoidBox: VariantID = VariantID::new(525150, 411625, 0x31882f0);
 pub const NiRTTI_bhkBallAndSocketConstraint: VariantID = VariantID::new(525223, 411699, 0x3189228);
-pub const NiRTTI_bhkBallSocketConstraintChain: VariantID = VariantID::new(525225, 411701, 0x3189240);
+pub const NiRTTI_bhkBallSocketConstraintChain: VariantID =
+    VariantID::new(525225, 411701, 0x3189240);
 pub const NiRTTI_bhkBinaryAction: VariantID = VariantID::new(525460, 411936, 0x318b608);
 pub const NiRTTI_bhkBlendCollisionObject: VariantID = VariantID::new(525147, 411622, 0x31882d0);
 pub const NiRTTI_bhkBlendController: VariantID = VariantID::new(525255, 411731, 0x31893a8);
@@ -398,11 +439,13 @@ pub const NiRTTI_bhkSimpleShapePhantom: VariantID = VariantID::new(525132, 41160
 pub const NiRTTI_bhkSphereRepShape: VariantID = VariantID::new(525123, 411598, 0x3188198);
 pub const NiRTTI_bhkSphereShape: VariantID = VariantID::new(525138, 411613, 0x3188248);
 pub const NiRTTI_bhkSpringAction: VariantID = VariantID::new(525254, 411730, 0x3189398);
-pub const NiRTTI_bhkSpringDamperConstraintMotor: VariantID = VariantID::new(525269, 411745, 0x31894b0);
+pub const NiRTTI_bhkSpringDamperConstraintMotor: VariantID =
+    VariantID::new(525269, 411745, 0x31894b0);
 pub const NiRTTI_bhkStiffSpringConstraint: VariantID = VariantID::new(525237, 411713, 0x31892d0);
 pub const NiRTTI_bhkTiltPreventAction: VariantID = VariantID::new(515428, 401567, 0x2fc6018);
 pub const NiRTTI_bhkTransformShape: VariantID = VariantID::new(525219, 411695, 0x31891f8);
-pub const NiRTTI_bhkTriSampledHeightFieldBvTreeShape: VariantID = VariantID::new(525164, 411639, 0x3188398);
+pub const NiRTTI_bhkTriSampledHeightFieldBvTreeShape: VariantID =
+    VariantID::new(525164, 411639, 0x3188398);
 pub const NiRTTI_bhkTriangleShape: VariantID = VariantID::new(525215, 411691, 0x31891c8);
 pub const NiRTTI_bhkUnaryAction: VariantID = VariantID::new(525162, 411631, 0x3188380);
 pub const NiRTTI_bhkVelocityConstraintMotor: VariantID = VariantID::new(525268, 411744, 0x31894a0);

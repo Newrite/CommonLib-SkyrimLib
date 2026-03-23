@@ -23,7 +23,7 @@ pub mod plugin_api {
         Messaging,
         Object,
         Trampoline,
-        Max
+        Max,
     }
 
     /// The ID assigned to a loaded plugin. SKSE docs request this be used as an abstract type.
@@ -42,14 +42,14 @@ pub mod plugin_api {
     /// See SKSE notes. The functions may only be called during specific phases.
     #[repr(C)]
     pub struct SkseInterface {
-        pub skse_version: u32, // УБРАЛИ Option
+        pub skse_version: u32,    // УБРАЛИ Option
         pub runtime_version: u32, // УБРАЛИ Option
         pub editor_version: u32,
         pub is_editor: u32,
         pub query_interface: unsafe extern "system" fn(InterfaceId) -> *mut c_void,
         pub get_plugin_handle: unsafe extern "system" fn() -> PluginHandle,
         pub get_release_index: unsafe extern "system" fn() -> u32,
-        pub get_plugin_info: unsafe extern "system" fn(*const c_char) -> *const PluginInfo
+        pub get_plugin_info: unsafe extern "system" fn(*const c_char) -> *const PluginInfo,
     }
 
     /// A message which can be received from/sent to other skse plugins.
@@ -58,7 +58,7 @@ pub mod plugin_api {
         pub sender: *const c_char,
         pub msg_type: u32,
         pub data_len: u32,
-        pub data: *mut u8
+        pub data: *mut u8,
     }
 
     /// A callback function registered as a message listener.
@@ -68,19 +68,11 @@ pub mod plugin_api {
     #[repr(C)]
     pub struct SkseMessagingInterface {
         pub interface_version: u32,
-        pub register_listener: unsafe extern "system" fn(
-            PluginHandle,
-            *const c_char,
-            MessageCallback
-        ) -> bool,
-        pub dispatch: unsafe extern "system" fn(
-            PluginHandle,
-            u32,
-            *mut c_void,
-            u32,
-            *const c_char
-        ) -> bool,
-        pub get_event_dispatcher: unsafe extern "system" fn(u32) -> *mut c_void
+        pub register_listener:
+            unsafe extern "system" fn(PluginHandle, *const c_char, MessageCallback) -> bool,
+        pub dispatch:
+            unsafe extern "system" fn(PluginHandle, u32, *mut c_void, u32, *const c_char) -> bool,
+        pub get_event_dispatcher: unsafe extern "system" fn(u32) -> *mut c_void,
     }
 
     /// Plugin info exported to skse for AE.
@@ -94,7 +86,7 @@ pub mod plugin_api {
         pub version_indep_ex: u32,
         pub version_indep: u32,
         pub compat_versions: [u32; 16], // УБРАЛИ Option<Version>
-        pub se_version_required: u32, // УБРАЛИ Option
+        pub se_version_required: u32,   // УБРАЛИ Option
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

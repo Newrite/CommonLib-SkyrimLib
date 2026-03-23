@@ -1,6 +1,6 @@
-use crate::relocation::VariantID;
 use crate::re::form_type::FormType;
 use crate::re::tes_form::TESForm;
+use crate::relocation::{RelocationID, VariantID};
 use crate::virtual_method;
 
 /// C++ `RE::IFormFactory`
@@ -36,17 +36,17 @@ impl IFormFactory {
     // but we can add them if needed. For now let's focus on the major ones.
 
     crate::relocation_variable! {
-        pub fn form_factories() -> *mut *mut IFormFactory => VariantID::new(514355, 400508, 0), is_ptr
+        pub fn form_factories() -> *mut *mut IFormFactory => RelocationID::new(514355, 400508), is_ptr
     }
 
     crate::relocation_variable! {
-        pub fn form_factories_initialized() -> *mut bool => VariantID::new(514349, 400503, 0), is_ptr
+        pub fn form_factories_initialized() -> *mut bool => RelocationID::new(514349, 400503), is_ptr
     }
 
     pub fn get_form_factory_by_type(form_type: FormType) -> *mut IFormFactory {
         let initialized = Self::form_factories_initialized();
         let factories = Self::form_factories();
-        
+
         unsafe {
             if !initialized.is_null() && *initialized && !factories.is_null() {
                 let index = form_type as usize;
@@ -63,7 +63,9 @@ impl IFormFactory {
 
 impl AsRef<IFormFactory> for IFormFactory {
     #[inline(always)]
-    fn as_ref(&self) -> &Self { self }
+    fn as_ref(&self) -> &Self {
+        self
+    }
 }
 
 pub trait IFormFactoryExt {

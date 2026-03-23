@@ -1,9 +1,9 @@
-use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_BGSMessageIcon;
 use crate::offsets::offsets_vtable::VTABLE_BGSMessageIcon;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::tes_icon::TESIcon;
 use crate::relocation::{RttiType, VariantID};
+use core_util::inherit;
 
 #[repr(C)]
 pub struct BGSMessageIcon {

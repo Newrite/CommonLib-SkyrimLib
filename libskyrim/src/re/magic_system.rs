@@ -1,4 +1,4 @@
-﻿#[repr(u32)]
+#[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum CannotCastReason {
     OK = 0,

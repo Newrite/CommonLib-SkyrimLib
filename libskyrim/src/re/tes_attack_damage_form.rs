@@ -1,9 +1,9 @@
-use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_TESAttackDamageForm;
 use crate::offsets::offsets_vtable::VTABLE_TESAttackDamageForm;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use core_util::inherit;
 
 #[repr(C)]
 pub struct TESAttackDamageForm {
@@ -27,6 +27,16 @@ impl TESAttackDamageForm {
 
     virtual_method! {
         pub const GET_ATTACK_DAMAGE: usize = 0x04;
-        pub fn get_attack_damage(this: &TESAttackDamageForm) -> u16
+        pub fn get_attack_damage() -> u16
+    }
+}
+
+pub trait TESAttackDamageFormExt {
+    fn get_attack_damage(&self) -> u16;
+}
+
+impl<T: AsRef<TESAttackDamageForm>> TESAttackDamageFormExt for T {
+    fn get_attack_damage(&self) -> u16 {
+        self.as_ref().get_attack_damage()
     }
 }

@@ -40,7 +40,6 @@ pub enum BipedObject {
     FX01 = 31,
 
     // kEditorTotal = 32
-
     HandToHandMelee = 32,
     OneHandSword = 33,
     OneHandDagger = 34,
@@ -62,6 +61,7 @@ impl BipedObject {
 }
 
 /// C++ `RE::BIPED_OBJECT` type alias
+#[allow(non_camel_case_types)]
 pub type BIPED_OBJECT = BipedObject;
 
 /// Total number of biped object slots (kTotal = 42)

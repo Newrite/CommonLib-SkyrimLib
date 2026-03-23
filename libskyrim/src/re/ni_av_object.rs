@@ -1,30 +1,30 @@
-use bitflags::bitflags;
 use crate::core_util::inherit;
-use crate::virtual_method;
 use crate::relocation_func;
 use crate::runtime_data_accessor;
+use crate::virtual_method;
+use bitflags::bitflags;
 
 use crate::offsets::offsets_rtti::RTTI_NiAVObject;
 use crate::offsets::offsets_vtable::VTABLE_NiAVObject;
-use crate::relocation::{VariantID, RttiType};
+use crate::relocation::{RelocationID, RttiType, VariantID};
 
-use crate::re::ni_object_net::NiObjectNET;
-use crate::re::ni_node::NiNode;
 use crate::re::bhk_collision_object::bhkCollisionObject;
-use crate::re::ni_collision_object::NiCollisionObject;
-use crate::re::ni_transform::NiTransform;
-use crate::re::ni_bound::NiBound;
-use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::bs_fixed_string::BSFixedString;
+use crate::re::ni_bound::NiBound;
+use crate::re::ni_collision_object::NiCollisionObject;
+use crate::re::ni_node::NiNode;
+use crate::re::ni_object_net::NiObjectNET;
+use crate::re::ni_smart_pointer::NiPointer;
+use crate::re::ni_transform::NiTransform;
 
-use crate::re::tes_object_refr::TESObjectREFR;
-use crate::re::ni_culling_process::NiCullingProcess;
 use crate::re::ni_alpha_property::NiAlphaProperty;
+use crate::re::ni_culling_process::NiCullingProcess;
+use crate::re::tes_object_refr::TESObjectREFR;
 
 #[repr(C)]
 #[derive(bytemuck::Zeroable, Clone, Copy, PartialEq)]
 pub struct NiUpdateData {
-    pub time: f32, // 0
+    pub time: f32,  // 0
     pub flags: u32, // 4
 }
 const _: () = assert!(core::mem::size_of::<NiUpdateData>() == 0x8);
@@ -74,23 +74,23 @@ unsafe impl bytemuck::Zeroable for NiAVObjectFlags {}
 
 #[repr(C)]
 pub struct NiAVObject {
-    pub base: NiObjectNET,                        // 000
-    pub parent: *mut NiNode,                      // 030
-    pub parent_index: u32,                        // 038
-    pub unk03c: u32,                              // 03C
+    pub base: NiObjectNET,                              // 000
+    pub parent: *mut NiNode,                            // 030
+    pub parent_index: u32,                              // 038
+    pub unk03c: u32,                                    // 03C
     pub collision_object: NiPointer<NiCollisionObject>, // 040
-    pub local: NiTransform,                       // 048
-    pub world: NiTransform,                       // 07C
-    pub previous_world: NiTransform,              // 0B0
-    pub world_bound: NiBound,                     // 0E4
-    pub flags: NiAVObjectFlags,                   // 0F4
-    pub user_data: *mut TESObjectREFR,            // 0F8
-    pub fade_amount: f32,                         // 100
-    pub last_updated_frame_counter: u32,          // 104
-    pub unk108: u8,                               // 108
-    pub flags02: u8,                              // 109
-    pub unk10a: u16,                              // 10A
-    pub pad10c: u32,                              // 10C
+    pub local: NiTransform,                             // 048
+    pub world: NiTransform,                             // 07C
+    pub previous_world: NiTransform,                    // 0B0
+    pub world_bound: NiBound,                           // 0E4
+    pub flags: NiAVObjectFlags,                         // 0F4
+    pub user_data: *mut TESObjectREFR,                  // 0F8
+    pub fade_amount: f32,                               // 100
+    pub last_updated_frame_counter: u32,                // 104
+    pub unk108: u8,                                     // 108
+    pub flags02: u8,                                    // 109
+    pub unk10a: u16,                                    // 10A
+    pub pad10c: u32,                                    // 10C
 }
 
 const _: () = assert!(core::mem::size_of::<NiAVObject>() == 0x110);
@@ -101,9 +101,13 @@ impl RttiType for NiAVObject {
 
 impl crate::re::ni_ref_object::NiRef for NiAVObject {
     #[inline(always)]
-    fn inc_ref(&self) { self.base.inc_ref(); }
+    fn inc_ref(&self) {
+        self.base.inc_ref();
+    }
     #[inline(always)]
-    fn dec_ref(&self) { self.base.dec_ref(); }
+    fn dec_ref(&self) {
+        self.base.dec_ref();
+    }
 }
 
 inherit!(NiAVObject : NiObjectNET);
@@ -218,39 +222,39 @@ impl NiAVObject {
 
     // RELOCATION_ID SE: 25482, AE: 26022
     relocation_func! {
-        pub fn get_collision_object(&self) -> *mut bhkCollisionObject => VariantID::new(25482, 26022, 0)
+        pub fn get_collision_object(&self) -> *mut bhkCollisionObject => RelocationID::new(25482, 26022)
     }
 
     // RELOCATION_ID SE: 15547, AE: 15723
     relocation_func! {
-        pub fn remove_decals(&mut self) => VariantID::new(15547, 15723, 0)
+        pub fn remove_decals(&mut self) => RelocationID::new(15547, 15723)
     }
 
     // RELOCATION_ID SE: 76170, AE: 77998
     relocation_func! {
-        pub fn set_collision_layer(&mut self, a_collision_layer: u32) => VariantID::new(76170, 77998, 0)
+        pub fn set_collision_layer(&mut self, a_collision_layer: u32) => RelocationID::new(76170, 77998)
     }
 
     // RELOCATION_ID SE: 76171, AE: 77999
     relocation_func! {
-        pub fn set_collision_layer_and_group(&mut self, a_collision_layer: u32, a_group: u32) => VariantID::new(76171, 77999, 0)
+        pub fn set_collision_layer_and_group(&mut self, a_collision_layer: u32, a_group: u32) => RelocationID::new(76171, 77999)
     }
 
     // RELOCATION_ID SE: 76033, AE: 77866
     relocation_func! {
-        pub fn set_motion_type(&mut self, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool => VariantID::new(76033, 77866, 0)
+        pub fn set_motion_type(&mut self, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool => RelocationID::new(76033, 77866)
     }
 
     // RELOCATION_ID SE: 68900, AE: 70251
     relocation_func! {
-        pub fn update(&mut self, a_data: *mut NiUpdateData) => VariantID::new(68900, 70251, 0)
+        pub fn update(&mut self, a_data: *mut NiUpdateData) => RelocationID::new(68900, 70251)
     }
 
     // RELOCATION_ID SE: 76271, AE: 78103
     relocation_func! {
-        pub fn update_rigid_constraints(&mut self, a_enable: bool, a_arg2: u8, a_arg3: u32) => VariantID::new(76271, 78103, 0)
+        pub fn update_rigid_constraints(&mut self, a_enable: bool, a_arg2: u8, a_arg3: u32) => RelocationID::new(76271, 78103)
     }
-    
+
     runtime_data_accessor! {
         pub fn get_flags() -> NiAVObjectFlags {
             se_ae: 0x0F4,
@@ -261,12 +265,16 @@ impl NiAVObject {
 
 impl AsRef<NiAVObject> for NiAVObject {
     #[inline(always)]
-    fn as_ref(&self) -> &Self { self }
+    fn as_ref(&self) -> &Self {
+        self
+    }
 }
 
 impl AsMut<NiAVObject> for NiAVObject {
     #[inline(always)]
-    fn as_mut(&mut self) -> &mut Self { self }
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
 }
 
 pub trait NiAVObjectExt {
@@ -276,7 +284,12 @@ pub trait NiAVObjectExt {
     fn set_material_needs_update(&mut self, a_needs_update: bool);
     fn set_default_material_needs_update_flag(&mut self, a_flag: bool);
     fn get_object_by_name(&mut self, a_name: *const BSFixedString) -> *mut NiAVObject;
-    fn set_selective_update_flags(&mut self, a_selective_update: *mut bool, a_selective_update_transforms: bool, a_rigid: *mut bool);
+    fn set_selective_update_flags(
+        &mut self,
+        a_selective_update: *mut bool,
+        a_selective_update_transforms: bool,
+        a_rigid: *mut bool,
+    );
     fn update_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32);
     fn update_selected_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32);
     fn update_rigid_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32);
@@ -290,7 +303,13 @@ pub trait NiAVObjectExt {
     fn remove_decals(&mut self);
     fn set_collision_layer(&mut self, a_collision_layer: u32);
     fn set_collision_layer_and_group(&mut self, a_collision_layer: u32, a_group: u32);
-    fn set_motion_type(&mut self, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool;
+    fn set_motion_type(
+        &mut self,
+        a_motion_type: u32,
+        a_recurse: bool,
+        a_force: bool,
+        a_allow_activate: bool,
+    ) -> bool;
     fn update(&mut self, a_data: *mut NiUpdateData);
     fn update_rigid_constraints(&mut self, a_enable: bool, a_arg2: u8, a_arg3: u32);
     fn get_flags(&self) -> NiAVObjectFlags;
@@ -321,8 +340,18 @@ impl<T: AsRef<NiAVObject> + AsMut<NiAVObject>> NiAVObjectExt for T {
         NiAVObject::get_object_by_name(self.as_mut(), a_name)
     }
 
-    fn set_selective_update_flags(&mut self, a_selective_update: *mut bool, a_selective_update_transforms: bool, a_rigid: *mut bool) {
-        NiAVObject::set_selective_update_flags(self.as_mut(), a_selective_update, a_selective_update_transforms, a_rigid)
+    fn set_selective_update_flags(
+        &mut self,
+        a_selective_update: *mut bool,
+        a_selective_update_transforms: bool,
+        a_rigid: *mut bool,
+    ) {
+        NiAVObject::set_selective_update_flags(
+            self.as_mut(),
+            a_selective_update,
+            a_selective_update_transforms,
+            a_rigid,
+        )
     }
 
     fn update_downward_pass(&mut self, a_data: *mut NiUpdateData, a_arg2: u32) {
@@ -377,8 +406,20 @@ impl<T: AsRef<NiAVObject> + AsMut<NiAVObject>> NiAVObjectExt for T {
         NiAVObject::set_collision_layer_and_group(self.as_mut(), a_collision_layer, a_group)
     }
 
-    fn set_motion_type(&mut self, a_motion_type: u32, a_recurse: bool, a_force: bool, a_allow_activate: bool) -> bool {
-        NiAVObject::set_motion_type(self.as_mut(), a_motion_type, a_recurse, a_force, a_allow_activate)
+    fn set_motion_type(
+        &mut self,
+        a_motion_type: u32,
+        a_recurse: bool,
+        a_force: bool,
+        a_allow_activate: bool,
+    ) -> bool {
+        NiAVObject::set_motion_type(
+            self.as_mut(),
+            a_motion_type,
+            a_recurse,
+            a_force,
+            a_allow_activate,
+        )
     }
 
     fn update(&mut self, a_data: *mut NiUpdateData) {
@@ -390,6 +431,6 @@ impl<T: AsRef<NiAVObject> + AsMut<NiAVObject>> NiAVObjectExt for T {
     }
 
     fn get_flags(&self) -> NiAVObjectFlags {
-        unsafe { *NiAVObject::get_flags(self.as_ref()) }
+        *NiAVObject::get_flags(self.as_ref())
     }
 }

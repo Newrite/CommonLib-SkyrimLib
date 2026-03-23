@@ -1,7 +1,7 @@
 use crate::offsets::offsets_rtti::RTTI_TESWeightForm;
 use crate::offsets::offsets_vtable::VTABLE_TESWeightForm;
 use crate::re::base_form_component::BaseFormComponent;
-use crate::relocation::{VariantID, RttiType};
+use crate::relocation::{RttiType, VariantID};
 use core_util::inherit;
 
 /// C++ `RE::TESWeightForm`

@@ -1,4 +1,4 @@
-﻿#[repr(C)]
+#[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, bytemuck::Zeroable)]
 pub struct BGSLocalizedStringDL {
     pub id: u32,

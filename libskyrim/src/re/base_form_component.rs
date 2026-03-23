@@ -1,7 +1,7 @@
-use crate::virtual_method;
-use crate::relocation::{VariantID, RttiType};
 use crate::offsets::offsets_rtti::RTTI_BaseFormComponent;
 use crate::offsets::offsets_vtable::VTABLE_BaseFormComponent;
+use crate::relocation::{RttiType, VariantID};
+use crate::virtual_method;
 
 #[repr(C)]
 pub struct BaseFormComponent {

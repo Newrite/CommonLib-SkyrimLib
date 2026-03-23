@@ -2,7 +2,7 @@ use crate::offsets::offsets_rtti::RTTI_TESFullName;
 use crate::offsets::offsets_vtable::VTABLE_TESFullName;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::bs_fixed_string::BSFixedString;
-use crate::relocation::{RttiType, VariantID};
+use crate::relocation::{RelocationID, RttiType, VariantID};
 use crate::virtual_method;
 use core_util::inherit;
 
@@ -34,9 +34,8 @@ impl TESFullName {
     }
 
     // RELOCATION_ID SE: 22318, AE: 22791
-    // TODO: VERIFY - VR ID unknown
     crate::relocation_func! {
-        pub fn set_full_name(this: &mut TESFullName, name: *const core::ffi::c_char) => VariantID::new(22318, 22791, 0)
+        pub fn set_full_name(this: &mut TESFullName, name: *const core::ffi::c_char) => RelocationID::new(22318, 22791)
     }
 
     #[inline]

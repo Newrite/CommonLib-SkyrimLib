@@ -1,12 +1,7 @@
 use crate::core_util::inherit;
-use crate::offsets::offsets_rtti::RTTI_NiObject;
 use crate::offsets::offsets_nirtti::NiRTTI_NiObject;
+use crate::offsets::offsets_rtti::RTTI_NiObject;
 use crate::offsets::offsets_vtable::VTABLE_NiObject;
-use crate::re::bhkAttachmentCollisionObject;
-use crate::re::bhkBlendCollisionObject;
-use crate::re::bhkLimitedHingeConstraint;
-use crate::re::bhkNiCollisionObject;
-use crate::re::bhkRigidBody;
 use crate::re::BSDynamicTriShape;
 use crate::re::BSFadeNode;
 use crate::re::BSGeometry;
@@ -30,9 +25,14 @@ use crate::re::NiSwitchNode;
 use crate::re::NiTriBasedGeom;
 use crate::re::NiTriShape;
 use crate::re::NiTriStrips;
+use crate::re::bhkAttachmentCollisionObject;
+use crate::re::bhkBlendCollisionObject;
+use crate::re::bhkLimitedHingeConstraint;
+use crate::re::bhkNiCollisionObject;
+use crate::re::bhkRigidBody;
+use crate::relocation::{RelocationID, VariantID};
 use crate::relocation_func;
 use crate::virtual_method;
-use crate::relocation::VariantID;
 
 #[repr(C)]
 pub struct NiObject {
@@ -47,9 +47,13 @@ impl crate::relocation::RttiType for NiObject {
 
 impl NiRef for NiObject {
     #[inline(always)]
-    fn inc_ref(&self) { self.base.inc_ref(); }
+    fn inc_ref(&self) {
+        self.base.inc_ref();
+    }
     #[inline(always)]
-    fn dec_ref(&self) { self.base.dec_ref(); }
+    fn dec_ref(&self) {
+        self.base.dec_ref();
+    }
 }
 
 inherit!(NiObject : NiRefObject);
@@ -204,7 +208,7 @@ impl NiObject {
 
     // RELOCATION_ID SE: 68838, AE: 70190
     relocation_func! {
-        pub fn process_clone(&mut self, a_cloning: *mut NiCloningProcess) => VariantID::new(68838, 70190, 0)
+        pub fn process_clone(&mut self, a_cloning: *mut NiCloningProcess) => RelocationID::new(68838, 70190)
     }
 
     virtual_method! {
@@ -249,23 +253,27 @@ impl NiObject {
 
     // RELOCATION_ID SE: 68835, AE: 70187
     relocation_func! {
-        pub fn clone(&mut self) -> *mut NiObject => VariantID::new(68835, 70187, 0)
+        pub fn clone(&mut self) -> *mut NiObject => RelocationID::new(68835, 70187)
     }
 
     // RELOCATION_ID SE: 68839, AE: 70191
     relocation_func! {
-        pub fn create_deep_copy(&mut self, a_object: &mut NiPointer<NiObject>) => VariantID::new(68839, 70191, 0)
+        pub fn create_deep_copy(&mut self, a_object: &mut NiPointer<NiObject>) => RelocationID::new(68839, 70191)
     }
 }
 
 impl AsRef<NiObject> for NiObject {
     #[inline(always)]
-    fn as_ref(&self) -> &Self { self }
+    fn as_ref(&self) -> &Self {
+        self
+    }
 }
 
 impl AsMut<NiObject> for NiObject {
     #[inline(always)]
-    fn as_mut(&mut self) -> &mut Self { self }
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
 }
 
 pub trait NiObjectExt {

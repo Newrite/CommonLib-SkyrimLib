@@ -8,8 +8,8 @@ use crate::relocation::{RttiType, VariantID};
 
 #[repr(C)]
 pub struct BGSAttackDataForm {
-    pub base: BaseFormComponent,               // 0x00
-    pub attack_data_map: *mut BGSAttackDataMap,  // 0x08 - NiPointer<BGSAttackDataMap>
+    pub base: BaseFormComponent,                // 0x00
+    pub attack_data_map: *mut BGSAttackDataMap, // 0x08 - NiPointer<BGSAttackDataMap>
 }
 
 const _: () = assert!(core::mem::size_of::<BGSAttackDataForm>() == 0x10);

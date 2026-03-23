@@ -1,6 +1,6 @@
 //! Translation of `RE::NiSmartPointer.h`.
 //!
-//! `NiPointer<T>` — an intrusive reference-counted smart pointer.
+//! `NiPointer<T>` вЂ” an intrusive reference-counted smart pointer.
 //! `T` must implement the `NiRef` trait (providing `inc_ref`/`dec_ref`).
 //!
 //! This is the Skyrim engine's equivalent of `std::shared_ptr`, but with
@@ -16,19 +16,22 @@ use crate::re::ni_ref_object::NiRef;
 /// An intrusive reference-counted smart pointer. The pointed-to type must
 /// implement `NiRef` (e.g., `NiRefObject`, `BSHandleRefObject`).
 ///
-/// Layout: `{ _ptr: *mut T }` — 0x8 bytes (one pointer).
+/// Layout: `{ _ptr: *mut T }` вЂ” 0x8 bytes (one pointer).
 #[repr(transparent)]
 pub struct NiPointer<T: NiRef> {
     _ptr: *mut T,
 }
 
-const _: () = assert!(core::mem::size_of::<NiPointer<crate::re::ni_ref_object::NiRefObject>>() == 0x8);
+const _: () =
+    assert!(core::mem::size_of::<NiPointer<crate::re::ni_ref_object::NiRefObject>>() == 0x8);
 
 impl<T: NiRef> NiPointer<T> {
     /// Creates a null `NiPointer`.
     #[inline(always)]
     pub const fn null() -> Self {
-        Self { _ptr: ptr::null_mut() }
+        Self {
+            _ptr: ptr::null_mut(),
+        }
     }
 
     /// Creates a new `NiPointer` from a raw pointer, incrementing the refcount.
@@ -38,10 +41,12 @@ impl<T: NiRef> NiPointer<T> {
     /// `ptr` must be null or point to a valid `T` with a live refcount.
     #[inline(always)]
     pub unsafe fn new(ptr: *mut T) -> Self {
-        if !ptr.is_null() {
-            (*ptr).inc_ref();
+        unsafe {
+            if !ptr.is_null() {
+                (*ptr).inc_ref();
+            }
+            Self { _ptr: ptr }
         }
-        Self { _ptr: ptr }
     }
 
     /// Creates a `NiPointer` from a raw pointer **without** incrementing the refcount.
@@ -96,19 +101,23 @@ impl<T: NiRef> NiPointer<T> {
         }
     }
 
-    // ── Private helpers (match C++ TryAttach/TryDetach) ──────────────────
+    // в”Ђв”Ђ Private helpers (match C++ TryAttach/TryDetach) в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
     #[inline(always)]
     fn try_attach(&self) {
         if !self._ptr.is_null() {
-            unsafe { (*self._ptr).inc_ref(); }
+            unsafe {
+                (*self._ptr).inc_ref();
+            }
         }
     }
 
     #[inline(always)]
     fn try_detach(&mut self) {
         if !self._ptr.is_null() {
-            unsafe { (*self._ptr).dec_ref(); }
+            unsafe {
+                (*self._ptr).dec_ref();
+            }
             self._ptr = ptr::null_mut();
         }
     }

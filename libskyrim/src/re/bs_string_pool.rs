@@ -1,6 +1,6 @@
-use core::sync::atomic::{AtomicU16, Ordering};
-use crate::relocation::VariantID;
+use crate::relocation::RelocationID;
 use crate::relocation_func;
+use core::sync::atomic::{AtomicU16, Ordering};
 
 /// C++ `RE::BSStringPool::Entry`
 /// This header resides directly before the actual string data (`data - 0x18`).
@@ -9,9 +9,9 @@ pub struct BSStringPoolEntry {
     pub left: *mut BSStringPoolEntry, // 0x00
     pub flags: AtomicU16,             // 0x08
     pub crc: u16,                     // 0x0A
-    pub pad0c: u32,                   // 0x0C (Неявный C++ паддинг для выравнивания union)
-    pub length: u32,                  // 0x10 (Начало union, совпадает с _length)
-    pub pad14: u32,                   // 0x14 (Добиваем остаток union, так как он 8 байт)
+    pub pad0c: u32, // 0x0C (Р В Р’В Р РЋРЎС™Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В Р РЏР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ C++ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚вЂњ Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏ Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ union)
+    pub length: u32, // 0x10 (Р В Р’В Р РЋРЎС™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚Сћ union, Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р Р‹Р В РЎвЂњ _length)
+    pub pad14: u32, // 0x14 (Р В Р’В Р Р†Р вЂљРЎСљР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚Сњ union, Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚Сњ Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚Сњ Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦ 8 Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљРЎв„ў)
 }
 
 const _: () = assert!(core::mem::size_of::<BSStringPoolEntry>() == 0x18);
@@ -52,10 +52,10 @@ impl BSStringPoolEntry {
     }
 
     relocation_func! {
-        pub fn release8(entry: *const core::ffi::c_char) => VariantID::new(67847, 69192, 0)
+        pub fn release8(entry: *const core::ffi::c_char) => RelocationID::new(67847, 69192)
     }
 
     relocation_func! {
-        pub fn release16(entry: *const u16) => VariantID::new(67848, 69193, 0)
+        pub fn release16(entry: *const u16) => RelocationID::new(67848, 69193)
     }
 }

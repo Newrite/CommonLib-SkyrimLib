@@ -1,6 +1,6 @@
 use core::ffi::c_void;
 
-extern "C" {
+unsafe extern "C" {
     // ── Initialization ──────────────────────────────────────────────────────
     pub fn init_commonlib(skse_interface: *const c_void);
 
@@ -50,8 +50,11 @@ extern "C" {
 
     // ── ScrapHeap ───────────────────────────────────────────────────────────
     /// `heap->Allocate(size, alignment)` — allocates from a ScrapHeap.
-    pub fn commonlib_scrap_heap_allocate(heap: *mut c_void, size: usize, alignment: usize) -> *mut c_void;
+    pub fn commonlib_scrap_heap_allocate(
+        heap: *mut c_void,
+        size: usize,
+        alignment: usize,
+    ) -> *mut c_void;
     /// `heap->Deallocate(mem)` — deallocates from a ScrapHeap.
     pub fn commonlib_scrap_heap_deallocate(heap: *mut c_void, mem: *mut c_void);
 }
-

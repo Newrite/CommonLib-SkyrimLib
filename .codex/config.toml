@@ -1,0 +1,17 @@
+# Repo-local Codex configuration for CommonLib-SkyrimLib.
+# Requires Codex versions with project-aware config layering.
+
+project_root_markers = [".codex", "CommonLibVR", "libskyrim"]
+
+instructions = """
+Use `.codex/AGENTS.md` and `.codex/skills/*` as the only repository-local
+instruction sources.
+
+Ignore `.agents/**`, `.qwen/**`, and agent metadata inside vendored
+dependencies such as `CommonLibVR/**` unless the user explicitly asks to inspect
+or edit them.
+
+When repository-local instructions conflict, prefer `.codex/**`.
+"""
+
+model_reasoning_effort = "high"

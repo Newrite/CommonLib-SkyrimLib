@@ -1,6 +1,7 @@
 use crate::offsets::offsets_rtti::RTTI_TESRaceForm;
 use crate::offsets::offsets_vtable::VTABLE_TESRaceForm;
 
+use crate::core_util::inherit;
 use crate::re::BaseFormComponent;
 use crate::re::TESRace;
 
@@ -11,7 +12,11 @@ pub struct TESRaceForm {
 }
 const _: () = assert!(core::mem::size_of::<TESRaceForm>() == 0x10);
 
-impl crate::relocation::RttiType for TESRaceForm { const RTTI: crate::relocation::VariantID = RTTI_TESRaceForm; }
+impl crate::relocation::RttiType for TESRaceForm {
+    const RTTI: crate::relocation::VariantID = RTTI_TESRaceForm;
+}
+
+inherit!(TESRaceForm : BaseFormComponent);
 
 impl TESRaceForm {
     pub const RTTI: crate::relocation::VariantID = RTTI_TESRaceForm;

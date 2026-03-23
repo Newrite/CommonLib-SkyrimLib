@@ -1,1 +1,1 @@
-﻿core_util::abstract_type! { pub type BGSVoiceType; }
+core_util::abstract_type! { pub type BGSVoiceType; }

@@ -1,8 +1,8 @@
 //! Translation of `RE::BSPointerHandle.h` (partial).
 //!
-//! Provides `ObjectRefHandle` — a handle to a `TESObjectREFR`.
+//! Provides `ObjectRefHandle` вЂ” a handle to a `TESObjectREFR`.
 //! In C++ this is `BSPointerHandle<TESObjectREFR>`, which wraps
-//! `BSUntypedPointerHandle<21, 5>` — a single `u32`.
+//! `BSUntypedPointerHandle<21, 5>` вЂ” a single `u32`.
 
 /// C++ `RE::ObjectRefHandle` = `BSPointerHandle<TESObjectREFR>`
 ///

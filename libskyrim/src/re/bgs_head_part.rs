@@ -6,8 +6,8 @@ use crate::offsets::offsets_vtable::VTABLE_BGSHeadPart;
 use crate::re::bgs_color_form::BGSColorForm;
 use crate::re::bgs_list_form::BGSListForm;
 use crate::re::bgs_texture_set::BGSTextureSet;
-use crate::re::bst_array::BSTArray;
 use crate::re::bs_fixed_string::BSFixedString;
+use crate::re::bst_array::BSTArray;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
 use crate::re::tes_form::TESForm;
@@ -46,19 +46,19 @@ pub const HEAD_PART_MORPH_TOTAL: usize = 3;
 
 #[repr(C)]
 pub struct BGSHeadPart {
-    pub base: TESForm,                                     // 0x000
-    pub full_name: TESFullName,                            // 0x020
-    pub model_texture_swap: TESModelTextureSwap,           // 0x030
-    pub flags: HeadPartFlags,                              // 0x068 - DATA
-    pub pad069: u8,                                        // 0x069
-    pub pad06a: u16,                                       // 0x06A
-    pub part_type: HeadPartType,                           // 0x06C - PNAM
-    pub extra_parts: BSTArray<*mut BGSHeadPart>,           // 0x070
-    pub texture_set: *mut BGSTextureSet,                   // 0x088 - TNAM
-    pub morphs: [TESModelTri; HEAD_PART_MORPH_TOTAL],      // 0x090
-    pub color: *mut BGSColorForm,                          // 0x108 - CNAM
-    pub valid_races: *mut BGSListForm,                     // 0x110 - RNAM
-    pub form_editor_id: BSFixedString,                     // 0x118 - EDID
+    pub base: TESForm,                                // 0x000
+    pub full_name: TESFullName,                       // 0x020
+    pub model_texture_swap: TESModelTextureSwap,      // 0x030
+    pub flags: HeadPartFlags,                         // 0x068 - DATA
+    pub pad069: u8,                                   // 0x069
+    pub pad06a: u16,                                  // 0x06A
+    pub part_type: HeadPartType,                      // 0x06C - PNAM
+    pub extra_parts: BSTArray<*mut BGSHeadPart>,      // 0x070
+    pub texture_set: *mut BGSTextureSet,              // 0x088 - TNAM
+    pub morphs: [TESModelTri; HEAD_PART_MORPH_TOTAL], // 0x090
+    pub color: *mut BGSColorForm,                     // 0x108 - CNAM
+    pub valid_races: *mut BGSListForm,                // 0x110 - RNAM
+    pub form_editor_id: BSFixedString,                // 0x118 - EDID
 }
 
 const _: () = assert!(core::mem::size_of::<BGSHeadPart>() == 0x120);

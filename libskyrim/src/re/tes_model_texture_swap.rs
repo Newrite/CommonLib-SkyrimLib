@@ -1,9 +1,9 @@
 use crate::offsets::offsets_rtti::RTTI_TESModelTextureSwap;
 use crate::offsets::offsets_vtable::VTABLE_TESModelTextureSwap;
-use crate::re::tes_model::TESModel;
-use crate::re::bs_fixed_string::BSFixedString;
 use crate::re::bgs_texture_set::BGSTextureSet;
-use crate::relocation::{VariantID, RttiType};
+use crate::re::bs_fixed_string::BSFixedString;
+use crate::re::tes_model::TESModel;
+use crate::relocation::{RttiType, VariantID};
 use core_util::inherit;
 
 /// C++ `RE::TESModelTextureSwap::AlternateTexture`
@@ -41,7 +41,12 @@ impl TESModelTextureSwap {
         if self.alternate_textures.is_null() || self.num_alternate_textures == 0 {
             &[]
         } else {
-            unsafe { core::slice::from_raw_parts(self.alternate_textures, self.num_alternate_textures as usize) }
+            unsafe {
+                core::slice::from_raw_parts(
+                    self.alternate_textures,
+                    self.num_alternate_textures as usize,
+                )
+            }
         }
     }
 }

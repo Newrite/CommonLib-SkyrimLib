@@ -1,13 +1,13 @@
 //! Translation of `RE::BipedAnim.h`.
 
-use core_util::inherit;
+use crate::relocation::RelocationID;
 use crate::relocation_func;
-use crate::relocation::VariantID;
+use core_util::inherit;
 
+use crate::re::biped_objects::BIPED_OBJECTS_TOTAL;
 use crate::re::bs_intrusive_ref_counted::BSIntrusiveRefCounted;
 use crate::re::bs_pointer_handle::ObjectRefHandle;
 use crate::re::bst_smart_pointer::BSTSmartPointerIntrusiveRefCountable;
-use crate::re::biped_objects::BIPED_OBJECTS_TOTAL;
 use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::weapon_animation_graph_manager_holder::WeaponAnimationGraphManagerHolder;
 
@@ -56,7 +56,7 @@ impl BSTSmartPointerIntrusiveRefCountable for BipedAnim {
     #[inline(always)]
     unsafe fn bst_delete(&self) {
         crate::relocation_func! {
-            fn dtor_impl(this: *mut BipedAnim) => VariantID::new(15491, 15656, 0)
+            fn dtor_impl(this: *mut BipedAnim) => RelocationID::new(15491, 15656)
         }
         dtor_impl(self as *const Self as *mut Self);
     }
@@ -70,13 +70,13 @@ const _: () = assert!(core::mem::size_of::<BIPOBJECT>() == 0x78);
 /// including both active and buffered (pending) equipment slots.
 #[repr(C)]
 pub struct BipedAnim {
-    pub base: BSIntrusiveRefCounted,                       // 0000
-    pub pad0004: u32,                                      // 0004
-    pub root: *mut NiNode,                                 // 0008
+    pub base: BSIntrusiveRefCounted,                        // 0000
+    pub pad0004: u32,                                       // 0004
+    pub root: *mut NiNode,                                  // 0008
     pub objects: [BIPOBJECT; BIPED_OBJECTS_TOTAL],          // 0010
     pub buffered_objects: [BIPOBJECT; BIPED_OBJECTS_TOTAL], // 13C0
-    pub actor_ref: ObjectRefHandle,                        // 2770
-    pub pad2774: u32,                                      // 2774
+    pub actor_ref: ObjectRefHandle,                         // 2770
+    pub pad2774: u32,                                       // 2774
 }
 
 const _: () = assert!(core::mem::size_of::<BipedAnim>() == 0x2778);
@@ -84,24 +84,25 @@ const _: () = assert!(core::mem::size_of::<BipedAnim>() == 0x2778);
 inherit!(BipedAnim : BSIntrusiveRefCounted);
 
 impl BipedAnim {
-    // No RTTI / VTABLE — BipedAnim is not a virtual class.
+    // No RTTI / VTABLE Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ BipedAnim is not a virtual class.
 
     // RELOCATION_ID SE: 15494, AE: 15659
     relocation_func! {
-        pub fn remove_all_parts(this: &mut BipedAnim) => VariantID::new(15494, 15659, 0)
+        pub fn remove_all_parts(this: &mut BipedAnim) => RelocationID::new(15494, 15659)
     }
 
     // RELOCATION_ID SE: 15518, AE: 15695
     relocation_func! {
-        pub fn get_shield_object(this: &mut BipedAnim) -> *mut BIPOBJECT => VariantID::new(15518, 15695, 0)
+        pub fn get_shield_object(this: &mut BipedAnim) -> *mut BIPOBJECT => RelocationID::new(15518, 15695)
     }
 
     // RELOCATION_ID SE: 15491, AE: 15656
+    #[allow(dead_code)]
     fn dtor(this: &mut BipedAnim) {
-        // Private method — called by ~BipedAnim() destructor.
+        // Private method Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ called by ~BipedAnim() destructor.
         // The actual destructor also zeroes memory after Dtor().
         crate::relocation_func! {
-            fn dtor_impl(this: &mut BipedAnim) => VariantID::new(15491, 15656, 0)
+            fn dtor_impl(this: &mut BipedAnim) => RelocationID::new(15491, 15656)
         }
         dtor_impl(this);
     }

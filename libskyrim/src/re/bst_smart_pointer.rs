@@ -1,6 +1,6 @@
 //! Translation of `RE::BSTSmartPointer.h`.
 //!
-//! `BSTSmartPointer<T>` — intrusive reference-counted smart pointer,
+//! `BSTSmartPointer<T>` вЂ” intrusive reference-counted smart pointer,
 //! typically used with `BSTSmartPointerIntrusiveRefCount` or `BSTSmartPointerAutoPtr`.
 
 use core::marker::PhantomData;
@@ -17,7 +17,7 @@ pub trait BSTSmartPointerManager<T> {
 }
 
 /// Intrusive reference count manager for `BSTSmartPointer`.
-/// 
+///
 /// Types `T` managed by this must implement `BSTSmartPointerIntrusiveRefCountable`.
 pub struct BSTSmartPointerIntrusiveRefCount;
 
@@ -28,13 +28,15 @@ pub trait BSTSmartPointerIntrusiveRefCountable {
     /// Decrement the reference count. If it reaches 0, the object should be deleted.
     fn bst_dec_ref(&self) -> u32;
     /// Deletes the object. Called when `bst_dec_ref` returns 0.
-    /// 
+    ///
     /// # Safety
     /// Must only be called when the reference count is 0.
     unsafe fn bst_delete(&self);
 }
 
-impl<T: BSTSmartPointerIntrusiveRefCountable> BSTSmartPointerManager<T> for BSTSmartPointerIntrusiveRefCount {
+impl<T: BSTSmartPointerIntrusiveRefCountable> BSTSmartPointerManager<T>
+    for BSTSmartPointerIntrusiveRefCount
+{
     #[inline(always)]
     fn acquire(ptr: *mut T) {
         if !ptr.is_null() {
@@ -60,7 +62,7 @@ pub struct BSTSmartPointerAutoPtr;
 /// Trait for types managed by `BSTSmartPointerAutoPtr`.
 pub trait BSTSmartPointerAutoDeletable {
     /// Deletes the object.
-    /// 
+    ///
     /// # Safety
     /// Must only be called once to free the object.
     unsafe fn bst_delete(&self);
@@ -82,10 +84,10 @@ impl<T: BSTSmartPointerAutoDeletable> BSTSmartPointerManager<T> for BSTSmartPoin
 
 /// C++ `RE::BSTSmartPointer<T, RefManager>`.
 ///
-/// Layout: `{ _ptr: *mut T }` — 0x8 bytes (one pointer).
+/// Layout: `{ _ptr: *mut T }` вЂ” 0x8 bytes (one pointer).
 #[repr(C)]
 pub struct BSTSmartPointer<T, M: BSTSmartPointerManager<T> = BSTSmartPointerIntrusiveRefCount> {
-    _ptr: *mut T,  // 00
+    _ptr: *mut T, // 00
     _marker: PhantomData<M>,
 }
 
@@ -93,11 +95,15 @@ struct Dummy;
 
 impl BSTSmartPointerIntrusiveRefCountable for Dummy {
     fn bst_inc_ref(&self) {}
-    fn bst_dec_ref(&self) -> u32 { 0 }
+    fn bst_dec_ref(&self) -> u32 {
+        0
+    }
     unsafe fn bst_delete(&self) {}
 }
 
-const _: () = assert!(core::mem::size_of::<BSTSmartPointer<Dummy, BSTSmartPointerIntrusiveRefCount>>() == 0x8);
+const _: () = assert!(
+    core::mem::size_of::<BSTSmartPointer<Dummy, BSTSmartPointerIntrusiveRefCount>>() == 0x8
+);
 
 impl<T, M: BSTSmartPointerManager<T>> BSTSmartPointer<T, M> {
     /// Creates a null `BSTSmartPointer`.
@@ -182,7 +188,7 @@ impl<T, M: BSTSmartPointerManager<T>> BSTSmartPointer<T, M> {
         }
     }
 
-    // ── Private helpers (match C++ TryAttach/TryDetach) ──────────────────
+    // в”Ђв”Ђ Private helpers (match C++ TryAttach/TryDetach) в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
     #[inline(always)]
     fn try_attach(&self) {

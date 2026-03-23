@@ -10,13 +10,13 @@ use crate::relocation::{RttiType, VariantID};
 
 #[repr(C)]
 pub struct SpellData {
-    pub spells: *mut *mut SpellItem,        // 0x00
-    pub lev_spells: *mut *mut TESLevSpell,  // 0x08
-    pub shouts: *mut *mut TESShout,         // 0x10
-    pub num_spells: u32,                    // 0x18
-    pub num_lev_spells: u32,                // 0x1C
-    pub num_shouts: u32,                    // 0x20
-    pub pad24: u32,                         // 0x24
+    pub spells: *mut *mut SpellItem,       // 0x00
+    pub lev_spells: *mut *mut TESLevSpell, // 0x08
+    pub shouts: *mut *mut TESShout,        // 0x10
+    pub num_spells: u32,                   // 0x18
+    pub num_lev_spells: u32,               // 0x1C
+    pub num_shouts: u32,                   // 0x20
+    pub pad24: u32,                        // 0x24
 }
 
 const _: () = assert!(core::mem::size_of::<SpellData>() == 0x28);

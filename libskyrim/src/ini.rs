@@ -5,15 +5,15 @@
 //! @bug No known bugs.
 //!
 
-use core::str::FromStr;
-use core::ffi::CStr;
-use core::cmp::Ordering;
-use core::borrow::Borrow;
-use core::mem::size_of;
-use core::fmt::Write;
 use alloc::rc::Rc;
-use alloc::vec::Vec;
 use alloc::string::String;
+use alloc::vec::Vec;
+use core::borrow::Borrow;
+use core::cmp::Ordering;
+use core::ffi::CStr;
+use core::fmt::Write;
+use core::mem::size_of;
+use core::str::FromStr;
 
 use cstd::io::File;
 
@@ -27,19 +27,19 @@ const COMMENT_CHARS: &[char] = &['#', ';'];
 /// Manages an INI file, allowing it to be updated, read, and written to a file.
 pub struct Ini {
     sections: IniMap<SectionMeta>,
-    suffix: Option<String>
+    suffix: Option<String>,
 }
 
 /// A section in the INI file.
 pub struct Section<'a> {
     section: &'a str,
-    meta: &'a SectionMeta
+    meta: &'a SectionMeta,
 }
 
 /// A field in the INI file.
 pub struct Field<'a> {
     field: &'a str,
-    meta: &'a FieldMeta
+    meta: &'a FieldMeta,
 }
 
 ///
@@ -64,7 +64,7 @@ pub struct FieldIter<'a>(IniMapIter<'a, FieldMeta>);
 struct SectionMeta {
     prefix: Option<String>,
     inline_comment: Option<String>,
-    fields: IniMap<FieldMeta>
+    fields: IniMap<FieldMeta>,
 }
 
 /// The metadata associated with each field in the INI file.
@@ -72,62 +72,61 @@ struct SectionMeta {
 struct FieldMeta {
     prefix: Option<String>,
     inline_comment: Option<String>,
-    val: Option<String>
+    val: Option<String>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 impl Ini {
     /// Loads in an INI file from the given path.
-    pub fn from_path(
-        path: &CStr
-    ) -> Result<Self, ()> {
-        let mut ret = Ini { sections: IniMap { order: Vec::new(), map: Vec::new() }, suffix: None };
+    pub fn from_path(path: &CStr) -> Result<Self, ()> {
+        let mut ret = Ini {
+            sections: IniMap {
+                order: Vec::new(),
+                map: Vec::new(),
+            },
+            suffix: None,
+        };
         ret.load_path(path)?;
         Ok(ret)
     }
 
     /// Loads in an INI file from the given string.
-    pub fn from_str(
-        s: &str
-    ) -> Result<Self, ()> {
-        let mut ret = Ini { sections: IniMap { order: Vec::new(), map: Vec::new() }, suffix: None };
+    pub fn from_str(s: &str) -> Result<Self, ()> {
+        let mut ret = Ini {
+            sections: IniMap {
+                order: Vec::new(),
+                map: Vec::new(),
+            },
+            suffix: None,
+        };
         ret.load_str(s)?;
         Ok(ret)
     }
 
     /// Gets a single section within the INI file.
-    pub fn section<'a>(
-        &'a self,
-        section: &str
-    ) -> Result<Section<'a>, ()> {
+    pub fn section<'a>(&'a self, section: &str) -> Result<Section<'a>, ()> {
         let (section, meta) = self.sections.get_key_value(section).ok_or(())?;
-        Ok(Section { section: section.as_key_str().get(), meta })
+        Ok(Section {
+            section: section.as_key_str().get(),
+            meta,
+        })
     }
 
     /// Gets an iterator over all sections in the INI file.
-    pub fn sections<'a>(
-        &'a self
-    ) -> SectionIter<'a> {
+    pub fn sections<'a>(&'a self) -> SectionIter<'a> {
         SectionIter(self.sections.iter())
     }
 
     /// Gets a value in the INI from the given section/field pair.
-    pub fn get<'a>(
-        &'a self,
-        section: &str,
-        field: &str
-    ) -> Option<&'a str> {
+    pub fn get<'a>(&'a self, section: &str, field: &str) -> Option<&'a str> {
         self.section(section).ok()?.field(field).ok()?.value()
     }
 
     /// Updates the sections/fields in the given map with values found only in the second map.
     ///
     /// Returns true if any updates were performed, and false otherwise.
-    pub fn update(
-        &mut self,
-        delta: &Self
-    ) -> bool {
+    pub fn update(&mut self, delta: &Self) -> bool {
         let mut changed = false;
 
         for delta_section in delta.sections() {
@@ -154,14 +153,13 @@ impl Ini {
     }
 
     /// Writes the contents of the INI object to the given file.
-    pub fn write_file(
-        &self,
-        path: &CStr
-    ) -> Result<(), core::fmt::Error> {
+    pub fn write_file(&self, path: &CStr) -> Result<(), core::fmt::Error> {
         let mut f = File::open(path, core_util::cstr!("w+b")).map_err(|_| core::fmt::Error)?;
 
         for section in self.sections() {
-            if let Some(ref pre) = section.meta.prefix { write!(&mut f, "{}", pre)?; }
+            if let Some(ref pre) = section.meta.prefix {
+                write!(&mut f, "{}", pre)?;
+            }
             write!(&mut f, "[{}]", section.name())?;
             if let Some(ref comment) = section.meta.inline_comment {
                 write!(&mut f, " #{}", comment)?;
@@ -169,10 +167,16 @@ impl Ini {
             write!(&mut f, "\n")?;
 
             for Field { field, meta } in section.fields() {
-                if let Some(ref pre) = meta.prefix { write!(&mut f, "{}", pre)?; }
+                if let Some(ref pre) = meta.prefix {
+                    write!(&mut f, "{}", pre)?;
+                }
                 write!(&mut f, "{}", field)?;
-                if let Some(ref val) = meta.val { write!(&mut f, " = {}", val)?; }
-                if let Some(ref comment) = meta.inline_comment { write!(&mut f, " #{}", comment)?; }
+                if let Some(ref val) = meta.val {
+                    write!(&mut f, " = {}", val)?;
+                }
+                if let Some(ref comment) = meta.inline_comment {
+                    write!(&mut f, " #{}", comment)?;
+                }
                 write!(&mut f, "\n")?;
             }
         }
@@ -185,20 +189,14 @@ impl Ini {
     }
 
     /// Loads a configuration in from the given file.
-    fn load_path(
-        &mut self,
-        path: &CStr
-    ) -> Result<(), ()> {
+    fn load_path(&mut self, path: &CStr) -> Result<(), ()> {
         self.load_str(&File::open(path, core_util::cstr!("rb"))?.into_string()?)
     }
 
     /// Loads a configuration in from the given string.
-    fn load_str(
-        &mut self,
-        conf: &str
-    ) -> Result<(), ()> {
-        let is_whitespace = |l: &str| { l.trim().len() == 0 };
-        let is_comment = |l: &str| { l.trim().starts_with(COMMENT_CHARS) };
+    fn load_str(&mut self, conf: &str) -> Result<(), ()> {
+        let is_whitespace = |l: &str| l.trim().len() == 0;
+        let is_comment = |l: &str| l.trim().starts_with(COMMENT_CHARS);
 
         let mut section = None;
         let mut s = String::new();
@@ -230,11 +228,7 @@ impl Ini {
     ///
     /// If the given section is already in the file, then the given prefix is lost.
     ///
-    fn define_section(
-        &mut self,
-        prefix: String,
-        line: &str
-    ) -> Result<String, ()> {
+    fn define_section(&mut self, prefix: String, line: &str) -> Result<String, ()> {
         let prefix = if prefix.len() > 0 { Some(prefix) } else { None };
         let (line, comment) = self.split_comment(line);
 
@@ -248,7 +242,10 @@ impl Ini {
             let meta = SectionMeta {
                 prefix,
                 inline_comment: comment.map(|s| String::from_str(s).unwrap()),
-                fields: IniMap { order: Vec::new(), map: Vec::new() }
+                fields: IniMap {
+                    order: Vec::new(),
+                    map: Vec::new(),
+                },
             };
             self.sections.insert(section, meta);
         }
@@ -262,12 +259,7 @@ impl Ini {
     /// If the given field is already in the file, then the given prefix is lost
     /// and the new value is ignored.
     ///
-    fn define_field(
-        &mut self,
-        section: &str,
-        prefix: String,
-        line: &str
-    ) -> Result<(), ()> {
+    fn define_field(&mut self, section: &str, prefix: String, line: &str) -> Result<(), ()> {
         let prefix = if prefix.len() > 0 { Some(prefix) } else { None };
         let (line, comment) = self.split_comment(line);
         let (key, val) = if let Some((k, v)) = line.split_once('=') {
@@ -279,11 +271,14 @@ impl Ini {
         let section = self.sections.get_mut(section).ok_or(())?;
         if let None = section.fields.get(key) {
             let key = String::from_str(key).unwrap();
-            section.fields.insert(key, FieldMeta {
-                prefix,
-                inline_comment: comment.map(|s| String::from_str(s).unwrap()),
-                val: val.map(|s| String::from_str(s).unwrap())
-            });
+            section.fields.insert(
+                key,
+                FieldMeta {
+                    prefix,
+                    inline_comment: comment.map(|s| String::from_str(s).unwrap()),
+                    val: val.map(|s| String::from_str(s).unwrap()),
+                },
+            );
 
             Ok(())
         } else {
@@ -292,10 +287,7 @@ impl Ini {
     }
 
     /// Splits off the inline comment from a line of text.
-    fn split_comment<'a>(
-        &self,
-        line: &'a str
-    ) -> (&'a str, Option<&'a str>) {
+    fn split_comment<'a>(&self, line: &'a str) -> (&'a str, Option<&'a str>) {
         if let Some((l, c)) = line.split_once(COMMENT_CHARS) {
             (l.trim(), Some(c))
         } else {
@@ -306,60 +298,54 @@ impl Ini {
 
 impl<'a> Section<'a> {
     /// Gets the name of the given section.
-    pub fn name(
-        &self
-    ) -> &str {
+    pub fn name(&self) -> &str {
         self.section
     }
 
     /// Gets a field in the given section.
-    pub fn field(
-        &self,
-        name: &str
-    ) -> Result<Field<'a>, ()> {
+    pub fn field(&self, name: &str) -> Result<Field<'a>, ()> {
         let (field, meta) = self.meta.fields.get_key_value(name).ok_or(())?;
-        Ok(Field { field: field.as_key_str().get(), meta })
+        Ok(Field {
+            field: field.as_key_str().get(),
+            meta,
+        })
     }
 
     /// Gets an iterator over all the fields in a section.
-    pub fn fields(
-        &self
-    ) -> FieldIter<'a> {
+    pub fn fields(&self) -> FieldIter<'a> {
         FieldIter(self.meta.fields.iter())
     }
 }
 
 impl<'a> Field<'a> {
     /// Gets the name of the given field.
-    pub fn name(
-        &self
-    ) -> &str {
+    pub fn name(&self) -> &str {
         self.field
     }
 
     /// Attempts to read the value for the given field.
-    pub fn value(
-        &self
-    ) -> Option<&'a str> {
+    pub fn value(&self) -> Option<&'a str> {
         self.meta.val.as_ref().map(|s| s.as_str())
     }
 }
 
 impl<'a> Iterator for SectionIter<'a> {
     type Item = Section<'a>;
-    fn next(
-        &mut self
-    ) -> Option<Self::Item> {
-        self.0.next().map(|i| Section { section: i.0.get(), meta: i.1 })
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(|i| Section {
+            section: i.0.get(),
+            meta: i.1,
+        })
     }
 }
 
 impl<'a> Iterator for FieldIter<'a> {
     type Item = Field<'a>;
-    fn next(
-        &mut self
-    ) -> Option<Self::Item> {
-        self.0.next().map(|i| Field { field: i.0.get(), meta: i.1 })
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(|i| Field {
+            field: i.0.get(),
+            meta: i.1,
+        })
     }
 }
 
@@ -382,33 +368,24 @@ struct IniMap<V> {
 /// Iterates over the elements in an ordered map, in order.
 struct IniMapIter<'a, V> {
     order: &'a Vec<(KeyString, V)>,
-    index: usize
+    index: usize,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 impl<V> IniMap<V> {
     /// Gets the element with the given key.
-    fn get<'a>(
-        &'a self,
-        key: &str
-    ) -> Option<&'a V> {
+    fn get<'a>(&'a self, key: &str) -> Option<&'a V> {
         self.search(key).ok().map(|i| &self.order[i].1)
     }
 
     /// Gets a mutable reference to the element with the given key.
-    fn get_mut<'a>(
-        &'a mut self,
-        key: &str
-    ) -> Option<&'a mut V> {
+    fn get_mut<'a>(&'a mut self, key: &str) -> Option<&'a mut V> {
         self.search(key).ok().map(|i| &mut self.order[i].1)
     }
 
     /// Gets the (key, value) associated with the given key.
-    fn get_key_value(
-        &self,
-        key: &str
-    ) -> Option<(&KeyString, &V)> {
+    fn get_key_value(&self, key: &str) -> Option<(&KeyString, &V)> {
         if let Ok(i) = self.search(key) {
             Some((&self.order[i].0, &self.order[i].1))
         } else {
@@ -417,16 +394,12 @@ impl<V> IniMap<V> {
     }
 
     /// Inserts a new (key, val) into the map. Values are ordered based on their insertion order.
-    fn insert(
-        &mut self,
-        key: String,
-        val: V
-    ) {
+    fn insert(&mut self, key: String, val: V) {
         let key = KeyString::new(key);
         match self.search(key.as_key_str().get()) {
             Ok(i) => {
                 self.order[i].1 = val;
-            },
+            }
             Err(i) => {
                 self.map.insert(i, (key.clone(), self.order.len()));
                 self.order.push((key, val));
@@ -435,32 +408,30 @@ impl<V> IniMap<V> {
     }
 
     /// Gets an iterator for this map.
-    fn iter(
-        &self
-    ) -> IniMapIter<'_, V> {
+    fn iter(&self) -> IniMapIter<'_, V> {
         IniMapIter {
             order: &self.order,
-            index: 0
+            index: 0,
         }
     }
 
     /// Binary searches for the given string in the map.
-    fn search(
-        &self,
-        key: &str
-    ) -> Result<usize, usize> {
+    fn search(&self, key: &str) -> Result<usize, usize> {
         let key = KeyStr::new(key);
-        self.map.binary_search_by(|k| k.0.as_key_str().cmp(key)).map(|i| self.map[i].1)
+        self.map
+            .binary_search_by(|k| k.0.as_key_str().cmp(key))
+            .map(|i| self.map[i].1)
     }
 }
 
 impl<'a, V> Iterator for IniMapIter<'a, V> {
     type Item = (&'a KeyStr, &'a V);
-    fn next(
-        &mut self
-    ) -> Option<Self::Item> {
+    fn next(&mut self) -> Option<Self::Item> {
         if self.index < self.order.len() {
-            let ret = (self.order[self.index].0.as_key_str(), &self.order[self.index].1);
+            let ret = (
+                self.order[self.index].0.as_key_str(),
+                &self.order[self.index].1,
+            );
             self.index += 1;
             Some(ret)
         } else {
@@ -491,9 +462,7 @@ struct KeyString(Rc<String>);
 
 impl KeyStr {
     /// Creates a KeyStr from a string.
-    const fn new<'a>(
-        s: &'a str
-    ) -> &'a Self {
+    const fn new<'a>(s: &'a str) -> &'a Self {
         assert!(size_of::<&Self>() == size_of::<&str>());
 
         unsafe {
@@ -503,21 +472,18 @@ impl KeyStr {
     }
 
     /// Gets the underlying str, preserving the original case.
-    const fn get(
-        &self
-    ) -> &str {
+    const fn get(&self) -> &str {
         &self.0
     }
 
     /// Compares two key strs.
-    fn compare(
-        &self,
-        rhs: &Self
-    ) -> Ordering {
+    fn compare(&self, rhs: &Self) -> Ordering {
         let lhs = self.get().as_bytes();
         let rhs = rhs.get().as_bytes();
         for i in 0..core::cmp::min(lhs.len(), rhs.len()) {
-            let res = lhs[i].to_ascii_lowercase().cmp(&rhs[i].to_ascii_lowercase());
+            let res = lhs[i]
+                .to_ascii_lowercase()
+                .cmp(&rhs[i].to_ascii_lowercase());
             if res != Ordering::Equal {
                 return res;
             }
@@ -528,31 +494,21 @@ impl KeyStr {
 }
 
 impl PartialEq<KeyStr> for KeyStr {
-    fn eq(
-        &self,
-        rhs: &KeyStr
-    ) -> bool {
+    fn eq(&self, rhs: &KeyStr) -> bool {
         self.compare(rhs) == Ordering::Equal
     }
 }
 
-
 impl Eq for KeyStr {}
 
 impl PartialOrd<KeyStr> for KeyStr {
-    fn partial_cmp(
-        &self,
-        rhs: &KeyStr
-    ) -> Option<Ordering> {
+    fn partial_cmp(&self, rhs: &KeyStr) -> Option<Ordering> {
         Some(self.compare(rhs))
     }
 }
 
 impl Ord for KeyStr {
-    fn cmp(
-        &self,
-        rhs: &Self
-    ) -> Ordering {
+    fn cmp(&self, rhs: &Self) -> Ordering {
         self.compare(rhs)
     }
 }
@@ -561,33 +517,24 @@ impl Ord for KeyStr {
 
 impl KeyString {
     /// Creates a new key string.
-    fn new(
-        s: String
-    ) -> Self {
+    fn new(s: String) -> Self {
         Self(Rc::new(s))
     }
 
     /// Borrows the key string as a KeyStr.
-    fn as_key_str(
-        &self
-    ) -> &KeyStr {
+    fn as_key_str(&self) -> &KeyStr {
         KeyStr::new(<Rc<String> as Borrow<String>>::borrow(&self.0).as_str())
     }
 }
 
 impl Borrow<KeyStr> for KeyString {
-    fn borrow(
-        &self
-    ) -> &KeyStr {
+    fn borrow(&self) -> &KeyStr {
         self.as_key_str()
     }
 }
 
 impl<T: Borrow<KeyStr> + ?Sized> PartialEq<T> for KeyString {
-    fn eq(
-        &self,
-        rhs: &T
-    ) -> bool {
+    fn eq(&self, rhs: &T) -> bool {
         self.as_key_str() == rhs.borrow()
     }
 }
@@ -595,19 +542,13 @@ impl<T: Borrow<KeyStr> + ?Sized> PartialEq<T> for KeyString {
 impl Eq for KeyString {}
 
 impl<T: Borrow<KeyStr> + ?Sized> PartialOrd<T> for KeyString {
-    fn partial_cmp(
-        &self,
-        rhs: &T
-    ) -> Option<Ordering> {
+    fn partial_cmp(&self, rhs: &T) -> Option<Ordering> {
         Some(self.as_key_str().cmp(rhs.borrow()))
     }
 }
 
 impl Ord for KeyString {
-    fn cmp(
-        &self,
-        rhs: &Self
-    ) -> Ordering {
+    fn cmp(&self, rhs: &Self) -> Ordering {
         self.partial_cmp(rhs).unwrap()
     }
 }

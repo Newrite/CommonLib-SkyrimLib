@@ -1,30 +1,30 @@
-//! Translation of `RE::BSTHashMap.h` — the scatter table implementation.
+//! Translation of `RE::BSTHashMap.h` вЂ” the scatter table implementation.
 //!
 //! Contains:
-//! - `BSTScatterTableStandardParent` / `BSTScatterTableFixedParent` — metadata layouts
-//! - `BSTScatterTableEntry<V>` — entry type with value + next pointer for chaining
-//! - `BSTScatterTableHeapAllocator` / `BSTScatterTableScrapAllocator` — table allocators
-//! - `BSTScatterTable<K, V, ...>` — the core hash table
+//! - `BSTScatterTableStandardParent` / `BSTScatterTableFixedParent` вЂ” metadata layouts
+//! - `BSTScatterTableEntry<V>` вЂ” entry type with value + next pointer for chaining
+//! - `BSTScatterTableHeapAllocator` / `BSTScatterTableScrapAllocator` вЂ” table allocators
+//! - `BSTScatterTable<K, V, ...>` вЂ” the core hash table
 //! - Type aliases: `BSTHashMap`, `BSTSet`, `BSTFixedHashMap`, `BSTScrapHashMap`
 
 use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::ptr;
 
-use crate::re::crc::BSTHash;
 use crate::re::bst_tuple::BSTTuple;
+use crate::re::crc::BSTHash;
 use crate::re::scrap_heap::ScrapHeap;
 
-// ─── Sentinel ────────────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Sentinel в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 //
 // The engine uses a sentinel value `{ 0xDE, 0xAD, 0xBE, 0xEF }` to mark the
 // end of a chain. The actual sentinel pointer is stored in each table's
 // `_sentinel` field and is initialized at construction time (C++ side).
-// `entry.next == sentinel` → "end of chain" (vs null → "empty slot").
+// `entry.next == sentinel` в†’ "end of chain" (vs null в†’ "empty slot").
 //
 static BST_SCATTER_TABLE_SENTINEL: [u8; 4] = [0xDE, 0xAD, 0xBE, 0xEF];
 
-// ─── Parent Structs ──────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Parent Structs в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTScatterTableStandardParent`.
 ///
@@ -32,15 +32,15 @@ static BST_SCATTER_TABLE_SENTINEL: [u8; 4] = [0xDE, 0xAD, 0xBE, 0xEF];
 /// ```text
 /// 0x00: _pad00     u64
 /// 0x08: _pad08     u32
-/// 0x0C: _capacity  u32  — total slots (power of 2)
-/// 0x10: _free      u32  — free slots remaining
-/// 0x14: _good      u32  — last free index hint
+/// 0x0C: _capacity  u32  вЂ” total slots (power of 2)
+/// 0x10: _free      u32  вЂ” free slots remaining
+/// 0x14: _good      u32  вЂ” last free index hint
 /// ```
 /// Size: `0x18`
 #[repr(C)]
 pub struct BSTScatterTableStandardParent {
-    _pad00: u64,       // 0x00
-    _pad08: u32,       // 0x08
+    _pad00: u64,        // 0x00
+    _pad08: u32,        // 0x08
     pub _capacity: u32, // 0x0C
     pub _free: u32,     // 0x10
     pub _good: u32,     // 0x14
@@ -74,7 +74,7 @@ impl BSTScatterTableStandardParent {
 /// Size: `0x10`
 #[repr(C)]
 pub struct BSTScatterTableFixedParent {
-    _pad00: u32,       // 0x00
+    _pad00: u32,        // 0x00
     pub _free: u32,     // 0x04
     pub _good: u32,     // 0x08
     pub _capacity: u32, // 0x0C
@@ -93,14 +93,14 @@ impl BSTScatterTableFixedParent {
     }
 }
 
-// ─── Entry Type ──────────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Entry Type в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `BSTScatterTable::entry_type`.
 ///
 /// Each slot in the scatter table. Contains an optional value and a `next` pointer:
-/// - `next == null` → slot is **empty** (no value stored)
-/// - `next == sentinel (0xDEADBEEF)` → slot has value, **end of chain**
-/// - `next == some entry*` → slot has value, chain continues at `next`
+/// - `next == null` в†’ slot is **empty** (no value stored)
+/// - `next == sentinel (0xDEADBEEF)` в†’ slot has value, **end of chain**
+/// - `next == some entry*` в†’ slot has value, chain continues at `next`
 #[repr(C)]
 pub struct BSTScatterTableEntry<V> {
     pub value: core::mem::MaybeUninit<V>,
@@ -119,9 +119,11 @@ impl<V> BSTScatterTableEntry<V> {
     /// # Safety
     /// Caller must ensure the entry has a value.
     pub unsafe fn destroy(&mut self) {
-        if self.has_value() {
-            ptr::drop_in_place(self.value.as_mut_ptr());
-            self.next = ptr::null_mut();
+        unsafe {
+            if self.has_value() {
+                ptr::drop_in_place(self.value.as_mut_ptr());
+                self.next = ptr::null_mut();
+            }
         }
     }
 
@@ -130,8 +132,10 @@ impl<V> BSTScatterTableEntry<V> {
     /// # Safety
     /// Caller must ensure this entry is empty or has been destroyed.
     pub unsafe fn emplace(&mut self, value: V, next: *mut BSTScatterTableEntry<V>) {
-        self.value.as_mut_ptr().write(value);
-        self.next = next;
+        unsafe {
+            self.value.as_mut_ptr().write(value);
+            self.next = next;
+        }
     }
 
     /// Moves the value out of this entry, destroying it.
@@ -139,14 +143,16 @@ impl<V> BSTScatterTableEntry<V> {
     /// # Safety
     /// Caller must ensure the entry has a value.
     pub unsafe fn steal(&mut self) -> V {
-        debug_assert!(self.has_value());
-        let val = ptr::read(self.value.as_ptr());
-        self.next = ptr::null_mut();
-        val
+        unsafe {
+            debug_assert!(self.has_value());
+            let val = ptr::read(self.value.as_ptr());
+            self.next = ptr::null_mut();
+            val
+        }
     }
 }
 
-// ─── Scatter Table Allocator Trait ───────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Scatter Table Allocator Trait в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// Trait for scatter table allocators.
 ///
@@ -160,16 +166,16 @@ pub unsafe trait BSTScatterTableAllocatorTrait {
     fn deallocate_bytes(&mut self, ptr: *mut u8);
 }
 
-// ─── BSTScatterTableHeapAllocator ────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTScatterTableHeapAllocator в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTScatterTableHeapAllocator<S, A>`.
 ///
-/// Layout: `{ _pad00: u64, _entries: *mut u8 }` — at offsets 0x20/0x28 relative to the table.
+/// Layout: `{ _pad00: u64, _entries: *mut u8 }` вЂ” at offsets 0x20/0x28 relative to the table.
 /// (0x00/0x08 relative to the allocator field itself)
 #[repr(C)]
 pub struct BSTScatterTableHeapAllocator {
-    _pad00: u64,         // 0x00
-    _entries: *mut u8,   // 0x08
+    _pad00: u64,       // 0x00
+    _entries: *mut u8, // 0x08
 }
 
 const _: () = assert!(core::mem::size_of::<BSTScatterTableHeapAllocator>() == 0x10);
@@ -217,15 +223,15 @@ unsafe impl BSTScatterTableAllocatorTrait for BSTScatterTableHeapAllocator {
     }
 }
 
-// ─── BSTScatterTableScrapAllocator ───────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTScatterTableScrapAllocator в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTScatterTableScrapAllocator<S, A>`.
 ///
 /// Layout: `{ _allocator: *mut ScrapHeap, _entries: *mut u8 }`
 #[repr(C)]
 pub struct BSTScatterTableScrapAllocator {
-    _allocator: *mut ScrapHeap,  // 0x00
-    _entries: *mut u8,           // 0x08
+    _allocator: *mut ScrapHeap, // 0x00
+    _entries: *mut u8,          // 0x08
 }
 
 const _: () = assert!(core::mem::size_of::<BSTScatterTableScrapAllocator>() == 0x10);
@@ -290,7 +296,7 @@ unsafe impl BSTScatterTableAllocatorTrait for BSTScatterTableScrapAllocator {
     }
 }
 
-// ─── BSTStaticHashMapAllocator ───────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTStaticHashMapAllocator в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// Aligned buffer wrapper for inline storage.
 /// Uses 8-byte alignment (pointer alignment on x64), which covers all
@@ -319,18 +325,18 @@ impl<const BUF: usize> AlignedEntryBuffer<BUF> {
 /// C++ `RE::BSTStaticHashMapBase<N>::Allocator<S, A>`.
 ///
 /// An allocator with a fixed inline buffer. All entries live in the inline
-/// storage — no heap allocation is performed. If the requested allocation
+/// storage вЂ” no heap allocation is performed. If the requested allocation
 /// exceeds the buffer, `allocate_bytes` returns null.
 ///
 /// Const generics:
-/// - `N`: number of entries (must be a power of 2) — used as `min_size()`
+/// - `N`: number of entries (must be a power of 2) вЂ” used as `min_size()`
 /// - `BUF`: total buffer size in bytes (`N * sizeof(entry_type)`)
 ///
 /// Layout: `{ _buffer: [u8; BUF] (align 8), _entries: *mut u8 }`
 #[repr(C)]
 pub struct BSTStaticHashMapAllocator<const N: u32, const BUF: usize> {
-    _buffer: AlignedEntryBuffer<BUF>,  // 0x00
-    _entries: *mut u8,                  // BUF (aligned)
+    _buffer: AlignedEntryBuffer<BUF>, // 0x00
+    _entries: *mut u8,                // BUF (aligned)
 }
 
 impl<const N: u32, const BUF: usize> BSTStaticHashMapAllocator<N, BUF> {
@@ -372,13 +378,13 @@ unsafe impl<const N: u32, const BUF: usize> BSTScatterTableAllocatorTrait
     }
 
     fn deallocate_bytes(&mut self, _ptr: *mut u8) {
-        // Static buffer — nothing to free.
+        // Static buffer вЂ” nothing to free.
         // In C++ this asserts ptr == _buffer, but we skip since
         // the buffer is embedded in the struct.
     }
 }
 
-// ─── BSTScatterTable Traits ──────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTScatterTable Traits в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// Trait for extracting the key from a value in the scatter table.
 /// Maps: value = BSTTuple<K, V>, key = K.
@@ -389,7 +395,7 @@ pub trait BSTScatterTableTraits {
     fn unwrap_key(value: &Self::Value) -> &Self::Key;
 }
 
-/// Map traits: `BSTScatterTableTraits<Key, T>` — value is `BSTTuple<Key, T>`.
+/// Map traits: `BSTScatterTableTraits<Key, T>` вЂ” value is `BSTTuple<Key, T>`.
 pub struct BSTMapTraits<K, V>(PhantomData<(K, V)>);
 
 impl<K, V> BSTScatterTableTraits for BSTMapTraits<K, V> {
@@ -402,7 +408,7 @@ impl<K, V> BSTScatterTableTraits for BSTMapTraits<K, V> {
     }
 }
 
-/// Set traits: `BSTSetTraits<Key>` — value IS the key.
+/// Set traits: `BSTSetTraits<Key>` вЂ” value IS the key.
 pub struct BSTSetTraits<K>(PhantomData<K>);
 
 impl<K> BSTScatterTableTraits for BSTSetTraits<K> {
@@ -415,7 +421,7 @@ impl<K> BSTScatterTableTraits for BSTSetTraits<K> {
     }
 }
 
-// ─── Parent Trait ────────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Parent Trait в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// Trait to abstract over parent struct field access.
 pub trait BSTScatterTableParent {
@@ -428,24 +434,60 @@ pub trait BSTScatterTableParent {
 }
 
 impl BSTScatterTableParent for BSTScatterTableStandardParent {
-    #[inline(always)] fn capacity(&self) -> u32 { self._capacity }
-    #[inline(always)] fn free(&self) -> u32 { self._free }
-    #[inline(always)] fn good(&self) -> u32 { self._good }
-    #[inline(always)] fn set_capacity(&mut self, v: u32) { self._capacity = v; }
-    #[inline(always)] fn set_free(&mut self, v: u32) { self._free = v; }
-    #[inline(always)] fn set_good(&mut self, v: u32) { self._good = v; }
+    #[inline(always)]
+    fn capacity(&self) -> u32 {
+        self._capacity
+    }
+    #[inline(always)]
+    fn free(&self) -> u32 {
+        self._free
+    }
+    #[inline(always)]
+    fn good(&self) -> u32 {
+        self._good
+    }
+    #[inline(always)]
+    fn set_capacity(&mut self, v: u32) {
+        self._capacity = v;
+    }
+    #[inline(always)]
+    fn set_free(&mut self, v: u32) {
+        self._free = v;
+    }
+    #[inline(always)]
+    fn set_good(&mut self, v: u32) {
+        self._good = v;
+    }
 }
 
 impl BSTScatterTableParent for BSTScatterTableFixedParent {
-    #[inline(always)] fn capacity(&self) -> u32 { self._capacity }
-    #[inline(always)] fn free(&self) -> u32 { self._free }
-    #[inline(always)] fn good(&self) -> u32 { self._good }
-    #[inline(always)] fn set_capacity(&mut self, v: u32) { self._capacity = v; }
-    #[inline(always)] fn set_free(&mut self, v: u32) { self._free = v; }
-    #[inline(always)] fn set_good(&mut self, v: u32) { self._good = v; }
+    #[inline(always)]
+    fn capacity(&self) -> u32 {
+        self._capacity
+    }
+    #[inline(always)]
+    fn free(&self) -> u32 {
+        self._free
+    }
+    #[inline(always)]
+    fn good(&self) -> u32 {
+        self._good
+    }
+    #[inline(always)]
+    fn set_capacity(&mut self, v: u32) {
+        self._capacity = v;
+    }
+    #[inline(always)]
+    fn set_free(&mut self, v: u32) {
+        self._free = v;
+    }
+    #[inline(always)]
+    fn set_good(&mut self, v: u32) {
+        self._good = v;
+    }
 }
 
-// ─── BSTScatterTable ─────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTScatterTable в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTScatterTable<Hash, KeyEqual, Traits, Allocator, Parent>`.
 ///
@@ -471,23 +513,18 @@ where
     A: BSTScatterTableAllocatorTrait + Default,
     P: BSTScatterTableParent + Default,
 {
-    // ── Public API ───────────────────────────────────────────────────────
+    // в”Ђв”Ђ Public API в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
     /// Creates a new empty scatter table.
     pub fn new() -> Self {
         Self {
             _parent: P::default(),
-            // Явный каст: берем сырой указатель на u8 из массива,
-            // а затем приводим его к типизированному указателю на Entry.
+            // РЇРІРЅС‹Р№ РєР°СЃС‚: Р±РµСЂРµРј СЃС‹СЂРѕР№ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° u8 РёР· РјР°СЃСЃРёРІР°,
+            // Р° Р·Р°С‚РµРј РїСЂРёРІРѕРґРёРј РµРіРѕ Рє С‚РёРїРёР·РёСЂРѕРІР°РЅРЅРѕРјСѓ СѓРєР°Р·Р°С‚РµР»СЋ РЅР° Entry.
             _sentinel: BST_SCATTER_TABLE_SENTINEL.as_ptr() as *const BSTScatterTableEntry<T::Value>,
             _allocator: A::default(),
         }
     }
-
-    fn default() -> Self {
-            Self::new()
-    }
-
     /// Returns the number of elements in the table.
     #[inline(always)]
     pub fn size(&self) -> u32 {
@@ -552,60 +589,62 @@ where
     /// # Safety
     /// The table must be in a valid state.
     pub unsafe fn insert(&mut self, value: T::Value) -> bool {
-        let key = T::unwrap_key(&value);
+        unsafe {
+            let key = T::unwrap_key(&value);
 
-        // Check if already exists
-        if !self.find(key).is_null() {
-            return false;
-        }
+            // Check if already exists
+            if !self.find(key).is_null() {
+                return false;
+            }
 
-        // Grow if no free entries
-        if self._parent.free() == 0 {
-            self.reserve(self._parent.capacity() + 1);
-            assert!(self._parent.free() > 0);
-        }
+            // Grow if no free entries
+            if self._parent.free() == 0 {
+                self.reserve(self._parent.capacity() + 1);
+                assert!(self._parent.free() > 0);
+            }
 
-        let sentinel = self._sentinel as *mut BSTScatterTableEntry<T::Value>;
-        let entry = self.get_entry_for(key);
+            let sentinel = self._sentinel as *mut BSTScatterTableEntry<T::Value>;
+            let entry = self.get_entry_for(key);
 
-        self._parent.set_free(self._parent.free() - 1);
+            self._parent.set_free(self._parent.free() - 1);
 
-        if (*entry).has_value() {
-            // Slot is taken — resolve conflict
-            let free = self.get_free_entry();
+            if (*entry).has_value() {
+                // Slot is taken вЂ” resolve conflict
+                let free = self.get_free_entry();
 
-            let existing_key = T::unwrap_key(&*(*entry).value.as_ptr());
-            let wouldve = self.get_entry_for(existing_key);
+                let existing_key = T::unwrap_key(&*(*entry).value.as_ptr());
+                let wouldve = self.get_entry_for(existing_key);
 
-            if wouldve == entry {
-                // Hash collision — chain the new entry
-                let old_next = (*entry).next;
-                (*entry).next = free;
-                (*free).emplace(value, old_next);
-            } else {
-                // Robin Hood: evict current to free, insert new at home position
-                // Find the previous entry in the chain that points to `entry`
-                let mut prev = wouldve;
-                while (*prev).next != entry {
-                    prev = (*prev).next;
+                if wouldve == entry {
+                    // Hash collision вЂ” chain the new entry
+                    let old_next = (*entry).next;
+                    (*entry).next = free;
+                    (*free).emplace(value, old_next);
+                } else {
+                    // Robin Hood: evict current to free, insert new at home position
+                    // Find the previous entry in the chain that points to `entry`
+                    let mut prev = wouldve;
+                    while (*prev).next != entry {
+                        prev = (*prev).next;
+                    }
+
+                    // Move current entry to free slot
+                    let stolen_value = (*entry).steal();
+                    let old_next = (*entry).next;
+                    // Actually entry was stolen so next is null, we need the old chain
+                    (*free).emplace(stolen_value, old_next);
+                    (*prev).next = free;
+
+                    // Place new value at home position
+                    (*entry).emplace(value, sentinel);
                 }
-
-                // Move current entry to free slot
-                let stolen_value = (*entry).steal();
-                let old_next = (*entry).next;
-                // Actually entry was stolen so next is null, we need the old chain
-                (*free).emplace(stolen_value, old_next);
-                (*prev).next = free;
-
-                // Place new value at home position
+            } else {
+                // Empty slot вЂ” just place it
                 (*entry).emplace(value, sentinel);
             }
-        } else {
-            // Empty slot — just place it
-            (*entry).emplace(value, sentinel);
-        }
 
-        true
+            true
+        }
     }
 
     /// Removes a key from the table. Returns true if the key was found and removed.
@@ -613,56 +652,58 @@ where
     /// # Safety
     /// The table must be in a valid state.
     pub unsafe fn erase(&mut self, key: &T::Key) -> bool {
-        if self.is_empty() {
-            return false;
-        }
-
-        let entries = self.get_entries();
-        if entries.is_null() {
-            return false;
-        }
-
-        let entry = self.get_entry_for(key);
-        if !(*entry).has_value() {
-            return false;
-        }
-
-        // Find the entry with matching key in the chain
-        let sentinel = self._sentinel as *mut BSTScatterTableEntry<T::Value>;
-
-        // Check if the head of chain matches
-        if T::unwrap_key(&*(*entry).value.as_ptr()) == key {
-            if (*entry).next == sentinel {
-                // Only entry in chain — just destroy
-                (*entry).destroy();
-            } else {
-                // Move next entry into current slot
-                let next = (*entry).next;
-                let next_val = (*next).steal();
-                let next_next = (*next).next;
-                (*entry).destroy();
-                (*entry).emplace(next_val, next_next);
+        unsafe {
+            if self.is_empty() {
+                return false;
             }
-            self._parent.set_free(self._parent.free() + 1);
-            return true;
-        }
 
-        // Search the chain for the key
-        let mut prev = entry;
-        let mut current = (*entry).next;
-        while current != sentinel {
-            if T::unwrap_key(&*(*current).value.as_ptr()) == key {
-                // Found it — unlink from chain
-                (*prev).next = (*current).next;
-                (*current).destroy();
+            let entries = self.get_entries();
+            if entries.is_null() {
+                return false;
+            }
+
+            let entry = self.get_entry_for(key);
+            if !(*entry).has_value() {
+                return false;
+            }
+
+            // Find the entry with matching key in the chain
+            let sentinel = self._sentinel as *mut BSTScatterTableEntry<T::Value>;
+
+            // Check if the head of chain matches
+            if T::unwrap_key(&*(*entry).value.as_ptr()) == key {
+                if (*entry).next == sentinel {
+                    // Only entry in chain вЂ” just destroy
+                    (*entry).destroy();
+                } else {
+                    // Move next entry into current slot
+                    let next = (*entry).next;
+                    let next_val = (*next).steal();
+                    let next_next = (*next).next;
+                    (*entry).destroy();
+                    (*entry).emplace(next_val, next_next);
+                }
                 self._parent.set_free(self._parent.free() + 1);
                 return true;
             }
-            prev = current;
-            current = (*current).next;
-        }
 
-        false
+            // Search the chain for the key
+            let mut prev = entry;
+            let mut current = (*entry).next;
+            while current != sentinel {
+                if T::unwrap_key(&*(*current).value.as_ptr()) == key {
+                    // Found it вЂ” unlink from chain
+                    (*prev).next = (*current).next;
+                    (*current).destroy();
+                    self._parent.set_free(self._parent.free() + 1);
+                    return true;
+                }
+                prev = current;
+                current = (*current).next;
+            }
+
+            false
+        }
     }
 
     /// Removes all entries but keeps the allocated storage.
@@ -670,15 +711,17 @@ where
     /// # Safety
     /// The table must be in a valid state.
     pub unsafe fn clear(&mut self) {
-        if self.size() > 0 {
-            let entries = self.get_entries() as *mut BSTScatterTableEntry<T::Value>;
-            assert!(!entries.is_null());
-            let cap = self._parent.capacity();
-            for i in 0..cap {
-                (*entries.add(i as usize)).destroy();
+        unsafe {
+            if self.size() > 0 {
+                let entries = self.get_entries() as *mut BSTScatterTableEntry<T::Value>;
+                assert!(!entries.is_null());
+                let cap = self._parent.capacity();
+                for i in 0..cap {
+                    (*entries.add(i as usize)).destroy();
+                }
+                self._parent.set_free(cap);
+                self._parent.set_good(0);
             }
-            self._parent.set_free(cap);
-            self._parent.set_good(0);
         }
     }
 
@@ -687,55 +730,63 @@ where
     /// # Safety
     /// The table must be in a valid state.
     pub unsafe fn reserve(&mut self, count: u32) {
-        if count <= self._parent.capacity() {
-            return;
-        }
-
-        let old_cap = self._parent.capacity();
-        let old_entries = self.get_entries();
-
-        // Calculate new capacity: next power of 2 >= max(count, MIN_SIZE)
-        let min = A::MIN_SIZE as u64;
-        let mut new_cap = if (count as u64) < min { min } else { count as u64 };
-        new_cap = new_cap.next_power_of_two();
-        if new_cap > (1u64 << 31) {
-            panic!("BSTScatterTable: buffer grew too large");
-        }
-        let new_cap = new_cap as u32;
-
-        // Allocate new entries
-        let entry_size = core::mem::size_of::<BSTScatterTableEntry<T::Value>>();
-        let new_entries_raw = self._allocator.allocate_bytes(entry_size * new_cap as usize);
-        if new_entries_raw.is_null() {
-            panic!("BSTScatterTable: allocation failed");
-        }
-        let new_entries = new_entries_raw as *mut BSTScatterTableEntry<T::Value>;
-
-        // Zero-initialize new entries (next = null → all empty)
-        ptr::write_bytes(new_entries, 0, new_cap as usize);
-
-        // Set new capacity
-        self._parent.set_capacity(new_cap);
-        self._parent.set_free(new_cap);
-        self._parent.set_good(0);
-        self._allocator.set_entries(new_entries_raw);
-
-        // Re-insert old entries
-        if !old_entries.is_null() {
-            let old_typed = old_entries as *mut BSTScatterTableEntry<T::Value>;
-            for i in 0..old_cap {
-                let entry = &mut *old_typed.add(i as usize);
-                if entry.has_value() {
-                    let val = entry.steal();
-                    self.insert(val);
-                }
+        unsafe {
+            if count <= self._parent.capacity() {
+                return;
             }
-            // Free old storage
-            self._allocator.deallocate_bytes(old_entries as *mut u8);
+
+            let old_cap = self._parent.capacity();
+            let old_entries = self.get_entries();
+
+            // Calculate new capacity: next power of 2 >= max(count, MIN_SIZE)
+            let min = A::MIN_SIZE as u64;
+            let mut new_cap = if (count as u64) < min {
+                min
+            } else {
+                count as u64
+            };
+            new_cap = new_cap.next_power_of_two();
+            if new_cap > (1u64 << 31) {
+                panic!("BSTScatterTable: buffer grew too large");
+            }
+            let new_cap = new_cap as u32;
+
+            // Allocate new entries
+            let entry_size = core::mem::size_of::<BSTScatterTableEntry<T::Value>>();
+            let new_entries_raw = self
+                ._allocator
+                .allocate_bytes(entry_size * new_cap as usize);
+            if new_entries_raw.is_null() {
+                panic!("BSTScatterTable: allocation failed");
+            }
+            let new_entries = new_entries_raw as *mut BSTScatterTableEntry<T::Value>;
+
+            // Zero-initialize new entries (next = null в†’ all empty)
+            ptr::write_bytes(new_entries, 0, new_cap as usize);
+
+            // Set new capacity
+            self._parent.set_capacity(new_cap);
+            self._parent.set_free(new_cap);
+            self._parent.set_good(0);
+            self._allocator.set_entries(new_entries_raw);
+
+            // Re-insert old entries
+            if !old_entries.is_null() {
+                let old_typed = old_entries as *mut BSTScatterTableEntry<T::Value>;
+                for i in 0..old_cap {
+                    let entry = &mut *old_typed.add(i as usize);
+                    if entry.has_value() {
+                        let val = entry.steal();
+                        self.insert(val);
+                    }
+                }
+                // Free old storage
+                self._allocator.deallocate_bytes(old_entries as *mut u8);
+            }
         }
     }
 
-    // ── Iteration ────────────────────────────────────────────────────────
+    // в”Ђв”Ђ Iteration в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
     /// Returns an iterator over immutable references to values.
     pub fn iter(&self) -> BSTScatterTableIter<'_, T::Value> {
@@ -779,7 +830,7 @@ where
         }
     }
 
-    // ── Private helpers ──────────────────────────────────────────────────
+    // в”Ђв”Ђ Private helpers в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
     #[inline(always)]
     fn get_entries(&self) -> *mut u8 {
@@ -789,24 +840,28 @@ where
     /// Gets the home entry for a key (hash & (capacity - 1)).
     #[inline]
     unsafe fn get_entry_for(&self, key: &T::Key) -> *mut BSTScatterTableEntry<T::Value> {
-        let entries = self.get_entries() as *mut BSTScatterTableEntry<T::Value>;
-        let hash = key.bst_hash();
-        let idx = hash & (self._parent.capacity() - 1);
-        entries.add(idx as usize)
+        unsafe {
+            let entries = self.get_entries() as *mut BSTScatterTableEntry<T::Value>;
+            let hash = key.bst_hash();
+            let idx = hash & (self._parent.capacity() - 1);
+            entries.add(idx as usize)
+        }
     }
 
     /// Finds the next free entry, starting from `_good`.
     unsafe fn get_free_entry(&mut self) -> *mut BSTScatterTableEntry<T::Value> {
-        let entries = self.get_entries() as *mut BSTScatterTableEntry<T::Value>;
-        let cap = self._parent.capacity();
-        let mut good = self._parent.good();
+        unsafe {
+            let entries = self.get_entries() as *mut BSTScatterTableEntry<T::Value>;
+            let cap = self._parent.capacity();
+            let mut good = self._parent.good();
 
-        while (*entries.add(good as usize)).has_value() {
-            good = (good + 1) & (cap - 1);
+            while (*entries.add(good as usize)).has_value() {
+                good = (good + 1) & (cap - 1);
+            }
+
+            self._parent.set_good(good);
+            entries.add(good as usize)
         }
-
-        self._parent.set_good(good);
-        entries.add(good as usize)
     }
 }
 
@@ -834,7 +889,7 @@ where
     }
 }
 
-// ─── Iterators ───────────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Iterators в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// Immutable iterator over scatter table values.
 pub struct BSTScatterTableIter<'a, V> {
@@ -884,17 +939,21 @@ impl<'a, V> Iterator for BSTScatterTableIterMut<'a, V> {
     }
 }
 
-// ─── Default for Parents ─────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Default for Parents в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 impl Default for BSTScatterTableStandardParent {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Default for BSTScatterTableFixedParent {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
-// ─── Type Aliases ────────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ Type Aliases в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTHashMap<Key, T>`.
 /// Standard heap-allocated hash map.
@@ -906,19 +965,13 @@ pub type BSTHashMap<K, V> = BSTScatterTable<
 
 /// C++ `RE::BSTSet<Key>`.
 /// Standard heap-allocated hash set.
-pub type BSTSet<K> = BSTScatterTable<
-    BSTSetTraits<K>,
-    BSTScatterTableHeapAllocator,
-    BSTScatterTableStandardParent,
->;
+pub type BSTSet<K> =
+    BSTScatterTable<BSTSetTraits<K>, BSTScatterTableHeapAllocator, BSTScatterTableStandardParent>;
 
 /// C++ `RE::BSTFixedHashMap<Key, T>`.
 /// Heap-allocated hash map with fixed parent layout.
-pub type BSTFixedHashMap<K, V> = BSTScatterTable<
-    BSTMapTraits<K, V>,
-    BSTScatterTableHeapAllocator,
-    BSTScatterTableFixedParent,
->;
+pub type BSTFixedHashMap<K, V> =
+    BSTScatterTable<BSTMapTraits<K, V>, BSTScatterTableHeapAllocator, BSTScatterTableFixedParent>;
 
 /// C++ `RE::BSTScrapHashMap<Key, T>`.
 /// Scrap-heap-allocated hash map.

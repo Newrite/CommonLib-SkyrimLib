@@ -1,11 +1,12 @@
-use core::ffi::{c_char, CStr};
+use crate::relocation::RelocationID;
+use core::ffi::{CStr, c_char};
 use core::fmt;
 use core::ops::Deref;
 
 use bytemuck::Zeroable;
 
 use crate::re::bs_string_pool::BSStringPoolEntry;
-use crate::relocation::VariantID;
+use crate::re::crc::{BSTHash, generate_crc32};
 use crate::relocation_func;
 
 /// C++ `RE::BSFixedString` (aliases: `BSFixedStringCI` in some cases)
@@ -18,15 +19,17 @@ pub struct BSFixedString {
 const _: () = assert!(core::mem::size_of::<BSFixedString>() == 0x8);
 
 impl BSFixedString {
-    /// C++ `RE::BSFixedString::ctor8`
+    // C++ `RE::BSFixedString::ctor8`
     relocation_func! {
-        pub fn ctor8(this: *mut BSFixedString, string: *const c_char) -> *mut BSFixedString => VariantID::new(67819, 69161, 0)
+        pub fn ctor8(this: *mut BSFixedString, string: *const c_char) -> *mut BSFixedString => RelocationID::new(67819, 69161)
     }
 
     /// Creates an empty string (pointer is null)
     #[inline(always)]
     pub const fn empty() -> Self {
-        Self { data: core::ptr::null() }
+        Self {
+            data: core::ptr::null(),
+        }
     }
 
     /// Creates a new `BSFixedString` from a C string pointer.
@@ -106,7 +109,7 @@ impl Clone for BSFixedString {
 impl Drop for BSFixedString {
     fn drop(&mut self) {
         if !self.data.is_null() {
-                BSStringPoolEntry::release8(self.data);
+            BSStringPoolEntry::release8(self.data);
             self.data = core::ptr::null();
         }
     }
@@ -139,6 +142,19 @@ impl PartialEq for BSFixedString {
 
 impl Eq for BSFixedString {}
 
+impl BSTHash for BSFixedString {
+    #[inline]
+    fn bst_hash(&self) -> u32 {
+        let bytes = unsafe {
+            core::slice::from_raw_parts(
+                &self.data as *const *const c_char as *const u8,
+                core::mem::size_of::<*const c_char>(),
+            )
+        };
+        generate_crc32(bytes)
+    }
+}
+
 impl fmt::Debug for BSFixedString {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(c_str) = self.as_c_str() {
@@ -170,12 +186,14 @@ const _: () = assert!(core::mem::size_of::<BSFixedStringW>() == 0x8);
 
 impl BSFixedStringW {
     relocation_func! {
-        pub fn ctor16(this: *mut BSFixedStringW, string: *const u16) -> *mut BSFixedStringW => VariantID::new(67834, 69176, 0)
+        pub fn ctor16(this: *mut BSFixedStringW, string: *const u16) -> *mut BSFixedStringW => RelocationID::new(67834, 69176)
     }
 
     #[inline(always)]
     pub const fn empty() -> Self {
-        Self { data: core::ptr::null() }
+        Self {
+            data: core::ptr::null(),
+        }
     }
 
     pub fn new(string: *const u16) -> Self {
@@ -235,7 +253,7 @@ impl Clone for BSFixedStringW {
 impl Drop for BSFixedStringW {
     fn drop(&mut self) {
         if !self.data.is_null() {
-                BSStringPoolEntry::release16(self.data);
+            BSStringPoolEntry::release16(self.data);
             self.data = core::ptr::null();
         }
     }

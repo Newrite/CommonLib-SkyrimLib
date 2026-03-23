@@ -9,8 +9,8 @@
 /// Equivalent to `std::pair<T1, T2>` in C++.
 #[repr(C)]
 pub struct BSTTuple<T1, T2> {
-    pub first: T1,   // 0x00
-    pub second: T2,  // sizeof(T1) (with alignment)
+    pub first: T1,  // 0x00
+    pub second: T2, // sizeof(T1) (with alignment)
 }
 
 impl<T1, T2> BSTTuple<T1, T2> {

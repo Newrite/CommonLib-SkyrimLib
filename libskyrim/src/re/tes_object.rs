@@ -1,20 +1,21 @@
-use bitflags::bitflags;
-use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_TESObject;
 use crate::offsets::offsets_vtable::VTABLE_TESObject;
-use crate::re::tes_form::TESForm;
-use crate::re::tes_water_form::TESWaterForm;
-use crate::re::tes_object_refr::TESObjectREFR;
 use crate::re::ni_av_object::NiAVObject;
+use crate::re::tes_form::TESForm;
+use crate::re::tes_object_refr::TESObjectREFR;
+use crate::re::tes_water_form::TESWaterForm;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use bitflags::bitflags;
+use core_util::inherit;
 
 bitflags! {
     #[repr(transparent)]
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct ChangeFlags: u32 {
         const NONE = 0;
-        const FORM_FLAGS = 1 << 0;
+        const OBJECT_VALUE = 1 << 1;
+        const OBJECT_FULL_NAME = 1 << 2;
     }
 }
 
@@ -171,4 +172,4 @@ impl<T: AsRef<TESObject> + AsMut<TESObject>> TESObjectExt for T {
     fn load_graphics(&self, a_ref: *mut TESObjectREFR) -> *mut NiAVObject {
         self.as_ref().load_graphics(a_ref)
     }
-}
+}

@@ -1,28 +1,28 @@
 //! Translation of `RE::BSTArray.h` / `RE::BSTArray.cpp`.
 //!
 //! Contains:
-//! - `BSTArrayBase` — base class storing the array size
-//! - `BSTArrayHeapAllocator` — default heap allocator using engine's `RE::malloc`/`RE::free`
-//! - `BSScrapArrayAllocator` — per-thread scrap heap allocator
-//! - `BSTArray<T, A>` — generic dynamic array (C++ `BSTArray<T, Allocator>`)
-//! - `BSScrapArray<T>` — type alias for `BSTArray<T, BSScrapArrayAllocator>`
-//! - `BSStaticArray<T>` — non-owning static array (pointer + size)
-//! - `BSTSmallSharedArray<T>` — small shared array with inline storage for 0-1 elements
+//! - `BSTArrayBase` вЂ” base class storing the array size
+//! - `BSTArrayHeapAllocator` вЂ” default heap allocator using engine's `RE::malloc`/`RE::free`
+//! - `BSScrapArrayAllocator` вЂ” per-thread scrap heap allocator
+//! - `BSTArray<T, A>` вЂ” generic dynamic array (C++ `BSTArray<T, Allocator>`)
+//! - `BSScrapArray<T>` вЂ” type alias for `BSTArray<T, BSScrapArrayAllocator>`
+//! - `BSStaticArray<T>` вЂ” non-owning static array (pointer + size)
+//! - `BSTSmallSharedArray<T>` вЂ” small shared array with inline storage for 0-1 elements
 
+use bytemuck::Zeroable;
 use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::mem::{ManuallyDrop, MaybeUninit};
 use core::ptr;
-use bytemuck::Zeroable;
 
 use crate::re::scrap_heap::ScrapHeap;
 
-// ─── BSTArrayBase ────────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTArrayBase в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTArrayBase`.
 /// Base class for `BSTArray`, stores the element count.
 ///
-/// Layout: `{ _size: u32 }` — 0x4 bytes total.
+/// Layout: `{ _size: u32 }` вЂ” 0x4 bytes total.
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct BSTArrayBase {
@@ -53,9 +53,9 @@ impl BSTArrayBase {
     }
 }
 
-// ─── BSTArrayAllocator trait ─────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTArrayAllocator trait в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
-/// Trait replacing C++ `IAllocatorFunctor` — defines the allocator interface
+/// Trait replacing C++ `IAllocatorFunctor` вЂ” defines the allocator interface
 /// used by `BSTArray`.
 ///
 /// # Safety
@@ -72,18 +72,18 @@ pub unsafe trait BSTArrayAllocator {
     fn set_allocator_traits(&mut self, data: *mut u8, capacity: u32, elem_size: usize);
 }
 
-// ─── BSTArrayHeapAllocator ───────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTArrayHeapAllocator в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTArrayHeapAllocator`.
-/// Default allocator for `BSTArray` — uses `RE::malloc` / `RE::free`
+/// Default allocator for `BSTArray` вЂ” uses `RE::malloc` / `RE::free`
 /// through the C++ bridge, exactly matching the engine's allocation path.
 ///
-/// Layout: `{ _data: *mut u8, _capacity: u32, _pad0c: u32 }` — 0x10 bytes total.
+/// Layout: `{ _data: *mut u8, _capacity: u32, _pad0c: u32 }` вЂ” 0x10 bytes total.
 #[repr(C)]
 pub struct BSTArrayHeapAllocator {
-    _data: *mut u8,     // 0x00
-    _capacity: u32,     // 0x08
-    _pad0c: u32,        // 0x0C
+    _data: *mut u8, // 0x00
+    _capacity: u32, // 0x08
+    _pad0c: u32,    // 0x0C
 }
 
 const _: () = assert!(core::mem::size_of::<BSTArrayHeapAllocator>() == 0x10);
@@ -114,7 +114,7 @@ unsafe impl BSTArrayAllocator for BSTArrayHeapAllocator {
             return ptr::null_mut();
         }
         unsafe {
-            // RE::malloc → MemoryManager::GetSingleton()->Allocate(size, 0, false)
+            // RE::malloc в†’ MemoryManager::GetSingleton()->Allocate(size, 0, false)
             let mem = crate::ffi::commonlib_malloc(size);
             if mem.is_null() {
                 panic!("BSTArrayHeapAllocator: out of memory");
@@ -127,7 +127,7 @@ unsafe impl BSTArrayAllocator for BSTArrayHeapAllocator {
     fn deallocate(&mut self, ptr: *mut u8) {
         if !ptr.is_null() {
             unsafe {
-                // RE::free → MemoryManager::GetSingleton()->Deallocate(ptr, false)
+                // RE::free в†’ MemoryManager::GetSingleton()->Deallocate(ptr, false)
                 crate::ffi::commonlib_free(ptr as *mut c_void);
             }
         }
@@ -140,7 +140,7 @@ unsafe impl BSTArrayAllocator for BSTArrayHeapAllocator {
     }
 }
 
-// ─── BSTSmallArrayHeapAllocator<N> ───────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTSmallArrayHeapAllocator<N> в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTSmallArrayHeapAllocator<N>`.
 /// An allocator with `N` bytes of inline storage. If the requested allocation
@@ -153,9 +153,9 @@ unsafe impl BSTArrayAllocator for BSTArrayHeapAllocator {
 #[repr(C)]
 pub struct BSTSmallArrayHeapAllocator<const N: usize> {
     /// Packed bitfield: bits 0-30 = capacity, bit 31 = local flag
-    _capacity_and_local: u32,  // 0x00
-    _pad04: u32,               // 0x04
-    _data: SmallArrayData<N>,  // 0x08
+    _capacity_and_local: u32, // 0x00
+    _pad04: u32,              // 0x04
+    _data: SmallArrayData<N>, // 0x08
 }
 
 /// Internal union for `BSTSmallArrayHeapAllocator`.
@@ -169,12 +169,12 @@ pub union SmallArrayData<const N: usize> {
 
 /// Bitfield constants for `BSTSmallArrayHeapAllocator`.
 const CAPACITY_MASK: u32 = 0x7FFF_FFFF; // bits 0-30
-const LOCAL_FLAG: u32 = 0x8000_0000;     // bit 31
+const LOCAL_FLAG: u32 = 0x8000_0000; // bit 31
 
 impl<const N: usize> BSTSmallArrayHeapAllocator<N> {
     pub const fn new() -> Self {
         Self {
-            // _capacity = 0, _local = 1 → bit 31 set
+            // _capacity = 0, _local = 1 в†’ bit 31 set
             _capacity_and_local: LOCAL_FLAG,
             _pad04: 0,
             _data: SmallArrayData { local: [0u8; N] },
@@ -235,7 +235,7 @@ unsafe impl<const N: usize> BSTArrayAllocator for BSTSmallArrayHeapAllocator<N> 
 
     fn allocate(&mut self, size: usize) -> *mut u8 {
         if size > N {
-            // Exceeds inline storage — allocate from engine heap
+            // Exceeds inline storage вЂ” allocate from engine heap
             unsafe {
                 let mem = crate::ffi::commonlib_malloc(size);
                 if mem.is_null() {
@@ -271,19 +271,19 @@ unsafe impl<const N: usize> BSTArrayAllocator for BSTSmallArrayHeapAllocator<N> 
     }
 }
 
-// ─── BSScrapArrayAllocator ───────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSScrapArrayAllocator в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSScrapArrayAllocator`.
 /// Allocator using the engine's per-thread `ScrapHeap`.
 /// All engine calls go through the C++ bridge for exact parity with CommonLib.
 ///
-/// Layout: `{ _allocator: *mut ScrapHeap, _data: *mut u8, _capacity: u32, _pad14: u32 }` — 0x18 bytes.
+/// Layout: `{ _allocator: *mut ScrapHeap, _data: *mut u8, _capacity: u32, _pad14: u32 }` вЂ” 0x18 bytes.
 #[repr(C)]
 pub struct BSScrapArrayAllocator {
-    _allocator: *mut ScrapHeap,  // 0x00
-    _data: *mut u8,              // 0x08
-    _capacity: u32,              // 0x10
-    _pad14: u32,                 // 0x14
+    _allocator: *mut ScrapHeap, // 0x00
+    _data: *mut u8,             // 0x08
+    _capacity: u32,             // 0x10
+    _pad14: u32,                // 0x14
 }
 
 const _: () = assert!(core::mem::size_of::<BSScrapArrayAllocator>() == 0x18);
@@ -316,12 +316,16 @@ unsafe impl BSTArrayAllocator for BSScrapArrayAllocator {
             unsafe {
                 let mgr = crate::ffi::commonlib_memory_manager_get_singleton();
                 if !mgr.is_null() {
-                    self._allocator = crate::ffi::commonlib_memory_manager_get_thread_scrap_heap(mgr)
-                        as *mut ScrapHeap;
+                    self._allocator =
+                        crate::ffi::commonlib_memory_manager_get_thread_scrap_heap(mgr)
+                            as *mut ScrapHeap;
                 }
             }
         }
-        assert!(!self._allocator.is_null(), "BSScrapArrayAllocator: no ScrapHeap");
+        assert!(
+            !self._allocator.is_null(),
+            "BSScrapArrayAllocator: no ScrapHeap"
+        );
 
         unsafe {
             let mem = crate::ffi::commonlib_scrap_heap_allocate(
@@ -337,7 +341,10 @@ unsafe impl BSTArrayAllocator for BSScrapArrayAllocator {
 
     fn deallocate(&mut self, ptr: *mut u8) {
         if self._allocator.is_null() {
-            assert!(ptr.is_null(), "BSScrapArrayAllocator: no allocator for dealloc");
+            assert!(
+                ptr.is_null(),
+                "BSScrapArrayAllocator: no allocator for dealloc"
+            );
             return;
         }
         unsafe {
@@ -355,7 +362,7 @@ unsafe impl BSTArrayAllocator for BSScrapArrayAllocator {
     }
 }
 
-// ─── BSTArray<T, A> ─────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTArray<T, A> в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTArray<T, Allocator>`.
 ///
@@ -438,11 +445,13 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// `T` is the correct element type matching the engine's array.
     #[inline]
     pub unsafe fn as_slice(&self) -> &[T] {
-        let len = self.len() as usize;
-        if len == 0 {
-            &[]
-        } else {
-            core::slice::from_raw_parts(self.data(), len)
+        unsafe {
+            let len = self.len() as usize;
+            if len == 0 {
+                &[]
+            } else {
+                core::slice::from_raw_parts(self.data(), len)
+            }
         }
     }
 
@@ -452,11 +461,13 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// Same as `as_slice`, plus exclusive access must be guaranteed.
     #[inline]
     pub unsafe fn as_mut_slice(&mut self) -> &mut [T] {
-        let len = self.len() as usize;
-        if len == 0 {
-            &mut []
-        } else {
-            core::slice::from_raw_parts_mut(self.data_mut(), len)
+        unsafe {
+            let len = self.len() as usize;
+            if len == 0 {
+                &mut []
+            } else {
+                core::slice::from_raw_parts_mut(self.data_mut(), len)
+            }
         }
     }
 
@@ -480,13 +491,15 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// # Safety
     /// The caller must ensure the array data pointer is valid.
     pub unsafe fn push(&mut self, value: T) {
-        if self.len() == self.capacity() {
-            self.grow_capacity();
+        unsafe {
+            if self.len() == self.capacity() {
+                self.grow_capacity();
+            }
+            let size = self.len();
+            self.base.set_size(size + 1);
+            let dst = self.data_mut().add(size as usize);
+            ptr::write(dst, value);
         }
-        let size = self.len();
-        self.base.set_size(size + 1);
-        let dst = self.data_mut().add(size as usize);
-        ptr::write(dst, value);
     }
 
     /// Removes and returns the last element.
@@ -494,11 +507,13 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// # Safety
     /// The caller must ensure the array is non-empty and data pointer is valid.
     pub unsafe fn pop(&mut self) -> T {
-        assert!(!self.is_empty());
-        let new_size = self.len() - 1;
-        let val = ptr::read(self.data().add(new_size as usize));
-        self.base.set_size(new_size);
-        val
+        unsafe {
+            assert!(!self.is_empty());
+            let new_size = self.len() - 1;
+            let val = ptr::read(self.data().add(new_size as usize));
+            self.base.set_size(new_size);
+            val
+        }
     }
 
     /// Clears all elements, calling drop on each.
@@ -506,13 +521,15 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// # Safety
     /// The caller must ensure the data pointer is valid.
     pub unsafe fn clear(&mut self) {
-        let old_size = self.len();
-        if old_size > 0 {
-            let data = self.data_mut();
-            for i in 0..old_size {
-                ptr::drop_in_place(data.add(i as usize));
+        unsafe {
+            let old_size = self.len();
+            if old_size > 0 {
+                let data = self.data_mut();
+                for i in 0..old_size {
+                    ptr::drop_in_place(data.add(i as usize));
+                }
+                self.base.set_size(0);
             }
-            self.base.set_size(0);
         }
     }
 
@@ -527,10 +544,12 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// that cannot be safely zero-initialized.
     pub unsafe fn resize(&mut self, new_size: u32)
     where
-        T: Zeroable
+        T: Zeroable,
     {
-        if new_size != self.len() {
-            self.change_size(new_size);
+        unsafe {
+            if new_size != self.len() {
+                self.change_size(new_size);
+            }
         }
     }
 
@@ -539,11 +558,13 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// # Safety
     /// The caller must ensure the data pointer is valid.
     pub unsafe fn release(&mut self) {
-        self.clear();
-        self.change_capacity(0); // change_capacity тоже не должен иметь where T: Zeroable!
+        unsafe {
+            self.clear();
+            self.change_capacity(0); // change_capacity С‚РѕР¶Рµ РЅРµ РґРѕР»Р¶РµРЅ РёРјРµС‚СЊ where T: Zeroable!
+        }
     }
 
-    // ── Private helpers ──────────────────────────────────────────────────
+    // в”Ђв”Ђ Private helpers в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
     /// Typed allocation: allocates memory for `num` elements.
     fn allocate_elements(&mut self, num: u32) -> *mut T {
@@ -553,11 +574,8 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
 
     /// Update allocator traits using element size.
     fn set_allocator_traits_typed(&mut self, data: *mut T, capacity: u32) {
-        self.allocator.set_allocator_traits(
-            data as *mut u8,
-            capacity,
-            core::mem::size_of::<T>(),
-        );
+        self.allocator
+            .set_allocator_traits(data as *mut u8, capacity, core::mem::size_of::<T>());
     }
 
     /// Change the allocated capacity, copying existing data.
@@ -591,28 +609,30 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// Change the size, constructing or destroying as needed.
     unsafe fn change_size(&mut self, new_size: u32)
     where
-        T: Zeroable
+        T: Zeroable,
     {
-        if new_size > self.capacity() {
-            self.grow_capacity_to(new_size);
-        }
-
-        let old_size = self.len();
-        if new_size > old_size {
-            let data = self.data_mut();
-            ptr::write_bytes(
-                data.add(old_size as usize) as *mut u8,
-                0,
-                (new_size - old_size) as usize * core::mem::size_of::<T>(),
-            );
-        } else if new_size < old_size {
-            let data = self.data_mut();
-            for i in new_size..old_size {
-                ptr::drop_in_place(data.add(i as usize));
+        unsafe {
+            if new_size > self.capacity() {
+                self.grow_capacity_to(new_size);
             }
-        }
 
-        self.base.set_size(new_size);
+            let old_size = self.len();
+            if new_size > old_size {
+                let data = self.data_mut();
+                ptr::write_bytes(
+                    data.add(old_size as usize) as *mut u8,
+                    0,
+                    (new_size - old_size) as usize * core::mem::size_of::<T>(),
+                );
+            } else if new_size < old_size {
+                let data = self.data_mut();
+                for i in new_size..old_size {
+                    ptr::drop_in_place(data.add(i as usize));
+                }
+            }
+
+            self.base.set_size(new_size);
+        }
     }
 
     /// Calculate the next capacity value (doubles, or starts at `DF_CAP`).
@@ -622,7 +642,7 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
 
     fn next_capacity_from(hint: u32) -> u32 {
         if hint > 0 {
-            // ceil(hint * 2.0) — matches C++ std::ceil(cap * GROWTH_FACTOR)
+            // ceil(hint * 2.0) вЂ” matches C++ std::ceil(cap * GROWTH_FACTOR)
             let grown = (hint as f32) * BST_ARRAY_GROWTH_FACTOR;
             let truncated = grown as u32;
             if (truncated as f32) < grown {
@@ -648,7 +668,9 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
 
 impl<T, A: BSTArrayAllocator> Drop for BSTArray<T, A> {
     fn drop(&mut self) {
-        unsafe { self.release(); }
+        unsafe {
+            self.release();
+        }
     }
 }
 
@@ -667,17 +689,17 @@ pub type BSScrapArray<T> = BSTArray<T, BSScrapArrayAllocator>;
 /// or manually compute `sizeof(T) * count`.
 pub type BSTSmallArray<T, const N: usize> = BSTArray<T, BSTSmallArrayHeapAllocator<N>>;
 
-// ─── BSStaticArray<T> ────────────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSStaticArray<T> в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSStaticArray<T>`.
 /// A non-owning view over a contiguous block of elements.
 ///
-/// Layout: `{ _data: *mut T, _size: u32, _pad: u32 }` — 0x10 bytes.
+/// Layout: `{ _data: *mut T, _size: u32, _pad: u32 }` вЂ” 0x10 bytes.
 #[repr(C)]
 pub struct BSStaticArray<T> {
-    _data: *mut T,    // 0x00
-    _size: u32,       // 0x08
-    _pad0c: u32,      // 0x0C — padding for alignment
+    _data: *mut T, // 0x00
+    _size: u32,    // 0x08
+    _pad0c: u32,   // 0x0C вЂ” padding for alignment
 }
 
 // Size assertion: ptr(8) + u32(4) + pad(4) = 0x10
@@ -714,10 +736,12 @@ impl<T> BSStaticArray<T> {
     /// The caller must ensure the data pointer is valid for `len()` elements.
     #[inline]
     pub unsafe fn as_slice(&self) -> &[T] {
-        if self.is_empty() {
-            &[]
-        } else {
-            core::slice::from_raw_parts(self._data, self._size as usize)
+        unsafe {
+            if self.is_empty() {
+                &[]
+            } else {
+                core::slice::from_raw_parts(self._data, self._size as usize)
+            }
         }
     }
 
@@ -727,15 +751,17 @@ impl<T> BSStaticArray<T> {
     /// Same as `as_slice`, plus exclusive access must be guaranteed.
     #[inline]
     pub unsafe fn as_mut_slice(&mut self) -> &mut [T] {
-        if self.is_empty() {
-            &mut []
-        } else {
-            core::slice::from_raw_parts_mut(self._data, self._size as usize)
+        unsafe {
+            if self.is_empty() {
+                &mut []
+            } else {
+                core::slice::from_raw_parts_mut(self._data, self._size as usize)
+            }
         }
     }
 }
 
-// ─── BSTSmallSharedArray<T> ──────────────────────────────────────────────────
+// в”Ђв”Ђв”Ђ BSTSmallSharedArray<T> в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 /// C++ `RE::BSTSmallSharedArray<T>`.
 ///
@@ -750,9 +776,9 @@ impl<T> BSStaticArray<T> {
 /// the caller must know whether the data is in inline or heap mode.
 #[repr(C)]
 pub struct BSTSmallSharedArray<T> {
-    _size: u32,                          // 0x00
-    _pad04: u32,                         // 0x04
-    _data: BSTSmallSharedArrayData<T>,   // 0x08
+    _size: u32,                        // 0x00
+    _pad04: u32,                       // 0x04
+    _data: BSTSmallSharedArrayData<T>, // 0x08
 }
 
 /// Internal union for `BSTSmallSharedArray`.
@@ -783,10 +809,12 @@ impl<T> BSTSmallSharedArray<T> {
     /// Must only be called when the array is non-empty.
     #[inline]
     pub unsafe fn data(&self) -> *const T {
-        if self._size > 1 {
-            self._data.heap
-        } else {
-            (*self._data.local).as_ptr()
+        unsafe {
+            if self._size > 1 {
+                self._data.heap
+            } else {
+                (*self._data.local).as_ptr()
+            }
         }
     }
 
@@ -796,10 +824,12 @@ impl<T> BSTSmallSharedArray<T> {
     /// Must only be called when the array is non-empty.
     #[inline]
     pub unsafe fn data_mut(&mut self) -> *mut T {
-        if self._size > 1 {
-            self._data.heap
-        } else {
-            (*self._data.local).as_mut_ptr()
+        unsafe {
+            if self._size > 1 {
+                self._data.heap
+            } else {
+                (*self._data.local).as_mut_ptr()
+            }
         }
     }
 
@@ -809,10 +839,12 @@ impl<T> BSTSmallSharedArray<T> {
     /// The caller must ensure the data is properly initialized.
     #[inline]
     pub unsafe fn as_slice(&self) -> &[T] {
-        if self.is_empty() {
-            &[]
-        } else {
-            core::slice::from_raw_parts(self.data(), self._size as usize)
+        unsafe {
+            if self.is_empty() {
+                &[]
+            } else {
+                core::slice::from_raw_parts(self.data(), self._size as usize)
+            }
         }
     }
 
@@ -822,10 +854,12 @@ impl<T> BSTSmallSharedArray<T> {
     /// Same as `as_slice`, plus exclusive access must be guaranteed.
     #[inline]
     pub unsafe fn as_mut_slice(&mut self) -> &mut [T] {
-        if self.is_empty() {
-            &mut []
-        } else {
-            core::slice::from_raw_parts_mut(self.data_mut(), self._size as usize)
+        unsafe {
+            if self.is_empty() {
+                &mut []
+            } else {
+                core::slice::from_raw_parts_mut(self.data_mut(), self._size as usize)
+            }
         }
     }
 }

@@ -3,23 +3,23 @@ use crate::relocation_func;
 
 use crate::offsets::offsets_rtti::RTTI_NiObjectNET;
 use crate::offsets::offsets_vtable::VTABLE_NiObjectNET;
-use crate::relocation::{VariantID, RttiType};
+use crate::relocation::{RelocationID, RttiType, VariantID};
 
-use crate::re::ni_object::NiObject;
 use crate::re::bs_fixed_string::BSFixedString;
 use crate::re::ni_extra_data::NiExtraData;
+use crate::re::ni_object::NiObject;
 use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::ni_time_controller::NiTimeController;
 
 #[repr(C)]
 pub struct NiObjectNET {
-    pub base: NiObject,                      // 00
-    pub name: BSFixedString,                  // 10
+    pub base: NiObject,                           // 00
+    pub name: BSFixedString,                      // 10
     pub controllers: NiPointer<NiTimeController>, // 18
-    pub extra: *mut *mut NiExtraData,         // 20
-    pub extra_data_size: u16,                // 28
-    pub max_size: u16,                       // 2A
-    pub pad2c: u32,                          // 2C
+    pub extra: *mut *mut NiExtraData,             // 20
+    pub extra_data_size: u16,                     // 28
+    pub max_size: u16,                            // 2A
+    pub pad2c: u32,                               // 2C
 }
 
 const _: () = assert!(core::mem::size_of::<NiObjectNET>() == 0x30);
@@ -30,9 +30,13 @@ impl RttiType for NiObjectNET {
 
 impl crate::re::ni_ref_object::NiRef for NiObjectNET {
     #[inline(always)]
-    fn inc_ref(&self) { self.base.inc_ref(); }
+    fn inc_ref(&self) {
+        self.base.inc_ref();
+    }
     #[inline(always)]
-    fn dec_ref(&self) { self.base.dec_ref(); }
+    fn dec_ref(&self) {
+        self.base.dec_ref();
+    }
 }
 
 inherit!(NiObjectNET : NiObject);
@@ -53,23 +57,27 @@ impl NiObjectNET {
 
     // RELOCATION_ID SE: 68856, AE: 70208
     relocation_func! {
-        pub fn remove_controller(&mut self, a_controller: *mut NiTimeController) -> bool => VariantID::new(68856, 70208, 0)
+        pub fn remove_controller(&mut self, a_controller: *mut NiTimeController) -> bool => RelocationID::new(68856, 70208)
     }
 
     // RELOCATION_ID SE: 68855, AE: 70207
     relocation_func! {
-        pub fn get_controllers(&self) -> *mut NiTimeController => VariantID::new(68855, 70207, 0)
+        pub fn get_controllers(&self) -> *mut NiTimeController => RelocationID::new(68855, 70207)
     }
 }
 
 impl AsRef<NiObjectNET> for NiObjectNET {
     #[inline(always)]
-    fn as_ref(&self) -> &Self { self }
+    fn as_ref(&self) -> &Self {
+        self
+    }
 }
 
 impl AsMut<NiObjectNET> for NiObjectNET {
     #[inline(always)]
-    fn as_mut(&mut self) -> &mut Self { self }
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
 }
 
 pub trait NiObjectNETExt {

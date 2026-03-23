@@ -1,4 +1,3 @@
-use crate::re::bgs_body_part_defs::LimbEnum;
 use crate::re::Actor;
 use crate::re::ActorHandle;
 use crate::re::ActorValue;
@@ -11,7 +10,8 @@ use crate::re::ObjectRefHandle;
 use crate::re::SpellItem;
 use crate::re::TESObjectWEAP;
 use crate::re::VATSCommand;
-use crate::relocation::VariantID;
+use crate::re::bgs_body_part_defs::LimbEnum;
+use crate::relocation::RelocationID;
 
 bitflags::bitflags! {
     /// C++ `RE::HitData::Flag`
@@ -84,7 +84,7 @@ impl HitData {
             target: *mut Actor,
             weapon: *mut InventoryEntryData,
             is_left_hand: bool,
-        ) => VariantID::new(42832, 44001, 0)
+        ) => RelocationID::new(42832, 44001)
     }
 
     pub fn create(
@@ -94,14 +94,14 @@ impl HitData {
         is_left_hand: bool,
     ) -> *mut Self {
         unsafe {
-            // Выделяем память через MemoryManager Скайрима
+            // Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋР’ВР В Р Р‹Р В Р РЏР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В· MemoryManager Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’В°
             let size = core::mem::size_of::<Self>();
             let hit_data = crate::ffi::commonlib_malloc(size) as *mut Self;
 
             if !hit_data.is_null() {
-                // Инициализируем объект движковым конструктором
+                // Р В Р’В Р вЂ™Р’ВР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р’В Р СћРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В¶Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’В
                 (*hit_data).ctor();
-                // Заполняем данные
+                // Р В Р’В Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р В РІР‚В¦Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ
                 (*hit_data).populate(aggressor, target, weapon, is_left_hand);
             }
 
@@ -111,6 +111,6 @@ impl HitData {
 
     // RELOCATION_ID SE: 42826, AE: 43995
     crate::relocation_func! {
-        fn ctor(&mut self) -> *mut Self => VariantID::new(42826, 43995, 0)
+        fn ctor(&mut self) -> *mut Self => RelocationID::new(42826, 43995)
     }
 }

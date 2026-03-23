@@ -9,24 +9,26 @@ extern crate alloc;
 
 #[macro_use]
 pub mod log;
-pub mod ini;
 pub mod ffi;
-pub mod relocation;
+pub mod ini;
 pub mod offsets;
 pub mod re;
+pub mod relocation;
 
 // Наши новые модули
-pub mod version;
 pub mod runtime;
 pub mod skse64;
+pub mod version;
 
 // Needed for macros
 pub extern crate core;
 pub extern crate core_util;
 
+use crate::version::Version;
 use core::ffi::CStr;
-use core_util::RacyCell;
-use crate::version::Version; // Подтягиваем наш тип версий
+#[cfg(not(test))]
+use core::panic::PanicInfo;
+use core_util::RacyCell; // Подтягиваем наш тип версий
 
 // Подтягиваем интерфейсы из модуля skse64
 use crate::skse64::plugin_api::{PluginInfo, SkseInterface, SksePluginVersionData};
@@ -35,16 +37,30 @@ use crate::skse64::plugin_api::{PluginInfo, SkseInterface, SksePluginVersionData
 // Core plugin loader
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-extern "Rust" {
+unsafe extern "Rust" {
     fn skse_plugin_rust_entry(skse: &SkseInterface) -> Result<(), ()>;
-    pub (in crate) static SKSEPlugin_Version: SksePluginVersionData;
+    pub(crate) static SKSEPlugin_Version: SksePluginVersionData;
 }
 
-unsafe fn init_runtime_only(skse: *const SkseInterface) -> bool {
-    if skse.is_null() { return false; }
+#[cfg(not(test))]
+#[panic_handler]
+fn panic(info: &PanicInfo<'_>) -> ! {
+    crate::log::fatal_runtime(format_args!("panic: {info}"))
+}
+
+fn init_runtime_only(skse: *const SkseInterface) -> bool {
+    if skse.is_null() {
+        skse_fatal!(
+            window,
+            "SKSE initialization received a null interface pointer"
+        );
+        return false;
+    }
+
+    let skse = unsafe { &*skse };
 
     // Конвертируем u32 из FFI в нашу удобную структуру Version
-    let runtime_ver = Version::from_packed((*skse).runtime_version);
+    let runtime_ver = Version::from_packed(skse.runtime_version);
 
     if !crate::runtime::CURRENT_VERSION.is_init() {
         crate::runtime::init(runtime_ver);
@@ -52,58 +68,90 @@ unsafe fn init_runtime_only(skse: *const SkseInterface) -> bool {
     true
 }
 
-unsafe fn init_full(skse: *const SkseInterface) -> bool {
+fn init_full(skse: *const SkseInterface) -> bool {
     static DONE: RacyCell<bool> = RacyCell::new(false);
-    if *DONE.get() { return true; }
+    if unsafe { *DONE.get() } {
+        return true;
+    }
 
-    if !init_runtime_only(skse) { return false; }
+    if !init_runtime_only(skse) {
+        return false;
+    }
 
     log::open();
 
-    if (*skse).is_editor != 0 { return false; }
+    let skse = unsafe { &*skse };
 
-    plugin_api::PLUGIN_HANDLE.init(((*skse).get_plugin_handle)());
-    plugin_api::init_listener(skse.as_ref().unwrap());
+    if skse.is_editor != 0 {
+        return false;
+    }
 
-    *DONE.get() = true;
+    unsafe {
+        plugin_api::PLUGIN_HANDLE.init((skse.get_plugin_handle)());
+    }
+    if !plugin_api::init_listener(skse) {
+        return false;
+    }
+
+    unsafe {
+        *DONE.get() = true;
+    }
     true
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn SKSEPlugin_Query(
     skse: *const SkseInterface,
-    info: *mut PluginInfo
+    info: *mut PluginInfo,
 ) -> bool {
-    if !init_runtime_only(skse) { return false; }
-    assert!(!info.is_null());
+    if !init_runtime_only(skse) {
+        return false;
+    }
+    if info.is_null() {
+        skse_fatal!(
+            window,
+            "SKSEPlugin_Query received a null PluginInfo pointer"
+        );
+        return false;
+    }
 
-    *info = PluginInfo {
-        info_version: PluginInfo::VERSION,
-        name: SKSEPlugin_Version.name.as_ptr(),
-        version: SKSEPlugin_Version.plugin_version // Передаем чистый u32
-    };
+    unsafe {
+        *info = PluginInfo {
+            info_version: PluginInfo::VERSION,
+            name: SKSEPlugin_Version.name.as_ptr(),
+            version: SKSEPlugin_Version.plugin_version, // Передаем чистый u32
+        };
+    }
 
     true
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> bool {
-    if !init_full(skse) { return false; }
+    if !init_full(skse) {
+        return false;
+    }
 
-    crate::ffi::init_commonlib(skse as *const core::ffi::c_void);
+    unsafe {
+        crate::ffi::init_commonlib(skse as *const core::ffi::c_void);
+    }
 
-    let game_ver = Version::from_packed((*skse).runtime_version);
-    let skse_ver = Version::from_packed((*skse).skse_version);
+    let skse = unsafe { &*skse };
+
+    let game_ver = Version::from_packed(skse.runtime_version);
+    let skse_ver = Version::from_packed(skse.skse_version);
 
     skse_message!(
         "{} v{}\nRunning on Skyrim SE/AE {}, SKSE {}",
-        CStr::from_ptr(SKSEPlugin_Version.name.as_ptr()).to_str().unwrap_or("Unknown"),
-        Version::from_packed(SKSEPlugin_Version.plugin_version),
+        unsafe { CStr::from_ptr(SKSEPlugin_Version.name.as_ptr()) }
+            .to_str()
+            .unwrap_or("Unknown"),
+        unsafe { Version::from_packed(SKSEPlugin_Version.plugin_version) },
         game_ver,
         skse_ver
     );
 
-    if let Ok(_) = skse_plugin_rust_entry(skse.as_ref().unwrap()) {
+    if let Ok(_) = unsafe { skse_plugin_rust_entry(skse) } {
         true
     } else {
         false
@@ -123,9 +171,9 @@ pub mod trampoline {
 }
 
 pub mod task {
+    use crate::ffi;
     use alloc::boxed::Box;
     use core::ffi::c_void;
-    use crate::ffi;
 
     /// Внутренний обработчик, который вызывается из C++
     /// Он распаковывает замыкание из void* и исполняет его.
@@ -161,27 +209,38 @@ pub mod task {
 }
 
 pub mod plugin_api {
-    use core::ffi::c_char;
     use alloc::vec::Vec;
+    use core::ffi::c_char;
 
     pub use crate::skse64::plugin_api::*;
-    use core_util::{Later, RacyCell};
     use crate::version::Version;
+    use core_util::{Later, RacyCell};
 
     const VEC_INIT: Vec<fn(&Message)> = Vec::new();
-    static SKSE_HANDLERS: RacyCell<[Vec<fn(&Message)>; Message::SKSE_MAX]> = RacyCell::new([VEC_INIT; Message::SKSE_MAX]);
+    static SKSE_HANDLERS: RacyCell<[Vec<fn(&Message)>; Message::SKSE_MAX]> =
+        RacyCell::new([VEC_INIT; Message::SKSE_MAX]);
 
-    pub (in crate) static PLUGIN_HANDLE: Later<PluginHandle> = Later::new();
+    pub(crate) static PLUGIN_HANDLE: Later<PluginHandle> = Later::new();
 
-    pub (in crate) fn init_listener(skse: &SkseInterface) {
+    pub(crate) fn init_listener(skse: &SkseInterface) -> bool {
         unsafe {
-            let msg_if = (skse.query_interface)(InterfaceId::Messaging) as *mut SkseMessagingInterface;
-            ((*msg_if).register_listener)(
+            let msg_if =
+                (skse.query_interface)(InterfaceId::Messaging) as *mut SkseMessagingInterface;
+            if msg_if.is_null() {
+                crate::skse_fatal!(window, "Failed to acquire the SKSE messaging interface");
+                return false;
+            }
+
+            if !((*msg_if).register_listener)(
                 handle(),
                 "SKSE\0".as_bytes().as_ptr() as *const c_char,
-                skse_listener
-            );
+                skse_listener,
+            ) {
+                crate::skse_fatal!(window, "Failed to register the SKSE messaging listener");
+                return false;
+            }
         }
+        true
     }
 
     pub fn register_listener(msg_type: u32, callback: fn(&Message)) {
@@ -204,7 +263,7 @@ pub mod plugin_api {
             version_indep: $vi:expr,
             compat_versions: [ $($compat:expr),* ]
         ) => {
-            #[no_mangle]
+            #[unsafe(no_mangle)]
             pub static SKSEPlugin_Version: $crate::plugin_api::SksePluginVersionData =
             $crate::plugin_api::SksePluginVersionData {
                 data_version: $crate::plugin_api::SksePluginVersionData::VERSION,
@@ -268,9 +327,14 @@ pub mod plugin_api {
     }
 
     unsafe extern "system" fn skse_listener(msg: *mut Message) {
-        let msg = msg.as_ref().unwrap();
-        if msg.msg_type >= Message::SKSE_MAX as u32 { return; }
-        for callback in (*SKSE_HANDLERS.get())[msg.msg_type as usize].iter() {
+        let Some(msg) = (unsafe { msg.as_ref() }) else {
+            crate::skse_fatal!(window, "SKSE delivered a null messaging payload");
+            return;
+        };
+        if msg.msg_type >= Message::SKSE_MAX as u32 {
+            return;
+        }
+        for callback in unsafe { (*SKSE_HANDLERS.get())[msg.msg_type as usize].iter() } {
             callback(msg);
         }
     }

@@ -1,6 +1,7 @@
 use crate::offsets::offsets_rtti::RTTI_BGSBipedObjectForm;
 use crate::offsets::offsets_vtable::VTABLE_BGSBipedObjectForm;
 
+use crate::core_util::inherit;
 use crate::re::BaseFormComponent;
 
 bitflags::bitflags! {
@@ -65,7 +66,11 @@ pub struct BGSBipedObjectForm {
 }
 const _: () = assert!(core::mem::size_of::<BGSBipedObjectForm>() == 0x10);
 
-impl crate::relocation::RttiType for BGSBipedObjectForm { const RTTI: crate::relocation::VariantID = RTTI_BGSBipedObjectForm; }
+impl crate::relocation::RttiType for BGSBipedObjectForm {
+    const RTTI: crate::relocation::VariantID = RTTI_BGSBipedObjectForm;
+}
+
+inherit!(BGSBipedObjectForm : BaseFormComponent);
 
 impl BGSBipedObjectForm {
     pub const RTTI: crate::relocation::VariantID = RTTI_BGSBipedObjectForm;
@@ -106,7 +111,9 @@ impl BGSBipedObjectForm {
     }
 
     pub fn is_shield(&self) -> bool {
-        self.biped_model_data.biped_object_slots.contains(BipedObjectSlot::kShield)
+        self.biped_model_data
+            .biped_object_slots
+            .contains(BipedObjectSlot::kShield)
     }
 
     pub fn remove_slot_from_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot {

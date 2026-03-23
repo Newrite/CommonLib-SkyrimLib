@@ -33,4 +33,5 @@ impl TryFrom<u32> for SoundLevel {
     }
 }
 
+#[allow(non_camel_case_types)]
 pub type SOUND_LEVEL = SoundLevel;

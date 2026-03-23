@@ -1,1 +1,1 @@
-﻿core_util::abstract_type! { pub type TESWaterForm; }
+core_util::abstract_type! { pub type TESWaterForm; }

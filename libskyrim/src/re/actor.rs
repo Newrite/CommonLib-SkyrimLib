@@ -1,1 +1,1 @@
-﻿core_util::abstract_type! { pub type Actor; }
+core_util::abstract_type! { pub type Actor; }

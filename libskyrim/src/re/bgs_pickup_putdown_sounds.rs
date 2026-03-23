@@ -1,14 +1,13 @@
-use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_BGSPickupPutdownSounds;
 use crate::offsets::offsets_vtable::VTABLE_BGSPickupPutdownSounds;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::bgs_sound_descriptor_form::BGSSoundDescriptorForm;
 use crate::relocation::{RttiType, VariantID};
-use crate::virtual_method;
+use core_util::inherit;
 
 #[repr(C)]
 pub struct BGSPickupPutdownSounds {
-    pub base: BaseFormComponent, // 00
+    pub base: BaseFormComponent,                    // 00
     pub pickup_sound: *mut BGSSoundDescriptorForm,  // 08 - YNAM
     pub putdown_sound: *mut BGSSoundDescriptorForm, // 10 - ZNAM
 }

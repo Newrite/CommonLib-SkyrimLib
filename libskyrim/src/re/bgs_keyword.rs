@@ -1,13 +1,13 @@
 use crate::offsets::offsets_rtti::RTTI_BGSKeyword;
 use crate::offsets::offsets_vtable::VTABLE_BGSKeyword;
 use crate::re::bs_fixed_string::BSFixedString;
-use crate::re::form_type::FormType;
 use crate::re::form_traits::FormCastable;
-use crate::re::tes_form::TESForm;
+use crate::re::form_type::FormType;
 use crate::re::i_form_factory::IFormFactory;
-use crate::relocation::{VariantID, RttiType};
-use core_util::inherit;
+use crate::re::tes_form::TESForm;
+use crate::relocation::{RttiType, VariantID};
 use bitflags::bitflags;
+use core_util::inherit;
 
 /// C++ `RE::BGSKeyword`
 #[repr(C)]

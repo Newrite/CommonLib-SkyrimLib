@@ -1,8 +1,8 @@
-use core::sync::atomic::{AtomicU32, Ordering};
-use crate::{virtual_method, relocation_variable};
-use crate::relocation::{VariantID, RttiType};
 use crate::offsets::offsets_rtti::RTTI_NiRefObject;
 use crate::offsets::offsets_vtable::VTABLE_NiRefObject;
+use crate::relocation::{RelocationID, RttiType, VariantID};
+use crate::{relocation_variable, virtual_method};
+use core::sync::atomic::{AtomicU32, Ordering};
 
 #[repr(C)]
 pub struct NiRefObject {
@@ -44,7 +44,7 @@ impl NiRefObject {
     }
 
     relocation_variable! {
-        pub fn get_total_object_count() -> &'static AtomicU32 => VariantID::new(523912, 410493, 0)
+        pub fn get_total_object_count() -> &'static AtomicU32 => RelocationID::new(523912, 410493)
     }
 }
 
@@ -58,7 +58,11 @@ pub trait NiRef {
 
 impl NiRef for NiRefObject {
     #[inline(always)]
-    fn inc_ref(&self) { self.inc_ref_count(); }
+    fn inc_ref(&self) {
+        self.inc_ref_count();
+    }
     #[inline(always)]
-    fn dec_ref(&self) { self.dec_ref_count(); }
-}
+    fn dec_ref(&self) {
+        self.dec_ref_count();
+    }
+}

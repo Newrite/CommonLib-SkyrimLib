@@ -1,5 +1,5 @@
-﻿use core::fmt;
 use crate::re::form_enum_string::FormEnumString;
+use core::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u32)]
@@ -292,16 +292,16 @@ impl FormType {
     pub fn from_str(s: &str) -> Self {
         use core::ffi::CStr;
 
-        // Проходим по оригинальной таблице Скайрима
+        // РџСЂРѕС…РѕРґРёРј РїРѕ РѕСЂРёРіРёРЅР°Р»СЊРЅРѕР№ С‚Р°Р±Р»РёС†Рµ РЎРєР°Р№СЂРёРјР°
         for entry in FormEnumString::get_all() {
             if entry.form_string.is_null() {
                 continue;
             }
 
-            // Безопасно оборачиваем указатель в CStr
+            // Р‘РµР·РѕРїР°СЃРЅРѕ РѕР±РѕСЂР°С‡РёРІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ РІ CStr
             let c_str = unsafe { CStr::from_ptr(entry.form_string) };
 
-            // Сравниваем (case-insensitive)
+            // РЎСЂР°РІРЅРёРІР°РµРј (case-insensitive)
             if let Ok(form_name) = c_str.to_str() {
                 if form_name.eq_ignore_ascii_case(s) {
                     return entry.form_type;

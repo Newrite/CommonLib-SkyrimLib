@@ -7,7 +7,7 @@ use crate::relocation::{RttiType, VariantID};
 
 #[repr(C)]
 pub struct BGSTextureModel {
-    pub base: TESModel,  // 0x00
+    pub base: TESModel, // 0x00
 }
 
 const _: () = assert!(core::mem::size_of::<BGSTextureModel>() == 0x28);

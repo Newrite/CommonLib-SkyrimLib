@@ -1,9 +1,9 @@
 use crate::offsets::offsets_rtti::RTTI_TESObjectARMO;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectARMO;
+use crate::relocation::RelocationID;
 
 use crate::core_util::inherit;
 use crate::re::BGSBipedObjectForm;
-use crate::re::bgs_biped_object_form::BGSBipedObjectFormExt;
 use crate::re::BGSBlockBashData;
 use crate::re::BGSDestructibleObjectForm;
 use crate::re::BGSEquipType;
@@ -20,6 +20,7 @@ use crate::re::TESObjectARMA;
 use crate::re::TESRaceForm;
 use crate::re::TESValueForm;
 use crate::re::TESWeightForm;
+use crate::re::bgs_biped_object_form::BGSBipedObjectFormExt;
 use crate::re::biped_anim::BipedAnim;
 
 bitflags::bitflags! {
@@ -70,8 +71,11 @@ const _: () = assert!(core::mem::offset_of!(TESObjectARMO, block_bash_data) == 0
 const _: () = assert!(core::mem::offset_of!(TESObjectARMO, keyword_form) == 0x1D8);
 const _: () = assert!(core::mem::offset_of!(TESObjectARMO, description) == 0x1F0);
 
-impl crate::relocation::RttiType for TESObjectARMO { const RTTI: crate::relocation::VariantID = RTTI_TESObjectARMO; }
+impl crate::relocation::RttiType for TESObjectARMO {
+    const RTTI: crate::relocation::VariantID = RTTI_TESObjectARMO;
+}
 
+inherit!(TESObjectARMO : TESBoundObject);
 inherit!(TESObjectARMO => TESFullName, full_name);
 inherit!(TESObjectARMO => TESRaceForm, race_form);
 inherit!(TESObjectARMO => TESEnchantableForm, enchantable_form);
@@ -107,11 +111,11 @@ impl TESObjectARMO {
     // override (BGSKeywordForm)
     // [[nodiscard]] BGSKeyword* GetDefaultKeyword() const override;  // 05
 
-    pub fn get_armor_rating(&self) -> f32 {
+    pub fn get_armor_rating(&mut self) -> f32 {
         self.armor_rating as f32 / 100.0
     }
 
-    pub fn get_armor_addon(&self, _a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
+    pub fn get_armor_addon(&mut self, _a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
         if _a_race.is_null() {
             return core::ptr::null_mut();
         }
@@ -129,7 +133,11 @@ impl TESObjectARMO {
         core::ptr::null_mut()
     }
 
-    pub fn get_armor_addon_by_mask(&self, _a_race: *mut crate::re::TESRace, _a_slot: crate::re::BipedObjectSlot) -> *mut TESObjectARMA {
+    pub fn get_armor_addon_by_mask(
+        &mut self,
+        _a_race: *mut crate::re::TESRace,
+        _a_slot: crate::re::BipedObjectSlot,
+    ) -> *mut TESObjectARMA {
         if _a_race.is_null() {
             return core::ptr::null_mut();
         }
@@ -149,32 +157,48 @@ impl TESObjectARMO {
     }
 
     crate::relocation_func! {
-        pub fn init_worn_armor(this: *mut TESObjectARMO, a_actor: *mut crate::re::Actor, a_biped: *mut BSTSmartPointer<BipedAnim>) => crate::relocation::VariantID::new(24232, 24736, 0)
+        pub fn init_worn_armor(this: *mut TESObjectARMO, a_actor: *mut crate::re::Actor, a_biped: *mut BSTSmartPointer<BipedAnim>) => RelocationID::new(24232, 24736)
     }
 }
 
 pub trait TESObjectARMOExt {
-    fn get_armor_rating(&self) -> f32;
-    fn get_armor_addon(&self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA;
-    fn get_armor_addon_by_mask(&self, a_race: *mut crate::re::TESRace, a_slot: crate::re::BipedObjectSlot) -> *mut TESObjectARMA;
-    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut BSTSmartPointer<BipedAnim>);
+    fn get_armor_rating(&mut self) -> f32;
+    fn get_armor_addon(&mut self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA;
+    fn get_armor_addon_by_mask(
+        &mut self,
+        a_race: *mut crate::re::TESRace,
+        a_slot: crate::re::BipedObjectSlot,
+    ) -> *mut TESObjectARMA;
+    fn init_worn_armor(
+        &mut self,
+        a_actor: *mut crate::re::Actor,
+        a_biped: *mut BSTSmartPointer<BipedAnim>,
+    );
 }
 
-impl<T: AsRef<TESObjectARMO>> TESObjectARMOExt for T {
-    fn get_armor_rating(&self) -> f32 {
-        self.as_ref().get_armor_rating()
+impl<T: AsRef<TESObjectARMO> + AsMut<TESObjectARMO>> TESObjectARMOExt for T {
+    fn get_armor_rating(&mut self) -> f32 {
+        self.as_mut().get_armor_rating()
     }
 
-    fn get_armor_addon(&self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
-        self.as_ref().get_armor_addon(a_race)
+    fn get_armor_addon(&mut self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
+        self.as_mut().get_armor_addon(a_race)
     }
 
-    fn get_armor_addon_by_mask(&self, a_race: *mut crate::re::TESRace, a_slot: crate::re::BipedObjectSlot) -> *mut TESObjectARMA {
-        self.as_ref().get_armor_addon_by_mask(a_race, a_slot)
+    fn get_armor_addon_by_mask(
+        &mut self,
+        a_race: *mut crate::re::TESRace,
+        a_slot: crate::re::BipedObjectSlot,
+    ) -> *mut TESObjectARMA {
+        self.as_mut().get_armor_addon_by_mask(a_race, a_slot)
     }
 
-    fn init_worn_armor(&mut self, a_actor: *mut crate::re::Actor, a_biped: *mut BSTSmartPointer<BipedAnim>) {
-        let ptr = self.as_ref() as *const TESObjectARMO as *mut TESObjectARMO;
+    fn init_worn_armor(
+        &mut self,
+        a_actor: *mut crate::re::Actor,
+        a_biped: *mut BSTSmartPointer<BipedAnim>,
+    ) {
+        let ptr = self.as_mut() as *mut TESObjectARMO;
         TESObjectARMO::init_worn_armor(ptr, a_actor, a_biped);
     }
 }

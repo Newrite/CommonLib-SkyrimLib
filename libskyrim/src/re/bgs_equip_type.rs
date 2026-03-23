@@ -1,14 +1,14 @@
-use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_BGSEquipType;
 use crate::offsets::offsets_vtable::VTABLE_BGSEquipType;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::bgs_equip_slot::BGSEquipSlot;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use core_util::inherit;
 
 #[repr(C)]
 pub struct BGSEquipType {
-    pub base: BaseFormComponent, // 00
+    pub base: BaseFormComponent,       // 00
     pub equip_slot: *mut BGSEquipSlot, // 08 - ETYP
 }
 
@@ -37,5 +37,20 @@ impl BGSEquipType {
     virtual_method! {
         pub const SET_EQUIP_SLOT: usize = 0x05;
         pub fn set_equip_slot(slot: *mut BGSEquipSlot)
+    }
+}
+
+pub trait BGSEquipTypeExt {
+    fn get_equip_slot(&self) -> *mut BGSEquipSlot;
+    fn set_equip_slot(&mut self, slot: *mut BGSEquipSlot);
+}
+
+impl<T: AsRef<BGSEquipType> + AsMut<BGSEquipType>> BGSEquipTypeExt for T {
+    fn get_equip_slot(&self) -> *mut BGSEquipSlot {
+        self.as_ref().get_equip_slot()
+    }
+
+    fn set_equip_slot(&mut self, slot: *mut BGSEquipSlot) {
+        self.as_mut().set_equip_slot(slot)
     }
 }

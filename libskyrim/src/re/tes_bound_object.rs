@@ -1,16 +1,16 @@
-use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_TESBoundObject;
 use crate::offsets::offsets_vtable::VTABLE_TESBoundObject;
-use crate::re::tes_object::TESObject;
-use crate::re::tes_file::TESFile;
-use crate::re::tes_object_refr::TESObjectREFR;
+use crate::re::actor::Actor;
 use crate::re::bgs_destructible_object_form::BGSDestructibleObjectForm;
-use crate::re::ni_av_object::NiAVObject;
 use crate::re::bgs_voice_type::BGSVoiceType;
 use crate::re::bs_string::BSString;
-use crate::re::actor::Actor;
+use crate::re::ni_av_object::NiAVObject;
+use crate::re::tes_file::TESFile;
+use crate::re::tes_object::TESObject;
+use crate::re::tes_object_refr::TESObjectREFR;
+use core_util::inherit;
 
-use crate::relocation::{RttiType, VariantID};
+use crate::relocation::{RelocationID, RttiType, VariantID};
 use crate::virtual_method;
 
 #[repr(C)]
@@ -24,7 +24,8 @@ const _: () = assert!(core::mem::size_of::<NiNPShortPoint3>() == 0x6);
 
 #[repr(C)]
 #[derive(bytemuck::Zeroable)]
-pub struct BoundData { // OBND
+pub struct BoundData {
+    // OBND
     pub bound_min: NiNPShortPoint3, // 0
     pub bound_max: NiNPShortPoint3, // 6
 }
@@ -32,9 +33,9 @@ const _: () = assert!(core::mem::size_of::<BoundData>() == 0xC);
 
 #[repr(C)]
 pub struct TESBoundObject {
-    pub base: TESObject, // 00
+    pub base: TESObject,       // 00
     pub bound_data: BoundData, // 20
-    pub pad2c: u32, // 2C
+    pub pad2c: u32,            // 2C
 }
 
 const _: () = assert!(core::mem::size_of::<TESBoundObject>() == 0x30);
@@ -75,7 +76,7 @@ impl TESBoundObject {
     }
 
     crate::relocation_func! {
-        pub fn get_destructible_form(this: &TESBoundObject) -> *mut BGSDestructibleObjectForm => VariantID::new(14055, 14152, 0)
+        pub fn get_destructible_form(this: &TESBoundObject) -> *mut BGSDestructibleObjectForm => RelocationID::new(14055, 14152)
     }
 
     virtual_method! {
@@ -137,14 +138,29 @@ impl TESBoundObject {
 pub trait TESBoundObjectExt {
     fn load_object_bound(&mut self, mod_file: *mut TESFile);
     fn is_bound_object(&self) -> bool;
-    fn activate(&mut self, target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool;
+    fn activate(
+        &mut self,
+        target_ref: *mut TESObjectREFR,
+        activator_ref: *mut TESObjectREFR,
+        arg3: u8,
+        object: *mut TESBoundObject,
+        target_count: i32,
+    ) -> bool;
+    fn clone_3d_override(&self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject;
+    fn replace_model_override(&self) -> bool;
     fn get_destructible_form(&self) -> *mut BGSDestructibleObjectForm;
     fn set_object_voice_type(&mut self, voice_type: *mut BGSVoiceType);
     fn get_object_voice_type(&self) -> *mut BGSVoiceType;
     fn clone_3d(&self, a_ref: *mut TESObjectREFR) -> *mut NiAVObject;
     fn replace_model(&mut self, model_path: *const core::ffi::c_char) -> bool;
     fn get_activate_text(&self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool;
-    fn calculate_do_favor(&self, activator: *mut Actor, arg2: bool, to_activate: *mut TESObjectREFR, arg3: f32) -> bool;
+    fn calculate_do_favor(
+        &self,
+        activator: *mut Actor,
+        arg2: bool,
+        to_activate: *mut TESObjectREFR,
+        arg3: f32,
+    ) -> bool;
     fn handle_remove_item_from_container(&mut self, container: *mut TESObjectREFR);
     fn on_remove_3d(&mut self, obj_3d: *mut NiAVObject);
     fn on_check_models(&mut self);
@@ -161,8 +177,24 @@ impl<T: AsRef<TESBoundObject> + AsMut<TESBoundObject>> TESBoundObjectExt for T {
         self.as_ref().is_bound_object()
     }
 
-    fn activate(&mut self, target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool {
-        self.as_mut().activate(target_ref, activator_ref, arg3, object, target_count)
+    fn activate(
+        &mut self,
+        target_ref: *mut TESObjectREFR,
+        activator_ref: *mut TESObjectREFR,
+        arg3: u8,
+        object: *mut TESBoundObject,
+        target_count: i32,
+    ) -> bool {
+        self.as_mut()
+            .activate(target_ref, activator_ref, arg3, object, target_count)
+    }
+
+    fn clone_3d_override(&self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject {
+        self.as_ref().clone_3d_override(a_ref, a_arg3)
+    }
+
+    fn replace_model_override(&self) -> bool {
+        self.as_ref().replace_model_override()
     }
 
     fn get_destructible_form(&self) -> *mut BGSDestructibleObjectForm {
@@ -189,8 +221,15 @@ impl<T: AsRef<TESBoundObject> + AsMut<TESBoundObject>> TESBoundObjectExt for T {
         self.as_ref().get_activate_text(activator, dst)
     }
 
-    fn calculate_do_favor(&self, activator: *mut Actor, arg2: bool, to_activate: *mut TESObjectREFR, arg3: f32) -> bool {
-        self.as_ref().calculate_do_favor(activator, arg2, to_activate, arg3)
+    fn calculate_do_favor(
+        &self,
+        activator: *mut Actor,
+        arg2: bool,
+        to_activate: *mut TESObjectREFR,
+        arg3: f32,
+    ) -> bool {
+        self.as_ref()
+            .calculate_do_favor(activator, arg2, to_activate, arg3)
     }
 
     fn handle_remove_item_from_container(&mut self, container: *mut TESObjectREFR) {

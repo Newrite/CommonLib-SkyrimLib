@@ -9,7 +9,9 @@ pub struct TESModelRDT {
 }
 const _: () = assert!(core::mem::size_of::<TESModelRDT>() == 0x28);
 
-impl crate::relocation::RttiType for TESModelRDT { const RTTI: crate::relocation::VariantID = RTTI_TESModelRDT; }
+impl crate::relocation::RttiType for TESModelRDT {
+    const RTTI: crate::relocation::VariantID = RTTI_TESModelRDT;
+}
 
 impl TESModelRDT {
     pub const RTTI: crate::relocation::VariantID = RTTI_TESModelRDT;

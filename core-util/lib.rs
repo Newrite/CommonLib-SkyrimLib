@@ -21,13 +21,13 @@
 
 // For macros.
 pub use core;
-pub mod enum_value;
 pub mod enum_set;
-pub use enum_value::*;
+pub mod enum_value;
 pub use enum_set::*;
+pub use enum_value::*;
 
 use core::cell::UnsafeCell;
-use core::ffi::{c_char, CStr};
+use core::ffi::{CStr, c_char};
 use core::fmt;
 use core::mem::MaybeUninit;
 use core::ops::Deref;
@@ -237,14 +237,26 @@ pub trait SafePtrExt {
 
 impl<T> SafePtrExt for *const T {
     type Target = T;
-    #[inline(always)] fn get_ref<'a>(self) -> Option<&'a T> { unsafe { self.as_ref() } }
-    #[inline(always)] fn get_mut<'a>(self) -> Option<&'a mut T> { None }
+    #[inline(always)]
+    fn get_ref<'a>(self) -> Option<&'a T> {
+        unsafe { self.as_ref() }
+    }
+    #[inline(always)]
+    fn get_mut<'a>(self) -> Option<&'a mut T> {
+        None
+    }
 }
 
 impl<T> SafePtrExt for *mut T {
     type Target = T;
-    #[inline(always)] fn get_ref<'a>(self) -> Option<&'a T> { unsafe { self.as_ref() } }
-    #[inline(always)] fn get_mut<'a>(self) -> Option<&'a mut T> { unsafe { self.as_mut() } }
+    #[inline(always)]
+    fn get_ref<'a>(self) -> Option<&'a T> {
+        unsafe { self.as_ref() }
+    }
+    #[inline(always)]
+    fn get_mut<'a>(self) -> Option<&'a mut T> {
+        unsafe { self.as_mut() }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,10 +307,10 @@ impl WideStr {
     /// Creates a wide char from a pointer. The given string must be NUL terminated.
     pub unsafe fn from_ptr<'a>(s: *const u16) -> &'a Self {
         let mut wchars = 0;
-        while *s.add(wchars) != 0 {
+        while unsafe { *s.add(wchars) } != 0 {
             wchars += 1
         }
-        Self::from_slice(core::slice::from_raw_parts::<'a, u16>(s, wchars + 1))
+        Self::from_slice(unsafe { core::slice::from_raw_parts::<'a, u16>(s, wchars + 1) })
     }
 
     /// Returns the wide char string as a pointer.
@@ -419,7 +431,9 @@ pub fn ptr_to_str<'a>(ptr: *const c_char) -> &'a str {
     if ptr.is_null() {
         "<null>"
     } else {
-        unsafe { CStr::from_ptr(ptr) }.to_str().unwrap_or("<invalid utf8>")
+        unsafe { CStr::from_ptr(ptr) }
+            .to_str()
+            .unwrap_or("<invalid utf8>")
     }
 }
 

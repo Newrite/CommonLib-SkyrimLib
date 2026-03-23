@@ -1,6 +1,7 @@
 use crate::offsets::offsets_rtti::RTTI_TESBipedModelForm;
 use crate::offsets::offsets_vtable::VTABLE_TESBipedModelForm;
 
+use crate::core_util::inherit;
 use crate::re::BGSMessageIcon;
 use crate::re::BaseFormComponent;
 use crate::re::TESIcon;
@@ -17,15 +18,19 @@ pub enum Sexes {
 
 #[repr(C)]
 pub struct TESBipedModelForm {
-    pub base: BaseFormComponent,                       // 00
-    pub world_models: [TESModelTextureSwap; 2],        // 08
-    pub inventory_icons: [TESIcon; 2],                 // 78
-    pub message_icons: [BGSMessageIcon; 2],            // 98
-    pub constraint_template: TESModelRDT,              // C8
+    pub base: BaseFormComponent,                // 00
+    pub world_models: [TESModelTextureSwap; 2], // 08
+    pub inventory_icons: [TESIcon; 2],          // 78
+    pub message_icons: [BGSMessageIcon; 2],     // 98
+    pub constraint_template: TESModelRDT,       // C8
 }
 const _: () = assert!(core::mem::size_of::<TESBipedModelForm>() == 0xF0);
 
-impl crate::relocation::RttiType for TESBipedModelForm { const RTTI: crate::relocation::VariantID = RTTI_TESBipedModelForm; }
+impl crate::relocation::RttiType for TESBipedModelForm {
+    const RTTI: crate::relocation::VariantID = RTTI_TESBipedModelForm;
+}
+
+inherit!(TESBipedModelForm : BaseFormComponent);
 
 impl TESBipedModelForm {
     pub const RTTI: crate::relocation::VariantID = RTTI_TESBipedModelForm;

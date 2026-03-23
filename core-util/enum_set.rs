@@ -27,7 +27,9 @@ macro_rules! impl_enum_set_integer {
     };
 }
 
-impl_enum_set_integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
+impl_enum_set_integer!(
+    u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize
+);
 
 pub trait EnumSetType<U: EnumSetInteger>: Copy {
     fn to_underlying(self) -> U;

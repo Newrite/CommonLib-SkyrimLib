@@ -1,13 +1,13 @@
-use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_BGSDestructibleObjectForm;
 use crate::offsets::offsets_vtable::VTABLE_BGSDestructibleObjectForm;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::destructible_object_data::DestructibleObjectData;
 use crate::relocation::{RttiType, VariantID};
+use core_util::inherit;
 
 #[repr(C)]
 pub struct BGSDestructibleObjectForm {
-    pub base: BaseFormComponent, // 00
+    pub base: BaseFormComponent,           // 00
     pub data: *mut DestructibleObjectData, // 08
 }
 

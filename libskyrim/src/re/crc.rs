@@ -60,7 +60,7 @@ pub trait BSTHash {
     fn bst_hash(&self) -> u32;
 }
 
-// В начале crc.rs:
+// Р’ РЅР°С‡Р°Р»Рµ crc.rs:
 // use bytemuck::NoUninit;
 
 /// Blanket implementation for all types that are safe to hash by raw bytes.

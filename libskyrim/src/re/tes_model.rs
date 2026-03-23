@@ -3,9 +3,9 @@ use crate::offsets::offsets_vtable::VTABLE_TESModel;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::bs_fixed_string::BSFixedString;
 use crate::re::bs_resource_id::BSResourceID;
-use crate::relocation::{VariantID, RttiType};
-use core_util::inherit;
+use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use core_util::inherit;
 
 /// C++ `RE::TESModel`
 #[repr(C)]
