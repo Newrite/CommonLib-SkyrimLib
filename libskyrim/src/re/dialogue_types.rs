@@ -12,6 +12,8 @@ pub enum DialogueType {
     Miscellaneous = 7,
 }
 
+core_util::impl_enumset_type!(DialogueType => u8);
+
 pub const DIALOGUE_TYPE_BRANCHED_TOTAL: usize = 2;
 pub const DIALOGUE_TYPE_TOTAL: usize = 8;
 

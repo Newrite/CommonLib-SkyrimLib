@@ -27,6 +27,9 @@ Translate the requested type from CommonLibVR into `libskyrim/src/re/`.
 
 The `.cpp` is required whenever it exists. Extract all of the following:
 
+- nested enums, named index layers, totals/default constants, and helper types
+  from the matching same-name header/source file pair, even when they only name
+  array slots or preset values
 - `RELOCATION_ID(...)` methods
 - `REL::ID(...)` / `REL::Offset(...)`
 - static methods not visible in the header

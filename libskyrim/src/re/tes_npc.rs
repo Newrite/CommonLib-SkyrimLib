@@ -69,9 +69,9 @@ bitflags::bitflags! {
     }
 }
 
-pub const TES_NPC_SKILL_TOTAL: usize = 18;
-pub const TES_NPC_FACE_MORPH_TOTAL: usize = 19;
-pub const TES_NPC_FACE_PART_TOTAL: usize = 4;
+pub const TES_NPC_SKILL_TOTAL: usize = Skills::TOTAL;
+pub const TES_NPC_FACE_MORPH_TOTAL: usize = FaceDataMorphs::TOTAL;
+pub const TES_NPC_FACE_PART_TOTAL: usize = FaceDataParts::TOTAL;
 pub const TES_NPC_OVERLAY_PART_COUNT: usize = 8;
 
 #[repr(C)]
@@ -94,6 +94,28 @@ pub struct Skills {
 }
 
 const _: () = assert!(core::mem::size_of::<Skills>() == 0x30);
+
+impl Skills {
+    pub const ONE_HANDED: usize = 0;
+    pub const TWO_HANDED: usize = 1;
+    pub const MARKSMAN: usize = 2;
+    pub const BLOCK: usize = 3;
+    pub const SMITHING: usize = 4;
+    pub const HEAVY_ARMOR: usize = 5;
+    pub const LIGHT_ARMOR: usize = 6;
+    pub const PICKPOCKET: usize = 7;
+    pub const LOCKPICKING: usize = 8;
+    pub const SNEAK: usize = 9;
+    pub const ALCHEMY: usize = 10;
+    pub const SPEECHCRAFT: usize = 11;
+    pub const ALTERATION: usize = 12;
+    pub const CONJURATION: usize = 13;
+    pub const DESTRUCTION: usize = 14;
+    pub const ILLUSION: usize = 15;
+    pub const RESTORATION: usize = 16;
+    pub const ENCHANTING: usize = 17;
+    pub const TOTAL: usize = 18;
+}
 
 #[repr(C)]
 pub struct HeadRelatedData {
@@ -134,6 +156,46 @@ pub struct FaceData {
 }
 
 const _: () = assert!(core::mem::size_of::<FaceData>() == 0x5C);
+
+pub struct FaceDataMorphs;
+
+impl FaceDataMorphs {
+    pub const NOSE_LONG_SHORT: usize = 0;
+    pub const NOSE_UP_DOWN: usize = 1;
+    pub const JAW_UP_DOWN: usize = 2;
+    pub const JAW_NARROW_WIDE: usize = 3;
+    pub const JAW_FORWARD_BACK: usize = 4;
+    pub const CHEEKS_UP_DOWN: usize = 5;
+    pub const CHEEKS_FORWARD_BACK: usize = 6;
+    pub const EYES_UP_DOWN: usize = 7;
+    pub const EYES_IN_OUT: usize = 8;
+    pub const BROWS_UP_DOWN: usize = 9;
+    pub const BROWS_IN_OUT: usize = 10;
+    pub const BROWS_FORWARD_BACK: usize = 11;
+    pub const LIPS_UP_DOWN: usize = 12;
+    pub const LIPS_IN_OUT: usize = 13;
+    pub const CHIN_NARROW_WIDE: usize = 14;
+    pub const CHIN_UP_DOWN: usize = 15;
+    pub const CHIN_UNDERBITE_OVERBITE: usize = 16;
+    pub const EYES_FORWARD_BACK: usize = 17;
+    pub const UNK: usize = 18;
+    pub const TOTAL: usize = 19;
+}
+
+pub struct FaceDataParts;
+
+impl FaceDataParts {
+    pub const NOSE: usize = 0;
+    pub const UNKNOWN: usize = 1;
+    pub const EYES: usize = 2;
+    pub const MOUTH: usize = 3;
+    pub const TOTAL: usize = 4;
+}
+
+impl FaceData {
+    pub const DEFAULT: i32 = 0x7F7FFFFF;
+    pub const TOTAL_PRESETS: usize = 4;
+}
 
 #[repr(C)]
 #[derive(Clone, Copy)]

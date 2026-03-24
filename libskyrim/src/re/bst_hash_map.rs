@@ -509,7 +509,6 @@ pub struct BSTScatterTable<
 impl<T, A, P> BSTScatterTable<T, A, P>
 where
     T: BSTScatterTableTraits,
-    T::Key: BSTHash + PartialEq,
     A: BSTScatterTableAllocatorTrait + Default,
     P: BSTScatterTableParent + Default,
 {
@@ -544,7 +543,10 @@ where
     }
 
     /// Looks up a key in the table. Returns a pointer to the value, or null if not found.
-    pub fn find(&self, key: &T::Key) -> *const T::Value {
+    pub fn find(&self, key: &T::Key) -> *const T::Value
+    where
+        T::Key: BSTHash + PartialEq,
+    {
         if self.is_empty() {
             return ptr::null();
         }
@@ -575,12 +577,18 @@ where
     }
 
     /// Looks up a key and returns a mutable pointer to the value.
-    pub fn find_mut(&mut self, key: &T::Key) -> *mut T::Value {
+    pub fn find_mut(&mut self, key: &T::Key) -> *mut T::Value
+    where
+        T::Key: BSTHash + PartialEq,
+    {
         self.find(key) as *mut T::Value
     }
 
     /// Returns true if the table contains the given key.
-    pub fn contains(&self, key: &T::Key) -> bool {
+    pub fn contains(&self, key: &T::Key) -> bool
+    where
+        T::Key: BSTHash + PartialEq,
+    {
         !self.find(key).is_null()
     }
 
@@ -588,7 +596,10 @@ where
     ///
     /// # Safety
     /// The table must be in a valid state.
-    pub unsafe fn insert(&mut self, value: T::Value) -> bool {
+    pub unsafe fn insert(&mut self, value: T::Value) -> bool
+    where
+        T::Key: BSTHash + PartialEq,
+    {
         unsafe {
             let key = T::unwrap_key(&value);
 
@@ -651,7 +662,10 @@ where
     ///
     /// # Safety
     /// The table must be in a valid state.
-    pub unsafe fn erase(&mut self, key: &T::Key) -> bool {
+    pub unsafe fn erase(&mut self, key: &T::Key) -> bool
+    where
+        T::Key: BSTHash + PartialEq,
+    {
         unsafe {
             if self.is_empty() {
                 return false;
@@ -729,7 +743,10 @@ where
     ///
     /// # Safety
     /// The table must be in a valid state.
-    pub unsafe fn reserve(&mut self, count: u32) {
+    pub unsafe fn reserve(&mut self, count: u32)
+    where
+        T::Key: BSTHash + PartialEq,
+    {
         unsafe {
             if count <= self._parent.capacity() {
                 return;
@@ -839,7 +856,10 @@ where
 
     /// Gets the home entry for a key (hash & (capacity - 1)).
     #[inline]
-    unsafe fn get_entry_for(&self, key: &T::Key) -> *mut BSTScatterTableEntry<T::Value> {
+    unsafe fn get_entry_for(&self, key: &T::Key) -> *mut BSTScatterTableEntry<T::Value>
+    where
+        T::Key: BSTHash + PartialEq,
+    {
         unsafe {
             let entries = self.get_entries() as *mut BSTScatterTableEntry<T::Value>;
             let hash = key.bst_hash();

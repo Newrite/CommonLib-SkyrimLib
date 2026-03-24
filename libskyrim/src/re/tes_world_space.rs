@@ -21,6 +21,7 @@ use crate::re::form_type::FormType;
 use crate::re::ni_node::NiNode;
 use crate::re::ni_point2::NiPoint2;
 use crate::re::ni_point3::NiPoint3;
+use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::ni_t_pointer_map::NiTPointerMap;
 use crate::re::tes_climate::TESClimate;
 use crate::re::tes_form::{FormID, TESForm};
@@ -181,57 +182,57 @@ const _: () = assert!(core::mem::size_of::<ShortPoint>() == 0x4);
 /// C++ `RE::TESWorldSpace`
 #[repr(C)]
 pub struct TESWorldSpace {
-    pub base: TESForm,                                                           // 000
-    pub full_name: TESFullName,                                                  // 020
-    pub model: TESModel,                                                         // 030
-    pub cell_map: BSTHashMap<CellID, *mut TESObjectCELL>,                        // 058
-    pub persistent_cell: *mut TESObjectCELL,                                     // 088
-    pub terrain_manager: *mut BGSTerrainManager,                                 // 090
-    pub climate: *mut TESClimate,                                                // 098 - CNAM
-    pub flags: EnumSet<Flag, u8>,                                                // 0A0 - DATA
-    pub unk0a1: u8,                                                              // 0A1
-    pub parent_use_flags: EnumSet<ParentUseFlag, u16>,                           // 0A2 - PNAM
-    pub fixed_center: ShortPoint,                                                // 0A4 - WCTR
-    pub fixed_persistent_ref_map: BSTHashMap<u32, BSTArray<*mut TESObjectREFR>>, // 0A8
-    pub mobile_persistent_refs: BSTArray<*mut TESObjectREFR>,                    // 0D8
-    pub overlapped_multibound_map: *mut NiTPointerMap,                           // 0F0
-    pub sky_cell: *mut TESObjectCELL,                                            // 0F8
-    pub location_map: BSTHashMap<FormID, *mut BGSLocation>,                      // 100
-    pub portal_graph: *mut BSPortalGraph, // 130 - NiPointer<BSPortalGraph>
-    pub unk138: *mut c_void,              // 138
-    pub unk140: *mut c_void,              // 140
-    pub multi_bound_node: *mut NiNode,    // 148 - NiPointer<NiNode>
-    pub portal_shared_node: *mut NiNode,  // 150 - NiPointer<NiNode>
-    pub parent_world: *mut TESWorldSpace, // 158 - WNAM
-    pub lighting_template: *mut BGSLightingTemplate, // 160 - LTMP
-    pub world_water: *mut TESWaterForm,   // 168 - NAM2
-    pub lod_water: *mut TESWaterForm,     // 170 - NAM3
-    pub lod_water_height: f32,            // 178 - NAM4
-    pub pad17c: u32,                      // 17C
-    pub unk180: u64,                      // 180
-    pub world_map_data: WORLD_MAP_DATA,   // 188 - MNAM
-    pub world_map_offset_data: WORLD_MAP_OFFSET_DATA, // 1A4 - ONAM
-    pub pad1b4: u32,                      // 1B4
-    pub music_type: *mut BGSMusicType,    // 1B8 - ZNAM
-    pub minimum_coords: NiPoint2,         // 1C0
-    pub maximum_coords: NiPoint2,         // 1C8
-    pub unk1d0: BSTHashMap<UnkKey, UnkValue>, // 1D0
-    pub editor_id: BSString,              // 200 - EDID
-    pub default_land_height: f32,         // 210
-    pub default_water_height: f32,        // 214
-    pub distant_lod_mult: f32,            // 218 - NAMA
-    pub pad21c: u32,                      // 21C
-    pub encounter_zone: *mut BGSEncounterZone, // 220 - XEZN
-    pub location: *mut BGSLocation,       // 228 - XLCN
-    pub canopy_shadow_texture: TESTexture, // 230 - TNAM
-    pub water_env_map: TESTexture,        // 240 - UNAM
-    pub large_ref_data: BGSLargeRefData,  // 250 - RNAM
-    pub unk2e0: u64,                      // 2E0
-    pub unk2e8: BSTHashMap<UnkKey, UnkValue>, // 2E8
-    pub unk318: BSTHashMap<UnkKey, UnkValue>, // 318
-    pub north_rotation: f32,              // 348
-    pub pad34c: u32,                      // 34C
-    pub max_height_data: *mut i8,         // 350 - MHDT
+    pub base: TESForm,                                    // 000
+    pub full_name: TESFullName,                           // 020
+    pub model: TESModel,                                  // 030
+    pub cell_map: BSTHashMap<CellID, *mut TESObjectCELL>, // 058
+    pub persistent_cell: *mut TESObjectCELL,              // 088
+    pub terrain_manager: *mut BGSTerrainManager,          // 090
+    pub climate: *mut TESClimate,                         // 098 - CNAM
+    pub flags: EnumSet<Flag, u8>,                         // 0A0 - DATA
+    pub unk0a1: u8,                                       // 0A1
+    pub parent_use_flags: EnumSet<ParentUseFlag, u16>,    // 0A2 - PNAM
+    pub fixed_center: ShortPoint,                         // 0A4 - WCTR
+    pub fixed_persistent_ref_map: BSTHashMap<u32, BSTArray<NiPointer<TESObjectREFR>>>, // 0A8
+    pub mobile_persistent_refs: BSTArray<NiPointer<TESObjectREFR>>, // 0D8
+    pub overlapped_multibound_map: *mut NiTPointerMap,    // 0F0
+    pub sky_cell: *mut TESObjectCELL,                     // 0F8
+    pub location_map: BSTHashMap<FormID, *mut BGSLocation>, // 100
+    pub portal_graph: NiPointer<BSPortalGraph>,           // 130
+    pub unk138: *mut c_void,                              // 138
+    pub unk140: *mut c_void,                              // 140
+    pub multi_bound_node: NiPointer<NiNode>,              // 148
+    pub portal_shared_node: NiPointer<NiNode>,            // 150
+    pub parent_world: *mut TESWorldSpace,                 // 158 - WNAM
+    pub lighting_template: *mut BGSLightingTemplate,      // 160 - LTMP
+    pub world_water: *mut TESWaterForm,                   // 168 - NAM2
+    pub lod_water: *mut TESWaterForm,                     // 170 - NAM3
+    pub lod_water_height: f32,                            // 178 - NAM4
+    pub pad17c: u32,                                      // 17C
+    pub unk180: u64,                                      // 180
+    pub world_map_data: WORLD_MAP_DATA,                   // 188 - MNAM
+    pub world_map_offset_data: WORLD_MAP_OFFSET_DATA,     // 1A4 - ONAM
+    pub pad1b4: u32,                                      // 1B4
+    pub music_type: *mut BGSMusicType,                    // 1B8 - ZNAM
+    pub minimum_coords: NiPoint2,                         // 1C0
+    pub maximum_coords: NiPoint2,                         // 1C8
+    pub unk1d0: BSTHashMap<UnkKey, UnkValue>,             // 1D0
+    pub editor_id: BSString,                              // 200 - EDID
+    pub default_land_height: f32,                         // 210
+    pub default_water_height: f32,                        // 214
+    pub distant_lod_mult: f32,                            // 218 - NAMA
+    pub pad21c: u32,                                      // 21C
+    pub encounter_zone: *mut BGSEncounterZone,            // 220 - XEZN
+    pub location: *mut BGSLocation,                       // 228 - XLCN
+    pub canopy_shadow_texture: TESTexture,                // 230 - TNAM
+    pub water_env_map: TESTexture,                        // 240 - UNAM
+    pub large_ref_data: BGSLargeRefData,                  // 250 - RNAM
+    pub unk2e0: u64,                                      // 2E0
+    pub unk2e8: BSTHashMap<UnkKey, UnkValue>,             // 2E8
+    pub unk318: BSTHashMap<UnkKey, UnkValue>,             // 318
+    pub north_rotation: f32,                              // 348
+    pub pad34c: u32,                                      // 34C
+    pub max_height_data: *mut i8,                         // 350 - MHDT
 }
 
 const _: () = assert!(core::mem::size_of::<TESWorldSpace>() == 0x358);

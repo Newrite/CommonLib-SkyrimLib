@@ -93,9 +93,6 @@ impl NiPoint3 {
 
 #[inline]
 fn sqrtf32(x: f32) -> f32 {
-    if x <= 0.0 {
-        return 0.0;
-    }
     unsafe { sqrtf(x) }
 }
 

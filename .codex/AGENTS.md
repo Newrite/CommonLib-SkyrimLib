@@ -42,6 +42,12 @@ Key source locations:
 ## Hard Rules
 
 - Read the matching `.cpp` whenever it exists. It is not optional.
+- When a Rust RE translation corresponds to a same-name CommonLib header/source
+  file pair, carry over the full source-backed data surface from that file
+  pair, not only the layout-critical fields and methods. This includes nested
+  enums, named index layers for arrays, totals/default constants, nested helper
+  types, and private/source-only helpers that belong to the same translated
+  type.
 - Do not collapse named bases or mixins into `[u8; N]`.
 - Do not use `VariantID::new(se, ae, 0)` for `RELOCATION_ID`.
 - Do not translate `ENABLE_SKYRIM_VR` literally into Rust `#[cfg]` in the
@@ -261,6 +267,10 @@ Prefer the provided macros instead of manual address math:
 - Every field must carry the C++ offset comment.
 - Nested structs from C++ must be translated in the same Rust file before the
   parent struct.
+- Matching-name translations should still mirror the source-backed nested data
+  surface even when a nested enum or helper only names array slots, presets, or
+  other non-layout metadata. Do not reduce such layers to bare `*_TOTAL`
+  constants when the C++ file provides the named layer.
 - If an `libskyrim/src/re/*.rs` translation depends on source-backed helper
   structs, enums, aliases, or ABI types from `CommonLibVR/include/REX/**`, put
   those Rust translations in `libskyrim/src/rex/*.rs` and import them from

@@ -19,6 +19,8 @@ Audit the requested translation and compare it to CommonLibVR.
 
 - header vs Rust field layout
 - nested structs
+- named nested enums, index layers, totals/default constants, and other
+  source-backed helper layers from the matching same-name header/source file
 - mixin and parent representation
 - source-backed `REX/**` dependencies that should live in `libskyrim/src/rex/*.rs`
   instead of as local RE-file definitions

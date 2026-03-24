@@ -33,6 +33,12 @@ source-backed helper structs, enums, aliases, or ABI types declared under
 `libskyrim/src/rex/*.rs` and import them via `crate::rex`; do not keep them as
 one-off local definitions inside the RE file.
 
+When a Rust RE translation corresponds to a same-name CommonLib header/source
+file pair, carry over the full source-backed data surface from that file pair,
+not only the layout-critical fields and methods. This includes nested enums,
+named index layers for arrays, totals/default constants, nested helper types,
+and private/source-only helpers that belong to the same translated type.
+
 Treat `rex` as "RE Extensions": a home for shared extension/support types used
 by RE translations, not as a wholesale mirror of the Windows SDK.
 

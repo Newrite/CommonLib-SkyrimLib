@@ -1,5 +1,7 @@
 use core::ffi::c_char;
 
+use crate::re::NiObject;
+
 /// C++ `RE::NiRTTI`
 #[repr(C)]
 pub struct NiRTTI {
@@ -35,4 +37,36 @@ impl NiRTTI {
         }
         false
     }
+}
+
+/// RTTI-backed downcast helper mirroring CommonLib's `netimmerse_cast` intent.
+///
+/// # Safety
+/// `from` must be null or a valid pointer to a live `NiObject`-derived instance.
+/// `to_rtti` must be null or point to a valid NetImmerse RTTI object.
+#[inline]
+pub unsafe fn netimmerse_cast<To>(from: *const NiObject, to_rtti: *const NiRTTI) -> *mut To {
+    if from.is_null() || to_rtti.is_null() {
+        return core::ptr::null_mut();
+    }
+
+    let from_rtti = unsafe { (*from).get_rtti() };
+    if from_rtti.is_null() || unsafe { !(*from_rtti).is_kind_of(to_rtti) } {
+        core::ptr::null_mut()
+    } else {
+        from.cast_mut().cast::<To>()
+    }
+}
+
+/// Const-preserving RTTI-backed cast helper mirroring CommonLib's const overload.
+///
+/// # Safety
+/// `from` must be null or a valid pointer to a live `NiObject`-derived instance.
+/// `to_rtti` must be null or point to a valid NetImmerse RTTI object.
+#[inline]
+pub unsafe fn netimmerse_cast_const<To>(
+    from: *const NiObject,
+    to_rtti: *const NiRTTI,
+) -> *const To {
+    unsafe { netimmerse_cast::<To>(from, to_rtti).cast_const() }
 }

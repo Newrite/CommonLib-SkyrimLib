@@ -663,6 +663,21 @@ macro_rules! define_call_hook {
 macro_rules! virtual_method {
     (
         $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
+        $fn_vis:vis fn $func_name:ident(&mut self $(, $arg_name:ident: $arg_ty:ty)*) $(-> $ret:ty)?
+    ) => {
+        $const_vis const $const_name: $const_ty = $const_expr;
+
+        #[inline(always)]
+        $fn_vis fn $func_name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            let func: extern "C" fn(*mut Self $(, $arg_ty)*) $(-> $ret)? = unsafe {
+                $crate::relocation::virtual_function(self as *mut Self, Self::$const_name)
+            };
+            func(self $(, $arg_name)*)
+        }
+    };
+
+    (
+        $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
         $fn_vis:vis fn $func_name:ident($($arg_name:ident: $arg_ty:ty),*) $(-> $ret:ty)?
     ) => {
         $const_vis const $const_name: $const_ty = $const_expr;
@@ -801,4 +816,44 @@ macro_rules! relocation_func {
         };
         unsafe { func($($arg_names),*) }
     }};
+}
+
+#[cfg(test)]
+mod tests {
+    use core::marker::PhantomData;
+
+    struct GenericVirtual<T> {
+        _vtable: *const usize,
+        _marker: PhantomData<T>,
+    }
+
+    impl<T> GenericVirtual<T> {
+        crate::virtual_method! {
+            pub const VFUNC_VIRTUAL_ECHO: usize = 0x00;
+            pub fn virtual_echo(value: Option<T>) -> Option<T>
+        }
+
+        crate::relocated_virtual_method! {
+            pub const VFUNC_RELOCATED_ECHO: usize = 0x00;
+            pub fn relocated_echo(&self, value: Option<T>) -> Option<T>
+        }
+
+        crate::relocated_virtual_method! {
+            pub const VFUNC_RELOCATED_ECHO_MUT: usize = 0x00;
+            pub fn relocated_echo_mut(&mut self, value: Result<T, T>) -> Result<T, T>
+        }
+    }
+
+    #[test]
+    fn virtual_macros_support_generic_impl_types() {
+        let _ = GenericVirtual::<u32>::VFUNC_VIRTUAL_ECHO;
+        let _ = GenericVirtual::<u32>::VFUNC_RELOCATED_ECHO;
+        let _ = GenericVirtual::<u32>::VFUNC_RELOCATED_ECHO_MUT;
+        let _ = GenericVirtual::<u32>::virtual_echo
+            as fn(&GenericVirtual<u32>, Option<u32>) -> Option<u32>;
+        let _ = GenericVirtual::<u32>::relocated_echo
+            as fn(&GenericVirtual<u32>, Option<u32>) -> Option<u32>;
+        let _ = GenericVirtual::<u32>::relocated_echo_mut
+            as fn(&mut GenericVirtual<u32>, Result<u32, u32>) -> Result<u32, u32>;
+    }
 }

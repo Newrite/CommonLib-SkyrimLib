@@ -179,8 +179,8 @@ const _: () = assert!(core::mem::size_of::<StolenItemValueStruct>() == 0x08);
 
 #[repr(C)]
 struct CrimeValue {
-    crime_gold_map: BSTHashMap<usize, CrimeGoldStruct>, // 00
-    stolen_item_value_map: BSTHashMap<usize, StolenItemValueStruct>, // 30
+    crime_gold_map: BSTHashMap<*const TESFaction, CrimeGoldStruct>, // 00
+    stolen_item_value_map: BSTHashMap<*const TESFaction, StolenItemValueStruct>, // 30
 }
 
 const _: () = assert!(core::mem::size_of::<CrimeValue>() == 0x60);
@@ -335,7 +335,7 @@ impl TESFaction {
         let value = player
             .get_crime_value()
             .crime_gold_map
-            .find(&(self as *const TESFaction as usize));
+            .find(&(self as *const TESFaction));
         if value.is_null() {
             None
         } else {
@@ -349,7 +349,7 @@ impl TESFaction {
         let value = player
             .get_crime_value()
             .stolen_item_value_map
-            .find(&(self as *const TESFaction as usize));
+            .find(&(self as *const TESFaction));
         if value.is_null() {
             None
         } else {

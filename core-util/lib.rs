@@ -110,6 +110,94 @@ macro_rules! abstract_type {
 
 #[macro_export]
 macro_rules! inherit {
+    (for[$($impl_generics:tt)+] $derived:ty : $base:ty $(where $($where_clause:tt)+)? ) => {
+        impl<$($impl_generics)+> core::ops::Deref for $derived
+        $(where $($where_clause)+)?
+        {
+            type Target = $base;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.base
+            }
+        }
+
+        impl<$($impl_generics)+> core::ops::DerefMut for $derived
+        $(where $($where_clause)+)?
+        {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.base
+            }
+        }
+
+        impl<$($impl_generics)+> AsRef<$base> for $derived
+        $(where $($where_clause)+)?
+        {
+            #[inline(always)]
+            fn as_ref(&self) -> &$base {
+                &self.base
+            }
+        }
+    };
+
+    (for[$($impl_generics:tt)+] $derived:ty : $base:ty, $field:ident $(where $($where_clause:tt)+)? ) => {
+        impl<$($impl_generics)+> core::ops::Deref for $derived
+        $(where $($where_clause)+)?
+        {
+            type Target = $base;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.$field
+            }
+        }
+
+        impl<$($impl_generics)+> core::ops::DerefMut for $derived
+        $(where $($where_clause)+)?
+        {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.$field
+            }
+        }
+
+        impl<$($impl_generics)+> AsRef<$base> for $derived
+        $(where $($where_clause)+)?
+        {
+            #[inline(always)]
+            fn as_ref(&self) -> &$base {
+                &self.$field
+            }
+        }
+
+        impl<$($impl_generics)+> AsMut<$base> for $derived
+        $(where $($where_clause)+)?
+        {
+            #[inline(always)]
+            fn as_mut(&mut self) -> &mut $base {
+                &mut self.$field
+            }
+        }
+    };
+
+    (for[$($impl_generics:tt)+] $derived:ty => $base:ty, $field:ident $(where $($where_clause:tt)+)? ) => {
+        impl<$($impl_generics)+> AsRef<$base> for $derived
+        $(where $($where_clause)+)?
+        {
+            #[inline(always)]
+            fn as_ref(&self) -> &$base {
+                &self.$field
+            }
+        }
+
+        impl<$($impl_generics)+> AsMut<$base> for $derived
+        $(where $($where_clause)+)?
+        {
+            #[inline(always)]
+            fn as_mut(&mut self) -> &mut $base {
+                &mut self.$field
+            }
+        }
+    };
     // Вариант 1: Одинарное наследование (Главный родитель)
     // Пример: inherit!(NiObject : NiRefObject);
     ($derived:ident : $base:ty) => {
@@ -630,3 +718,50 @@ impl<T> RacyCell<T> {
 }
 
 unsafe impl<T> Sync for RacyCell<T> {}
+
+#[cfg(test)]
+mod tests {
+    #[repr(C)]
+    struct GenericBase<T> {
+        value: T,
+    }
+
+    #[repr(C)]
+    struct GenericRoot<T> {
+        base: GenericBase<T>,
+    }
+
+    crate::inherit!(for[T] GenericRoot<T> : GenericBase<T>);
+
+    #[repr(C)]
+    struct GenericField<T, const N: usize> {
+        values: [T; N],
+    }
+
+    #[repr(C)]
+    struct GenericOwner<T, const N: usize> {
+        inner: GenericField<T, N>,
+    }
+
+    crate::inherit!(for[T, const N: usize] GenericOwner<T, N> => GenericField<T, N>, inner);
+
+    #[test]
+    fn inherit_supports_generic_types() {
+        let root = GenericRoot {
+            base: GenericBase { value: 7u32 },
+        };
+        assert_eq!(root.value, 7);
+
+        let mut owner = GenericOwner {
+            inner: GenericField {
+                values: [1u32, 2, 3],
+            },
+        };
+        let field_ref: &GenericField<u32, 3> = owner.as_ref();
+        assert_eq!(field_ref.values[1], 2);
+
+        let field_mut: &mut GenericField<u32, 3> = owner.as_mut();
+        field_mut.values[2] = 9;
+        assert_eq!(owner.inner.values[2], 9);
+    }
+}

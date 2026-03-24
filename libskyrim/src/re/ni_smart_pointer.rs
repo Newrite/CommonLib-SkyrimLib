@@ -9,6 +9,7 @@
 use core::ops::{Deref, DerefMut};
 use core::ptr;
 
+use crate::re::crc::{BSTHash, generate_crc32};
 use crate::re::ni_ref_object::NiRef;
 
 /// C++ `RE::NiPointer<T>`.
@@ -166,5 +167,18 @@ impl<T: NiRef> Eq for NiPointer<T> {}
 impl<T: NiRef> Default for NiPointer<T> {
     fn default() -> Self {
         Self::null()
+    }
+}
+
+impl<T: NiRef> BSTHash for NiPointer<T> {
+    #[inline]
+    fn bst_hash(&self) -> u32 {
+        let bytes = unsafe {
+            core::slice::from_raw_parts(
+                core::ptr::addr_of!(self._ptr).cast::<u8>(),
+                core::mem::size_of::<*mut T>(),
+            )
+        };
+        generate_crc32(bytes)
     }
 }

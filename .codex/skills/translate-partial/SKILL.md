@@ -26,6 +26,8 @@ Check all of these:
 
 - missing fields or wrong field types
 - missing nested structs
+- missing named nested enums, index layers, totals/default constants, or other
+  source-backed helper layers from the matching same-name header/source file
 - missing or wrong size / offset asserts
 - missing `inherit!` declarations
 - missing RTTI / VTABLE constants

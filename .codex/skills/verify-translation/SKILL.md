@@ -29,6 +29,8 @@ preflight when the existing Rust file may already be mostly correct.
 - field types
 - offset comments
 - nested structs
+- named nested enums, index layers, totals/default constants, and other
+  source-backed helper layers from the matching same-name header/source file
 - `size_of` assert
 - `offset_of` asserts for mixins
 - no blob substitution for named parents or mixins

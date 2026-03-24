@@ -578,7 +578,7 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
             .set_allocator_traits(data as *mut u8, capacity, core::mem::size_of::<T>());
     }
 
-    /// Change the allocated capacity, copying existing data.
+    /// Change the allocated capacity, relocating the raw storage.
     fn change_capacity(&mut self, new_capacity: u32) {
         let new_data = if new_capacity > 0 {
             self.allocate_elements(new_capacity)
@@ -591,12 +591,13 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
             let old_capacity = self.capacity();
             if !new_data.is_null() {
                 let to_copy = core::cmp::min(old_capacity, new_capacity) as usize;
-                let bytes_to_copy = to_copy * core::mem::size_of::<T>();
                 unsafe {
-                    ptr::copy_nonoverlapping(
-                        old_data as *const u8,
-                        new_data as *mut u8,
-                        bytes_to_copy,
+                    // Match the engine's capacity-byte relocation while still
+                    // tolerating inline allocators that hand back the same buffer.
+                    ptr::copy(
+                        old_data.cast::<MaybeUninit<T>>(),
+                        new_data.cast::<MaybeUninit<T>>(),
+                        to_copy,
                     );
                 }
             }

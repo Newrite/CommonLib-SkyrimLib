@@ -63,13 +63,41 @@ pub trait BSTHash {
 // Р’ РЅР°С‡Р°Р»Рµ crc.rs:
 // use bytemuck::NoUninit;
 
-/// Blanket implementation for all types that are safe to hash by raw bytes.
-/// `bytemuck::NoUninit` guarantees the type has no padding bytes (which would cause random hash collisions).
-impl<T: Copy + Sized + bytemuck::NoUninit> BSTHash for T {
+#[inline]
+fn hash_plain_old_data<T: Copy>(value: &T) -> u32 {
+    let ptr = value as *const T as *const u8;
+    let bytes = unsafe { core::slice::from_raw_parts(ptr, core::mem::size_of::<T>()) };
+    generate_crc32(bytes)
+}
+
+macro_rules! impl_bst_hash_plain {
+    ($($ty:ty),* $(,)?) => {
+        $(
+            impl BSTHash for $ty {
+                #[inline]
+                fn bst_hash(&self) -> u32 {
+                    hash_plain_old_data(self)
+                }
+            }
+        )*
+    };
+}
+
+// Plain scalar keys the engine hashes by raw bytes.
+impl_bst_hash_plain!(
+    bool, char, f32, f64, i8, i16, i32, i64, i128, isize, u8, u16, u32, u64, u128, usize
+);
+
+impl<T: ?Sized> BSTHash for *const T {
     #[inline]
     fn bst_hash(&self) -> u32 {
-        let ptr = self as *const T as *const u8;
-        let bytes = unsafe { core::slice::from_raw_parts(ptr, core::mem::size_of::<T>()) };
-        generate_crc32(bytes)
+        (*self as *const () as usize).bst_hash()
+    }
+}
+
+impl<T: ?Sized> BSTHash for *mut T {
+    #[inline]
+    fn bst_hash(&self) -> u32 {
+        (*self as *const () as usize).bst_hash()
     }
 }
