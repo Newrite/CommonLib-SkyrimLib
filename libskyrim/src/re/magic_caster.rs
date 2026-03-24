@@ -19,61 +19,12 @@ use crate::re::ObjectRefHandle;
 use crate::re::TESBoundObject;
 use crate::re::TESObjectCELL;
 use crate::re::TESObjectREFR;
+use crate::re::bhk_pick_data::bhkPickData;
 use crate::re::bst_array::BSTArray;
+use crate::re::collision_layers::ColLayer;
 use crate::re::magic_system::{CannotCastReason, CastingSource, SoundID};
 use crate::relocation::{RelocationID, RttiType, VariantID};
 use crate::virtual_method;
-
-/// C++ `RE::COL_LAYER`
-#[repr(i32)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum ColLayer {
-    Static = 1,
-    Terrain = 13,
-    Ground = 17,
-}
-
-/// C++ `RE::CFilter`
-#[repr(C)]
-#[derive(Debug, Clone, Copy, Default)]
-pub struct CFilter {
-    pub filter: u32, // 00
-}
-
-impl CFilter {
-    #[inline(always)]
-    pub fn get_collision_layer(self) -> ColLayer {
-        unsafe { core::mem::transmute((self.filter & 0x7F) as i32) }
-    }
-}
-
-#[repr(C)]
-pub struct hkpCollidableCollisionView {
-    pub pad00: [u8; 0x2C],              // 00
-    pub collision_filter_info: CFilter, // 2C
-}
-
-const _: () = assert!(core::mem::size_of::<hkpCollidableCollisionView>() == 0x30);
-const _: () =
-    assert!(core::mem::offset_of!(hkpCollidableCollisionView, collision_filter_info) == 0x2C);
-
-/// Source-backed partial layout of `RE::bhkPickData` for projectile validation.
-#[repr(C)]
-pub struct bhkPickData {
-    pub pad00: [u8; 0x80],                                  // 00
-    pub root_collidable: *const hkpCollidableCollisionView, // 80
-    pub pad88: [u8; 0x38],                                  // 88
-    pub pick_failed: bool,                                  // C0
-    pub padc1: u8,                                          // C1
-    pub padc2: u16,                                         // C2
-    pub padc4: u32,                                         // C4
-    pub padc8: u32,                                         // C8
-    pub padcc: u32,                                         // CC
-}
-
-const _: () = assert!(core::mem::size_of::<bhkPickData>() == 0xD0);
-const _: () = assert!(core::mem::offset_of!(bhkPickData, root_collidable) == 0x80);
-const _: () = assert!(core::mem::offset_of!(bhkPickData, pick_failed) == 0xC0);
 
 /// C++ `RE::MagicCaster::State`
 #[repr(i32)]
@@ -101,6 +52,8 @@ pub struct MagicCasterPostCreationCallback {
 }
 
 const _: () = assert!(core::mem::size_of::<MagicCasterPostCreationCallback>() == 0x48);
+const _: () = assert!(core::mem::offset_of!(MagicCasterPostCreationCallback, base) == 0x00);
+const _: () = assert!(core::mem::offset_of!(MagicCasterPostCreationCallback, unk08) == 0x08);
 
 inherit!(MagicCasterPostCreationCallback : MagicTargetPostCreationModification);
 
@@ -112,15 +65,9 @@ impl MagicCasterPostCreationCallback {
     pub const RTTI: VariantID = RTTI_MagicCaster__PostCreationCallback;
     pub const VTABLE: &'static [VariantID] = &VTABLE_MagicCaster__PostCreationCallback;
 
-    virtual_method! {
-        pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
-    }
-
-    virtual_method! {
-        pub const VFUNC_MODIFY_ACTIVE_EFFECT: usize = 0x01;
-        pub fn modify_active_effect(effect: *mut ActiveEffect)
-    }
+    // override (MagicTarget::IPostCreationModification)
+    // 0x00 ~MagicTarget::IPostCreationModification
+    // 0x01 ModifyActiveEffect
 }
 
 /// C++ `RE::MagicCaster`
@@ -140,13 +87,34 @@ pub struct MagicCaster {
 }
 
 const _: () = assert!(core::mem::size_of::<MagicCaster>() == 0x48);
+const _: () = assert!(core::mem::offset_of!(MagicCaster, vtable) == 0x00);
 const _: () = assert!(core::mem::offset_of!(MagicCaster, sounds) == 0x08);
 const _: () = assert!(core::mem::offset_of!(MagicCaster, desired_target) == 0x20);
+const _: () = assert!(core::mem::offset_of!(MagicCaster, pad24) == 0x24);
 const _: () = assert!(core::mem::offset_of!(MagicCaster, current_spell) == 0x28);
 const _: () = assert!(core::mem::offset_of!(MagicCaster, state) == 0x30);
+const _: () = assert!(core::mem::offset_of!(MagicCaster, casting_timer) == 0x34);
+const _: () = assert!(core::mem::offset_of!(MagicCaster, current_spell_cost) == 0x38);
+const _: () = assert!(core::mem::offset_of!(MagicCaster, magnitude_override) == 0x3C);
+const _: () = assert!(core::mem::offset_of!(MagicCaster, next_target_update) == 0x40);
+const _: () = assert!(core::mem::offset_of!(MagicCaster, projectile_timer) == 0x44);
 
 impl RttiType for MagicCaster {
     const RTTI: VariantID = RTTI_MagicCaster;
+}
+
+impl AsRef<MagicCaster> for MagicCaster {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl AsMut<MagicCaster> for MagicCaster {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
 }
 
 impl MagicCaster {
@@ -220,12 +188,16 @@ impl MagicCaster {
         if base_effect.data.delivery == crate::re::magic_system::Delivery::TargetLocation
             && !base_effect.data.projectile_base.is_null()
         {
-            if pick_data.pick_failed || pick_data.root_collidable.is_null() {
+            if pick_data.pick_failed || pick_data.ray_output.root_collidable.is_null() {
                 return false;
             }
 
-            let col_layer =
-                unsafe { (*pick_data.root_collidable).collision_filter_info }.get_collision_layer();
+            let col_layer = unsafe {
+                (*pick_data.ray_output.root_collidable)
+                    .broad_phase_handle
+                    .collision_filter_info
+            }
+            .get_collision_layer();
 
             return matches!(
                 col_layer,
@@ -238,5 +210,274 @@ impl MagicCaster {
 
     crate::relocation_func! {
         pub fn update_impl(&mut self, delta: f32) => RelocationID::new(33622, 34400)
+    }
+}
+
+pub trait MagicCasterExt {
+    fn dtor(&mut self);
+    fn cast_spell_immediate(
+        &mut self,
+        spell: *mut MagicItem,
+        no_hit_effect_art: bool,
+        target: *mut TESObjectREFR,
+        effectiveness: f32,
+        hostile_effectiveness_only: bool,
+        magnitude_override: f32,
+        blame_actor: *mut Actor,
+    );
+    fn find_touch_target(&mut self);
+    fn request_cast_impl(&mut self);
+    fn start_charge_impl(&mut self) -> bool;
+    fn start_ready_impl(&mut self);
+    fn start_cast_impl(&mut self);
+    fn finish_cast_impl(&mut self);
+    fn interrupt_cast_impl(&mut self, deplete_energy: bool);
+    fn spell_cast(&mut self, do_cast: bool, arg2: u32, spell: *mut MagicItem);
+    fn check_cast(
+        &mut self,
+        spell: *mut MagicItem,
+        dual_cast: bool,
+        effect_strength: *mut f32,
+        reason: *mut CannotCastReason,
+        use_base_value_for_cost: bool,
+    ) -> bool;
+    fn get_caster_stats_object(&self) -> *mut TESObjectREFR;
+    fn get_caster_as_actor(&self) -> *mut Actor;
+    fn get_caster_object_reference(&self, out_caster: *mut *mut Actor) -> *mut TESObjectREFR;
+    fn get_magic_node(&mut self) -> *mut NiNode;
+    fn clear_magic_node(&mut self);
+    fn set_current_spell_impl(&mut self, spell: *mut MagicItem);
+    fn select_spell_impl(&mut self);
+    fn deselect_spell_impl(&mut self);
+    fn set_skip_check_cast(&mut self);
+    fn set_casting_timer_for_charge(&mut self);
+    fn get_casting_source(&self) -> CastingSource;
+    fn get_is_dual_casting(&self) -> bool;
+    fn set_dual_casting(&mut self, set: bool);
+    fn save_game(&mut self, buf: *mut BGSSaveGameBuffer);
+    fn load_game(&mut self, buf: *mut BGSLoadGameBuffer);
+    fn finish_load_game(&mut self, buf: *mut BGSLoadGameBuffer);
+    fn prepare_sound(&mut self, sound: SoundID, spell: *mut MagicItem);
+    fn adjust_active_effect(&mut self, active_effect: *mut ActiveEffect, power: f32, arg3: bool);
+    fn find_pick_target(
+        &mut self,
+        target_location: &mut NiPoint3,
+        target_cell: *mut *mut TESObjectCELL,
+        pick_data: &mut bhkPickData,
+    ) -> *mut MagicTarget;
+    fn find_targets(
+        &mut self,
+        effectiveness_mult: f32,
+        target_count: &mut u32,
+        source: *mut TESBoundObject,
+        load_cast: bool,
+        adjust_only_hostile_effectiveness: bool,
+    ) -> bool;
+    fn finish_cast(&mut self);
+    fn get_current_spell_cost(&mut self) -> f32;
+    fn interrupt_cast(&mut self, refund: bool);
+    fn play_release_sound(&mut self, item: *mut MagicItem);
+    fn set_current_spell(&mut self, item: *mut MagicItem);
+    fn update_impl(&mut self, delta: f32);
+}
+
+impl<T: AsRef<MagicCaster> + AsMut<MagicCaster>> MagicCasterExt for T {
+    fn dtor(&mut self) {
+        MagicCaster::dtor(self.as_mut())
+    }
+
+    fn cast_spell_immediate(
+        &mut self,
+        spell: *mut MagicItem,
+        no_hit_effect_art: bool,
+        target: *mut TESObjectREFR,
+        effectiveness: f32,
+        hostile_effectiveness_only: bool,
+        magnitude_override: f32,
+        blame_actor: *mut Actor,
+    ) {
+        MagicCaster::cast_spell_immediate(
+            self.as_mut(),
+            spell,
+            no_hit_effect_art,
+            target,
+            effectiveness,
+            hostile_effectiveness_only,
+            magnitude_override,
+            blame_actor,
+        )
+    }
+
+    fn find_touch_target(&mut self) {
+        MagicCaster::find_touch_target(self.as_mut())
+    }
+
+    fn request_cast_impl(&mut self) {
+        MagicCaster::request_cast_impl(self.as_mut())
+    }
+
+    fn start_charge_impl(&mut self) -> bool {
+        MagicCaster::start_charge_impl(self.as_mut())
+    }
+
+    fn start_ready_impl(&mut self) {
+        MagicCaster::start_ready_impl(self.as_mut())
+    }
+
+    fn start_cast_impl(&mut self) {
+        MagicCaster::start_cast_impl(self.as_mut())
+    }
+
+    fn finish_cast_impl(&mut self) {
+        MagicCaster::finish_cast_impl(self.as_mut())
+    }
+
+    fn interrupt_cast_impl(&mut self, deplete_energy: bool) {
+        MagicCaster::interrupt_cast_impl(self.as_mut(), deplete_energy)
+    }
+
+    fn spell_cast(&mut self, do_cast: bool, arg2: u32, spell: *mut MagicItem) {
+        MagicCaster::spell_cast(self.as_mut(), do_cast, arg2, spell)
+    }
+
+    fn check_cast(
+        &mut self,
+        spell: *mut MagicItem,
+        dual_cast: bool,
+        effect_strength: *mut f32,
+        reason: *mut CannotCastReason,
+        use_base_value_for_cost: bool,
+    ) -> bool {
+        MagicCaster::check_cast(
+            self.as_mut(),
+            spell,
+            dual_cast,
+            effect_strength,
+            reason,
+            use_base_value_for_cost,
+        )
+    }
+
+    fn get_caster_stats_object(&self) -> *mut TESObjectREFR {
+        self.as_ref().get_caster_stats_object()
+    }
+
+    fn get_caster_as_actor(&self) -> *mut Actor {
+        self.as_ref().get_caster_as_actor()
+    }
+
+    fn get_caster_object_reference(&self, out_caster: *mut *mut Actor) -> *mut TESObjectREFR {
+        self.as_ref().get_caster_object_reference(out_caster)
+    }
+
+    fn get_magic_node(&mut self) -> *mut NiNode {
+        MagicCaster::get_magic_node(self.as_mut())
+    }
+
+    fn clear_magic_node(&mut self) {
+        MagicCaster::clear_magic_node(self.as_mut())
+    }
+
+    fn set_current_spell_impl(&mut self, spell: *mut MagicItem) {
+        MagicCaster::set_current_spell_impl(self.as_mut(), spell)
+    }
+
+    fn select_spell_impl(&mut self) {
+        MagicCaster::select_spell_impl(self.as_mut())
+    }
+
+    fn deselect_spell_impl(&mut self) {
+        MagicCaster::deselect_spell_impl(self.as_mut())
+    }
+
+    fn set_skip_check_cast(&mut self) {
+        MagicCaster::set_skip_check_cast(self.as_mut())
+    }
+
+    fn set_casting_timer_for_charge(&mut self) {
+        MagicCaster::set_casting_timer_for_charge(self.as_mut())
+    }
+
+    fn get_casting_source(&self) -> CastingSource {
+        self.as_ref().get_casting_source()
+    }
+
+    fn get_is_dual_casting(&self) -> bool {
+        self.as_ref().get_is_dual_casting()
+    }
+
+    fn set_dual_casting(&mut self, set: bool) {
+        MagicCaster::set_dual_casting(self.as_mut(), set)
+    }
+
+    fn save_game(&mut self, buf: *mut BGSSaveGameBuffer) {
+        MagicCaster::save_game(self.as_mut(), buf)
+    }
+
+    fn load_game(&mut self, buf: *mut BGSLoadGameBuffer) {
+        MagicCaster::load_game(self.as_mut(), buf)
+    }
+
+    fn finish_load_game(&mut self, buf: *mut BGSLoadGameBuffer) {
+        MagicCaster::finish_load_game(self.as_mut(), buf)
+    }
+
+    fn prepare_sound(&mut self, sound: SoundID, spell: *mut MagicItem) {
+        MagicCaster::prepare_sound(self.as_mut(), sound, spell)
+    }
+
+    fn adjust_active_effect(&mut self, active_effect: *mut ActiveEffect, power: f32, arg3: bool) {
+        MagicCaster::adjust_active_effect(self.as_mut(), active_effect, power, arg3)
+    }
+
+    fn find_pick_target(
+        &mut self,
+        target_location: &mut NiPoint3,
+        target_cell: *mut *mut TESObjectCELL,
+        pick_data: &mut bhkPickData,
+    ) -> *mut MagicTarget {
+        MagicCaster::find_pick_target(self.as_mut(), target_location, target_cell, pick_data)
+    }
+
+    fn find_targets(
+        &mut self,
+        effectiveness_mult: f32,
+        target_count: &mut u32,
+        source: *mut TESBoundObject,
+        load_cast: bool,
+        adjust_only_hostile_effectiveness: bool,
+    ) -> bool {
+        MagicCaster::find_targets(
+            self.as_mut(),
+            effectiveness_mult,
+            target_count,
+            source,
+            load_cast,
+            adjust_only_hostile_effectiveness,
+        )
+    }
+
+    fn finish_cast(&mut self) {
+        MagicCaster::finish_cast(self.as_mut())
+    }
+
+    fn get_current_spell_cost(&mut self) -> f32 {
+        MagicCaster::get_current_spell_cost(self.as_mut())
+    }
+
+    fn interrupt_cast(&mut self, refund: bool) {
+        MagicCaster::interrupt_cast(self.as_mut(), refund)
+    }
+
+    fn play_release_sound(&mut self, item: *mut MagicItem) {
+        MagicCaster::play_release_sound(self.as_mut(), item)
+    }
+
+    fn set_current_spell(&mut self, item: *mut MagicItem) {
+        MagicCaster::set_current_spell(self.as_mut(), item)
+    }
+
+    fn update_impl(&mut self, delta: f32) {
+        MagicCaster::update_impl(self.as_mut(), delta)
     }
 }

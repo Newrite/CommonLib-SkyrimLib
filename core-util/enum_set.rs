@@ -60,29 +60,9 @@ where
     }
 
     #[inline(always)]
-    pub fn is_empty(self) -> bool {
-        self.value == U::ZERO
-    }
-
-    #[inline(always)]
     pub fn clear(&mut self) -> &mut Self {
         self.value = U::ZERO;
         self
-    }
-
-    #[inline(always)]
-    pub fn any_set(self, other: Self) -> bool {
-        (self.value & other.value) != U::ZERO
-    }
-
-    #[inline(always)]
-    pub fn all_set(self, other: Self) -> bool {
-        (self.value & other.value) == other.value
-    }
-
-    #[inline(always)]
-    pub fn none_set(self, other: Self) -> bool {
-        (self.value & other.value) == U::ZERO
     }
 
     #[inline(always)]
@@ -93,6 +73,53 @@ where
         E::try_from(self.value).ok()
     }
 }
+
+macro_rules! impl_enum_set_const_storage {
+    ($($ty:ty),* $(,)?) => {
+        $(
+            impl<E> EnumSet<E, $ty> {
+                #[inline(always)]
+                pub const fn is_empty(self) -> bool {
+                    self.value == 0
+                }
+
+                #[inline(always)]
+                pub const fn any_set(self, other: Self) -> bool {
+                    (self.value & other.value) != 0
+                }
+
+                #[inline(always)]
+                pub const fn all_set(self, other: Self) -> bool {
+                    (self.value & other.value) == other.value
+                }
+
+                #[inline(always)]
+                pub const fn none_set(self, other: Self) -> bool {
+                    (self.value & other.value) == 0
+                }
+
+                #[inline(always)]
+                pub const fn any_underlying(self, value: $ty) -> bool {
+                    (self.value & value) != 0
+                }
+
+                #[inline(always)]
+                pub const fn all_underlying(self, value: $ty) -> bool {
+                    (self.value & value) == value
+                }
+
+                #[inline(always)]
+                pub const fn none_underlying(self, value: $ty) -> bool {
+                    (self.value & value) == 0
+                }
+            }
+        )*
+    };
+}
+
+impl_enum_set_const_storage!(
+    u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize
+);
 
 impl<E, U> Default for EnumSet<E, U>
 where
@@ -335,5 +362,21 @@ mod tests {
         let value = EnumSet::<TestValue, u8>::from(TestValue::Two);
         assert_eq!(value.underlying(), 2u8);
         assert_eq!(value.get(), Some(TestValue::Two));
+    }
+
+    const CONST_FLAGS: EnumSet<TestFlags, u8> = EnumSet::from_underlying(0b101);
+    const CONST_HAS_A: bool = CONST_FLAGS.all_underlying(TestFlags::A as u8);
+    const CONST_LACKS_B: bool = CONST_FLAGS.none_underlying(TestFlags::B as u8);
+    const CONST_HAS_ANY_C: bool = CONST_FLAGS.any_underlying(TestFlags::C as u8);
+    const CONST_NOT_EMPTY: bool = !CONST_FLAGS.is_empty();
+    const CONST_HAS_AC_SET: bool = CONST_FLAGS.all_set(EnumSet::from_underlying(0b101));
+
+    #[test]
+    fn supports_const_underlying_queries() {
+        assert!(CONST_HAS_A);
+        assert!(CONST_LACKS_B);
+        assert!(CONST_HAS_ANY_C);
+        assert!(CONST_NOT_EMPTY);
+        assert!(CONST_HAS_AC_SET);
     }
 }

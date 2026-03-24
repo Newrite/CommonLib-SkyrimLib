@@ -21,6 +21,20 @@ impl RttiType for MagicItemTraversalFunctor {
     const RTTI: VariantID = RTTI_MagicItemTraversalFunctor;
 }
 
+impl AsRef<MagicItemTraversalFunctor> for MagicItemTraversalFunctor {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl AsMut<MagicItemTraversalFunctor> for MagicItemTraversalFunctor {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
 impl MagicItemTraversalFunctor {
     pub const RTTI: VariantID = RTTI_MagicItemTraversalFunctor;
     pub const VTABLE: &'static [VariantID] = &VTABLE_MagicItemTraversalFunctor;
@@ -33,5 +47,22 @@ impl MagicItemTraversalFunctor {
     virtual_method! {
         pub const VFUNC_CALL: usize = 0x01;
         pub fn call(effect: *mut Effect) -> BSContainerForEachResult
+    }
+}
+
+pub trait MagicItemTraversalFunctorExt {
+    fn dtor(&mut self);
+    fn call(&mut self, effect: *mut Effect) -> BSContainerForEachResult;
+}
+
+impl<T: AsRef<MagicItemTraversalFunctor> + AsMut<MagicItemTraversalFunctor>>
+    MagicItemTraversalFunctorExt for T
+{
+    fn dtor(&mut self) {
+        MagicItemTraversalFunctor::dtor(self.as_mut())
+    }
+
+    fn call(&mut self, effect: *mut Effect) -> BSContainerForEachResult {
+        MagicItemTraversalFunctor::call(self.as_mut(), effect)
     }
 }

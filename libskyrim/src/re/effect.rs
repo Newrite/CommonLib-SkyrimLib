@@ -1,5 +1,5 @@
-use crate::re::EffectSetting;
 use crate::re::TESCondition;
+use crate::re::{EffectSetting, EffectSettingDataFlag};
 use crate::relocation::RelocationID;
 
 #[repr(C)]
@@ -28,14 +28,6 @@ const _: () = assert!(core::mem::offset_of!(Effect, base_effect) == 0x10);
 const _: () = assert!(core::mem::offset_of!(Effect, conditions) == 0x20);
 
 impl Effect {
-    // EffectSetting::data.flags is the first field of EffectSettingData, and
-    // EffectSetting::data begins at offset 0x68.
-    const EFFECT_SETTING_FLAGS_OFFSET: usize = 0x68;
-    const EFFECT_SETTING_FLAG_HOSTILE: u32 = 1 << 0;
-    const EFFECT_SETTING_FLAG_NO_DURATION: u32 = 1 << 9;
-    const EFFECT_SETTING_FLAG_NO_MAGNITUDE: u32 = 1 << 10;
-    const EFFECT_SETTING_FLAG_NO_AREA: u32 = 1 << 11;
-
     #[inline]
     fn essentially_equal(a: f32, b: f32) -> bool {
         let epsilon = f32::EPSILON;
@@ -43,10 +35,8 @@ impl Effect {
     }
 
     #[inline]
-    fn effect_setting_flags(&self) -> u32 {
-        unsafe {
-            *((self.base_effect as *const u8).add(Self::EFFECT_SETTING_FLAGS_OFFSET) as *const u32)
-        }
+    fn base_effect_ref(&self) -> Option<&EffectSetting> {
+        unsafe { self.base_effect.as_ref() }
     }
 
     pub fn copy_from(&mut self, other: *const Effect) {
@@ -54,7 +44,10 @@ impl Effect {
     }
 
     pub fn get_magnitude(&self) -> f32 {
-        if self.effect_setting_flags() & Self::EFFECT_SETTING_FLAG_NO_MAGNITUDE != 0 {
+        if self
+            .base_effect_ref()
+            .is_some_and(|base| base.data.flags.any(EffectSettingDataFlag::NoMagnitude))
+        {
             0.0
         } else {
             self.effect_item.magnitude
@@ -62,7 +55,10 @@ impl Effect {
     }
 
     pub fn get_area(&self) -> u32 {
-        if self.effect_setting_flags() & Self::EFFECT_SETTING_FLAG_NO_AREA != 0 {
+        if self
+            .base_effect_ref()
+            .is_some_and(|base| base.data.flags.any(EffectSettingDataFlag::NoArea))
+        {
             0
         } else {
             self.effect_item.area
@@ -70,7 +66,10 @@ impl Effect {
     }
 
     pub fn get_duration(&self) -> u32 {
-        if self.effect_setting_flags() & Self::EFFECT_SETTING_FLAG_NO_DURATION != 0 {
+        if self
+            .base_effect_ref()
+            .is_some_and(|base| base.data.flags.any(EffectSettingDataFlag::NoDuration))
+        {
             0
         } else {
             self.effect_item.duration
@@ -78,7 +77,8 @@ impl Effect {
     }
 
     pub fn is_hostile(&self) -> bool {
-        self.effect_setting_flags() & Self::EFFECT_SETTING_FLAG_HOSTILE != 0
+        self.base_effect_ref()
+            .is_some_and(EffectSetting::is_hostile)
     }
 
     pub fn is_match(

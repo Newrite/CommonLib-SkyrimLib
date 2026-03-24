@@ -55,6 +55,11 @@ unsafe extern "C" {
         size: usize,
         alignment: usize,
     ) -> *mut c_void;
-    /// `heap->Deallocate(mem)` — deallocates from a ScrapHeap.
+    /// `heap->Deallocate(mem)` – deallocates from a ScrapHeap.
     pub fn commonlib_scrap_heap_deallocate(heap: *mut c_void, mem: *mut c_void);
+
+    // TODO: Remove When RE-Implement actoe
+    // Actor helpers
+    /// `actor->GetGoldAmount(no_init)` for cases where CommonLib exposes only inline wrappers.
+    pub fn commonlib_actor_get_gold_amount(actor: *mut c_void, no_init: bool) -> i32;
 }

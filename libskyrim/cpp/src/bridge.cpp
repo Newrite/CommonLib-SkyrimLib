@@ -118,4 +118,8 @@ extern "C" {
         static_cast<RE::ScrapHeap*>(heap)->Deallocate(mem);
     }
 
+    int32_t commonlib_actor_get_gold_amount(void* actor, bool no_init) {
+        return static_cast<RE::Actor*>(actor)->GetGoldAmount(no_init);
+    }
+
 }

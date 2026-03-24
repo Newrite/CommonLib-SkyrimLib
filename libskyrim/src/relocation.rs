@@ -569,13 +569,13 @@ macro_rules! relocate_virtual {
     ($signature:ty, $receiver:expr, $index:expr $(, $arg:expr)* $(,)?) => {{
         let receiver = $receiver;
         let func = unsafe {
-            $crate::relocation::virtual_relocation::<$signature>(
+            $crate::relocation::virtual_relocation::<$signature, _, _>(
                 receiver as *const _,
                 $index,
             )
             .get()
         };
-        unsafe { func(receiver $(, $arg)*) }
+        func(receiver $(, $arg)*)
     }};
 }
 

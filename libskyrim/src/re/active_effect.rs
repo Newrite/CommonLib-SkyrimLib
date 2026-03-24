@@ -122,6 +122,20 @@ impl RttiType for ActiveEffect {
     const RTTI: VariantID = RTTI_ActiveEffect;
 }
 
+impl AsRef<ActiveEffect> for ActiveEffect {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl AsMut<ActiveEffect> for ActiveEffect {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
 impl ActiveEffect {
     pub const RTTI: VariantID = RTTI_ActiveEffect;
     pub const VTABLE: &'static [VariantID] = &VTABLE_ActiveEffect;
@@ -279,5 +293,161 @@ impl ActiveEffect {
         } else {
             core::ptr::null_mut()
         }
+    }
+}
+
+pub trait ActiveEffectExt {
+    fn adjust_for_perks(&mut self, caster: *mut Actor, target: *mut MagicTarget);
+    fn on_add(&mut self, target: *mut MagicTarget);
+    fn on_remove(&mut self);
+    fn get_visuals_target(&self) -> *mut TESObjectREFR;
+    fn update(&mut self, delta: f32);
+    fn evaluate_conditions(&mut self, delta: f32, force_update: bool);
+    fn is_causing_health_damage(&self) -> bool;
+    fn set_location(&mut self, location: *const NiPoint3);
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer);
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer);
+    fn finish_load_game(&mut self, buf: *mut BGSLoadFormBuffer);
+    fn revert(&mut self, buf: *mut BGSLoadFormBuffer);
+    fn compare(&self, other_effect: *mut ActiveEffect) -> i32;
+    fn handle_event(&self, event_name: *const BSFixedString);
+    fn switch_attached_root(&mut self, root: *mut NiNode, attach_root: *mut NiNode);
+    fn handle_queued_start(&mut self);
+    fn should_dispel_on_death(&self) -> bool;
+    fn get_allow_multiple_casting_source_stacking(&self) -> bool;
+    fn clear_target_impl(&mut self);
+    fn dtor(&mut self);
+    fn start(&mut self);
+    fn finish(&mut self);
+    fn can_finish(&self) -> bool;
+    fn check_custom_skill_use_conditions(&self) -> bool;
+    fn get_custom_skill_use_magnitude_multiplier(&self, mult: f32) -> f32;
+    fn dispel(&mut self, force: bool);
+    fn get_base_object(&self) -> *mut EffectSetting;
+    fn get_caster_actor(&self) -> NiPointer<Actor>;
+    fn get_magnitude(&self) -> f32;
+    fn get_target_actor(&self) -> *mut Actor;
+}
+
+impl<T: AsRef<ActiveEffect> + AsMut<ActiveEffect>> ActiveEffectExt for T {
+    fn adjust_for_perks(&mut self, caster: *mut Actor, target: *mut MagicTarget) {
+        ActiveEffect::adjust_for_perks(self.as_mut(), caster, target)
+    }
+
+    fn on_add(&mut self, target: *mut MagicTarget) {
+        ActiveEffect::on_add(self.as_mut(), target)
+    }
+
+    fn on_remove(&mut self) {
+        ActiveEffect::on_remove(self.as_mut())
+    }
+
+    fn get_visuals_target(&self) -> *mut TESObjectREFR {
+        self.as_ref().get_visuals_target()
+    }
+
+    fn update(&mut self, delta: f32) {
+        ActiveEffect::update(self.as_mut(), delta)
+    }
+
+    fn evaluate_conditions(&mut self, delta: f32, force_update: bool) {
+        ActiveEffect::evaluate_conditions(self.as_mut(), delta, force_update)
+    }
+
+    fn is_causing_health_damage(&self) -> bool {
+        self.as_ref().is_causing_health_damage()
+    }
+
+    fn set_location(&mut self, location: *const NiPoint3) {
+        ActiveEffect::set_location(self.as_mut(), location)
+    }
+
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer) {
+        ActiveEffect::save_game(self.as_mut(), buf)
+    }
+
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer) {
+        ActiveEffect::load_game(self.as_mut(), buf)
+    }
+
+    fn finish_load_game(&mut self, buf: *mut BGSLoadFormBuffer) {
+        ActiveEffect::finish_load_game(self.as_mut(), buf)
+    }
+
+    fn revert(&mut self, buf: *mut BGSLoadFormBuffer) {
+        ActiveEffect::revert(self.as_mut(), buf)
+    }
+
+    fn compare(&self, other_effect: *mut ActiveEffect) -> i32 {
+        self.as_ref().compare(other_effect)
+    }
+
+    fn handle_event(&self, event_name: *const BSFixedString) {
+        self.as_ref().handle_event(event_name)
+    }
+
+    fn switch_attached_root(&mut self, root: *mut NiNode, attach_root: *mut NiNode) {
+        ActiveEffect::switch_attached_root(self.as_mut(), root, attach_root)
+    }
+
+    fn handle_queued_start(&mut self) {
+        ActiveEffect::handle_queued_start(self.as_mut())
+    }
+
+    fn should_dispel_on_death(&self) -> bool {
+        self.as_ref().should_dispel_on_death()
+    }
+
+    fn get_allow_multiple_casting_source_stacking(&self) -> bool {
+        self.as_ref().get_allow_multiple_casting_source_stacking()
+    }
+
+    fn clear_target_impl(&mut self) {
+        ActiveEffect::clear_target_impl(self.as_mut())
+    }
+
+    fn dtor(&mut self) {
+        ActiveEffect::dtor(self.as_mut())
+    }
+
+    fn start(&mut self) {
+        ActiveEffect::start(self.as_mut())
+    }
+
+    fn finish(&mut self) {
+        ActiveEffect::finish(self.as_mut())
+    }
+
+    fn can_finish(&self) -> bool {
+        self.as_ref().can_finish()
+    }
+
+    fn check_custom_skill_use_conditions(&self) -> bool {
+        self.as_ref().check_custom_skill_use_conditions()
+    }
+
+    fn get_custom_skill_use_magnitude_multiplier(&self, mult: f32) -> f32 {
+        self.as_ref()
+            .get_custom_skill_use_magnitude_multiplier(mult)
+    }
+
+    fn dispel(&mut self, force: bool) {
+        ActiveEffect::dispel(self.as_mut(), force)
+    }
+
+    fn get_base_object(&self) -> *mut EffectSetting {
+        self.as_ref().get_base_object()
+    }
+
+    fn get_caster_actor(&self) -> NiPointer<Actor> {
+        self.as_ref().get_caster_actor()
+    }
+
+    fn get_magnitude(&self) -> f32 {
+        self.as_ref().get_magnitude()
+    }
+
+    fn get_target_actor(&self) -> *mut Actor {
+        self.as_ref().get_target_actor()
     }
 }

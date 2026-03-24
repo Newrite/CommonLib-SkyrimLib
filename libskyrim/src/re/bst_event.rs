@@ -57,6 +57,20 @@ impl<T> BSTEventSink<T> {
     }
 }
 
+impl<T> AsRef<BSTEventSink<T>> for BSTEventSink<T> {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl<T> AsMut<BSTEventSink<T>> for BSTEventSink<T> {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
 /// C++ `RE::BSTEventSource<T>`
 #[repr(C)]
 pub struct BSTEventSource<T> {
@@ -244,6 +258,20 @@ impl<T> BSTEventSource<T> {
     }
 }
 
+impl<T> AsRef<BSTEventSource<T>> for BSTEventSource<T> {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl<T> AsMut<BSTEventSource<T>> for BSTEventSource<T> {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
 #[inline(always)]
 fn contains_sink<T>(
     array: &BSTArray<*mut BSTEventSink<T>, BSTArrayHeapAllocator>,
@@ -318,5 +346,75 @@ mod tests {
 
         let sinks = unsafe { source.sinks.as_slice() };
         assert_eq!(sinks, &[c, b]);
+    }
+}
+
+pub trait BSTEventSinkExt<T> {
+    unsafe fn process_event(
+        &mut self,
+        event: *const T,
+        event_source: *mut BSTEventSource<T>,
+    ) -> BSEventNotifyControl;
+}
+
+impl<T, U> BSTEventSinkExt<T> for U
+where
+    U: AsRef<BSTEventSink<T>> + AsMut<BSTEventSink<T>>,
+{
+    unsafe fn process_event(
+        &mut self,
+        event: *const T,
+        event_source: *mut BSTEventSource<T>,
+    ) -> BSEventNotifyControl {
+        unsafe { BSTEventSink::process_event(self.as_mut(), event, event_source) }
+    }
+}
+
+pub trait BSTEventSourceExt<T> {
+    unsafe fn add_event_sink(&mut self, event_sink: *mut BSTEventSink<T>);
+    unsafe fn add_event_sink_unchecked<SinkEvent>(&mut self, sink: *mut BSTEventSink<SinkEvent>);
+    unsafe fn prepend_event_sink(&mut self, event_sink: *mut BSTEventSink<T>);
+    unsafe fn prepend_event_sink_unchecked<SinkEvent>(
+        &mut self,
+        sink: *mut BSTEventSink<SinkEvent>,
+    );
+    unsafe fn remove_event_sink(&mut self, event_sink: *mut BSTEventSink<T>);
+    unsafe fn send_event(&mut self, event: *const T);
+    unsafe fn invoke(&mut self, event: *const T);
+}
+
+impl<T, U> BSTEventSourceExt<T> for U
+where
+    U: AsRef<BSTEventSource<T>> + AsMut<BSTEventSource<T>>,
+{
+    unsafe fn add_event_sink(&mut self, event_sink: *mut BSTEventSink<T>) {
+        unsafe { BSTEventSource::add_event_sink(self.as_mut(), event_sink) }
+    }
+
+    unsafe fn add_event_sink_unchecked<SinkEvent>(&mut self, sink: *mut BSTEventSink<SinkEvent>) {
+        unsafe { BSTEventSource::add_event_sink_unchecked(self.as_mut(), sink) }
+    }
+
+    unsafe fn prepend_event_sink(&mut self, event_sink: *mut BSTEventSink<T>) {
+        unsafe { BSTEventSource::prepend_event_sink(self.as_mut(), event_sink) }
+    }
+
+    unsafe fn prepend_event_sink_unchecked<SinkEvent>(
+        &mut self,
+        sink: *mut BSTEventSink<SinkEvent>,
+    ) {
+        unsafe { BSTEventSource::prepend_event_sink_unchecked(self.as_mut(), sink) }
+    }
+
+    unsafe fn remove_event_sink(&mut self, event_sink: *mut BSTEventSink<T>) {
+        unsafe { BSTEventSource::remove_event_sink(self.as_mut(), event_sink) }
+    }
+
+    unsafe fn send_event(&mut self, event: *const T) {
+        unsafe { BSTEventSource::send_event(self.as_mut(), event) }
+    }
+
+    unsafe fn invoke(&mut self, event: *const T) {
+        unsafe { BSTEventSource::invoke(self.as_mut(), event) }
     }
 }

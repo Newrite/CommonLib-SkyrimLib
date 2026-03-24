@@ -13,6 +13,7 @@ pub struct BGSSkinForm {
 }
 
 const _: () = assert!(core::mem::size_of::<BGSSkinForm>() == 0x10);
+const _: () = assert!(core::mem::offset_of!(BGSSkinForm, skin) == 0x08);
 
 impl RttiType for BGSSkinForm {
     const RTTI: VariantID = RTTI_BGSSkinForm;

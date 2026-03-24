@@ -102,6 +102,20 @@ impl RttiType for MagicItem {
     const RTTI: VariantID = RTTI_MagicItem;
 }
 
+impl AsRef<MagicItem> for MagicItem {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl AsMut<MagicItem> for MagicItem {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
 impl MagicItem {
     pub const RTTI: VariantID = RTTI_MagicItem;
     pub const VTABLE: &'static [VariantID] = &VTABLE_MagicItem;
@@ -342,5 +356,251 @@ impl MagicItem {
 
     crate::relocation_func! {
         pub fn traverse(&self, visitor: &mut MagicItemTraversalFunctor) => RelocationID::new(11222, 11341)
+    }
+}
+
+pub trait MagicItemExt {
+    fn get_spell_type(&self) -> SpellType;
+    fn set_casting_type(&mut self, casting_type: CastingType);
+    fn get_casting_type(&self) -> CastingType;
+    fn set_delivery(&mut self, delivery: Delivery);
+    fn get_delivery(&self) -> Delivery;
+    fn is_valid_delivery(&self, delivery: Delivery) -> bool;
+    fn get_fixed_cast_duration(&self) -> f32;
+    fn get_range(&self) -> f32;
+    fn ignores_resistance(&self) -> bool;
+    fn ignore_los(&self) -> bool;
+    fn is_food(&self) -> bool;
+    fn get_no_absorb(&self) -> bool;
+    fn get_no_dual_cast_modifications(&self) -> bool;
+    fn get_skill_usage_data(&self, data: *mut MagicItemSkillUsageData) -> bool;
+    fn is_poison(&self) -> bool;
+    fn is_medicine(&self) -> bool;
+    fn adjust_cost(&self, cost: *mut f32, actor: *mut Actor);
+    fn get_charge_time(&self) -> f32;
+    fn get_max_effect_count(&self) -> u32;
+    fn get_associated_skill(&self) -> ActorValue;
+    fn is_two_handed(&self) -> bool;
+    fn get_chunk_id(&mut self) -> u32;
+    fn copy_magic_item_data(&mut self, src: *mut MagicItem);
+    fn load_magic_item_chunk(&mut self, mod_file: *mut TESFile, chunk_id: u32);
+    fn load_chunk_data_post_process(&mut self, mod_file: *mut TESFile);
+    fn get_data1(&self) -> *const MagicItemData;
+    fn get_data2(&mut self) -> *mut MagicItemData;
+    fn get_data_size(&self) -> u32;
+    fn init_from_chunk(&mut self, mod_file: *mut TESFile);
+    fn init_chunk(&mut self);
+    fn calculate_magicka_cost(&self, caster: *mut Actor) -> f32;
+    fn calculate_total_gold_value(&self, caster: *mut Actor) -> f32;
+    fn collect_data(&self) -> MagicItemDataCollector;
+    fn get_av_effect(&self) -> *mut EffectSetting;
+    fn is_valid(&self) -> bool;
+    fn get_costliest_effect_item(&self, delivery: Delivery, positive_area: bool) -> *mut Effect;
+    fn get_data(&self) -> *const MagicItemData;
+    fn get_data_mut(&mut self) -> *mut MagicItemData;
+    fn get_largest_area(&self) -> i32;
+    fn get_longest_duration(&self) -> u32;
+    fn has_effect(&mut self, archetype: EffectArchetypeId) -> bool;
+    fn is_hostile(&self) -> bool;
+    fn is_permanent(&self) -> bool;
+    fn get_effect_is_match(
+        &self,
+        base: *mut EffectSetting,
+        mag: f32,
+        area: u32,
+        dur: u32,
+        cost: f32,
+    ) -> *mut Effect;
+    fn traverse(&self, visitor: &mut MagicItemTraversalFunctor);
+}
+
+impl<T: AsRef<MagicItem> + AsMut<MagicItem>> MagicItemExt for T {
+    fn get_spell_type(&self) -> SpellType {
+        self.as_ref().get_spell_type()
+    }
+
+    fn set_casting_type(&mut self, casting_type: CastingType) {
+        MagicItem::set_casting_type(self.as_mut(), casting_type)
+    }
+
+    fn get_casting_type(&self) -> CastingType {
+        self.as_ref().get_casting_type()
+    }
+
+    fn set_delivery(&mut self, delivery: Delivery) {
+        MagicItem::set_delivery(self.as_mut(), delivery)
+    }
+
+    fn get_delivery(&self) -> Delivery {
+        self.as_ref().get_delivery()
+    }
+
+    fn is_valid_delivery(&self, delivery: Delivery) -> bool {
+        self.as_ref().is_valid_delivery(delivery)
+    }
+
+    fn get_fixed_cast_duration(&self) -> f32 {
+        self.as_ref().get_fixed_cast_duration()
+    }
+
+    fn get_range(&self) -> f32 {
+        self.as_ref().get_range()
+    }
+
+    fn ignores_resistance(&self) -> bool {
+        self.as_ref().ignores_resistance()
+    }
+
+    fn ignore_los(&self) -> bool {
+        self.as_ref().ignore_los()
+    }
+
+    fn is_food(&self) -> bool {
+        self.as_ref().is_food()
+    }
+
+    fn get_no_absorb(&self) -> bool {
+        self.as_ref().get_no_absorb()
+    }
+
+    fn get_no_dual_cast_modifications(&self) -> bool {
+        self.as_ref().get_no_dual_cast_modifications()
+    }
+
+    fn get_skill_usage_data(&self, data: *mut MagicItemSkillUsageData) -> bool {
+        self.as_ref().get_skill_usage_data(data)
+    }
+
+    fn is_poison(&self) -> bool {
+        self.as_ref().is_poison()
+    }
+
+    fn is_medicine(&self) -> bool {
+        self.as_ref().is_medicine()
+    }
+
+    fn adjust_cost(&self, cost: *mut f32, actor: *mut Actor) {
+        self.as_ref().adjust_cost(cost, actor)
+    }
+
+    fn get_charge_time(&self) -> f32 {
+        self.as_ref().get_charge_time()
+    }
+
+    fn get_max_effect_count(&self) -> u32 {
+        self.as_ref().get_max_effect_count()
+    }
+
+    fn get_associated_skill(&self) -> ActorValue {
+        self.as_ref().get_associated_skill()
+    }
+
+    fn is_two_handed(&self) -> bool {
+        self.as_ref().is_two_handed()
+    }
+
+    fn get_chunk_id(&mut self) -> u32 {
+        MagicItem::get_chunk_id(self.as_mut())
+    }
+
+    fn copy_magic_item_data(&mut self, src: *mut MagicItem) {
+        MagicItem::copy_magic_item_data(self.as_mut(), src)
+    }
+
+    fn load_magic_item_chunk(&mut self, mod_file: *mut TESFile, chunk_id: u32) {
+        MagicItem::load_magic_item_chunk(self.as_mut(), mod_file, chunk_id)
+    }
+
+    fn load_chunk_data_post_process(&mut self, mod_file: *mut TESFile) {
+        MagicItem::load_chunk_data_post_process(self.as_mut(), mod_file)
+    }
+
+    fn get_data1(&self) -> *const MagicItemData {
+        self.as_ref().get_data1()
+    }
+
+    fn get_data2(&mut self) -> *mut MagicItemData {
+        MagicItem::get_data2(self.as_mut())
+    }
+
+    fn get_data_size(&self) -> u32 {
+        self.as_ref().get_data_size()
+    }
+
+    fn init_from_chunk(&mut self, mod_file: *mut TESFile) {
+        MagicItem::init_from_chunk(self.as_mut(), mod_file)
+    }
+
+    fn init_chunk(&mut self) {
+        MagicItem::init_chunk(self.as_mut())
+    }
+
+    fn calculate_magicka_cost(&self, caster: *mut Actor) -> f32 {
+        self.as_ref().calculate_magicka_cost(caster)
+    }
+
+    fn calculate_total_gold_value(&self, caster: *mut Actor) -> f32 {
+        self.as_ref().calculate_total_gold_value(caster)
+    }
+
+    fn collect_data(&self) -> MagicItemDataCollector {
+        self.as_ref().collect_data()
+    }
+
+    fn get_av_effect(&self) -> *mut EffectSetting {
+        self.as_ref().get_av_effect()
+    }
+
+    fn is_valid(&self) -> bool {
+        self.as_ref().is_valid()
+    }
+
+    fn get_costliest_effect_item(&self, delivery: Delivery, positive_area: bool) -> *mut Effect {
+        self.as_ref()
+            .get_costliest_effect_item(delivery, positive_area)
+    }
+
+    fn get_data(&self) -> *const MagicItemData {
+        self.as_ref().get_data()
+    }
+
+    fn get_data_mut(&mut self) -> *mut MagicItemData {
+        self.as_mut().get_data_mut()
+    }
+
+    fn get_largest_area(&self) -> i32 {
+        self.as_ref().get_largest_area()
+    }
+
+    fn get_longest_duration(&self) -> u32 {
+        self.as_ref().get_longest_duration()
+    }
+
+    fn has_effect(&mut self, archetype: EffectArchetypeId) -> bool {
+        MagicItem::has_effect(self.as_mut(), archetype)
+    }
+
+    fn is_hostile(&self) -> bool {
+        self.as_ref().is_hostile()
+    }
+
+    fn is_permanent(&self) -> bool {
+        self.as_ref().is_permanent()
+    }
+
+    fn get_effect_is_match(
+        &self,
+        base: *mut EffectSetting,
+        mag: f32,
+        area: u32,
+        dur: u32,
+        cost: f32,
+    ) -> *mut Effect {
+        self.as_ref()
+            .get_effect_is_match(base, mag, area, dur, cost)
+    }
+
+    fn traverse(&self, visitor: &mut MagicItemTraversalFunctor) {
+        self.as_ref().traverse(visitor)
     }
 }

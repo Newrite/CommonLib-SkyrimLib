@@ -112,7 +112,7 @@ macro_rules! abstract_type {
 macro_rules! inherit {
     // Вариант 1: Одинарное наследование (Главный родитель)
     // Пример: inherit!(NiObject : NiRefObject);
-    ($derived:ident : $base:ident) => {
+    ($derived:ident : $base:ty) => {
         impl core::ops::Deref for $derived {
             type Target = $base;
             #[inline(always)]
@@ -139,7 +139,38 @@ macro_rules! inherit {
 
     // Вариант 2: Множественное наследование (Боковые родители)
     // Пример: inherit!(TESObjectREFR => BSHandleRefObject, handle_ref_obj);
-    ($derived:ident => $base:ident, $field:ident) => {
+    ($derived:ident : $base:ty, $field:ident) => {
+        impl core::ops::Deref for $derived {
+            type Target = $base;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.$field
+            }
+        }
+
+        impl core::ops::DerefMut for $derived {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.$field
+            }
+        }
+
+        impl AsRef<$base> for $derived {
+            #[inline(always)]
+            fn as_ref(&self) -> &$base {
+                &self.$field
+            }
+        }
+
+        impl AsMut<$base> for $derived {
+            #[inline(always)]
+            fn as_mut(&mut self) -> &mut $base {
+                &mut self.$field
+            }
+        }
+    };
+
+    ($derived:ident => $base:ty, $field:ident) => {
         impl AsRef<$base> for $derived {
             #[inline(always)]
             fn as_ref(&self) -> &$base {
