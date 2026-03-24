@@ -4,6 +4,9 @@
 //! In C++ this is `BSPointerHandle<TESObjectREFR>`, which wraps
 //! `BSUntypedPointerHandle<21, 5>` вЂ” a single `u32`.
 
+use crate::re::{Actor, NiPointer, TESObjectREFR};
+use crate::relocation::RelocationID;
+
 /// C++ `RE::ObjectRefHandle` = `BSPointerHandle<TESObjectREFR>`
 ///
 /// A handle used by the engine to safely reference `TESObjectREFR`
@@ -52,6 +55,26 @@ impl ActorHandle {
     pub fn reset(&mut self) {
         self.handle = 0;
     }
+
+    #[inline(always)]
+    pub fn get(&self) -> NiPointer<Actor> {
+        let mut out = NiPointer::null();
+        let _ = self.get_smart_pointer(&mut out);
+        out
+    }
+
+    #[inline(always)]
+    pub fn from_ptr(ptr: *mut Actor) -> Self {
+        Self::get_handle(ptr)
+    }
+
+    crate::relocation_func! {
+        pub fn get_handle(ptr: *mut Actor) -> ActorHandle => RelocationID::new(15967, 16212)
+    }
+
+    crate::relocation_func! {
+        fn get_smart_pointer(&self, out: &mut NiPointer<Actor>) -> bool => RelocationID::new(12204, 12332)
+    }
 }
 
 impl ObjectRefHandle {
@@ -77,5 +100,39 @@ impl ObjectRefHandle {
     #[inline(always)]
     pub fn reset(&mut self) {
         self.handle = 0;
+    }
+
+    #[inline(always)]
+    pub fn get(&self) -> NiPointer<TESObjectREFR> {
+        let mut out = NiPointer::null();
+        let _ = self.get_smart_pointer(&mut out);
+        out
+    }
+
+    #[inline(always)]
+    pub fn from_ptr(ptr: *mut TESObjectREFR) -> Self {
+        Self::get_handle(ptr)
+    }
+
+    crate::relocation_func! {
+        pub fn get_handle(ptr: *mut TESObjectREFR) -> ObjectRefHandle => RelocationID::new(15967, 16212)
+    }
+
+    crate::relocation_func! {
+        fn get_smart_pointer(&self, out: &mut NiPointer<TESObjectREFR>) -> bool => RelocationID::new(12204, 12332)
+    }
+}
+
+impl crate::re::bssimple_list::BSSimpleListValue for ActorHandle {
+    #[inline(always)]
+    fn bs_has_value(&self) -> bool {
+        self.has_value()
+    }
+}
+
+impl crate::re::bssimple_list::BSSimpleListValue for ObjectRefHandle {
+    #[inline(always)]
+    fn bs_has_value(&self) -> bool {
+        self.has_value()
     }
 }

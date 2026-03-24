@@ -14,6 +14,7 @@ pub mod ini;
 pub mod offsets;
 pub mod re;
 pub mod relocation;
+pub mod rex;
 
 // Наши новые модули
 pub mod runtime;

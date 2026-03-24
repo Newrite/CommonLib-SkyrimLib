@@ -2,6 +2,7 @@ use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_BGSListForm;
 use crate::offsets::offsets_vtable::VTABLE_BGSListForm;
+use crate::re::bs_container::BSContainerForEachResult;
 use crate::re::bst_array::BSTArray;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
@@ -85,10 +86,10 @@ impl BGSListForm {
 
     pub fn for_each_form<F>(&self, mut callback: F)
     where
-        F: FnMut(*mut TESForm) -> bool,
+        F: FnMut(*mut TESForm) -> BSContainerForEachResult,
     {
         for &form in self.forms_slice() {
-            if !form.is_null() && !callback(form) {
+            if !form.is_null() && callback(form).is_stop() {
                 return;
             }
         }
@@ -97,7 +98,7 @@ impl BGSListForm {
             let Some(added_form) = TESForm::lookup_by_id(added_form_id) else {
                 continue;
             };
-            if !callback(added_form) {
+            if callback(added_form).is_stop() {
                 return;
             }
         }
@@ -109,8 +110,10 @@ impl BGSListForm {
             let matches = unsafe { (*form).get_form_type() == form_type };
             if !matches {
                 result = false;
+                BSContainerForEachResult::Stop
+            } else {
+                BSContainerForEachResult::Continue
             }
-            matches
         });
         result
     }

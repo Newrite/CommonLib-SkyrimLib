@@ -103,6 +103,14 @@ def extract_direct_bases(header_text: str, type_name: str) -> list[str]:
     return bases
 
 
+def extract_event_bases(header_text: str, type_name: str) -> list[str]:
+    return [
+        base
+        for base in extract_direct_bases(header_text, type_name)
+        if "BSTEventSource<" in base or "BSTEventSink<" in base
+    ]
+
+
 def extract_nested_types(header_text: str, type_name: str) -> list[str]:
     if not header_text:
         return []
@@ -145,13 +153,33 @@ def type_has_runtime_layout_signals(header_text: str, cpp_text: str) -> bool:
         "RelocateMemberIfNewer(",
         "RUNTIME_DATA",
         "VR_RUNTIME_DATA",
+        "STATIC_ASSERT_SIZE(",
+        "RUNTIME_CAST_ACCESSOR_VERSIONED(",
+        "RUNTIME_MEMBER_ACCESSOR_VERSIONED(",
+        "SE_ONLY_POINTER_ACCESSOR(",
+        "VR_ONLY_POINTER_ACCESSOR(",
         "EXCLUSIVE_SKYRIM_",
         "ENABLE_SKYRIM_AE",
     )
-    if any(marker in haystack for marker in markers):
-        return True
-    sizes = set(re.findall(r"static_assert\(sizeof\([^)]+\)\s*==\s*([^)]+)\)", haystack))
-    return len(sizes) > 1
+    return any(marker in haystack for marker in markers)
+
+
+def type_has_event_signals(header_text: str, cpp_text: str) -> bool:
+    haystack = "\n".join(part for part in (header_text, cpp_text) if part)
+    if not haystack:
+        return False
+    markers = (
+        "BSTEventSource<",
+        "BSTEventSink<",
+        "AddEventSink(",
+        "PrependEventSink(",
+        "RemoveEventSink(",
+        "GetEventSource(",
+        "SendEvent(",
+        "RegisterFor",
+        "UnregisterFor",
+    )
+    return any(marker in haystack for marker in markers)
 
 
 def has_generated_rtti(type_name: str) -> bool:

@@ -5,6 +5,7 @@ import sys
 
 from _common import (
     extract_direct_bases,
+    extract_event_bases,
     extract_nested_types,
     find_mixin_owners,
     has_generated_rtti,
@@ -12,6 +13,7 @@ from _common import (
     read_text,
     repo_relative,
     resolve_type_paths,
+    type_has_event_signals,
     type_has_runtime_layout_signals,
 )
 
@@ -43,8 +45,10 @@ def main() -> int:
         return 1
 
     direct_bases = extract_direct_bases(header_text, paths.type_name)
+    event_bases = extract_event_bases(header_text, paths.type_name)
     nested_types = extract_nested_types(header_text, paths.type_name)
     runtime_layout = type_has_runtime_layout_signals(header_text, cpp_text)
+    event_signals = type_has_event_signals(header_text, cpp_text)
     placeholder_todo = "replace with full translation when layout is needed" in rust_text
     primary_skill = choose_primary_skill(paths.rust is not None, runtime_layout, placeholder_todo)
     mixin_owners = find_mixin_owners(paths.type_name)
@@ -54,10 +58,12 @@ def main() -> int:
     print(f"cpp: {repo_relative(paths.cpp)}")
     print(f"rust: {repo_relative(paths.rust)}")
     print(f"direct_bases: {', '.join(direct_bases) if direct_bases else '<none>'}")
+    print(f"event_bases: {', '.join(event_bases) if event_bases else '<none>'}")
     print(f"nested_types: {', '.join(nested_types) if nested_types else '<none>'}")
     print(f"generated_rtti: {'yes' if has_generated_rtti(paths.type_name) else 'no'}")
     print(f"generated_vtable: {'yes' if has_generated_vtable(paths.type_name) else 'no'}")
     print(f"runtime_layout_signals: {'yes' if runtime_layout else 'no'}")
+    print(f"event_signals: {'yes' if event_signals else 'no'}")
     print()
     print("recommended_pipeline:")
     print(f"  - primary skill: {primary_skill}")
@@ -68,6 +74,10 @@ def main() -> int:
         print("  - follow-up skill: verify-translation")
     if mixin_owners:
         print("  - optional skill: add-extension-trait")
+    if event_signals:
+        print(
+            "  - note: apply BSTEvent owner rules (fixed base forwarding helpers vs runtime accessor vs raw sink pointer API)"
+        )
     print("  - script: python scripts/check_generated_staleness.py")
     print("  - validation: cargo fmt")
     print("  - validation: cargo check -p libskyrim")

@@ -4,6 +4,7 @@ use crate::offsets::offsets_rtti::RTTI_BGSKeywordForm;
 use crate::offsets::offsets_vtable::VTABLE_BGSKeywordForm;
 use crate::re::BGSKeyword;
 use crate::re::base_form_component::BaseFormComponent;
+use crate::re::bs_container::BSContainerForEachResult;
 use crate::re::tes_form::FormID;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
@@ -22,12 +23,6 @@ const _: () = assert!(core::mem::size_of::<BGSKeywordForm>() == 0x18);
 
 impl RttiType for BGSKeywordForm {
     const RTTI: VariantID = RTTI_BGSKeywordForm;
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum KeywordForEachResult {
-    Continue,
-    Stop,
 }
 
 impl BGSKeywordForm {
@@ -84,9 +79,9 @@ impl BGSKeywordForm {
             let current = unsafe { &*keyword };
             if core_util::ptr_to_str(current.form_editor_id.as_ptr()).contains(editor_id) {
                 result = true;
-                KeywordForEachResult::Stop
+                BSContainerForEachResult::Stop
             } else {
-                KeywordForEachResult::Continue
+                BSContainerForEachResult::Continue
             }
         });
         result
@@ -94,7 +89,7 @@ impl BGSKeywordForm {
 
     pub fn for_each_keyword<F>(&self, mut callback: F)
     where
-        F: FnMut(*mut BGSKeyword) -> KeywordForEachResult,
+        F: FnMut(*mut BGSKeyword) -> BSContainerForEachResult,
     {
         if self.keywords.is_null() {
             return;
@@ -106,7 +101,7 @@ impl BGSKeywordForm {
                 continue;
             }
 
-            if callback(keyword) == KeywordForEachResult::Stop {
+            if callback(keyword).is_stop() {
                 return;
             }
         }
@@ -134,9 +129,9 @@ impl BGSKeywordForm {
         self.for_each_keyword(|keyword| {
             if unsafe { (&*keyword).form_id } == form_id {
                 result = true;
-                KeywordForEachResult::Stop
+                BSContainerForEachResult::Stop
             } else {
-                KeywordForEachResult::Continue
+                BSContainerForEachResult::Continue
             }
         });
         result
@@ -148,9 +143,9 @@ impl BGSKeywordForm {
             let current = unsafe { &*keyword };
             if core_util::ptr_to_str(current.form_editor_id.as_ptr()) == editor_id {
                 result = true;
-                KeywordForEachResult::Stop
+                BSContainerForEachResult::Stop
             } else {
-                KeywordForEachResult::Continue
+                BSContainerForEachResult::Continue
             }
         });
         result
@@ -225,7 +220,7 @@ pub trait BGSKeywordFormExt {
     fn contains_keyword_string(&self, editor_id: &str) -> bool;
     fn for_each_keyword<F>(&self, callback: F)
     where
-        F: FnMut(*mut BGSKeyword) -> KeywordForEachResult;
+        F: FnMut(*mut BGSKeyword) -> BSContainerForEachResult;
     fn get_keyword_at(&self, idx: u32) -> Option<*mut BGSKeyword>;
     fn get_keyword_index(&self, keyword: *mut BGSKeyword) -> Option<u32>;
     fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
@@ -254,7 +249,7 @@ impl<T: AsRef<BGSKeywordForm> + AsMut<BGSKeywordForm>> BGSKeywordFormExt for T {
 
     fn for_each_keyword<F>(&self, callback: F)
     where
-        F: FnMut(*mut BGSKeyword) -> KeywordForEachResult,
+        F: FnMut(*mut BGSKeyword) -> BSContainerForEachResult,
     {
         self.as_ref().for_each_keyword(callback)
     }

@@ -32,10 +32,15 @@ preflight when the existing Rust file may already be mostly correct.
 - `size_of` assert
 - `offset_of` asserts for mixins
 - no blob substitution for named parents or mixins
+- source-backed `REX/**` dependencies are translated into `libskyrim/src/rex/*.rs`
+  and imported from `crate::rex` when the RE file needs them
 
 ### Virtuals
 
 - fresh virtual slots are represented with `virtual_method!`
+- pure CommonLib `.cpp` wrappers around `RelocateVirtual(...)` use
+  `relocated_virtual_method!` or an equivalent handwritten wrapper with the same
+  semantics
 - inherited overrides are documented with `// override (Parent)` comment blocks
 - child files do not redundantly redeclare inherited parent virtuals
 - vtable indices match source-backed order
@@ -44,14 +49,43 @@ preflight when the existing Rust file may already be mostly correct.
 
 - `.cpp` relocated methods use `relocation_func!`
 - global or singleton access uses `relocation_variable!` when appropriate
+- `REL::ID(...)` / `REL::Offset(...)` map to `ID` / `Offset`
 - `RELOCATION_ID` maps to `RelocationID`
 - true `VariantID` use is reserved for constants such as RTTI and VTABLE
 - no legacy `VariantID::new(se, ae, 0)` for relocated functions
+- mixed runtime shim methods use `relocate_virtual!` only in the forwarding
+  branch instead of being flattened into fake virtual ownership
+
+### Visitors and functors
+
+- closure-style wrappers stay closure-style in Rust when no ABI visitor is needed
+- real ABI visitor interfaces are translated faithfully when the type depends on them
+- safe `*_with` / `*_fn` helpers are added only when source-backed call sites
+  prove synchronous, non-retained use
+- Rust-side synchronous traversal helpers use `BSContainerForEachResult`
+  instead of per-file custom enums
+- concrete callback descendants of small ABI interfaces, such as
+  `MagicCaster::PostCreationCallback`, are verified as ordinary RE layout types;
+  check the abstract callback base, child layout, and any retention clues
+  separately instead of treating them as generic adapters
+
+### Events
+
+- `BSTEventSource<T>` / `BSTEventSink<T>` use the shared translation rather than
+  local stand-ins
+- fixed-offset event owners use thin forwarding wrappers where source does
+  likewise
+- runtime-varying or runtime-exclusive event bases use cast/runtime-data
+  accessors instead of fake universal fields
+- low-level `BSTEventSource` APIs stay `unsafe`; safe owner-side wrappers are
+  added only when source proves the sink lifetime / ownership contract
 
 ### Runtime layout
 
 - runtime-varying fields use runtime-data accessor macros where needed
 - no fake single-layout struct for truly divergent runtime tails
+- `ENABLE_SKYRIM_VR` branches that only change method behavior are kept as
+  unified Rust methods with runtime branching instead of compile-time `#[cfg]`
 
 ### Ergonomics and reuse
 

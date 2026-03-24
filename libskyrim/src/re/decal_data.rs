@@ -30,6 +30,17 @@ pub struct DecalDataData {
 }
 
 const _: () = assert!(core::mem::size_of::<DecalDataData>() == 0x24);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, decal_min_width) == 0x00);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, decal_max_width) == 0x04);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, decal_min_height) == 0x08);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, decal_max_height) == 0x0C);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, depth) == 0x10);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, shininess) == 0x14);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, parallax_scale) == 0x18);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, parallax_passes) == 0x1C);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, flags) == 0x1D);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, pad1e) == 0x1E);
+const _: () = assert!(core::mem::offset_of!(DecalDataData, color) == 0x20);
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -38,3 +49,4 @@ pub struct DecalData {
 }
 
 const _: () = assert!(core::mem::size_of::<DecalData>() == 0x24);
+const _: () = assert!(core::mem::offset_of!(DecalData, data) == 0x00);

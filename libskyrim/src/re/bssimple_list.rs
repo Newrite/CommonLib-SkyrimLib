@@ -4,6 +4,7 @@
 //! - `BSSimpleList<T>::Node { T item; Node* next; }`
 //! - `BSSimpleList<T> { Node _listHead; }`
 
+use alloc::boxed::Box;
 use core::marker::PhantomData;
 use core::ptr;
 
@@ -105,6 +106,39 @@ impl<T: BSSimpleListValue> BSSimpleList<T> {
     #[inline(always)]
     pub fn size(&self) -> u32 {
         self.len()
+    }
+
+    #[inline(always)]
+    pub fn clear(&mut self)
+    where
+        T: Default,
+    {
+        let mut node = self.list_head.next;
+        while !node.is_null() {
+            unsafe {
+                let boxed = Box::from_raw(node);
+                node = boxed.next;
+            }
+        }
+
+        self.list_head.item = T::default();
+        self.list_head.next = ptr::null_mut();
+    }
+
+    #[inline(always)]
+    pub fn push_front(&mut self, value: T)
+    where
+        T: Default,
+    {
+        if self.list_head.item.bs_has_value() {
+            let old_head = Box::new(BSSimpleListNode {
+                item: core::mem::replace(&mut self.list_head.item, value),
+                next: self.list_head.next,
+            });
+            self.list_head.next = Box::into_raw(old_head);
+        } else {
+            self.list_head.item = value;
+        }
     }
 
     #[inline(always)]

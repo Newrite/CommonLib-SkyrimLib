@@ -28,10 +28,15 @@ Translate the requested type from CommonLibVR into `libskyrim/src/re/`.
 The `.cpp` is required whenever it exists. Extract all of the following:
 
 - `RELOCATION_ID(...)` methods
+- `REL::ID(...)` / `REL::Offset(...)`
 - static methods not visible in the header
 - private helpers defined only in the `.cpp`
 - singleton/global accessors
-- `RelocateVirtual(...)` comments or vtable index clues
+- `ENABLE_SKYRIM_VR` / `REL::Module::IsVR()` runtime branches
+- `RelocateVirtual(...)` wrappers and vtable index clues
+- visitor or functor call sites, including whether the code uses
+  `std::function`, stack-local adapter objects, or passes a visitor across API
+  boundaries
 
 ## Dependency Rules
 
@@ -42,6 +47,9 @@ For each parent or embedded field type:
   that dependency first.
 - If the type is pointer-only or reference-only, an `abstract_type!` stub is
   acceptable.
+- If the dependency comes from `CommonLibVR/include/REX/**` and is source-backed
+  for the RE translation, place it under `libskyrim/src/rex/*.rs` and import it
+  from `crate::rex`.
 
 Never replace a named parent or mixin with `[u8; N]`.
 
@@ -58,6 +66,7 @@ Write files in this order:
 7. `inherit!` declarations
 8. `impl` blocks with:
    - `virtual_method!` for fresh virtual slots
+   - `relocated_virtual_method!` for pure `.cpp` wrappers backed by `RelocateVirtual(...)`
    - `relocation_func!` for `.cpp` relocated methods
    - `relocation_variable!` for globals/singletons
    - non-public helpers from `.cpp`
@@ -68,6 +77,8 @@ available. Regenerate it.
 
 ## Relocation Rules
 
+- `REL::ID(id)` -> `ID::new(id)`
+- `REL::Offset(offset)` -> `Offset::new(offset)`
 - `RELOCATION_ID(se, ae)` -> `RelocationID::new(se, ae)`
 - `RELOCATION_ID(se, ae, vr)` -> `RelocationID::with_vr(se, ae, vr)` only if the
   VR ID is real and source-backed
@@ -75,6 +86,49 @@ available. Regenerate it.
 - runtime-varying non-address values -> `VariantOffset`
 
 Do not use `VariantID::new(se, ae, 0)` for relocated methods.
+
+## Cross-Runtime Branching Rules
+
+- Do not translate `ENABLE_SKYRIM_VR` literally into Rust `#[cfg]` by default.
+- If the branch changes layout or field offsets, use runtime-data accessors.
+- If the branch changes a scalar value, vtable index, or similar non-address
+  selection, use `VariantOffset`, `relocate`, or `relocate_vr`.
+- If the branch is a pure `.cpp` wrapper around `REL::RelocateVirtual(...)`,
+  prefer `relocated_virtual_method!`.
+- If the method mixes runtime branching with only part of the body forwarding to
+  a vtable slot, write a normal Rust method and use `relocate_virtual!` inside
+  the relevant branch.
+
+## Visitor Rules
+
+- If the C++ API is already a `std::function` convenience wrapper, prefer a
+  Rust closure helper instead of translating an ABI visitor first.
+- If the class owns a real ABI visitor interface and source-backed call sites
+  prove synchronous use, you may expose:
+  - a raw ABI entrypoint
+  - a typed `*_with(&mut visitor)` helper
+  - a closure `*_fn(...)` helper
+- If the visitor lifetime is unclear, expose only the raw ABI entrypoint.
+- Use `BSContainerForEachResult` for Rust-side synchronous traversal helpers.
+- Concrete stateful visitor descendants with fields are normal RE types, not
+  generic adapters.
+- Concrete callback descendants of small ABI interfaces, such as
+  `MagicCaster::PostCreationCallback : MagicTarget::IPostCreationModification`,
+  are also normal RE types. Translate the abstract callback base as ABI and the
+  concrete descendant with its real fields and inheritance; only add a safe
+  callback adapter if source-backed call sites prove synchronous, non-retained
+  use.
+
+## Event Rules
+
+- `BSTEventSource<T>` and `BSTEventSink<T>` are reusable ABI mixins. Reuse the
+  shared translation instead of inventing local stand-ins.
+- If the owner has a fixed-offset event base, translate owner helpers as thin
+  forwarding methods to that base.
+- If the event base moves or only exists on some runtimes, use cast/runtime
+  accessors instead of pretending the base is universally present.
+- Keep low-level `BSTEventSource` mutation / dispatch APIs `unsafe`; only add
+  safe owner-side wrappers when source proves the sink lifetime contract.
 
 ## Runtime Layout Rules
 

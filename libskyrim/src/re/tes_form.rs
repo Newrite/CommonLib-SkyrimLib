@@ -5,6 +5,7 @@ use crate::re::base_form_component::BaseFormComponent;
 use crate::re::bgs_keyword::BGSKeyword;
 use crate::re::bgs_keyword_form::BGSKeywordForm;
 use crate::re::bgs_list_form::BGSListForm;
+use crate::re::bs_container::BSContainerForEachResult;
 use crate::re::form_type::FormType;
 use crate::relocation::{RelocationID, RttiType, VariantID, skyrim_cast};
 
@@ -739,7 +740,11 @@ impl TESForm {
             (*keyword_list).for_each_form(|form| {
                 let keyword = skyrim_cast::<TESForm, BGSKeyword>(form);
                 has_keyword = !keyword.is_null() && (*keyword_form).has_keyword(keyword);
-                !((match_all && !has_keyword) || has_keyword)
+                if (match_all && !has_keyword) || has_keyword {
+                    BSContainerForEachResult::Stop
+                } else {
+                    BSContainerForEachResult::Continue
+                }
             });
         }
 

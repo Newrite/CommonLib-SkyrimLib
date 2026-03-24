@@ -542,6 +542,43 @@ pub fn relocate_vr<T>(se: T, ae: T, vr: T) -> T {
 
 // ── МАКРОСЫ ДЛЯ ХУКОВ ────────────────────────────────────────────────
 
+#[inline(always)]
+pub unsafe fn vtable<T>(this: *const T) -> *const usize {
+    debug_assert!(!this.is_null());
+    unsafe { *(this as *const *const usize) }
+}
+
+#[inline(always)]
+pub unsafe fn virtual_function_address<T, I: IntoOffset>(this: *const T, index: I) -> usize {
+    let vtable = unsafe { vtable(this) };
+    unsafe { *vtable.add(index.into_offset()) }
+}
+
+#[inline(always)]
+pub unsafe fn virtual_relocation<F, T, I: IntoOffset>(this: *const T, index: I) -> Relocation<F> {
+    Relocation::from_address(unsafe { virtual_function_address(this, index) })
+}
+
+#[inline(always)]
+pub unsafe fn virtual_function<F: Copy, T, I: IntoOffset>(this: *const T, index: I) -> F {
+    unsafe { virtual_relocation::<F, _, _>(this, index).get() }
+}
+
+#[macro_export]
+macro_rules! relocate_virtual {
+    ($signature:ty, $receiver:expr, $index:expr $(, $arg:expr)* $(,)?) => {{
+        let receiver = $receiver;
+        let func = unsafe {
+            $crate::relocation::virtual_relocation::<$signature>(
+                receiver as *const _,
+                $index,
+            )
+            .get()
+        };
+        unsafe { func(receiver $(, $arg)*) }
+    }};
+}
+
 #[macro_export]
 macro_rules! define_vtable_hook {
     (
@@ -632,15 +669,47 @@ macro_rules! virtual_method {
 
         #[inline(always)]
         $fn_vis fn $func_name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
-            use $crate::relocation::IntoOffset;
+            let func: extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)? = unsafe {
+                $crate::relocation::virtual_function(self as *const Self, Self::$const_name)
+            };
+            func(self $(, $arg_name)*)
+        }
+    };
+}
 
-            unsafe {
-                let vtable = *(self as *const _ as *const *const usize);
-                let func_ptr = vtable.add(Self::$const_name.into_offset());
-                let func: extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)? =
-                    core::mem::transmute(*func_ptr);
-                func(self $(, $arg_name)*)
-            }
+#[macro_export]
+macro_rules! relocated_virtual_method {
+    (
+        $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
+        $fn_vis:vis fn $func_name:ident(&self $(, $arg_name:ident: $arg_ty:ty)*) $(-> $ret:ty)?
+    ) => {
+        $const_vis const $const_name: $const_ty = $const_expr;
+
+        #[inline(always)]
+        $fn_vis fn $func_name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::relocate_virtual!(
+                extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)?,
+                self as *const Self,
+                Self::$const_name
+                $(, $arg_name)*
+            )
+        }
+    };
+
+    (
+        $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
+        $fn_vis:vis fn $func_name:ident(&mut self $(, $arg_name:ident: $arg_ty:ty)*) $(-> $ret:ty)?
+    ) => {
+        $const_vis const $const_name: $const_ty = $const_expr;
+
+        #[inline(always)]
+        $fn_vis fn $func_name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::relocate_virtual!(
+                extern "C" fn(*mut Self $(, $arg_ty)*) $(-> $ret)?,
+                self as *mut Self,
+                Self::$const_name
+                $(, $arg_name)*
+            )
         }
     };
 }
