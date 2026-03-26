@@ -46,11 +46,20 @@ layout work.
 - If the translated RE layout relies on source-backed helper types from
   `CommonLibVR/include/REX/**`, place those helper translations in
   `libskyrim/src/rex/*.rs` and import them from `crate::rex`.
+- If the translated file needs to read fields from another named CommonLib RE
+  type whose Rust file is missing, do not introduce a consumer-local `*View`
+  stand-in for that external type. Create or extend the matching dependency
+  Rust file and place the minimal source-backed partial translation there,
+  keeping the real C++ type name.
 - Prefer `VariantOffset` for runtime-varying non-address offsets or indices.
 - Prefer strict accessors for fields guaranteed in the active runtime, and
   optional accessors only when the field is truly absent on some runtimes.
 - If a field offset is version-gated inside flat runtimes, model that separately
   from VR branching.
+- For moved bases or mixins, prefer `runtime_cast_accessor!` /
+  `runtime_cast_mut_accessor!` over per-file pointer-arithmetic helpers.
+- If the shared accessor macros cannot express the required pattern yet, extend
+  `libskyrim/src/runtime.rs` instead of adding a local `moved_base_*` helper.
 - If a runtime-varying piece is really a moved `BSTEventSource<T>` /
   `BSTEventSink<T>` mixin base, treat it like any other moved mixin and expose
   it through runtime cast/data accessors instead of a fake fixed base field.
@@ -58,6 +67,13 @@ layout work.
   keep the layout honest and translate the method layer with
   `relocated_virtual_method!` or `relocate_virtual!` instead of forcing the type
   into fake runtime tails.
+- If a runtime-specific helper still needs source-backed smart-pointer
+  construction, use the shared ABI-safe bridge pattern in
+  `libskyrim/cpp/src/bridge.cpp` and `libskyrim/src/ffi.rs` instead of a Rust-
+  only allocation shortcut.
+- If you must leave an honest compromise, add a source-backed `// TODO:` comment
+  at the exact site. Do not use `todo!()` / `unimplemented!()` in translated RE
+  code.
 
 ## Validation
 

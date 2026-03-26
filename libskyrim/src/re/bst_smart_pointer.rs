@@ -115,6 +115,15 @@ impl<T, M: BSTSmartPointerManager<T>> BSTSmartPointer<T, M> {
         }
     }
 
+    /// Constructs a C++ `BSTSmartPointer<T, M>` directly into out storage owned by Rust.
+    ///
+    /// This is intended for ABI-safe bridges that materialize the smart pointer on the
+    /// C++ side, such as `make_smart<T>(...)` wrappers.
+    #[inline(always)]
+    pub unsafe fn try_construct_with(construct: impl FnOnce(*mut Self) -> bool) -> Option<Self> {
+        unsafe { crate::ffi::try_construct_out_param(construct) }
+    }
+
     /// Creates a new `BSTSmartPointer` from a raw pointer, acquiring the reference.
     /// Matches C++ `BSTSmartPointer(Y* a_rhs)`.
     ///

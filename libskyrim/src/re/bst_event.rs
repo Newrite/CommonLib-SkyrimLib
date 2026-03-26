@@ -1,5 +1,8 @@
+use alloc::boxed::Box;
+use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::ptr;
+use core::ptr::NonNull;
 
 use crate::re::bs_atomic::{BSSpinLock, BSSpinLockGuard};
 use crate::re::bst_array::{BSTArray, BSTArrayHeapAllocator};
@@ -68,6 +71,131 @@ impl<T> AsMut<BSTEventSink<T>> for BSTEventSink<T> {
     #[inline(always)]
     fn as_mut(&mut self) -> &mut Self {
         self
+    }
+}
+
+pub trait BSTEventHandler<T> {
+    fn process_event(
+        &mut self,
+        event: *const T,
+        event_source: *mut BSTEventSource<T>,
+    ) -> BSEventNotifyControl;
+}
+
+/// Bridge-backed owned event sink for plugin-defined Rust handlers.
+///
+/// The underlying sink object is created by the internal C++ bridge so its
+/// vtable remains ABI-compatible with `RE::BSTEventSink<T>`.
+#[repr(transparent)]
+pub struct OwnedBSTEventSink<T, H> {
+    raw: NonNull<BSTEventSink<T>>,
+    _marker: PhantomData<H>,
+}
+
+impl<T, H> OwnedBSTEventSink<T, H>
+where
+    H: BSTEventHandler<T>,
+{
+    #[inline(always)]
+    pub fn new(handler: H) -> Option<Self> {
+        let ctx = Box::into_raw(Box::new(handler)).cast::<c_void>();
+        let raw = unsafe {
+            crate::ffi::commonlib_bst_event_sink_create(
+                ctx,
+                Some(bridge_event_sink_process::<T, H>),
+                Some(bridge_event_sink_destroy::<H>),
+            )
+        }
+        .cast::<BSTEventSink<T>>();
+
+        let Some(raw) = NonNull::new(raw) else {
+            unsafe { bridge_event_sink_destroy::<H>(ctx) };
+            return None;
+        };
+
+        Some(Self {
+            raw,
+            _marker: PhantomData,
+        })
+    }
+
+    #[inline(always)]
+    pub fn as_ptr(&self) -> *mut BSTEventSink<T> {
+        self.raw.as_ptr()
+    }
+
+    #[inline(always)]
+    pub fn as_mut_ptr(&mut self) -> *mut BSTEventSink<T> {
+        self.raw.as_ptr()
+    }
+
+    /// # Safety
+    /// `event_source` must remain valid for the duration of the registration.
+    #[inline(always)]
+    pub unsafe fn add_to_source(&self, event_source: *mut BSTEventSource<T>) {
+        if let Some(event_source) = unsafe { event_source.as_mut() } {
+            unsafe { event_source.add_event_sink(self.as_ptr()) };
+        }
+    }
+
+    /// # Safety
+    /// `event_source` must remain valid for the duration of the registration.
+    #[inline(always)]
+    pub unsafe fn prepend_to_source(&self, event_source: *mut BSTEventSource<T>) {
+        if let Some(event_source) = unsafe { event_source.as_mut() } {
+            unsafe { event_source.prepend_event_sink(self.as_ptr()) };
+        }
+    }
+
+    /// # Safety
+    /// `event_source` must remain valid for the duration of the removal call.
+    #[inline(always)]
+    pub unsafe fn remove_from_source(&self, event_source: *mut BSTEventSource<T>) {
+        if let Some(event_source) = unsafe { event_source.as_mut() } {
+            unsafe { event_source.remove_event_sink(self.as_ptr()) };
+        }
+    }
+}
+
+impl<T, H> Drop for OwnedBSTEventSink<T, H> {
+    fn drop(&mut self) {
+        unsafe {
+            crate::ffi::commonlib_bst_event_sink_destroy(self.raw.as_ptr().cast::<c_void>());
+        }
+    }
+}
+
+impl<T, H> AsRef<BSTEventSink<T>> for OwnedBSTEventSink<T, H> {
+    #[inline(always)]
+    fn as_ref(&self) -> &BSTEventSink<T> {
+        unsafe { self.raw.as_ref() }
+    }
+}
+
+impl<T, H> AsMut<BSTEventSink<T>> for OwnedBSTEventSink<T, H> {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut BSTEventSink<T> {
+        unsafe { self.raw.as_mut() }
+    }
+}
+
+unsafe extern "C" fn bridge_event_sink_process<T, H>(
+    ctx: *mut c_void,
+    event: *const c_void,
+    event_source: *mut c_void,
+) -> i32
+where
+    H: BSTEventHandler<T>,
+{
+    let handler = unsafe { &mut *ctx.cast::<H>() };
+    handler.process_event(event.cast::<T>(), event_source.cast::<BSTEventSource<T>>()) as i32
+}
+
+unsafe extern "C" fn bridge_event_sink_destroy<H>(ctx: *mut c_void) {
+    if !ctx.is_null() {
+        unsafe {
+            drop(Box::from_raw(ctx.cast::<H>()));
+        }
     }
 }
 
@@ -323,6 +451,8 @@ fn remove_sink<T>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use alloc::rc::Rc;
+    use core::cell::Cell;
 
     #[test]
     fn add_prepend_remove_keep_expected_order() {
@@ -346,6 +476,49 @@ mod tests {
 
         let sinks = unsafe { source.sinks.as_slice() };
         assert_eq!(sinks, &[c, b]);
+    }
+
+    struct CountingHandler {
+        seen: Rc<Cell<usize>>,
+        last: Rc<Cell<i32>>,
+    }
+
+    impl BSTEventHandler<i32> for CountingHandler {
+        fn process_event(
+            &mut self,
+            event: *const i32,
+            _event_source: *mut BSTEventSource<i32>,
+        ) -> BSEventNotifyControl {
+            let value = unsafe { *event };
+            self.seen.set(self.seen.get() + 1);
+            self.last.set(value);
+            BSEventNotifyControl::Continue
+        }
+    }
+
+    #[test]
+    fn bridge_backed_sink_receives_event() {
+        let seen = Rc::new(Cell::new(0usize));
+        let last = Rc::new(Cell::new(0i32));
+        let sink = OwnedBSTEventSink::new(CountingHandler {
+            seen: Rc::clone(&seen),
+            last: Rc::clone(&last),
+        })
+        .expect("bridge-backed sink should be created");
+
+        let mut source = BSTEventSource::<i32>::new();
+        unsafe {
+            sink.add_to_source(&mut source);
+        }
+
+        let event = 42i32;
+        unsafe {
+            source.send_event(&event);
+            sink.remove_from_source(&mut source);
+        }
+
+        assert_eq!(seen.get(), 1);
+        assert_eq!(last.get(), 42);
     }
 }
 

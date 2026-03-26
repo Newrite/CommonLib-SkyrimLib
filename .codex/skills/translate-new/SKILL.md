@@ -40,6 +40,9 @@ The `.cpp` is required whenever it exists. Extract all of the following:
 - visitor or functor call sites, including whether the code uses
   `std::function`, stack-local adapter objects, or passes a visitor across API
   boundaries
+- smart-pointer ownership and construction surfaces such as `make_hkref`,
+  `make_nismart`, `make_smart`, smart-pointer out-params, attach/adopt helpers,
+  and delete/destructor behavior that constrains Rust-side ownership helpers
 
 ## Dependency Rules
 
@@ -48,11 +51,20 @@ For each parent or embedded field type:
 - If the Rust type already exists, use it.
 - If the layout is required and the Rust type does not exist, stop and translate
   that dependency first.
+- If only part of the dependency is needed right now, create the matching Rust
+  file for that dependency and place a minimal source-backed partial
+  translation there. Keep the real C++ type name; do not invent a
+  consumer-local `*View` stand-in for a named external RE type.
 - If the type is pointer-only or reference-only, an `abstract_type!` stub is
   acceptable.
 - If the dependency comes from `CommonLibVR/include/REX/**` and is source-backed
   for the RE translation, place it under `libskyrim/src/rex/*.rs` and import it
   from `crate::rex`.
+- If the translated type needs a source-backed smart-pointer construction path,
+  prefer the shared ABI-safe bridge pattern in `libskyrim/cpp/src/bridge.cpp`
+  and `libskyrim/src/ffi.rs`, then construct the Rust smart pointer through
+  `hkRefPtr::try_construct_with(...)`, `NiPointer::try_construct_with(...)`, or
+  `BSTSmartPointer::try_construct_with(...)`.
 
 Never replace a named parent or mixin with `[u8; N]`.
 
@@ -74,6 +86,11 @@ Write files in this order:
    - `relocation_variable!` for globals/singletons
    - non-public helpers from `.cpp`
 9. extension trait if the type is a reusable virtual mixin
+
+If an honest blocker remains, do not use `todo!()` or `unimplemented!()`.
+Instead, leave a source-backed `// TODO:` comment at the exact compromise site
+that names the current stand-in, the missing prerequisite, and the intended end
+state.
 
 Do not hand-maintain `libskyrim/src/re/mod.rs` if the generator script is
 available. Regenerate it.
@@ -101,6 +118,10 @@ Do not use `VariantID::new(se, ae, 0)` for relocated methods.
 - If the method mixes runtime branching with only part of the body forwarding to
   a vtable slot, write a normal Rust method and use `relocate_virtual!` inside
   the relevant branch.
+- If the type needs moved base/mixin accessors, use
+  `runtime_cast_accessor!` / `runtime_cast_mut_accessor!` or the matching
+  shared runtime accessor macros. Do not invent local helpers such as
+  `moved_base_ref` / `moved_base_mut`.
 
 ## Visitor Rules
 

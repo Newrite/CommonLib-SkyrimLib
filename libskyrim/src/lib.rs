@@ -7,18 +7,17 @@
 #![no_std]
 extern crate alloc;
 
-#[macro_use]
-pub mod log;
 pub mod ffi;
 pub mod ini;
 pub mod offsets;
 pub mod re;
 pub mod relocation;
 pub mod rex;
+pub mod skse;
+pub use crate::skse::log;
 
 // Наши новые модули
 pub mod runtime;
-pub mod skse64;
 pub mod version;
 
 // Needed for macros
@@ -32,7 +31,7 @@ use core::panic::PanicInfo;
 use core_util::RacyCell; // Подтягиваем наш тип версий
 
 // Подтягиваем интерфейсы из модуля skse64
-use crate::skse64::plugin_api::{PluginInfo, SkseInterface, SksePluginVersionData};
+use crate::skse::{PluginInfo, SkseInterface, SksePluginVersionData};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Core plugin loader
@@ -134,7 +133,7 @@ pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const SkseInterface) -> boo
     }
 
     unsafe {
-        crate::ffi::init_commonlib(skse as *const core::ffi::c_void);
+        crate::skse::init(skse);
     }
 
     let skse = unsafe { &*skse };
@@ -213,7 +212,10 @@ pub mod plugin_api {
     use alloc::vec::Vec;
     use core::ffi::c_char;
 
-    pub use crate::skse64::plugin_api::*;
+    pub use crate::skse::{
+        InterfaceId, Message, MessageCallback, PluginHandle, PluginInfo, SkseInterface,
+        SkseMessagingInterface, SksePluginVersionData,
+    };
     use crate::version::Version;
     use core_util::{Later, RacyCell};
 

@@ -1,0 +1,216 @@
+#![allow(non_camel_case_types)]
+
+use core_util::EnumSet;
+
+use crate::offsets::offsets_rtti::RTTI_InputEvent;
+use crate::offsets::offsets_vtable::VTABLE_InputEvent;
+use crate::re::{
+    BSFixedString, ButtonEvent, CharEvent, IDEvent, INPUT_DEVICE, MouseMoveEvent, ThumbstickEvent,
+};
+use crate::relocation::{RttiType, VariantID};
+
+/// C++ `RE::INPUT_EVENT_TYPE`
+#[repr(u32)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum INPUT_EVENT_TYPE {
+    kButton = 0,
+    kMouseMove = 1,
+    kChar = 2,
+    kThumbstick = 3,
+    kDeviceConnect = 4,
+    kKinect = 5,
+}
+
+core_util::impl_enumset_type!(INPUT_EVENT_TYPE => u32);
+
+/// C++ `RE::InputEvent`
+#[repr(C)]
+pub struct InputEvent {
+    pub vtable: *const usize,                       // 00
+    pub device: EnumSet<INPUT_DEVICE, u32>,         // 08
+    pub event_type: EnumSet<INPUT_EVENT_TYPE, u32>, // 0C
+    pub next: *mut InputEvent,                      // 10
+}
+
+const _: () = assert!(core::mem::size_of::<InputEvent>() == 0x18);
+const _: () = assert!(core::mem::offset_of!(InputEvent, device) == 0x08);
+const _: () = assert!(core::mem::offset_of!(InputEvent, event_type) == 0x0C);
+const _: () = assert!(core::mem::offset_of!(InputEvent, next) == 0x10);
+
+impl RttiType for InputEvent {
+    const RTTI: VariantID = RTTI_InputEvent;
+}
+
+impl InputEvent {
+    pub const RTTI: VariantID = RTTI_InputEvent;
+    pub const VTABLE: &'static [VariantID] = &VTABLE_InputEvent;
+
+    crate::virtual_method! {
+        pub const VFUNC_HAS_ID_CODE: usize = 0x01;
+        pub fn has_id_code() -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_Q_USER_EVENT: usize = 0x02;
+        pub fn q_user_event() -> *const BSFixedString
+    }
+
+    #[inline(always)]
+    pub fn get_event_type(&self) -> INPUT_EVENT_TYPE {
+        unsafe { core::mem::transmute(self.event_type.underlying()) }
+    }
+
+    #[inline(always)]
+    pub fn get_device(&self) -> INPUT_DEVICE {
+        unsafe { core::mem::transmute(self.device.underlying() as i32) }
+    }
+
+    #[inline(always)]
+    pub fn as_button_event(&self) -> Option<&ButtonEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kButton)
+            .then(|| unsafe { &*(self as *const Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_button_event_mut(&mut self) -> Option<&mut ButtonEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kButton)
+            .then(|| unsafe { &mut *(self as *mut Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_char_event(&self) -> Option<&CharEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kChar)
+            .then(|| unsafe { &*(self as *const Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_char_event_mut(&mut self) -> Option<&mut CharEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kChar)
+            .then(|| unsafe { &mut *(self as *mut Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_id_event(&self) -> Option<&IDEvent> {
+        self.has_id_code()
+            .then(|| unsafe { &*(self as *const Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_id_event_mut(&mut self) -> Option<&mut IDEvent> {
+        self.has_id_code()
+            .then(|| unsafe { &mut *(self as *mut Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_mouse_move_event(&self) -> Option<&MouseMoveEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kMouseMove)
+            .then(|| unsafe { &*(self as *const Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_mouse_move_event_mut(&mut self) -> Option<&mut MouseMoveEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kMouseMove)
+            .then(|| unsafe { &mut *(self as *mut Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_thumbstick_event(&self) -> Option<&ThumbstickEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kThumbstick)
+            .then(|| unsafe { &*(self as *const Self).cast() })
+    }
+
+    #[inline(always)]
+    pub fn as_thumbstick_event_mut(&mut self) -> Option<&mut ThumbstickEvent> {
+        (self.get_event_type() == INPUT_EVENT_TYPE::kThumbstick)
+            .then(|| unsafe { &mut *(self as *mut Self).cast() })
+    }
+}
+
+pub trait InputEventExt {
+    fn has_id_code(&self) -> bool;
+    fn q_user_event(&self) -> *const BSFixedString;
+    fn get_event_type(&self) -> INPUT_EVENT_TYPE;
+    fn get_device(&self) -> INPUT_DEVICE;
+    fn as_button_event(&self) -> Option<&ButtonEvent>;
+    fn as_button_event_mut(&mut self) -> Option<&mut ButtonEvent>;
+    fn as_char_event(&self) -> Option<&CharEvent>;
+    fn as_char_event_mut(&mut self) -> Option<&mut CharEvent>;
+    fn as_id_event(&self) -> Option<&IDEvent>;
+    fn as_id_event_mut(&mut self) -> Option<&mut IDEvent>;
+    fn as_mouse_move_event(&self) -> Option<&MouseMoveEvent>;
+    fn as_mouse_move_event_mut(&mut self) -> Option<&mut MouseMoveEvent>;
+    fn as_thumbstick_event(&self) -> Option<&ThumbstickEvent>;
+    fn as_thumbstick_event_mut(&mut self) -> Option<&mut ThumbstickEvent>;
+}
+
+impl<T: AsRef<InputEvent> + AsMut<InputEvent>> InputEventExt for T {
+    #[inline(always)]
+    fn has_id_code(&self) -> bool {
+        InputEvent::has_id_code(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn q_user_event(&self) -> *const BSFixedString {
+        InputEvent::q_user_event(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_event_type(&self) -> INPUT_EVENT_TYPE {
+        InputEvent::get_event_type(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_device(&self) -> INPUT_DEVICE {
+        InputEvent::get_device(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn as_button_event(&self) -> Option<&ButtonEvent> {
+        InputEvent::as_button_event(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn as_button_event_mut(&mut self) -> Option<&mut ButtonEvent> {
+        InputEvent::as_button_event_mut(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn as_char_event(&self) -> Option<&CharEvent> {
+        InputEvent::as_char_event(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn as_char_event_mut(&mut self) -> Option<&mut CharEvent> {
+        InputEvent::as_char_event_mut(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn as_id_event(&self) -> Option<&IDEvent> {
+        InputEvent::as_id_event(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn as_id_event_mut(&mut self) -> Option<&mut IDEvent> {
+        InputEvent::as_id_event_mut(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn as_mouse_move_event(&self) -> Option<&MouseMoveEvent> {
+        InputEvent::as_mouse_move_event(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn as_mouse_move_event_mut(&mut self) -> Option<&mut MouseMoveEvent> {
+        InputEvent::as_mouse_move_event_mut(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn as_thumbstick_event(&self) -> Option<&ThumbstickEvent> {
+        InputEvent::as_thumbstick_event(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn as_thumbstick_event_mut(&mut self) -> Option<&mut ThumbstickEvent> {
+        InputEvent::as_thumbstick_event_mut(self.as_mut())
+    }
+}

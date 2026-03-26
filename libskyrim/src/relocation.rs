@@ -663,6 +663,21 @@ macro_rules! define_call_hook {
 macro_rules! virtual_method {
     (
         $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
+        $fn_vis:vis fn $func_name:ident(&self $(, $arg_name:ident: $arg_ty:ty)*) $(-> $ret:ty)?
+    ) => {
+        $const_vis const $const_name: $const_ty = $const_expr;
+
+        #[inline(always)]
+        $fn_vis fn $func_name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            let func: extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)? = unsafe {
+                $crate::relocation::virtual_function(self as *const Self, Self::$const_name)
+            };
+            func(self $(, $arg_name)*)
+        }
+    };
+
+    (
+        $const_vis:vis const $const_name:ident: $const_ty:ty = $const_expr:expr;
         $fn_vis:vis fn $func_name:ident(&mut self $(, $arg_name:ident: $arg_ty:ty)*) $(-> $ret:ty)?
     ) => {
         $const_vis const $const_name: $const_ty = $const_expr;
@@ -744,6 +759,19 @@ macro_rules! relocation_variable {
         }
     };
 
+    (@no_inline $vis:vis fn $name:ident() -> &'static mut $ty:ty => $id:expr ) => {
+        $vis fn $name() -> &'static mut $ty {
+            $crate::relocation_variable!(@body_mut $ty, $id)
+        }
+    };
+
+    ( $vis:vis fn $name:ident() -> &'static mut $ty:ty => $id:expr ) => {
+        #[inline]
+        $vis fn $name() -> &'static mut $ty {
+            $crate::relocation_variable!(@body_mut $ty, $id)
+        }
+    };
+
     ( @no_inline $vis:vis fn $name:ident() -> *mut $ty:ty => $id:expr, is_ptr ) => {
         $vis fn $name() -> *mut $ty {
             $crate::relocation_variable!(@body_ptr $ty, $id)
@@ -760,6 +788,11 @@ macro_rules! relocation_variable {
     (@body $ty:ty, $id:expr) => {{
         let relocation = $crate::relocation::Relocation::<$ty>::new($id);
         unsafe { &*relocation.as_ptr() }
+    }};
+
+    (@body_mut $ty:ty, $id:expr) => {{
+        let relocation = $crate::relocation::Relocation::<$ty>::new($id);
+        unsafe { &mut *(relocation.as_ptr() as *mut $ty) }
     }};
 
     (@body_ptr $ty:ty, $id:expr) => {{
@@ -829,6 +862,11 @@ mod tests {
 
     impl<T> GenericVirtual<T> {
         crate::virtual_method! {
+            pub const VFUNC_VIRTUAL_CONST_ECHO: usize = 0x00;
+            pub fn virtual_const_echo(&self, value: Option<T>) -> Option<T>
+        }
+
+        crate::virtual_method! {
             pub const VFUNC_VIRTUAL_ECHO: usize = 0x00;
             pub fn virtual_echo(value: Option<T>) -> Option<T>
         }
@@ -846,9 +884,12 @@ mod tests {
 
     #[test]
     fn virtual_macros_support_generic_impl_types() {
+        let _ = GenericVirtual::<u32>::VFUNC_VIRTUAL_CONST_ECHO;
         let _ = GenericVirtual::<u32>::VFUNC_VIRTUAL_ECHO;
         let _ = GenericVirtual::<u32>::VFUNC_RELOCATED_ECHO;
         let _ = GenericVirtual::<u32>::VFUNC_RELOCATED_ECHO_MUT;
+        let _ = GenericVirtual::<u32>::virtual_const_echo
+            as fn(&GenericVirtual<u32>, Option<u32>) -> Option<u32>;
         let _ = GenericVirtual::<u32>::virtual_echo
             as fn(&GenericVirtual<u32>, Option<u32>) -> Option<u32>;
         let _ = GenericVirtual::<u32>::relocated_echo

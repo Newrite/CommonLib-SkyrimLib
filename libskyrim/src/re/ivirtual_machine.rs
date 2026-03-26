@@ -22,6 +22,8 @@ use crate::re::error_logger::{ErrorLogger, Severity};
 use crate::re::i_object_handle_policy::IObjectHandlePolicy;
 use crate::re::i_save_patcher_interface::ISavePatcherInterface;
 use crate::re::i_stack_callback_functor::IStackCallbackFunctor;
+use crate::re::log_event::LogEvent;
+use crate::re::stats_event::StatsEvent;
 use crate::re::tes_form::TESForm;
 use crate::re::type_info::{RawType, TypeInfo};
 use crate::re::variable::Variable;
@@ -33,8 +35,6 @@ core_util::abstract_type! {
     pub type IFunction;
     pub type IFunctionArguments;
     pub type ITypeLinkedCallback;
-    pub type LogEvent;
-    pub type StatsEvent;
 }
 
 /// C++ `RE::BSScript::IVirtualMachine::Awaitable::CallbackFunctor`

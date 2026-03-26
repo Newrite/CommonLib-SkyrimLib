@@ -137,6 +137,9 @@ pub fn should_validate_layout(expected: usize) -> bool {
 
 #[macro_export]
 macro_rules! runtime_offset {
+    (offset: $offset:expr $(,)?) => {
+        $crate::relocation::IntoOffset::into_offset($offset)
+    };
     (se_ae: $se_ae:expr, vr: $vr:expr $(,)?) => {
         $crate::runtime::relocate_all($se_ae, $se_ae, $vr)
     };
@@ -152,6 +155,53 @@ macro_rules! runtime_offset {
     (version: $version:expr, se: $se:expr, ae: $ae:expr, vr: $vr:expr $(,)?) => {
         $crate::runtime::relocate_versioned_all($version, $se, $ae, $vr)
     };
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::relocation::VariantOffset;
+
+    struct RuntimeAccessorMacroDummy {
+        _value: u32,
+    }
+
+    impl RuntimeAccessorMacroDummy {
+        const VALUE_OFFSET: VariantOffset = VariantOffset::new(0x0, 0x0, 0x0);
+
+        crate::runtime_data_accessor! {
+            fn value_ref() -> u32 {
+                offset: Self::VALUE_OFFSET
+            }
+        }
+
+        crate::runtime_data_mut_accessor! {
+            fn value_mut() -> u32 {
+                offset: Self::VALUE_OFFSET
+            }
+        }
+
+        crate::runtime_cast_accessor! {
+            fn value_cast() -> u32 {
+                offset: Self::VALUE_OFFSET
+            }
+        }
+
+        crate::runtime_cast_mut_accessor! {
+            fn value_cast_mut() -> u32 {
+                offset: Self::VALUE_OFFSET
+            }
+        }
+    }
+
+    #[test]
+    fn runtime_accessor_macros_support_predeclared_variant_offsets() {
+        let _ = RuntimeAccessorMacroDummy::value_ref as fn(&RuntimeAccessorMacroDummy) -> &u32;
+        let _ =
+            RuntimeAccessorMacroDummy::value_mut as fn(&mut RuntimeAccessorMacroDummy) -> &mut u32;
+        let _ = RuntimeAccessorMacroDummy::value_cast as fn(&RuntimeAccessorMacroDummy) -> &u32;
+        let _ = RuntimeAccessorMacroDummy::value_cast_mut
+            as fn(&mut RuntimeAccessorMacroDummy) -> &mut u32;
+    }
 }
 
 #[macro_export]

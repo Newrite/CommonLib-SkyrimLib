@@ -1,5 +1,6 @@
 use crate::offsets::offsets_rtti::RTTI_NiRefObject;
 use crate::offsets::offsets_vtable::VTABLE_NiRefObject;
+use crate::re::NiPointer;
 use crate::relocation::{RelocationID, RttiType, VariantID};
 use crate::{relocation_variable, virtual_method};
 use core::sync::atomic::{AtomicU32, Ordering};
@@ -20,6 +21,16 @@ impl RttiType for NiRefObject {
 impl NiRefObject {
     pub const RTTI: VariantID = RTTI_NiRefObject;
     pub const VTABLE: &'static [VariantID] = &VTABLE_NiRefObject;
+
+    /// Rust-side helper for header-level `make_nismart<NiRefObject>()`.
+    #[inline(always)]
+    pub fn make_ptr() -> Option<NiPointer<Self>> {
+        unsafe {
+            NiPointer::<Self>::try_construct_with(|out: *mut NiPointer<Self>| {
+                crate::ffi::commonlib_make_nismart_ni_ref_object(out.cast())
+            })
+        }
+    }
 
     virtual_method! {
         pub const VFUNC_DELETE_THIS: usize = 0x01;

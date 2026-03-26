@@ -7,11 +7,10 @@ use crate::offsets::offsets_rtti::RTTI_TESObjectCELL;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectCELL;
 use crate::re::bs_atomic::{BSSpinLock, BSSpinLockGuard};
 use crate::re::bs_container::BSContainerForEachResult;
-use crate::re::bs_intrusive_ref_counted::BSIntrusiveRefCounted;
 use crate::re::bssimple_list::BSSimpleList;
 use crate::re::bst_array::BSTArray;
 use crate::re::bst_hash_map::BSTSet;
-use crate::re::bst_smart_pointer::{BSTSmartPointer, BSTSmartPointerIntrusiveRefCountable};
+use crate::re::bst_smart_pointer::BSTSmartPointer;
 use crate::re::extra_data_list::ExtraDataList;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
@@ -22,65 +21,12 @@ use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::ni_t_map::NiTMap;
 use crate::re::{
     BGSEncounterZone, BGSLightingTemplate, BGSLocation, BSPortalGraph, BSTempEffectParticle, Color,
-    ExtraNorthRotation, INTERIOR_DATA, ObjectRefHandle, TESFaction, TESForm, TESFullName, TESNPC,
-    TESObjectREFR, TESRegionList, TESWorldSpace, bhkWorld,
+    ExtraNorthRotation, INTERIOR_DATA, NavMesh, ObjectRefHandle, TESFaction, TESForm, TESFullName,
+    TESNPC, TESObjectLAND, TESObjectREFR, TESRegionList, TESWorldSpace, bhkWorld,
 };
-use crate::relocation::{RelocationID, RttiType, VariantID};
-use crate::version::RUNTIME_SSE_1_6_629;
+use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset};
 
 crate::core_util::abstract_type! { type BGSWaterUpdateI; }
-crate::core_util::abstract_type! { type NavMesh; }
-crate::core_util::abstract_type! { type TESObjectLAND; }
-
-#[repr(C)]
-struct NavMeshRefCountView {
-    pad00: [u8; 0x28],
-    base: BSIntrusiveRefCounted,
-}
-
-const _: () = assert!(core::mem::size_of::<NavMeshRefCountView>() == 0x2C);
-const _: () = assert!(core::mem::offset_of!(NavMeshRefCountView, base) == 0x28);
-
-impl BSTSmartPointerIntrusiveRefCountable for NavMesh {
-    #[inline(always)]
-    fn bst_inc_ref(&self) {
-        unsafe {
-            (&*(self as *const Self as *const NavMeshRefCountView))
-                .base
-                .inc_ref()
-        };
-    }
-
-    #[inline(always)]
-    fn bst_dec_ref(&self) -> u32 {
-        unsafe {
-            (&*(self as *const Self as *const NavMeshRefCountView))
-                .base
-                .dec_ref()
-        }
-    }
-
-    #[inline(always)]
-    unsafe fn bst_delete(&self) {
-        self.dtor();
-    }
-}
-
-impl NavMesh {
-    crate::virtual_method! {
-        const VFUNC_DTOR: usize = 0x00;
-        fn dtor()
-    }
-}
-
-#[repr(C)]
-struct TESObjectREFRPositionView {
-    pad00: [u8; 0x54],
-    position: NiPoint3,
-}
-
-const _: () = assert!(core::mem::size_of::<TESObjectREFRPositionView>() == 0x60);
-const _: () = assert!(core::mem::offset_of!(TESObjectREFRPositionView, position) == 0x54);
 
 /// C++ `RE::BGSTerrainVisibilityData`
 #[repr(C)]
@@ -133,8 +79,8 @@ const _: () = assert!(core::mem::offset_of!(EXTERIOR_DATA, pad24) == 0x24);
 
 /// C++ `RE::TESObjectCELL::NavMeshArray`
 #[repr(C)]
-struct NavMeshArray {
-    nav_meshes: BSTArray<BSTSmartPointer<NavMesh>>, // 00
+pub struct NavMeshArray {
+    pub nav_meshes: BSTArray<BSTSmartPointer<NavMesh>>, // 00
 }
 
 const _: () = assert!(core::mem::size_of::<NavMeshArray>() == 0x18);
@@ -316,10 +262,9 @@ pub struct TESObjectCELL {
     pub cell_detached: bool,                         // 046
     pub pad047: u8,                                  // 047
     pub extra_list: ExtraDataList,                   // 048
-    pub pad58: [u8; 0x08],                           // 058
 }
 
-const _: () = assert!(core::mem::size_of::<TESObjectCELL>() == 0x60);
+const _: () = assert!(core::mem::size_of::<TESObjectCELL>() == 0x58);
 const _: () = assert!(core::mem::offset_of!(TESObjectCELL, full_name) == 0x020);
 const _: () = assert!(core::mem::offset_of!(TESObjectCELL, grass_create_lock) == 0x030);
 const _: () = assert!(core::mem::offset_of!(TESObjectCELL, grass_task_lock) == 0x038);
@@ -330,7 +275,6 @@ const _: () = assert!(core::mem::offset_of!(TESObjectCELL, auto_water_loaded) ==
 const _: () = assert!(core::mem::offset_of!(TESObjectCELL, cell_detached) == 0x046);
 const _: () = assert!(core::mem::offset_of!(TESObjectCELL, pad047) == 0x047);
 const _: () = assert!(core::mem::offset_of!(TESObjectCELL, extra_list) == 0x048);
-const _: () = assert!(core::mem::offset_of!(TESObjectCELL, pad58) == 0x058);
 
 impl RttiType for TESObjectCELL {
     const RTTI: VariantID = RTTI_TESObjectCELL;
@@ -347,6 +291,7 @@ impl TESObjectCELL {
     pub const RTTI: VariantID = RTTI_TESObjectCELL;
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESObjectCELL;
     pub const FORMTYPE: FormType = FormType::Cell;
+    pub const RUNTIME_DATA_OFFSET: VariantOffset = VariantOffset::new(0x60, 0x68, 0x60);
 
     // override (TESForm)
     // void        ClearData() override;                                                                               // 05
@@ -368,16 +313,23 @@ impl TESObjectCELL {
 
     crate::runtime_data_ptr_accessor! {
         fn runtime_data_ptr() -> TESObjectCELLRuntimeData {
-            version: RUNTIME_SSE_1_6_629,
-            se: 0x60,
-            ae: 0x68,
-            vr: 0x60
+            offset: Self::RUNTIME_DATA_OFFSET
         }
     }
 
     #[inline(always)]
     fn get_runtime_data(&self) -> &TESObjectCELLRuntimeData {
         unsafe { &*self.runtime_data_ptr() }
+    }
+
+    #[inline(always)]
+    pub(crate) fn world_space_raw(&self) -> *mut TESWorldSpace {
+        self.get_runtime_data().world_space
+    }
+
+    #[inline(always)]
+    pub(crate) fn nav_meshes_raw(&self) -> *mut NavMeshArray {
+        self.get_runtime_data().nav_meshes
     }
 
     crate::relocation_func! {
@@ -479,12 +431,7 @@ impl TESObjectCELL {
 
     pub fn get_north_rotation(&self) -> f32 {
         if self.is_exterior_cell() {
-            let world_space = self.get_runtime_data().world_space;
-            if world_space.is_null() {
-                0.0
-            } else {
-                unsafe { (*world_space).north_rotation }
-            }
+            unsafe { (*self.get_runtime_data().world_space).north_rotation }
         } else {
             let x_north = self.extra_list.get_by_type_typed::<ExtraNorthRotation>();
             if x_north.is_null() {
@@ -530,7 +477,7 @@ impl TESObjectCELL {
         if self.cell_flags.none(TESObjectCELLFlag::HasWater)
             || self.cell_flags.any(TESObjectCELLFlag::IsInteriorCell)
         {
-            return -f32::MAX;
+            return -f32::INFINITY;
         }
 
         if runtime_data.water_height < 2_147_483_600.0 {
@@ -539,7 +486,7 @@ impl TESObjectCELL {
 
         let world_space = runtime_data.world_space;
         if world_space.is_null() {
-            -f32::MAX
+            -f32::INFINITY
         } else {
             unsafe { (*world_space).get_default_water_height() }
         }
@@ -636,6 +583,6 @@ impl TESObjectCELL {
 
     #[inline(always)]
     fn reference_position(reference: *mut TESObjectREFR) -> NiPoint3 {
-        unsafe { (*(reference.cast::<TESObjectREFRPositionView>())).position }
+        unsafe { (*reference).get_position() }
     }
 }

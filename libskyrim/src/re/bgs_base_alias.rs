@@ -11,4 +11,5 @@ impl RttiType for BGSBaseAlias {
 impl BGSBaseAlias {
     pub const RTTI: VariantID = RTTI_BGSBaseAlias;
     pub const VTABLE: &'static [VariantID] = &VTABLE_BGSBaseAlias;
+    pub const VM_TYPE_ID: crate::re::VMTypeID = 139;
 }

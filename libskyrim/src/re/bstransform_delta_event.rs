@@ -1,0 +1,3 @@
+crate::core_util::abstract_type! {
+    pub type BSTransformDeltaEvent;
+}

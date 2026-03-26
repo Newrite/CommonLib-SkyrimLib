@@ -1,5 +1,6 @@
 use core::sync::atomic::{AtomicI32, Ordering};
 
+use crate::re::NiRef;
 use crate::re::bs_pointer_handle::ActorHandle;
 use crate::re::ni_point3::NiPoint3;
 
@@ -44,5 +45,17 @@ impl ActorCause {
     #[inline]
     pub fn get_ref_count(&self) -> i32 {
         self.ref_count.load(Ordering::SeqCst)
+    }
+}
+
+impl NiRef for ActorCause {
+    #[inline(always)]
+    fn inc_ref(&self) {
+        let _ = self.inc_ref_count();
+    }
+
+    #[inline(always)]
+    fn dec_ref(&self) {
+        let _ = self.dec_ref_count();
     }
 }

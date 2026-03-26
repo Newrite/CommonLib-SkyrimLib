@@ -1,5 +1,6 @@
 /// C++ `RE::AITimeStamp`
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct AITimeStamp {
     pub time_stamp: f32, // 00
 }

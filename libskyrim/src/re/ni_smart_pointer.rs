@@ -35,6 +35,15 @@ impl<T: NiRef> NiPointer<T> {
         }
     }
 
+    /// Constructs a C++ `NiPointer<T>` directly into out storage owned by Rust.
+    ///
+    /// This is intended for ABI-safe bridges that materialize the smart pointer on the
+    /// C++ side, such as `make_nismart<T>(...)` wrappers.
+    #[inline(always)]
+    pub unsafe fn try_construct_with(construct: impl FnOnce(*mut Self) -> bool) -> Option<Self> {
+        unsafe { crate::ffi::try_construct_out_param(construct) }
+    }
+
     /// Creates a new `NiPointer` from a raw pointer, incrementing the refcount.
     /// Matches C++ `NiPointer(T* a_rhs)` which calls `TryAttach`.
     ///

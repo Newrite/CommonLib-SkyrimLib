@@ -39,6 +39,20 @@ not only the layout-critical fields and methods. This includes nested enums,
 named index layers for arrays, totals/default constants, nested helper types,
 and private/source-only helpers that belong to the same translated type.
 
+When CommonLib constructs smart pointers on the C++ side, such as
+`make_hkref<T>()`, `make_nismart<T>()`, `make_smart<T>()`, or helper functions
+that fill smart-pointer out-params, prefer the ABI-safe bridge pattern through
+`libskyrim/cpp/src/bridge.cpp`, `libskyrim/src/ffi.rs`, and the Rust-side
+`try_construct_with(...)` helpers on `hkRefPtr`, `NiPointer`, and
+`BSTSmartPointer`. Do not fake nontrivial C++ construction with raw Rust
+allocation alone.
+
+Do not use executable placeholders such as `todo!()` or `unimplemented!()` in
+translated RE code. If a translation keeps an honest compromise such as a raw
+pointer stand-in, opaque stub, missing helper, or skipped factory/delete path,
+leave a source-backed `// TODO:` comment at the exact site describing the
+current compromise, the missing prerequisite, and the intended end state.
+
 Treat `rex` as "RE Extensions": a home for shared extension/support types used
 by RE translations, not as a wholesale mirror of the Windows SDK.
 
@@ -55,6 +69,12 @@ by default. In the cross-runtime `libskyrim` layer, prefer:
   backed by `REL::RelocateVirtual(...)`
 - ordinary Rust wrapper methods with runtime branching when flat runtimes call a
   vtable slot but VR uses a custom shim implementation
+
+For moved mixin/base accessors, prefer the shared runtime accessor macros such
+as `runtime_cast_accessor!` / `runtime_cast_mut_accessor!` and
+`runtime_data_accessor!`. Do not add local helper methods like
+`moved_base_ref` / `moved_base_mut` when the macro layer can express the same
+surface; if it cannot, extend the shared macro layer in `libskyrim/src/runtime.rs`.
 
 For visitor-style APIs:
 

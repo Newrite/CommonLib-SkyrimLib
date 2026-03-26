@@ -34,14 +34,21 @@ Audit the requested translation and compare it to CommonLibVR.
   `MagicCaster::PostCreationCallback : MagicTarget::IPostCreationModification`
 - event category: fixed event base, runtime-varying event base, or raw sink
   pointer-only API
+- whether the file uses local moved-base helpers that should be replaced with
+  `runtime_cast_accessor!` / `runtime_cast_mut_accessor!` or other shared
+  runtime accessors
 - override comment coverage
 - `.cpp` relocated methods
 - `RelocationID` vs `VariantID` usage
+- smart-pointer ownership / factory surface, including whether a raw-pointer
+  stand-in should now be a real `NiPointer`, `BSTSmartPointer`, or `hkRefPtr`
+  and whether a source-backed out-param bridge or factory helper is missing
 - `ID` / `Offset` usage
 - runtime-data accessor opportunities
 - `BSContainerForEachResult` unification opportunities for Rust-side sync traversal
 - extension-trait needs for reusable mixins
-- stale TODOs, placeholders, or compatibility hacks
+- stale, missing, or inaccurate source-backed `// TODO:` comments, placeholders,
+  or compatibility hacks
 
 ## Helper Scripts
 

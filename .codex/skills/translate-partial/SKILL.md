@@ -38,6 +38,10 @@ Check all of these:
 - missing `relocation_func!` or `relocation_variable!`
 - wrong relocation type choice (`RelocationID` vs `VariantID`)
 - wrong handling of `ENABLE_SKYRIM_VR` / `REL::Module::IsVR()` branches
+- wrong raw-pointer or opaque stand-in where a now-supported shared smart
+  pointer layer (`NiPointer`, `BSTSmartPointer`, `hkRefPtr`) should be used
+- missing ABI-safe bridge usage for source-backed smart-pointer construction or
+  out-param helpers
 - wrong visitor strategy: closure wrapper vs raw ABI visitor vs safe sync adapter
 - wrong event strategy: fixed event base vs runtime cast accessor vs raw sink
   pointer-only API
@@ -62,6 +66,14 @@ Check all of these:
 
 - Never replace a named parent or mixin with `[u8; N]`
 - If a dependency is required for layout, translate it first
+- If the file currently uses a consumer-local `*View` or similarly renamed
+  stand-in for a real external CommonLib RE dependency, treat that as a
+  mismatch: move the minimal source-backed partial translation into the
+  dependency's matching Rust file and keep the real C++ type name there.
+- If the file reads runtime-tail fields from another named RE type through local
+  pointer arithmetic, treat that as the same kind of mismatch: move the access
+  behind owner-side helper/accessor methods on the dependency type when the
+  shared runtime macros can express it honestly.
 - If an RE file depends on source-backed types from `CommonLibVR/include/REX/**`,
   translate those support types into `libskyrim/src/rex/*.rs` and import them
   from `crate::rex` instead of keeping local stand-in definitions
@@ -70,6 +82,10 @@ Check all of these:
 - If a branch only changes method implementation and not memory layout, keep one
   Rust type and translate the method as a runtime-aware wrapper instead of
   splitting the struct
+- If the file uses local moved-base helper functions such as `moved_base_ref`
+  / `moved_base_mut` for mixin accessors, treat that as a cleanup target when
+  the shared runtime accessor macros can express the same surface. Prefer
+  extending `libskyrim/src/runtime.rs` over adding another per-file helper.
 
 ## Visitor Rules
 
@@ -100,6 +116,10 @@ Check all of these:
 Preserve correct existing code. Patch narrowly. If a larger refactor is required
 to make the file honest, do it, but keep the resulting structure idiomatic for
 the current `libskyrim` architecture.
+
+If you must leave an honest compromise in place, add a source-backed `// TODO:`
+comment at the exact site. Do not hide the compromise only in the final report,
+and do not use `todo!()` / `unimplemented!()`.
 
 If the task adds or removes `libskyrim/src/re/*.rs` files as part of the fix,
 regenerate `libskyrim/src/re/mod.rs` with `python scripts/generate_re_mod.py`.

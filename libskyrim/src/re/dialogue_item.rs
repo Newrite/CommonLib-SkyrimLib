@@ -7,6 +7,7 @@ use crate::re::bs_fixed_string::BSFixedString;
 use crate::re::bs_intrusive_ref_counted::BSIntrusiveRefCounted;
 use crate::re::bs_string::BSString;
 use crate::re::bssimple_list::{BSSimpleList, BSSimpleListNode};
+use crate::re::bst_smart_pointer::BSTSmartPointerIntrusiveRefCountable;
 use crate::re::emotion_types::EmotionType;
 use crate::re::extra_say_to_topic_info::ExtraSayToTopicInfo;
 use crate::re::tes_idle_form::TESIdleForm;
@@ -59,6 +60,27 @@ const _: () = assert!(core::mem::offset_of!(DialogueItem, speaker) == 0x38);
 const _: () = assert!(core::mem::offset_of!(DialogueItem, extra_data) == 0x40);
 
 inherit!(DialogueItem : BSIntrusiveRefCounted);
+
+impl BSTSmartPointerIntrusiveRefCountable for DialogueItem {
+    #[inline(always)]
+    fn bst_inc_ref(&self) {
+        self.base.inc_ref();
+    }
+
+    #[inline(always)]
+    fn bst_dec_ref(&self) -> u32 {
+        self.base.dec_ref()
+    }
+
+    #[inline(always)]
+    unsafe fn bst_delete(&self) {
+        let this = self as *const Self as *mut Self;
+        unsafe {
+            core::ptr::drop_in_place(this);
+            crate::ffi::commonlib_free(this.cast());
+        }
+    }
+}
 
 impl DialogueItem {
     crate::relocation_func! {

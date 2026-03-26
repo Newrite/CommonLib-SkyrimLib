@@ -218,13 +218,13 @@ impl TESTopicInfo {
 
     #[inline]
     pub fn get_dialogue_data(&self, speaker: *mut TESObjectREFR) -> DialogueItem {
-        let (quest, topic) = if self.parent_topic.is_null() {
-            (core::ptr::null_mut(), core::ptr::null_mut())
-        } else {
-            unsafe { ((*self.parent_topic).owner_quest, self.parent_topic) }
-        };
-
-        DialogueItem::new(quest, topic, self as *const _ as *mut _, speaker)
+        let parent_topic = unsafe { &mut *self.parent_topic };
+        DialogueItem::new(
+            parent_topic.owner_quest,
+            self.parent_topic,
+            self as *const _ as *mut _,
+            speaker,
+        )
     }
 
     crate::relocation_func! {

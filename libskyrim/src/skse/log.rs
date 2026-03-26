@@ -19,7 +19,6 @@ use windows_sys::Win32::System::Threading::{GetCurrentProcess, TerminateProcess}
 use windows_sys::Win32::UI::Shell::{FOLDERID_Documents, SHGetKnownFolderPath};
 use windows_sys::Win32::UI::WindowsAndMessaging::MessageBoxA;
 
-// Импорты для точного времени
 use windows_sys::Win32::Foundation::{FILETIME, SYSTEMTIME};
 use windows_sys::Win32::System::SystemInformation::GetSystemTimePreciseAsFileTime;
 use windows_sys::Win32::System::Time::{FileTimeToSystemTime, SystemTimeToTzSpecificLocalTime};
@@ -91,7 +90,7 @@ pub(crate) fn open() {
 
     buf.write_fmt(format_args!(
         "\\My Games\\{}\\SKSE\\{}.log",
-        (*CURRENT_VERSION).save_folder(), // Разыменовываем Later и вызываем наш метод
+        (*CURRENT_VERSION).save_folder(),
         unsafe {
             CStr::from_ptr(SKSEPlugin_Version.name.as_ptr())
                 .to_str()
@@ -116,23 +115,18 @@ pub fn write(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
     let file_name = file.rsplit('\\').next().unwrap_or(file);
     let file_name = file_name.rsplit('/').next().unwrap_or(file_name);
 
-    // 1. Получаем высокоточное UTC время (FILETIME)
     let mut ft: FILETIME = unsafe { core::mem::zeroed() };
     unsafe { GetSystemTimePreciseAsFileTime(&mut ft) };
 
-    // Микросекунды достаем напрямую из UTC, так как смещение часового пояса не влияет на доли секунд
     let combined = ((ft.dwHighDateTime as u64) << 32) | (ft.dwLowDateTime as u64);
     let microseconds = (combined / 10) % 1_000_000;
 
-    // 2. Конвертируем FILETIME (UTC) в SYSTEMTIME (UTC)
     let mut st_utc: SYSTEMTIME = unsafe { core::mem::zeroed() };
     unsafe { FileTimeToSystemTime(&ft, &mut st_utc) };
 
-    // 3. Конвертируем SYSTEMTIME (UTC) в локальное время (с учетом летнего/зимнего времени)
     let mut st: SYSTEMTIME = unsafe { core::mem::zeroed() };
     unsafe { SystemTimeToTzSpecificLocalTime(core::ptr::null(), &st_utc, &mut st) };
 
-    // Формируем блок [Файл:Строка]
     let loc_str = format!("[{}:{}]", file_name, line);
     let plugin_name = unsafe {
         CStr::from_ptr(SKSEPlugin_Version.name.as_ptr())
@@ -140,7 +134,6 @@ pub fn write(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
             .unwrap_or("Unknown")
     };
 
-    // Идеальное форматирование!
     buf.write_fmt(format_args!(
         "[{}] [{:04}-{:02}-{:02} {:02}:{:02}:{:02}.{:06}] {:<25} ",
         plugin_name,
@@ -210,11 +203,6 @@ pub fn fatal_runtime(args: Arguments<'_>) -> ! {
         core::hint::spin_loop();
     }
 }
-
-// ── МАКРОСЫ ──────────────────────────────────────────────────────────────────
-// Изменил `( $($fmt:expr),* )` на `( $($arg:tt)* )`.
-// Это стандартный синтаксис Rust, который позволяет писать `skse_message!("HP: {}", 100)`.
-// Также они теперь прозрачно пробрасывают текущий файл и строку.
 
 #[macro_export]
 macro_rules! skse_message {

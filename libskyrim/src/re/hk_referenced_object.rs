@@ -3,7 +3,7 @@
 use crate::core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_hkReferencedObject;
 use crate::offsets::offsets_vtable::VTABLE_hkReferencedObject;
-use crate::re::{hkBaseObject, hkClass, hkStatisticsCollector};
+use crate::re::{hkBaseObject, hkClass, hkRefPtr, hkStatisticsCollector};
 use crate::relocation::{RelocationID, RttiType, VariantID};
 use crate::{relocation_func, virtual_method};
 
@@ -55,6 +55,16 @@ impl hkReferencedObject {
     pub const RTTI: VariantID = RTTI_hkReferencedObject;
     pub const VTABLE: &'static [VariantID] = &VTABLE_hkReferencedObject;
     pub const MEM_SIZE: i32 = 0x7FFF;
+
+    /// Rust-side helper for header-level `make_hkref<hkReferencedObject>()`.
+    #[inline(always)]
+    pub fn make_ref() -> Option<hkRefPtr<Self>> {
+        unsafe {
+            hkRefPtr::<Self>::try_construct_with(|out: *mut hkRefPtr<Self>| {
+                crate::ffi::commonlib_make_hkref_hk_referenced_object(out.cast())
+            })
+        }
+    }
 
     // override (hkBaseObject)
     // ~hkReferencedObject() override = default;  // 00

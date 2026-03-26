@@ -1,7 +1,6 @@
-use crate::relocation::RelocationID;
+use crate::relocation::{RelocationID, VariantOffset};
 use core::ffi::c_char;
 use core_util::inherit;
-use windows_sys::Win32::System::LibraryLoader::{GetModuleHandleW, GetProcAddress};
 
 use crate::re::bgs_addon_node::BGSAddonNode;
 use crate::re::bgs_primitive::BGSPrimitive;
@@ -23,7 +22,11 @@ use crate::re::tes_object_refr::TESObjectREFR;
 use crate::re::tes_region_data_manager::TESRegionDataManager;
 use crate::re::tes_region_list::TESRegionList;
 use crate::re::tes_world_space::TESWorldSpace;
-use crate::{runtime_data_accessor, runtime_data_mut_accessor, runtime_pointer_accessor};
+use crate::rex::W32::{GetModuleHandleW, GetProcAddress};
+use crate::{
+    runtime_data_accessor, runtime_data_mut_accessor, runtime_data_ptr_accessor,
+    runtime_pointer_accessor,
+};
 
 /// C++ `RE::TESObjectList`
 #[repr(C)]
@@ -100,6 +103,18 @@ inherit!(TESDataHandler : TESDataHandlerBase);
 static mut VR_COMPILED_FILE_COLLECTION: *mut TESFileCollection = core::ptr::null_mut();
 
 impl TESDataHandler {
+    pub const GEOMETRY_RUNTIME_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0xDA0, 0xDA0, 0x1570);
+    pub const GAME_SETTINGS_LOAD_STATE_OFFSET: VariantOffset =
+        VariantOffset::new(0xDAA, 0xDAA, 0x157A);
+    pub const REGION_DATA_MANAGER_OFFSET: VariantOffset = VariantOffset::new(0xDB0, 0xDB0, 0x1580);
+    pub const MERCHANT_INVENTORY_OFFSET: VariantOffset = VariantOffset::new(0xDB8, 0xDB8, 0x1588);
+    pub const COMPILED_FILE_COLLECTION_OFFSET: VariantOffset =
+        VariantOffset::new(0xD70, 0xD70, 0x0);
+    pub const VR_LOADED_MOD_COUNT_FALLBACK_OFFSET: VariantOffset =
+        VariantOffset::new(0x0, 0x0, 0xD70);
+    pub const VR_LOADED_MODS_FALLBACK_OFFSET: VariantOffset = VariantOffset::new(0x0, 0x0, 0xD78);
+
     // RELOCATION_ID SE: 514141, AE: 400269
     crate::relocation_variable! {
         fn singleton_ptr() -> &'static *mut TESDataHandler => RelocationID::new(514141, 400269)
@@ -302,13 +317,9 @@ impl TESDataHandler {
             }
 
             // Skyrim VR fallback when SkyrimVRESL is unavailable.
-            unsafe {
-                (self as *mut Self as *mut u8)
-                    .add(0xD78)
-                    .cast::<*mut TESFile>()
-            }
+            self.vr_loaded_mods_fallback_ptr()
         } else {
-            unsafe { (*self.compiled_file_collection_mut_ptr()).files.data_mut() }
+            unsafe { (*self.compiled_file_collection_ptr()).files.data_mut() }
         }
     }
 
@@ -321,11 +332,7 @@ impl TESDataHandler {
             }
 
             // Skyrim VR fallback when SkyrimVRESL is unavailable.
-            unsafe {
-                (self as *const Self as *const u8)
-                    .add(0xD78)
-                    .cast::<*const TESFile>()
-            }
+            self.vr_loaded_mods_fallback_ptr().cast_const().cast()
         } else {
             unsafe { (*self.compiled_file_collection_ptr()).files.data().cast() }
         }
@@ -339,7 +346,7 @@ impl TESDataHandler {
                 return unsafe { (*compiled).files.len() as u8 };
             }
 
-            unsafe { *((self as *const _ as *const u8).add(0xD70) as *const u32) as u8 }
+            self.vr_loaded_mod_count_fallback() as u8
         } else {
             unsafe { (*self.compiled_file_collection_ptr()).files.len() as u8 }
         }
@@ -516,36 +523,49 @@ impl TESDataHandler {
 
     runtime_data_accessor! {
         pub fn get_geometry_runtime_data() -> RUNTIME_DATA {
-            se_ae: 0xDA0,
-            vr: 0x1570
+            offset: Self::GEOMETRY_RUNTIME_DATA_OFFSET
         }
     }
 
     runtime_data_mut_accessor! {
         pub fn get_geometry_runtime_data_mut() -> RUNTIME_DATA {
-            se_ae: 0xDA0,
-            vr: 0x1570
+            offset: Self::GEOMETRY_RUNTIME_DATA_OFFSET
         }
     }
 
     runtime_pointer_accessor! {
         pub fn get_game_settings_load_state() -> u8 {
-            se_ae: 0xDAA,
-            vr: 0x157A
+            offset: Self::GAME_SETTINGS_LOAD_STATE_OFFSET
         }
     }
 
     runtime_pointer_accessor! {
         pub fn get_region_data_manager() -> *mut TESRegionDataManager {
-            se_ae: 0xDB0,
-            vr: 0x1580
+            offset: Self::REGION_DATA_MANAGER_OFFSET
         }
     }
 
     runtime_pointer_accessor! {
         pub fn get_merchant_inventory() -> *mut InventoryChanges {
-            se_ae: 0xDB8,
-            vr: 0x1588
+            offset: Self::MERCHANT_INVENTORY_OFFSET
+        }
+    }
+
+    runtime_data_ptr_accessor! {
+        fn compiled_file_collection_ptr() -> TESFileCollection {
+            offset: Self::COMPILED_FILE_COLLECTION_OFFSET
+        }
+    }
+
+    runtime_data_ptr_accessor! {
+        fn vr_loaded_mods_fallback_ptr() -> *mut TESFile {
+            offset: Self::VR_LOADED_MODS_FALLBACK_OFFSET
+        }
+    }
+
+    runtime_pointer_accessor! {
+        fn vr_loaded_mod_count_fallback() -> u32 {
+            offset: Self::VR_LOADED_MOD_COUNT_FALLBACK_OFFSET
         }
     }
 
@@ -556,25 +576,5 @@ impl TESDataHandler {
         }
         let file_name = core_util::ptr_to_str(file_name);
         file_name.len() == mod_name.len() && file_name.eq_ignore_ascii_case(mod_name)
-    }
-
-    #[inline]
-    fn compiled_file_collection_ptr(&self) -> *const TESFileCollection {
-        debug_assert!(!crate::runtime::is_vr());
-        unsafe {
-            (self as *const Self as *const u8)
-                .add(0xD70)
-                .cast::<TESFileCollection>()
-        }
-    }
-
-    #[inline]
-    fn compiled_file_collection_mut_ptr(&mut self) -> *mut TESFileCollection {
-        debug_assert!(!crate::runtime::is_vr());
-        unsafe {
-            (self as *mut Self as *mut u8)
-                .add(0xD70)
-                .cast::<TESFileCollection>()
-        }
     }
 }

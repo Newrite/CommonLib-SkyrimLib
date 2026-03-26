@@ -1,4 +1,10 @@
 use core::ffi::c_void;
+use core::mem::MaybeUninit;
+
+pub type CommonlibBstEventSinkProcessCallback =
+    unsafe extern "C" fn(ctx: *mut c_void, event: *const c_void, event_source: *mut c_void) -> i32;
+
+pub type CommonlibDestroyCallback = unsafe extern "C" fn(ctx: *mut c_void);
 
 unsafe extern "C" {
     // ── Initialization ──────────────────────────────────────────────────────
@@ -62,4 +68,52 @@ unsafe extern "C" {
     // Actor helpers
     /// `actor->GetGoldAmount(no_init)` for cases where CommonLib exposes only inline wrappers.
     pub fn commonlib_actor_get_gold_amount(actor: *mut c_void, no_init: bool) -> i32;
+
+    // Smart-pointer out-param construction helpers.
+    pub fn commonlib_make_hkref_hk_referenced_object(out: *mut c_void) -> bool;
+    pub fn commonlib_make_nismart_ni_ref_object(out: *mut c_void) -> bool;
+
+    // Input device destruction helper.
+    pub fn commonlib_destroy_bsi_input_device(device: *mut c_void);
+
+    // Input event factories.
+    pub fn commonlib_button_event_create(
+        input_device: i32,
+        user_event: *const c_void,
+        id_code: u32,
+        value: f32,
+        held_down_secs: f32,
+    ) -> *mut c_void;
+
+    // Generic BSTEventSink bridge.
+    pub fn commonlib_bst_event_sink_create(
+        ctx: *mut c_void,
+        process: Option<CommonlibBstEventSinkProcessCallback>,
+        destroy: Option<CommonlibDestroyCallback>,
+    ) -> *mut c_void;
+    pub fn commonlib_bst_event_sink_destroy(sink: *mut c_void);
+
+    // SKSE event source getters.
+    pub fn commonlib_skse_get_serialization_interface() -> *mut c_void;
+    pub fn commonlib_skse_get_trampoline_interface() -> *mut c_void;
+    pub fn commonlib_skse_get_mod_callback_event_source() -> *mut c_void;
+    pub fn commonlib_skse_get_camera_event_source() -> *mut c_void;
+    pub fn commonlib_skse_get_crosshair_ref_event_source() -> *mut c_void;
+    pub fn commonlib_skse_get_action_event_source() -> *mut c_void;
+    pub fn commonlib_skse_get_ni_node_update_event_source() -> *mut c_void;
+}
+
+/// Constructs a C++ object directly into caller-provided out storage and returns the
+/// initialized value on success.
+///
+/// This is the Rust-side half of the ABI-safe out-param bridge pattern used for
+/// smart-pointer helpers such as `make_hkref`, `make_nismart`, and `make_smart`.
+#[inline(always)]
+pub unsafe fn try_construct_out_param<T>(construct: impl FnOnce(*mut T) -> bool) -> Option<T> {
+    let mut out = MaybeUninit::<T>::uninit();
+    if construct(out.as_mut_ptr()) {
+        Some(unsafe { out.assume_init() })
+    } else {
+        None
+    }
 }

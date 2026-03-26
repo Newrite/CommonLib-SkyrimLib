@@ -34,6 +34,10 @@ preflight when the existing Rust file may already be mostly correct.
 - `size_of` assert
 - `offset_of` asserts for mixins
 - no blob substitution for named parents or mixins
+- no consumer-local `*View` / stand-in substitution for real external RE
+  dependencies that should live in their own matching Rust files
+- no consumer-local foreign runtime-tail pointer arithmetic when the dependency
+  type can expose the access honestly through owner-side helper/accessor methods
 - source-backed `REX/**` dependencies are translated into `libskyrim/src/rex/*.rs`
   and imported from `crate::rex` when the RE file needs them
 
@@ -57,6 +61,9 @@ preflight when the existing Rust file may already be mostly correct.
 - no legacy `VariantID::new(se, ae, 0)` for relocated functions
 - mixed runtime shim methods use `relocate_virtual!` only in the forwarding
   branch instead of being flattened into fake virtual ownership
+- source-backed smart-pointer construction helpers use the shared ABI-safe
+  bridge pattern when needed instead of ad-hoc Rust allocation or permanent raw
+  pointer stand-ins
 
 ### Visitors and functors
 
@@ -81,6 +88,8 @@ preflight when the existing Rust file may already be mostly correct.
   accessors instead of fake universal fields
 - low-level `BSTEventSource` APIs stay `unsafe`; safe owner-side wrappers are
   added only when source proves the sink lifetime / ownership contract
+- moved mixin/base accessors use the shared runtime accessor macros rather than
+  local pointer-arithmetic helpers such as `moved_base_ref` / `moved_base_mut`
 
 ### Runtime layout
 
@@ -88,6 +97,9 @@ preflight when the existing Rust file may already be mostly correct.
 - no fake single-layout struct for truly divergent runtime tails
 - `ENABLE_SKYRIM_VR` branches that only change method behavior are kept as
   unified Rust methods with runtime branching instead of compile-time `#[cfg]`
+- moved mixin/base accessors prefer `runtime_cast_accessor!` /
+  `runtime_cast_mut_accessor!` or matching shared accessors instead of local
+  one-off helpers
 
 ### Ergonomics and reuse
 
@@ -106,6 +118,15 @@ preflight when the existing Rust file may already be mostly correct.
 Fix all source-backed problems found during verification. Do not stop after
 reporting. The goal of this skill is a corrected translation, not a read-only
 review.
+
+If verification finds a consumer-local partial stand-in for a real external RE
+dependency, move that partial translation into the dependency's matching Rust
+file, keep the real C++ type name there, and update the consumer to use it.
+
+If a source-backed blocker still prevents a full fix, leave a `// TODO:` comment
+at the exact compromise site describing the current stand-in, the missing
+prerequisite, and the intended end state. Do not use `todo!()` /
+`unimplemented!()`.
 
 ## Validation
 

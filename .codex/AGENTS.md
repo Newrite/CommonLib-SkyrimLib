@@ -33,6 +33,7 @@ Key source locations:
 - RTTI constants: `libskyrim/src/offsets/offsets_rtti.rs`
 - VTABLE constants: `libskyrim/src/offsets/offsets_vtable.rs`
 - relocation/runtime layer: `libskyrim/src/relocation.rs`, `libskyrim/src/runtime.rs`
+- FFI bridge layer: `libskyrim/src/ffi.rs`, `libskyrim/cpp/src/bridge.cpp`
 - helper scripts: `scripts/generate_re_mod.py`, `scripts/generate_offsets.py`
   `scripts/audit_translation.py`, `scripts/bootstrap_translation.py`,
   `scripts/find_runtime_layout_candidates.py`,
@@ -55,6 +56,12 @@ Key source locations:
 - Do not hand-maintain `libskyrim/src/re/mod.rs` when regeneration is intended.
 - Do not hand-maintain generated offsets files when regeneration is intended.
 - Do not add `todo!()` or `unimplemented!()` in translated RE code.
+- Do leave a source-backed `// TODO:` comment at the exact compromise site when
+  you intentionally keep a raw-pointer stand-in, opaque stub, missing helper, or
+  other honest gap because a required dependency, bridge, allocator/factory
+  path, destructor/delete path, or ownership contract is not translated yet.
+- Do not leave vague TODOs. State the current compromise, the missing
+  prerequisite, and the intended end state.
 - Do not use `std`, `static mut`, or ad-hoc unwind assumptions.
 - Do not derive `Debug` for raw RE structs unless manual debugging value is clear.
 
@@ -211,6 +218,43 @@ Translate them once and reuse them by category:
   raw sink pointers and dispatch through foreign vtables. Only add safe owner-
   side wrappers when source proves the sink lifetime / ownership contract.
 
+## Smart Pointer and Construction Model
+
+- Reuse the shared smart-pointer layers instead of collapsing source-backed
+  `NiPointer<T>`, `BSTSmartPointer<T>`, or `hkRefPtr<T>` fields to raw pointers
+  once the pointee family is supported honestly in Rust.
+- When CommonLib constructs a smart pointer on the C++ side, such as
+  `make_hkref<T>()`, `make_nismart<T>()`, `make_smart<T>()`, or a helper that
+  fills a smart-pointer out-param, prefer the ABI-safe out-param bridge pattern:
+  - C++ bridge entrypoint in `libskyrim/cpp/src/bridge.cpp`
+  - matching FFI declaration in `libskyrim/src/ffi.rs`
+  - Rust-side construction through `ffi::try_construct_out_param(...)`
+  - typed helper on `hkRefPtr::try_construct_with(...)`,
+    `NiPointer::try_construct_with(...)`, or
+    `BSTSmartPointer::try_construct_with(...)`
+- Do not emulate a nontrivial C++ constructor with raw Rust allocation alone.
+  Allocation helpers are not a substitute for a real engine constructor or
+  factory path.
+- If source-backed C++ shows that a `make_*` path is unavailable for the target
+  type, for example because the constructor is deleted or the type only has
+  argumentful factories, do not fake a zero-init construction path. Keep the
+  current honest surface and leave a `// TODO:` comment describing the missing
+  source-backed factory/constructor prerequisite.
+
+## TODO Comment Policy
+
+Use comment TODOs to preserve honesty when a translation cannot be completed
+yet, while still forbidding executable placeholders such as `todo!()`.
+
+- Put the TODO at the exact field, helper, or type stub where the compromise
+  lives.
+- Prefer one of these forms:
+  - `// TODO: VERIFY - replace with full translation when layout or methods are needed.`
+  - `// TODO: SOURCE - replace <current stand-in> with <target> after <missing prerequisite>; source: <Header.h/.cpp reason>.`
+- Remove or rewrite stale TODOs when the blocker is resolved or when the reason
+  changes.
+- Mention every remaining code TODO in the final user report for that task.
+
 ## Required Macro Layer
 
 Prefer the provided macros instead of manual address math:
@@ -225,6 +269,14 @@ Prefer the provided macros instead of manual address math:
 - `runtime_data_accessor!`
 - `runtime_pointer_accessor!`
 - mutable and optional runtime-data accessors when the field is runtime-specific
+- `runtime_cast_accessor!` / `runtime_cast_mut_accessor!` for moved mixin/base
+  accessors, including cases that already have a named `VariantOffset` constant
+
+Do not introduce local helper methods such as `moved_base_ref`, `moved_base_mut`,
+or other ad-hoc pointer-arithmetic wrappers when the current runtime accessor
+macros can express the same surface. If a macro cannot currently express the
+source-backed pattern, extend the shared macro layer in `libskyrim/src/runtime.rs`
+instead of copying a one-off helper into each RE file.
 
 ## Generated Files
 
@@ -275,6 +327,25 @@ Prefer the provided macros instead of manual address math:
   structs, enums, aliases, or ABI types from `CommonLibVR/include/REX/**`, put
   those Rust translations in `libskyrim/src/rex/*.rs` and import them from
   `crate::rex`, not as ad-hoc local definitions inside the RE file.
+- If a translated RE file needs a non-opaque dependency from another CommonLib
+  RE header, do not keep that dependency as a local `*View`, `*Fields`, or
+  similarly renamed stand-in inside the consumer file just because the proper
+  Rust file does not exist yet.
+- Instead, create or extend the matching Rust file for that dependency
+  (`AIProcess` -> `libskyrim/src/re/ai_process.rs`, etc.) and place the minimal
+  source-backed partial translation there.
+- Such partial dependency translations should keep the real C++ type name when
+  they represent that type. If only a subset of fields is currently needed,
+  translate that subset in the dependency file as a partial but honestly named
+  type rather than inventing a consumer-local `AIProcessView`.
+- During verification or partial-translation passes, treat consumer-local
+  layout views for real cross-file RE dependencies as mismatches to fix unless
+  the helper is genuinely private to the same C++ file and does not correspond
+  to a named external type.
+- Apply the same rule to runtime-tail access: if consumer code needs fields from
+  another named RE type's runtime data, prefer owner-side helper/accessor
+  methods on that type backed by the shared runtime macros instead of copying
+  foreign pointer arithmetic into the consumer file.
 - Treat `rex` as the home for shared RE extension support types rather than a
   mirror of the full Windows SDK. Keep it minimal and source-backed.
 - `REX::Enum<E, U>` maps to `core_util::Enum<E, U>`.
