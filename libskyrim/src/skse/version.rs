@@ -2,31 +2,300 @@ use core::ffi::c_char;
 
 use crate::version::Version;
 
-/// Plugin version info exported to SKSE.
-#[repr(C)]
-pub struct SksePluginVersionData {
-    pub data_version: u32,
-    pub plugin_version: u32,
-    pub name: [c_char; 256],
-    pub author: [c_char; 256],
-    pub support_email: [c_char; 252],
-    pub version_indep_ex: u32,
-    pub version_indep: u32,
-    pub compat_versions: [u32; 16],
-    pub se_version_required: u32,
+#[repr(u32)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VersionIndependence {
+    AddressLibraryPre1629 = 0,
+    AddressLibraryPost1629 = 1,
+    AddressLibrary = 2,
+    SignatureScanning = 3,
 }
 
-pub type PluginVersionData = SksePluginVersionData;
+#[repr(u32)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StructCompatibility {
+    Dependent = 0,
+    Independent = 1,
+}
 
-impl SksePluginVersionData {
+#[repr(transparent)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+pub struct PluginDeclarationVersionNumber(pub u32);
+
+impl PluginDeclarationVersionNumber {
+    #[inline(always)]
+    pub const fn new(major: u16, minor: u16, patch: u16, build: u16) -> Self {
+        Self(Version::new(major, minor, patch, build).pack())
+    }
+
+    #[inline(always)]
+    pub const fn from_version(version: Version) -> Self {
+        Self(version.pack())
+    }
+
+    #[inline(always)]
+    pub const fn get(self) -> Version {
+        Version::from_packed(self.0)
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PluginDeclarationString<const N: usize> {
+    pub buffer: [c_char; N],
+}
+
+impl<const N: usize> Default for PluginDeclarationString<N> {
+    #[inline(always)]
+    fn default() -> Self {
+        Self { buffer: [0; N] }
+    }
+}
+
+impl<const N: usize> PluginDeclarationString<N> {
+    #[inline(always)]
+    pub const fn new() -> Self {
+        Self { buffer: [0; N] }
+    }
+
+    #[inline(always)]
+    pub const fn from_str(s: &str) -> Self {
+        let bytes = s.as_bytes();
+        assert!(
+            bytes.len() < N,
+            "string does not fit in PluginDeclarationString"
+        );
+
+        let mut buffer = [0; N];
+        let mut i = 0;
+        while i < bytes.len() {
+            buffer[i] = bytes[i] as c_char;
+            i += 1;
+        }
+
+        Self { buffer }
+    }
+
+    #[inline(always)]
+    pub const fn as_ptr(&self) -> *const c_char {
+        self.buffer.as_ptr()
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RuntimeCompatibility {
+    pub flags: u32,
+    pub compatible_versions: [PluginDeclarationVersionNumber; 16],
+}
+
+const _: () = assert!(core::mem::size_of::<RuntimeCompatibility>() == 0x44);
+
+impl Default for RuntimeCompatibility {
+    #[inline(always)]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl RuntimeCompatibility {
+    pub const MAX_COMPATIBLE_VERSIONS: usize = 16;
+    pub const FLAG_ADDRESS_LIBRARY: u32 = 1 << 0;
+    pub const FLAG_SIGNATURE_SCANNING: u32 = 1 << 1;
+    pub const FLAG_STRUCTS_POST_629: u32 = 1 << 2;
+
+    #[inline(always)]
+    pub const fn new() -> Self {
+        Self {
+            flags: Self::FLAG_ADDRESS_LIBRARY,
+            compatible_versions: [PluginDeclarationVersionNumber(0); 16],
+        }
+    }
+
+    #[inline(always)]
+    pub const fn from_version_independence(
+        version_independence: VersionIndependence,
+        requires_post_629_structs: bool,
+    ) -> Self {
+        let mut flags = 0;
+        if matches!(version_independence, VersionIndependence::AddressLibrary) {
+            flags |= Self::FLAG_ADDRESS_LIBRARY;
+        }
+        if matches!(version_independence, VersionIndependence::SignatureScanning) {
+            flags |= Self::FLAG_SIGNATURE_SCANNING;
+        }
+        if requires_post_629_structs {
+            flags |= Self::FLAG_STRUCTS_POST_629;
+        }
+
+        Self {
+            flags,
+            compatible_versions: [PluginDeclarationVersionNumber(0); 16],
+        }
+    }
+
+    #[inline(always)]
+    pub const fn from_compatible_versions(versions: &[Version]) -> Self {
+        assert!(versions.len() <= Self::MAX_COMPATIBLE_VERSIONS);
+
+        let mut compatible_versions = [PluginDeclarationVersionNumber(0); 16];
+        let mut i = 0;
+        while i < versions.len() {
+            compatible_versions[i] = PluginDeclarationVersionNumber::from_version(versions[i]);
+            i += 1;
+        }
+
+        Self {
+            flags: 0,
+            compatible_versions,
+        }
+    }
+
+    #[inline(always)]
+    pub const fn uses_address_library(&self) -> bool {
+        (self.flags & Self::FLAG_ADDRESS_LIBRARY) != 0
+    }
+
+    #[inline(always)]
+    pub const fn uses_signature_scanning(&self) -> bool {
+        (self.flags & Self::FLAG_SIGNATURE_SCANNING) != 0
+    }
+
+    #[inline(always)]
+    pub const fn targets_629_structs(&self) -> bool {
+        (self.flags & Self::FLAG_STRUCTS_POST_629) != 0
+    }
+
+    #[inline(always)]
+    pub const fn is_version_independent(&self) -> bool {
+        self.uses_address_library() || self.uses_signature_scanning()
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PluginDeclarationInfo {
+    pub version: PluginDeclarationVersionNumber,
+    pub name: PluginDeclarationString<256>,
+    pub author: PluginDeclarationString<256>,
+    pub support_email: PluginDeclarationString<252>,
+    pub struct_compatibility: StructCompatibility,
+    pub runtime_compatibility: RuntimeCompatibility,
+    pub minimum_skse_version: PluginDeclarationVersionNumber,
+}
+
+const _: () = assert!(core::mem::size_of::<PluginDeclarationInfo>() == 0x34C);
+const _: () = assert!(core::mem::offset_of!(PluginDeclarationInfo, version) == 0x000);
+const _: () = assert!(core::mem::offset_of!(PluginDeclarationInfo, name) == 0x004);
+const _: () = assert!(core::mem::offset_of!(PluginDeclarationInfo, author) == 0x104);
+const _: () = assert!(core::mem::offset_of!(PluginDeclarationInfo, support_email) == 0x204);
+const _: () = assert!(core::mem::offset_of!(PluginDeclarationInfo, struct_compatibility) == 0x300);
+const _: () = assert!(core::mem::offset_of!(PluginDeclarationInfo, runtime_compatibility) == 0x304);
+const _: () = assert!(core::mem::offset_of!(PluginDeclarationInfo, minimum_skse_version) == 0x348);
+
+impl Default for PluginDeclarationInfo {
+    #[inline(always)]
+    fn default() -> Self {
+        Self {
+            version: PluginDeclarationVersionNumber::new(1, 0, 0, 0),
+            name: PluginDeclarationString::new(),
+            author: PluginDeclarationString::new(),
+            support_email: PluginDeclarationString::new(),
+            struct_compatibility: StructCompatibility::Independent,
+            runtime_compatibility: RuntimeCompatibility::new(),
+            minimum_skse_version: PluginDeclarationVersionNumber(0),
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PluginDeclaration {
+    pub data_version: u32,
+    pub data: PluginDeclarationInfo,
+}
+
+const _: () = assert!(core::mem::size_of::<PluginDeclaration>() == 0x350);
+
+impl PluginDeclaration {
     pub const VERSION: u32 = 1;
 
-    pub const VINDEP_ADDRESS_LIBRARY_POST_AE: u32 = 1 << 0;
-    pub const VINDEP_SIGNATURES: u32 = 1 << 1;
-    pub const VINDEP_STRUCTS_POST_629: u32 = 1 << 2;
+    #[inline(always)]
+    pub const fn new(info: PluginDeclarationInfo) -> Self {
+        Self {
+            data_version: Self::VERSION,
+            data: info,
+        }
+    }
 
-    pub const VINDEPEX_NO_STRUCT_USE: u32 = 1 << 0;
+    #[inline(always)]
+    pub fn get_version(&self) -> Version {
+        self.data.version.get()
+    }
+
+    #[inline(always)]
+    pub fn get_name_ptr(&self) -> *const c_char {
+        self.data.name.as_ptr()
+    }
+
+    #[inline(always)]
+    pub fn get_author_ptr(&self) -> *const c_char {
+        self.data.author.as_ptr()
+    }
+
+    #[inline(always)]
+    pub fn get_support_email_ptr(&self) -> *const c_char {
+        self.data.support_email.as_ptr()
+    }
+
+    #[inline(always)]
+    pub fn get_struct_compatibility(&self) -> StructCompatibility {
+        self.data.struct_compatibility
+    }
+
+    #[inline(always)]
+    pub fn get_runtime_compatibility(&self) -> &RuntimeCompatibility {
+        &self.data.runtime_compatibility
+    }
+
+    #[inline(always)]
+    pub fn get_minimum_skse_version(&self) -> Version {
+        self.data.minimum_skse_version.get()
+    }
+
+    #[inline(always)]
+    pub fn get_singleton() -> *const Self {
+        core::ptr::addr_of!(crate::SKSEPlugin_Version).cast()
+    }
 }
+
+#[macro_export]
+macro_rules! plugin_declaration {
+    (
+        version: $version:expr,
+        name: $name:expr,
+        author: $author:expr,
+        support_email: $support_email:expr,
+        struct_compatibility: $struct_compatibility:expr,
+        runtime_compatibility: $runtime_compatibility:expr,
+        minimum_skse_version: $minimum_skse_version:expr $(,)?
+    ) => {
+        #[unsafe(no_mangle)]
+        pub static SKSEPlugin_Version: $crate::skse::PluginDeclaration =
+            $crate::skse::PluginDeclaration::new($crate::skse::PluginDeclarationInfo {
+                version: $crate::skse::PluginDeclarationVersionNumber::from_version($version),
+                name: $crate::skse::PluginDeclarationString::from_str($name),
+                author: $crate::skse::PluginDeclarationString::from_str($author),
+                support_email: $crate::skse::PluginDeclarationString::from_str($support_email),
+                struct_compatibility: $struct_compatibility,
+                runtime_compatibility: $runtime_compatibility,
+                minimum_skse_version: $crate::skse::PluginDeclarationVersionNumber::from_version(
+                    $minimum_skse_version,
+                ),
+            });
+    };
+}
+pub use plugin_declaration;
 
 pub const RUNTIME_SSE_1_1_47: Version = Version::new(1, 1, 47, 0);
 pub const RUNTIME_SSE_1_1_51: Version = Version::new(1, 1, 51, 0);

@@ -2,6 +2,13 @@ use core::ffi::{c_char, c_void};
 
 use crate::re::bs_core_types::VMHandle;
 use crate::re::tes_form::FormID;
+use crate::re::{IVirtualMachine, VirtualMachine};
+
+core_util::abstract_type! {
+    pub type SKSEDelayFunctorManager;
+    pub type SKSEObjectRegistry;
+    pub type SKSEPersistentObjectStorage;
+}
 
 /// Plugin interface IDs.
 #[repr(u32)]
@@ -55,6 +62,11 @@ pub struct Message {
 /// A callback function registered as a message listener.
 pub type MessageCallback = unsafe extern "system" fn(*mut Message);
 
+/// A callback function registered with the papyrus interface.
+pub type PapyrusRegFunction1 = unsafe extern "system" fn(*mut VirtualMachine) -> bool;
+/// A callback function registered with the papyrus interface.
+pub type PapyrusRegFunction2 = unsafe extern "system" fn(*mut IVirtualMachine) -> bool;
+
 /// The raw messaging interface returned by SKSE.
 #[repr(C)]
 pub struct SkseMessagingInterface {
@@ -64,6 +76,23 @@ pub struct SkseMessagingInterface {
     pub dispatch:
         unsafe extern "system" fn(PluginHandle, u32, *mut c_void, u32, *const c_char) -> bool,
     pub get_event_dispatcher: unsafe extern "system" fn(u32) -> *mut c_void,
+}
+
+/// The raw papyrus interface returned by SKSE.
+#[repr(C)]
+pub struct SksePapyrusInterface {
+    pub interface_version: u32,
+    pub register: unsafe extern "system" fn(*mut c_void) -> bool,
+}
+
+/// The raw object interface returned by SKSE.
+#[repr(C)]
+pub struct SkseObjectInterface {
+    pub interface_version: u32,
+    pub get_delay_functor_manager: unsafe extern "system" fn() -> *mut SKSEDelayFunctorManager,
+    pub get_object_registry: unsafe extern "system" fn() -> *mut SKSEObjectRegistry,
+    pub get_persistent_object_storage:
+        unsafe extern "system" fn() -> *mut SKSEPersistentObjectStorage,
 }
 
 /// A callback function registered with the serialization interface.
@@ -102,9 +131,22 @@ pub struct SkseTrampolineInterface {
 }
 
 pub type LoadInterface = SkseInterface;
+pub type PapyrusInterface = SksePapyrusInterface;
 pub type MessagingInterface = SkseMessagingInterface;
+pub type ObjectInterface = SkseObjectInterface;
 pub type SerializationInterface = SkseSerializationInterface;
 pub type TrampolineInterface = SkseTrampolineInterface;
+
+/// Messaging dispatchers exposed by `SKSE::MessagingInterface`.
+#[repr(u32)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum MessagingDispatcher {
+    ModEvent = 0,
+    CameraEvent = 1,
+    CrosshairEvent = 2,
+    ActionEvent = 3,
+    NiNodeUpdateEvent = 4,
+}
 
 impl PluginInfo {
     pub const VERSION: u32 = 1;
@@ -129,6 +171,98 @@ impl Message {
 
 impl SkseMessagingInterface {
     pub const VERSION: u32 = 2;
+
+    #[inline(always)]
+    pub fn version(&self) -> u32 {
+        self.interface_version
+    }
+
+    #[inline(always)]
+    pub fn dispatch(
+        &self,
+        message_type: u32,
+        data: *mut c_void,
+        data_len: u32,
+        receiver: *const c_char,
+    ) -> bool {
+        unsafe {
+            (self.dispatch)(
+                super::plugin_handle(),
+                message_type,
+                data,
+                data_len,
+                receiver,
+            )
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_event_dispatcher(&self, dispatcher: MessagingDispatcher) -> *mut c_void {
+        unsafe { (self.get_event_dispatcher)(dispatcher as u32) }
+    }
+
+    #[inline(always)]
+    pub fn register_listener(&self, callback: MessageCallback) -> bool {
+        self.register_listener_for(b"SKSE\0".as_ptr().cast(), callback)
+    }
+
+    #[inline(always)]
+    pub fn register_listener_for(&self, sender: *const c_char, callback: MessageCallback) -> bool {
+        unsafe { (self.register_listener)(super::plugin_handle(), sender, callback) }
+    }
+}
+
+impl SksePapyrusInterface {
+    pub const VERSION: u32 = 1;
+
+    #[inline(always)]
+    pub fn version(&self) -> u32 {
+        self.interface_version
+    }
+
+    #[inline(always)]
+    pub fn register_internal(&self, callback: PapyrusRegFunction1) -> bool {
+        let vm = VirtualMachine::get_singleton();
+        if vm.is_null() {
+            unsafe { (self.register)(callback as *mut c_void) }
+        } else {
+            unsafe { callback(vm) }
+        }
+    }
+
+    #[inline(always)]
+    pub fn register_vm(&self, callback: PapyrusRegFunction2) -> bool {
+        let vm = VirtualMachine::get_singleton();
+        if vm.is_null() {
+            unsafe { (self.register)(callback as *mut c_void) }
+        } else {
+            unsafe { callback(vm.cast()) }
+        }
+    }
+}
+
+impl SkseObjectInterface {
+    pub const VERSION: u32 = 1;
+
+    #[inline(always)]
+    pub fn version(&self) -> u32 {
+        self.interface_version
+    }
+
+    #[inline(always)]
+    pub fn get_delay_functor_manager(&self) -> *mut SKSEDelayFunctorManager {
+        unsafe { (self.get_delay_functor_manager)() }
+    }
+
+    #[inline(always)]
+    pub fn get_object_registry(&self) -> *mut SKSEObjectRegistry {
+        unsafe { (self.get_object_registry)() }
+    }
+
+    #[inline(always)]
+    pub fn get_persistent_object_storage(&self) -> *mut SKSEPersistentObjectStorage {
+        unsafe { (self.get_persistent_object_storage)() }
+    }
 }
 
 impl SkseSerializationInterface {
@@ -137,35 +271,35 @@ impl SkseSerializationInterface {
     #[inline(always)]
     pub fn set_unique_id(&self, uid: u32) {
         unsafe {
-            (self.set_unique_id)(crate::plugin_api::handle(), uid);
+            (self.set_unique_id)(super::plugin_handle(), uid);
         }
     }
 
     #[inline(always)]
     pub fn set_revert_callback(&self, callback: Option<SerializationEventCallback>) {
         unsafe {
-            (self.set_revert_callback)(crate::plugin_api::handle(), callback);
+            (self.set_revert_callback)(super::plugin_handle(), callback);
         }
     }
 
     #[inline(always)]
     pub fn set_save_callback(&self, callback: Option<SerializationEventCallback>) {
         unsafe {
-            (self.set_save_callback)(crate::plugin_api::handle(), callback);
+            (self.set_save_callback)(super::plugin_handle(), callback);
         }
     }
 
     #[inline(always)]
     pub fn set_load_callback(&self, callback: Option<SerializationEventCallback>) {
         unsafe {
-            (self.set_load_callback)(crate::plugin_api::handle(), callback);
+            (self.set_load_callback)(super::plugin_handle(), callback);
         }
     }
 
     #[inline(always)]
     pub fn set_form_delete_callback(&self, callback: Option<FormDeleteCallback>) {
         unsafe {
-            (self.set_form_delete_callback)(crate::plugin_api::handle(), callback);
+            (self.set_form_delete_callback)(super::plugin_handle(), callback);
         }
     }
 
@@ -210,11 +344,11 @@ impl SkseTrampolineInterface {
 
     #[inline(always)]
     pub fn allocate_from_branch_pool(&self, size: usize) -> *mut c_void {
-        unsafe { (self.allocate_from_branch_pool)(crate::plugin_api::handle(), size) }
+        unsafe { (self.allocate_from_branch_pool)(super::plugin_handle(), size) }
     }
 
     #[inline(always)]
     pub fn allocate_from_local_pool(&self, size: usize) -> *mut c_void {
-        unsafe { (self.allocate_from_local_pool)(crate::plugin_api::handle(), size) }
+        unsafe { (self.allocate_from_local_pool)(super::plugin_handle(), size) }
     }
 }

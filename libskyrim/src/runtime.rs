@@ -6,7 +6,7 @@ pub enum RuntimeType {
     Unknown,
     SE, // 1.5.97 and lower
     AE, // 1.6.x
-    VR, // VR
+    VR, // Skyrim VR
 }
 
 pub static CURRENT_VERSION: Later<Version> = Later::new();
@@ -100,7 +100,7 @@ pub fn relocate_versioned_all<T: Copy>(version: Version, se: T, ae: T, vr: T) ->
 #[track_caller]
 pub fn require_offset(offset: usize, accessor: &str) -> usize {
     if offset == 0 {
-        crate::log::fatal_runtime(format_args!(
+        crate::skse::log::fatal_runtime(format_args!(
             "{accessor} is unavailable for runtime {}",
             current_runtime_name()
         ));
@@ -112,7 +112,7 @@ pub fn require_offset(offset: usize, accessor: &str) -> usize {
 #[track_caller]
 pub fn require_vr(accessor: &str) {
     if !is_vr() {
-        crate::log::fatal_runtime(format_args!(
+        crate::skse::log::fatal_runtime(format_args!(
             "{accessor} is VR-only, current runtime is {}",
             current_runtime_name()
         ));
@@ -123,7 +123,7 @@ pub fn require_vr(accessor: &str) {
 #[track_caller]
 pub fn require_non_vr(accessor: &str) {
     if is_vr() {
-        crate::log::fatal_runtime(format_args!(
+        crate::skse::log::fatal_runtime(format_args!(
             "{accessor} is only available in SE/AE, current runtime is {}",
             current_runtime_name()
         ));

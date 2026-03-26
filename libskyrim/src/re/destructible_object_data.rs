@@ -1,1 +1,4 @@
-core_util::abstract_type! { pub type DestructibleObjectData; }
+pub use crate::re::bgs_destructible_object_form::{
+    DestructibleObjectData, DestructibleObjectDataFlag, DestructibleObjectStage,
+    DestructibleObjectStageFlag,
+};

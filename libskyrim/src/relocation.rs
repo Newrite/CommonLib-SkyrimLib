@@ -81,28 +81,29 @@ fn resolve_offset_address(offset: usize) -> Result<usize, RelocationError> {
 
 fn fatal_resolution(context: &str, error: RelocationError) -> ! {
     match error {
-        RelocationError::UnresolvedId(id) => crate::log::fatal_runtime(format_args!(
+        RelocationError::UnresolvedId(id) => crate::skse::log::fatal_runtime(format_args!(
             "{}: Address Library failed to resolve ID {}",
             context, id
         )),
-        RelocationError::UnresolvedOffset(offset) => crate::log::fatal_runtime(format_args!(
+        RelocationError::UnresolvedOffset(offset) => crate::skse::log::fatal_runtime(format_args!(
             "{}: failed to resolve offset {:#X}",
             context, offset
         )),
-        RelocationError::UnsupportedCallHookSize(size) => crate::log::fatal_runtime(format_args!(
-            "{}: unsupported call hook size {}. Only 5 or 6 are supported.",
-            context, size
-        )),
+        RelocationError::UnsupportedCallHookSize(size) => {
+            crate::skse::log::fatal_runtime(format_args!(
+                "{}: unsupported call hook size {}. Only 5 or 6 are supported.",
+                context, size
+            ))
+        }
         RelocationError::UnsupportedBranchHookSize(size) => {
-            crate::log::fatal_runtime(format_args!(
+            crate::skse::log::fatal_runtime(format_args!(
                 "{}: unsupported branch hook size {}. Only 5 or 6 are supported.",
                 context, size
             ))
         }
-        RelocationError::MissingRuntimeDynamicCast => crate::log::fatal_runtime(format_args!(
-            "{}: failed to resolve RTDynamicCast address",
-            context
-        )),
+        RelocationError::MissingRuntimeDynamicCast => crate::skse::log::fatal_runtime(
+            format_args!("{}: failed to resolve RTDynamicCast address", context),
+        ),
     }
 }
 

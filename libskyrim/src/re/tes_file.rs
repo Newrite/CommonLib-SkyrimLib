@@ -1,6 +1,5 @@
 use crate::relocation::RelocationID;
 use core::ffi::{c_char, c_void};
-use windows_sys::Win32::Foundation::FILETIME;
 
 use core_util::EnumSet;
 
@@ -14,6 +13,7 @@ use crate::re::tes_bit_array_file::TESBitArrayFile;
 use crate::re::tes_form::{FormID, TESForm};
 use crate::re::tes_object_cell::TESObjectCELL;
 use crate::re::tes_world_space::TESWorldSpace;
+use crate::rex::W32::{FILETIME, WIN32_FIND_DATAA};
 
 /// C++ `RE::TESFile::Error`
 #[repr(u32)]
@@ -63,15 +63,6 @@ pub enum NiFileOpenMode {
     AppendOnly = 2,
 }
 
-/// C++ `REX::W32::WIN32_FIND_DATAA` (opaque layout slot in TESFile)
-#[repr(C)]
-#[derive(Debug, Clone, Copy)]
-pub struct Win32FindDataA {
-    pub raw: [u8; 0x140],
-}
-
-const _: () = assert!(core::mem::size_of::<Win32FindDataA>() == 0x140);
-
 /// C++ `RE::TESFile`
 #[repr(C)]
 pub struct TESFile {
@@ -115,7 +106,7 @@ pub struct TESFile {
     pub is_big_endian: bool,                            // 2E9
     pub unk2ea: u8,                                     // 2EA
     pub pad2eb: u8,                                     // 2EB
-    pub file_data: Win32FindDataA,                      // 2EC
+    pub file_data: WIN32_FIND_DATAA,                    // 2EC
     pub version: f32,                                   // 42C
     pub form_count: u32,                                // 430
     pub next_form_id: u32,                              // 434

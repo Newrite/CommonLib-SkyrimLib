@@ -3,7 +3,10 @@ use crate::re::BSTEventSource;
 use super::events::{
     ActionEvent, CameraEvent, CrosshairRefEvent, ModCallbackEvent, NiNodeUpdateEvent,
 };
-use super::interfaces::{LoadInterface, SerializationInterface, TrampolineInterface};
+use super::interfaces::{
+    LoadInterface, MessagingInterface, ObjectInterface, PapyrusInterface, SKSEDelayFunctorManager,
+    SKSEObjectRegistry, SKSEPersistentObjectStorage, SerializationInterface, TrampolineInterface,
+};
 
 #[inline(always)]
 pub unsafe fn init(load_interface: *const LoadInterface) {
@@ -25,8 +28,38 @@ pub fn get_serialization_interface() -> *mut SerializationInterface {
 }
 
 #[inline(always)]
+pub fn get_papyrus_interface() -> *mut PapyrusInterface {
+    unsafe { crate::ffi::commonlib_skse_get_papyrus_interface().cast() }
+}
+
+#[inline(always)]
+pub fn get_messaging_interface() -> *mut MessagingInterface {
+    unsafe { crate::ffi::commonlib_skse_get_messaging_interface().cast() }
+}
+
+#[inline(always)]
+pub fn get_object_interface() -> *mut ObjectInterface {
+    unsafe { crate::ffi::commonlib_skse_get_object_interface().cast() }
+}
+
+#[inline(always)]
 pub fn get_trampoline_interface() -> *mut TrampolineInterface {
     unsafe { crate::ffi::commonlib_skse_get_trampoline_interface().cast() }
+}
+
+#[inline(always)]
+pub fn get_delay_functor_manager() -> *mut SKSEDelayFunctorManager {
+    unsafe { crate::ffi::commonlib_skse_get_delay_functor_manager().cast() }
+}
+
+#[inline(always)]
+pub fn get_object_registry() -> *mut SKSEObjectRegistry {
+    unsafe { crate::ffi::commonlib_skse_get_object_registry().cast() }
+}
+
+#[inline(always)]
+pub fn get_persistent_object_storage() -> *mut SKSEPersistentObjectStorage {
+    unsafe { crate::ffi::commonlib_skse_get_persistent_object_storage().cast() }
 }
 
 #[inline(always)]

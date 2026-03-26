@@ -233,6 +233,10 @@ extern "C" {
             });
     }
 
+    void* commonlib_bgs_attack_data_create() noexcept {
+        return RE::BGSAttackData::Create();
+    }
+
     void commonlib_destroy_bsi_input_device(void* device) noexcept {
         delete static_cast<RE::BSIInputDevice*>(device);
     }
@@ -289,8 +293,32 @@ extern "C" {
         return const_cast<SKSE::SerializationInterface*>(SKSE::GetSerializationInterface());
     }
 
+    void* commonlib_skse_get_papyrus_interface() noexcept {
+        return const_cast<SKSE::PapyrusInterface*>(SKSE::GetPapyrusInterface());
+    }
+
+    void* commonlib_skse_get_messaging_interface() noexcept {
+        return const_cast<SKSE::MessagingInterface*>(SKSE::GetMessagingInterface());
+    }
+
+    void* commonlib_skse_get_object_interface() noexcept {
+        return const_cast<SKSE::ObjectInterface*>(SKSE::GetObjectInterface());
+    }
+
     void* commonlib_skse_get_trampoline_interface() noexcept {
         return const_cast<SKSE::TrampolineInterface*>(SKSE::GetTrampolineInterface());
+    }
+
+    void* commonlib_skse_get_delay_functor_manager() noexcept {
+        return const_cast<SKSEDelayFunctorManager*>(SKSE::GetDelayFunctorManager());
+    }
+
+    void* commonlib_skse_get_object_registry() noexcept {
+        return const_cast<SKSEObjectRegistry*>(SKSE::GetObjectRegistry());
+    }
+
+    void* commonlib_skse_get_persistent_object_storage() noexcept {
+        return const_cast<SKSEPersistentObjectStorage*>(SKSE::GetPersistentObjectStorage());
     }
 
     void* commonlib_skse_get_mod_callback_event_source() noexcept {
@@ -311,6 +339,72 @@ extern "C" {
 
     void* commonlib_skse_get_ni_node_update_event_source() noexcept {
         return SKSE::GetNiNodeUpdateEventSource();
+    }
+
+    void commonlib_skse_translation_parse_translation(const char* name) {
+        if (!name) {
+            return;
+        }
+
+        SKSE::Translation::ParseTranslation(name);
+    }
+
+    std::size_t commonlib_skse_translation_translate(
+        const char* key,
+        char* out_buf,
+        std::size_t out_buf_len) noexcept
+    {
+        if (!key) {
+            return 0;
+        }
+
+        std::string result;
+        if (!SKSE::Translation::Translate(key, result)) {
+            return 0;
+        }
+
+        const auto required = result.size() + 1;
+        if (!out_buf || out_buf_len < required) {
+            return required;
+        }
+
+        std::memcpy(out_buf, result.c_str(), required);
+        return required;
+    }
+
+    uintptr_t commonlib_skse_iat_get_addr(const char* dll, const char* function) {
+        if (!dll || !function) {
+            return 0;
+        }
+
+        return SKSE::GetIATAddr(dll, function);
+    }
+
+    uintptr_t commonlib_skse_iat_get_addr_for_module(
+        void* module,
+        const char* dll,
+        const char* function)
+    {
+        if (!module || !dll || !function) {
+            return 0;
+        }
+
+        return SKSE::GetIATAddr(
+            static_cast<REX::W32::HMODULE>(module),
+            dll,
+            function);
+    }
+
+    uintptr_t commonlib_skse_iat_patch(
+        uintptr_t new_func,
+        const char* dll,
+        const char* function)
+    {
+        if (!dll || !function) {
+            return 0;
+        }
+
+        return SKSE::PatchIAT(new_func, dll, function);
     }
 
 }

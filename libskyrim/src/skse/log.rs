@@ -1,14 +1,14 @@
 //!
 //! @file log.rs
 //! @author Andrew Spaulding (Kasplat)
-//! @brief Implements a logging API that creates a file in the SKSE log folder based on the
-//!        name of the plugin in the version structure.
-//! @bug No known bugs.
+//! @brief Implements a logging API that writes into the SKSE log folder using
+//!        the exported plugin declaration metadata.
 //!
 
 use alloc::format;
 use core::ffi::CStr;
 use core::fmt::{Arguments, Write};
+use core::str::FromStr;
 
 use core_util::{Later, RacyCell, StringBuffer, WideStr, WideStringBuffer};
 use cstd::io::File;
@@ -36,8 +36,20 @@ pub enum LogType {
     Both(u32),
 }
 
+#[doc(hidden)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
+pub enum LogLevel {
+    Debug,
+    Info,
+    Warning,
+    Error,
+    Fatal,
+}
+
 const BUF_SIZE: usize = 8192;
 static LOG_FILE: Later<RacyCell<File>> = Later::new();
+static LOG_LEVEL: RacyCell<LogLevel> = RacyCell::new(LogLevel::Info);
 
 impl LogType {
     fn log(&self, msg: &CStr) -> Result<(), ()> {
@@ -47,7 +59,7 @@ impl LogType {
                     MessageBoxA(
                         core::ptr::null_mut(),
                         msg.as_ptr().cast(),
-                        SKSEPlugin_Version.name.as_ptr().cast(),
+                        SKSEPlugin_Version.get_name_ptr().cast(),
                         *ico,
                     )
                 };
@@ -74,6 +86,66 @@ impl LogType {
     }
 }
 
+impl LogLevel {
+    #[inline(always)]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Debug => "DEBUG",
+            Self::Info => "INFO",
+            Self::Warning => "WARNING",
+            Self::Error => "ERROR",
+            Self::Fatal => "FATAL ERROR",
+        }
+    }
+}
+
+impl FromStr for LogLevel {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.trim().to_ascii_lowercase().as_str() {
+            "debug" => Ok(Self::Debug),
+            "info" => Ok(Self::Info),
+            "warn" | "warning" => Ok(Self::Warning),
+            "error" => Ok(Self::Error),
+            "fatal" => Ok(Self::Fatal),
+            _ => Err(()),
+        }
+    }
+}
+
+#[inline(always)]
+pub fn set_level(level: LogLevel) {
+    unsafe {
+        *LOG_LEVEL.get() = level;
+    }
+}
+
+#[inline(always)]
+pub fn level() -> LogLevel {
+    unsafe { *LOG_LEVEL.get() }
+}
+
+#[inline(always)]
+pub fn enabled(level: LogLevel) -> bool {
+    matches!(level, LogLevel::Fatal) || (level as u8) >= (crate::skse::log::level() as u8)
+}
+
+pub fn set_level_from_str(level_name: &str) -> Result<LogLevel, ()> {
+    let parsed = LogLevel::from_str(level_name)?;
+    set_level(parsed);
+    Ok(parsed)
+}
+
+pub fn set_level_from_ini(
+    ini: &crate::ini::Ini,
+    section: &str,
+    field: &str,
+) -> Result<LogLevel, ()> {
+    let level_name = ini.get(section, field).ok_or(())?;
+    set_level_from_str(level_name)
+}
+
 pub(crate) fn open() {
     let mut buf: WideStringBuffer<BUF_SIZE> = WideStringBuffer::new();
 
@@ -92,7 +164,7 @@ pub(crate) fn open() {
         "\\My Games\\{}\\SKSE\\{}.log",
         (*CURRENT_VERSION).save_folder(),
         unsafe {
-            CStr::from_ptr(SKSEPlugin_Version.name.as_ptr())
+            CStr::from_ptr(SKSEPlugin_Version.get_name_ptr())
                 .to_str()
                 .unwrap()
         }
@@ -109,7 +181,17 @@ pub(crate) fn open() {
 }
 
 #[doc(hidden)]
-pub fn write(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
+fn write_with_level(
+    log_type: LogType,
+    level: LogLevel,
+    file: &str,
+    line: u32,
+    args: Arguments<'_>,
+) {
+    if !enabled(level) {
+        return;
+    }
+
     let mut buf = StringBuffer::<BUF_SIZE>::new();
 
     let file_name = file.rsplit('\\').next().unwrap_or(file);
@@ -129,13 +211,13 @@ pub fn write(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
 
     let loc_str = format!("[{}:{}]", file_name, line);
     let plugin_name = unsafe {
-        CStr::from_ptr(SKSEPlugin_Version.name.as_ptr())
+        CStr::from_ptr(SKSEPlugin_Version.get_name_ptr())
             .to_str()
             .unwrap_or("Unknown")
     };
 
     buf.write_fmt(format_args!(
-        "[{}] [{:04}-{:02}-{:02} {:02}:{:02}:{:02}.{:06}] {:<25} ",
+        "[{}] [{:04}-{:02}-{:02} {:02}:{:02}:{:02}.{:06}] [{}] {:<25} ",
         plugin_name,
         st.wYear,
         st.wMonth,
@@ -144,6 +226,7 @@ pub fn write(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
         st.wMinute,
         st.wSecond,
         microseconds,
+        level.as_str(),
         loc_str
     ))
     .unwrap();
@@ -155,6 +238,26 @@ pub fn write(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
 }
 
 #[doc(hidden)]
+pub fn write(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
+    write_with_level(log_type, LogLevel::Info, file, line, args);
+}
+
+#[doc(hidden)]
+pub fn debug(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
+    write_with_level(log_type, LogLevel::Debug, file, line, args);
+}
+
+#[doc(hidden)]
+pub fn warning(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
+    write_with_level(log_type, LogLevel::Warning, file, line, args);
+}
+
+#[doc(hidden)]
+pub fn error(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
+    write_with_level(log_type, LogLevel::Error, file, line, args);
+}
+
+#[doc(hidden)]
 pub fn fatal(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
     let mut buf = StringBuffer::<BUF_SIZE>::new();
 
@@ -162,7 +265,7 @@ pub fn fatal(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
     let file_name = file_name.rsplit('/').next().unwrap_or(file_name);
     let loc_str = format!("[{}:{}]", file_name, line);
     let plugin_name = unsafe {
-        CStr::from_ptr(SKSEPlugin_Version.name.as_ptr())
+        CStr::from_ptr(SKSEPlugin_Version.get_name_ptr())
             .to_str()
             .unwrap_or("Unknown")
     };
@@ -207,8 +310,8 @@ pub fn fatal_runtime(args: Arguments<'_>) -> ! {
 #[macro_export]
 macro_rules! skse_message {
     ( $($arg:tt)* ) => {
-        $crate::log::write(
-            $crate::log::LogType::File,
+        $crate::skse::log::write(
+            $crate::skse::log::LogType::File,
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)
@@ -219,24 +322,64 @@ macro_rules! skse_message {
 #[macro_export]
 macro_rules! skse_warning {
     ( window, $($arg:tt)* ) => {
-        $crate::log::write(
-            $crate::log::LogType::Window($crate::log::MB_ICONWARNING),
+        $crate::skse::log::warning(
+            $crate::skse::log::LogType::Window($crate::skse::log::MB_ICONWARNING),
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)
         );
     };
     ( log, $($arg:tt)* ) => {
-        $crate::log::write(
-            $crate::log::LogType::File,
+        $crate::skse::log::warning(
+            $crate::skse::log::LogType::File,
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)
         );
     };
     ( $($arg:tt)* ) => {
-        $crate::log::write(
-            $crate::log::LogType::Both($crate::log::MB_ICONWARNING),
+        $crate::skse::log::warning(
+            $crate::skse::log::LogType::Both($crate::skse::log::MB_ICONWARNING),
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
+        );
+    };
+}
+
+#[macro_export]
+macro_rules! skse_debug {
+    ( $($arg:tt)* ) => {
+        $crate::skse::log::debug(
+            $crate::skse::log::LogType::File,
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
+        );
+    };
+}
+
+#[macro_export]
+macro_rules! skse_error {
+    ( window, $($arg:tt)* ) => {
+        $crate::skse::log::error(
+            $crate::skse::log::LogType::Window($crate::skse::log::MB_ICONERROR),
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
+        );
+    };
+    ( log, $($arg:tt)* ) => {
+        $crate::skse::log::error(
+            $crate::skse::log::LogType::File,
+            $crate::core::file!(),
+            $crate::core::line!(),
+            $crate::core::format_args!($($arg)*)
+        );
+    };
+    ( $($arg:tt)* ) => {
+        $crate::skse::log::error(
+            $crate::skse::log::LogType::Both($crate::skse::log::MB_ICONERROR),
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)
@@ -247,24 +390,24 @@ macro_rules! skse_warning {
 #[macro_export]
 macro_rules! skse_fatal {
     ( window, $($arg:tt)* ) => {
-        $crate::log::fatal(
-            $crate::log::LogType::Window($crate::log::MB_ICONERROR),
+        $crate::skse::log::fatal(
+            $crate::skse::log::LogType::Window($crate::skse::log::MB_ICONERROR),
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)
         );
     };
     ( log, $($arg:tt)* ) => {
-        $crate::log::fatal(
-            $crate::log::LogType::File,
+        $crate::skse::log::fatal(
+            $crate::skse::log::LogType::File,
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)
         );
     };
     ( $($arg:tt)* ) => {
-        $crate::log::fatal(
-            $crate::log::LogType::Both($crate::log::MB_ICONERROR),
+        $crate::skse::log::fatal(
+            $crate::skse::log::LogType::Both($crate::skse::log::MB_ICONERROR),
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)

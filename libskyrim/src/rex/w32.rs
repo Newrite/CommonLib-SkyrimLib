@@ -5,8 +5,12 @@
 
 #[allow(non_snake_case)]
 pub mod W32 {
+    pub use windows_sys::Win32::Foundation::FILETIME;
     pub use windows_sys::Win32::System::LibraryLoader::{GetModuleHandleW, GetProcAddress};
-    pub use windows_sys::Win32::System::Threading::{CRITICAL_SECTION, CRITICAL_SECTION_DEBUG};
+    pub use windows_sys::Win32::System::Threading::{
+        CRITICAL_SECTION, CRITICAL_SECTION_DEBUG, FLS_OUT_OF_INDEXES, FlsAlloc, FlsGetValue,
+        FlsSetValue, GetCurrentThreadId, Sleep,
+    };
 
     core_util::abstract_type! {
         pub type IDirectInput8A;
@@ -240,6 +244,16 @@ pub mod W32 {
     }
 
     const _: () = assert!(core::mem::size_of::<XINPUT_CAPABILITIES>() == 0x14);
+
+    /// Source-backed opaque `REX::W32::WIN32_FIND_DATAA`.
+    #[repr(C)]
+    #[derive(Debug, Clone, Copy)]
+    #[allow(non_camel_case_types)]
+    pub struct WIN32_FIND_DATAA {
+        pub raw: [u8; 0x140],
+    }
+
+    const _: () = assert!(core::mem::size_of::<WIN32_FIND_DATAA>() == 0x140);
 
     #[allow(non_snake_case)]
     pub mod VK {

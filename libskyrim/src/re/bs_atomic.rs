@@ -2,7 +2,7 @@ use core::ffi::c_void;
 use core::sync::atomic::{AtomicU32, Ordering, fence};
 
 use crate::relocation::RelocationID;
-use windows_sys::Win32::System::Threading::{GetCurrentThreadId, Sleep};
+use crate::rex::W32::{GetCurrentThreadId, Sleep};
 
 /// Source-backed subset of `RE::BSAtomic.h` required by event/container code.
 

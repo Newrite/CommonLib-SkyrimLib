@@ -26,11 +26,9 @@ use crate::re::bs_container::BSContainerForEachResult;
 use crate::re::bssimple_list::BSSimpleList;
 use crate::re::magic_system::CastingSource;
 use crate::relocation::{RelocationID, RttiType, VariantID};
+use crate::rex::W32::{FLS_OUT_OF_INDEXES, FlsAlloc, FlsGetValue, FlsSetValue};
 use crate::runtime;
 use crate::virtual_method;
-use windows_sys::Win32::System::Threading::{
-    FLS_OUT_OF_INDEXES, FlsAlloc, FlsGetValue, FlsSetValue,
-};
 
 type VisitorCallback =
     unsafe extern "C" fn(*mut c_void, *mut ActiveEffect) -> BSContainerForEachResult;

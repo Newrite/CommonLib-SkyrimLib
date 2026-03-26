@@ -5,6 +5,7 @@
 //! @bug No known bugs.
 //!
 
+use alloc::ffi::CString;
 use alloc::rc::Rc;
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -89,6 +90,12 @@ impl Ini {
         };
         ret.load_path(path)?;
         Ok(ret)
+    }
+
+    /// Loads an INI file from a UTF-8 path string.
+    pub fn from_path_str(path: &str) -> Result<Self, ()> {
+        let path = CString::new(path).map_err(|_| ())?;
+        Self::from_path(path.as_c_str())
     }
 
     /// Loads in an INI file from the given string.
@@ -186,6 +193,12 @@ impl Ini {
         }
 
         Ok(())
+    }
+
+    /// Writes the contents of the INI object to a UTF-8 path string.
+    pub fn write_file_str(&self, path: &str) -> Result<(), core::fmt::Error> {
+        let path = CString::new(path).map_err(|_| core::fmt::Error)?;
+        self.write_file(path.as_c_str())
     }
 
     /// Loads a configuration in from the given file.

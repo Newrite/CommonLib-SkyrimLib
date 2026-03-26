@@ -1,6 +1,7 @@
-#![allow(non_camel_case_types)]
+use crate::re::{Actor, BGSEntryPointFunctionType};
+use crate::relocation::RelocationID;
 
-/// Source-backed `RE::BGSEntryPoint::ENTRY_POINT` subset used by perk-entry APIs.
+/// C++ `RE::BGSEntryPoint::ENTRY_POINT`
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BGSEntryPointEntryPoint {
@@ -97,4 +98,72 @@ pub enum BGSEntryPointEntryPoint {
     ModLockpickingKeyRewardChance = 90,
     AllowMountActor = 91,
     Total = 92,
+}
+
+/// C++ `RE::BGSEntryPoint::EntryPointParameter`
+#[repr(C)]
+pub struct BGSEntryPointParameter {
+    pub name: *const i8, // 00
+    pub non_actor: bool, // 08
+    pub pad09: u8,       // 09
+    pub pad0a: u16,      // 0A
+    pub pad0c: u32,      // 0C
+}
+
+const _: () = assert!(core::mem::size_of::<BGSEntryPointParameter>() == 0x10);
+
+/// C++ `RE::BGSEntryPoint::EntryPointParameters`
+#[repr(C)]
+pub struct BGSEntryPointParameters {
+    pub count: u32,                        // 00
+    pub pad04: u32,                        // 04
+    pub data: *mut BGSEntryPointParameter, // 08
+}
+
+const _: () = assert!(core::mem::size_of::<BGSEntryPointParameters>() == 0x10);
+
+/// C++ `RE::BGSEntryPoint::EntryPoint`
+#[repr(C)]
+pub struct BGSEntryPointData {
+    pub name: *const i8,                          // 00
+    pub parameters: BGSEntryPointParameters,      // 08
+    pub function_type: BGSEntryPointFunctionType, // 18
+    pub pad1c: u32,                               // 1C
+}
+
+const _: () = assert!(core::mem::size_of::<BGSEntryPointData>() == 0x20);
+const _: () = assert!(core::mem::offset_of!(BGSEntryPointData, parameters) == 0x08);
+const _: () = assert!(core::mem::offset_of!(BGSEntryPointData, function_type) == 0x18);
+
+/// C++ `RE::BGSEntryPoint::ENTRY_POINTS`
+pub struct BGSEntryPoints;
+
+impl BGSEntryPoints {
+    pub const TOTAL: usize = BGSEntryPointEntryPoint::Total as usize;
+}
+
+/// C++ `RE::BGSEntryPoint`
+pub struct BGSEntryPoint;
+
+impl BGSEntryPoint {
+    crate::relocation_variable! {
+        fn entry_points() -> *mut BGSEntryPointData
+            => RelocationID::new(675707, 368994), is_ptr
+    }
+
+    #[inline(always)]
+    pub fn get_entry_point(entry_point: BGSEntryPointEntryPoint) -> *mut BGSEntryPointData {
+        let index = entry_point as usize;
+        if index < BGSEntryPoints::TOTAL {
+            unsafe { Self::entry_points().add(index) }
+        } else {
+            core::ptr::null_mut()
+        }
+    }
+
+    // TODO: Add source-backed call-site-specific wrappers for `BGSEntryPoint::HandleEntryPoint`
+    // when a concrete signature is needed. The vendored surface only exposes a variadic template,
+    // so a universal Rust helper here would guess ABI rather than translate it honestly.
+    #[allow(dead_code)]
+    fn _handle_entry_point_owner_type(_: *mut Actor) {}
 }
