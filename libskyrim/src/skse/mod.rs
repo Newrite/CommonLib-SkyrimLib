@@ -21,6 +21,7 @@ pub use iat::*;
 pub use input_map::*;
 pub use interfaces::*;
 pub use loader::*;
+pub use log::*;
 pub use registration_map::*;
 pub use registration_map_unique::*;
 pub use registration_set::*;

@@ -22,8 +22,6 @@ pub extern crate core;
 pub extern crate core_util;
 
 use crate::skse::{LoadInterface, PluginDeclaration, PluginInfo};
-#[cfg(not(test))]
-use core::panic::PanicInfo;
 
 unsafe extern "Rust" {
     fn skse_plugin_rust_entry(skse: &LoadInterface) -> Result<(), ()>;
@@ -31,9 +29,14 @@ unsafe extern "Rust" {
 }
 
 #[cfg(not(test))]
-#[panic_handler]
-fn panic(info: &PanicInfo<'_>) -> ! {
+pub fn panic_runtime(info: &core::panic::PanicInfo<'_>) -> ! {
     crate::skse::log::fatal_runtime(format_args!("panic: {info}"))
+}
+
+#[cfg(all(not(test), feature = "panic-handler"))]
+#[panic_handler]
+fn panic(info: &core::panic::PanicInfo<'_>) -> ! {
+    panic_runtime(info)
 }
 
 #[unsafe(no_mangle)]

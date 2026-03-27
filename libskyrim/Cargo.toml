@@ -4,19 +4,22 @@ version = "1.1.0"
 edition = "2024"
 
 [dependencies]
-core-util  = { path = "../core-util"  }
-cstd       = { path = "../cstd"     }
+core-util = { path = "../core-util" }
+cstd = { path = "../cstd" }
 bitflags = "2.11.0"
 bytemuck = { version = "1.25.0", features = ["derive"] }
 
 [features]
-# По умолчанию собираем универсальный плагин для SE и AE
+# Build the default cross-runtime plugin surface for SE and AE.
 default = ["se", "ae"]
 
-# Доступные флаги компиляции
+# Runtime selection flags.
 se = []
 ae = []
 vr = []
+
+# Opt-in default panic handler for final no_std plugin crates.
+panic-handler = []
 
 [dependencies.windows-sys]
 version = "0.61.2"
@@ -34,7 +37,7 @@ features = [
     "Win32_UI_Input_XboxController",
     "Win32_UI_WindowsAndMessaging",
     "Win32_System_SystemInformation",
-    "Win32_System_Time"
+    "Win32_System_Time",
 ]
 
 [build-dependencies]
