@@ -1,3 +1,2 @@
-// AUTO-STUB: Full translation pending
-// TODO: VERIFY - replace with full translation when layout is needed
-core_util::abstract_type! { pub type ObjectBindPolicy; }
+// Legacy shim for old internal imports. Prefer `crate::re::ObjectBindPolicy`.
+pub(crate) use crate::re::object_bind_policy::ObjectBindPolicy;

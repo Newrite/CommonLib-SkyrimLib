@@ -7,6 +7,7 @@
 #![no_std]
 
 extern crate alloc;
+extern crate self as libskyrim;
 
 pub mod ffi;
 pub mod ini;
@@ -15,6 +16,7 @@ pub mod re;
 pub mod relocation;
 pub mod rex;
 pub mod runtime;
+pub mod sdk;
 pub mod skse;
 pub mod version;
 

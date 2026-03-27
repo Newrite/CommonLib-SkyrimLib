@@ -1,13 +1,24 @@
-use core::ffi::c_void;
+use core::ffi::{c_char, c_void};
 
 pub type CommonlibBstEventSinkProcessCallback =
     unsafe extern "C" fn(ctx: *mut c_void, event: *const c_void, event_source: *mut c_void) -> i32;
+pub type CommonlibFunctionArgumentsCollectCallback =
+    unsafe extern "C" fn(ctx: *mut c_void, dst: *mut c_void) -> bool;
+pub type CommonlibNativeFunctionMarshallCallback = unsafe extern "C" fn(
+    ctx: *mut c_void,
+    base_value: *mut c_void,
+    vm: *mut c_void,
+    stack_id: u32,
+    result_value: *mut c_void,
+    frame: *const c_void,
+) -> bool;
 
 pub type CommonlibDestroyCallback = unsafe extern "C" fn(ctx: *mut c_void);
 
 unsafe extern "C" {
     // CommonLib initialization.
     pub fn init_commonlib(skse_interface: *const c_void);
+    pub fn init_commonlib_with_log(skse_interface: *const c_void, log: bool);
 
     // Address Library helpers.
     pub fn commonlib_id_to_address(id: usize) -> usize;
@@ -22,6 +33,7 @@ unsafe extern "C" {
     pub fn commonlib_write_branch6(src: usize, dst: usize) -> usize;
     pub fn commonlib_write_call5(src: usize, dst: usize) -> usize;
     pub fn commonlib_write_call6(src: usize, dst: usize) -> usize;
+    pub fn commonlib_write_function_hook_universal(target: usize, dst: usize) -> usize;
     pub fn commonlib_alloc_trampoline(size: usize);
     pub fn commonlib_trampoline_allocate(size: usize) -> *mut u8;
 
@@ -77,4 +89,28 @@ unsafe extern "C" {
         destroy: Option<CommonlibDestroyCallback>,
     ) -> *mut c_void;
     pub fn commonlib_bst_event_sink_destroy(sink: *mut c_void);
+
+    // Generic Papyrus argument bridge.
+    pub fn commonlib_function_arguments_create(
+        ctx: *mut c_void,
+        collect: Option<CommonlibFunctionArgumentsCollectCallback>,
+        destroy: Option<CommonlibDestroyCallback>,
+    ) -> *mut c_void;
+    pub fn commonlib_function_arguments_create_zero() -> *mut c_void;
+    pub fn commonlib_function_arguments_destroy(args: *mut c_void);
+
+    // Generic Papyrus native-function bridge.
+    pub fn commonlib_native_function_create(
+        ctx: *mut c_void,
+        marshall: Option<CommonlibNativeFunctionMarshallCallback>,
+        destroy: Option<CommonlibDestroyCallback>,
+        fn_name: *const c_char,
+        class_name: *const c_char,
+        is_static: bool,
+        return_type: *const c_void,
+        param_types: *const c_void,
+        param_count: usize,
+        is_latent: bool,
+    ) -> *mut c_void;
+    pub fn commonlib_native_function_destroy(function: *mut c_void);
 }

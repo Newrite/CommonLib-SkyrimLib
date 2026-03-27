@@ -3,7 +3,8 @@ resolver = "3"
 members = [
     "core-util",
     "cstd",
-    "libskyrim"
+    "libskyrim",
+    "libskyrim-macros"
 ]
 
 [profile.release]

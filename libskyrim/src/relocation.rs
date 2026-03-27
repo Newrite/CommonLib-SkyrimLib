@@ -1,7 +1,14 @@
 use crate::ffi;
 use crate::runtime;
+use crate::version::Version;
+use alloc::vec::Vec;
 use core::ffi::c_void;
+use core::fmt;
 use core::marker::PhantomData;
+use core::ptr::NonNull;
+use iced_x86::{
+    BlockEncoder, BlockEncoderOptions, Decoder, DecoderOptions, Instruction, InstructionBlock,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RelocationError {
@@ -9,7 +16,57 @@ pub enum RelocationError {
     UnresolvedOffset(usize),
     UnsupportedCallHookSize(usize),
     UnsupportedBranchHookSize(usize),
+    InvalidVtableSlot(usize),
+    FunctionHookSizeTooSmall(usize),
+    FunctionHookDecodeFailed,
+    FunctionHookRelocationFailed,
+    FunctionHookTrampolineAllocFailed,
+    FunctionHookUniversalInstallFailed,
     MissingRuntimeDynamicCast,
+}
+
+impl fmt::Display for RelocationError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::UnresolvedId(id) => write!(f, "Address Library failed to resolve ID {id}"),
+            Self::UnresolvedOffset(offset) => {
+                write!(f, "failed to resolve offset {offset:#X}")
+            }
+            Self::UnsupportedCallHookSize(size) => {
+                write!(
+                    f,
+                    "unsupported call hook size {size}; only 5 or 6 are supported"
+                )
+            }
+            Self::UnsupportedBranchHookSize(size) => {
+                write!(
+                    f,
+                    "unsupported branch hook size {size}; only 5 or 6 are supported"
+                )
+            }
+            Self::InvalidVtableSlot(slot) => write!(
+                f,
+                "invalid vtable slot {slot:#X}; slot must be aligned to pointer size {}",
+                core::mem::size_of::<usize>()
+            ),
+            Self::FunctionHookSizeTooSmall(size) => {
+                write!(f, "function hook needs at least 5 bytes, got {size}")
+            }
+            Self::FunctionHookDecodeFailed => f.write_str("failed to decode function prologue"),
+            Self::FunctionHookRelocationFailed => {
+                f.write_str("failed to relocate stolen instructions into trampoline")
+            }
+            Self::FunctionHookTrampolineAllocFailed => {
+                f.write_str("failed to allocate trampoline storage")
+            }
+            Self::FunctionHookUniversalInstallFailed => {
+                f.write_str("MinHook failed to install universal function hook")
+            }
+            Self::MissingRuntimeDynamicCast => {
+                f.write_str("failed to resolve RTDynamicCast address")
+            }
+        }
+    }
 }
 
 pub trait TryIntoAddress {
@@ -99,6 +156,32 @@ fn fatal_resolution(context: &str, error: RelocationError) -> ! {
             crate::skse::log::fatal_runtime(format_args!(
                 "{}: unsupported branch hook size {}. Only 5 or 6 are supported.",
                 context, size
+            ))
+        }
+        RelocationError::InvalidVtableSlot(slot) => crate::skse::log::fatal_runtime(format_args!(
+            "{}: invalid vtable slot {:#X}; slot must be aligned to pointer size {}",
+            context,
+            slot,
+            core::mem::size_of::<usize>()
+        )),
+        RelocationError::FunctionHookSizeTooSmall(size) => {
+            crate::skse::log::fatal_runtime(format_args!(
+                "{}: function hook needs at least 5 bytes, got {}",
+                context, size
+            ))
+        }
+        RelocationError::FunctionHookDecodeFailed => crate::skse::log::fatal_runtime(format_args!(
+            "{context}: failed to decode function prologue"
+        )),
+        RelocationError::FunctionHookRelocationFailed => crate::skse::log::fatal_runtime(
+            format_args!("{context}: failed to relocate stolen instructions into trampoline"),
+        ),
+        RelocationError::FunctionHookTrampolineAllocFailed => crate::skse::log::fatal_runtime(
+            format_args!("{context}: failed to allocate trampoline storage"),
+        ),
+        RelocationError::FunctionHookUniversalInstallFailed => {
+            crate::skse::log::fatal_runtime(format_args!(
+                "{context}: MinHook failed to install universal function hook; see native log for details"
             ))
         }
         RelocationError::MissingRuntimeDynamicCast => crate::skse::log::fatal_runtime(
@@ -243,6 +326,91 @@ impl TryIntoAddress for RelocationID {
 }
 
 impl TryIntoOffset for RelocationID {
+    fn try_into_offset(self) -> Result<usize, RelocationError> {
+        self.try_offset()
+    }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub struct VersionedRelocationID {
+    pub version: Version,
+    pub se: usize,
+    pub ae_before: usize,
+    pub ae_after: usize,
+    pub vr: usize,
+}
+
+impl VersionedRelocationID {
+    pub const fn new(version: Version, se: usize, ae_before: usize, ae_after: usize) -> Self {
+        Self {
+            version,
+            se,
+            ae_before,
+            ae_after,
+            vr: se,
+        }
+    }
+
+    pub const fn with_vr(
+        version: Version,
+        se: usize,
+        ae_before: usize,
+        ae_after: usize,
+        vr: usize,
+    ) -> Self {
+        Self {
+            version,
+            se,
+            ae_before,
+            ae_after,
+            vr,
+        }
+    }
+
+    pub fn id(self) -> usize {
+        if runtime::is_vr() {
+            self.vr
+        } else if runtime::is_ae() {
+            if runtime::is_at_least(self.version) {
+                self.ae_after
+            } else {
+                self.ae_before
+            }
+        } else if runtime::is_se() {
+            self.se
+        } else {
+            0
+        }
+    }
+
+    pub fn active(self) -> ID {
+        ID::new(self.id())
+    }
+
+    pub fn try_offset(self) -> Result<usize, RelocationError> {
+        self.active().try_offset()
+    }
+
+    pub fn offset(self) -> usize {
+        self.try_offset().unwrap_or(0)
+    }
+
+    pub fn try_address(self) -> Result<usize, RelocationError> {
+        self.active().try_address()
+    }
+
+    pub fn address(self) -> usize {
+        self.try_address().unwrap_or(0)
+    }
+}
+
+impl TryIntoAddress for VersionedRelocationID {
+    fn try_into_address(self) -> Result<usize, RelocationError> {
+        self.try_address()
+    }
+}
+
+impl TryIntoOffset for VersionedRelocationID {
     fn try_into_offset(self) -> Result<usize, RelocationError> {
         self.try_offset()
     }
@@ -463,33 +631,246 @@ pub fn write_vfunc<A: IntoAddress, I: IntoOffset>(
     index: I,
     new_func: usize,
 ) -> usize {
-    unsafe { ffi::commonlib_write_vfunc(vtable_addr.into_address(), index.into_offset(), new_func) }
+    match try_write_vfunc(vtable_addr, index, new_func) {
+        Ok(address) => address,
+        Err(error) => fatal_resolution("Failed to install vtable hook", error),
+    }
 }
 
 pub fn write_call<A: IntoAddress>(src: A, dst: usize, size: usize) -> usize {
+    match try_write_call(src, dst, size) {
+        Ok(address) => address,
+        Err(error) => fatal_resolution("Failed to install call hook", error),
+    }
+}
+
+pub fn try_write_vfunc<A: TryIntoAddress, I: TryIntoOffset>(
+    vtable_addr: A,
+    index: I,
+    new_func: usize,
+) -> Result<usize, RelocationError> {
+    Ok(unsafe {
+        ffi::commonlib_write_vfunc(
+            vtable_addr.try_into_address()?,
+            index.try_into_offset()?,
+            new_func,
+        )
+    })
+}
+
+pub fn try_write_call<A: TryIntoAddress>(
+    src: A,
+    dst: usize,
+    size: usize,
+) -> Result<usize, RelocationError> {
+    let src = src.try_into_address()?;
     unsafe {
         match size {
-            5 => ffi::commonlib_write_call5(src.into_address(), dst),
-            6 => ffi::commonlib_write_call6(src.into_address(), dst),
-            _ => fatal_resolution(
-                "Failed to install call hook",
-                RelocationError::UnsupportedCallHookSize(size),
-            ),
+            5 => Ok(ffi::commonlib_write_call5(src, dst)),
+            6 => Ok(ffi::commonlib_write_call6(src, dst)),
+            _ => Err(RelocationError::UnsupportedCallHookSize(size)),
         }
     }
 }
 
 pub fn write_branch<A: IntoAddress>(src: A, dst: usize, size: usize) -> usize {
+    match try_write_branch(src, dst, size) {
+        Ok(address) => address,
+        Err(error) => fatal_resolution("Failed to install branch hook", error),
+    }
+}
+
+pub fn try_write_branch<A: TryIntoAddress>(
+    src: A,
+    dst: usize,
+    size: usize,
+) -> Result<usize, RelocationError> {
+    let src = src.try_into_address()?;
     unsafe {
         match size {
-            5 => ffi::commonlib_write_branch5(src.into_address(), dst),
-            6 => ffi::commonlib_write_branch6(src.into_address(), dst),
-            _ => fatal_resolution(
-                "Failed to install branch hook",
-                RelocationError::UnsupportedBranchHookSize(size),
-            ),
+            5 => Ok(ffi::commonlib_write_branch5(src, dst)),
+            6 => Ok(ffi::commonlib_write_branch6(src, dst)),
+            _ => Err(RelocationError::UnsupportedBranchHookSize(size)),
         }
     }
+}
+
+const FUNCTION_HOOK_PATCH_SIZE: usize = 5;
+const FUNCTION_HOOK_SCAN_LEN: usize = 64;
+
+#[inline(always)]
+fn function_hook_jump_back(address: usize) -> [u8; 14] {
+    let mut bytes = [0u8; 14];
+    bytes[0] = 0xFF;
+    bytes[1] = 0x25;
+    bytes[2..6].copy_from_slice(&0i32.to_le_bytes());
+    bytes[6..14].copy_from_slice(&(address as u64).to_le_bytes());
+    bytes
+}
+
+fn decode_function_hook_instructions(
+    target: usize,
+    required_len: usize,
+    exact_len: bool,
+) -> Result<(Vec<Instruction>, usize), RelocationError> {
+    let bytes = unsafe { core::slice::from_raw_parts(target as *const u8, FUNCTION_HOOK_SCAN_LEN) };
+    let mut decoder = Decoder::with_ip(64, bytes, target as u64, DecoderOptions::NONE);
+    let mut instructions = Vec::new();
+    let mut decoded_len = 0usize;
+
+    while decoded_len < required_len {
+        let instruction = decoder.decode();
+        if instruction.is_invalid() {
+            return Err(RelocationError::FunctionHookDecodeFailed);
+        }
+
+        decoded_len += instruction.len();
+        instructions.push(instruction);
+    }
+
+    if exact_len && decoded_len != required_len {
+        return Err(RelocationError::FunctionHookDecodeFailed);
+    }
+
+    Ok((instructions, decoded_len))
+}
+
+fn relocate_function_hook_trampoline(
+    target: usize,
+    dst: usize,
+    stolen_len: usize,
+) -> Result<usize, RelocationError> {
+    if stolen_len < FUNCTION_HOOK_PATCH_SIZE {
+        return Err(RelocationError::FunctionHookSizeTooSmall(stolen_len));
+    }
+
+    let (instructions, decoded_len) = decode_function_hook_instructions(target, stolen_len, true)?;
+    let reserve_size = decoded_len + instructions.len() * 64 + 16;
+    let trampoline_addr = unsafe { ffi::commonlib_trampoline_allocate(reserve_size) as usize };
+    if trampoline_addr == 0 {
+        return Err(RelocationError::FunctionHookTrampolineAllocFailed);
+    }
+
+    let relocated = BlockEncoder::encode(
+        64,
+        InstructionBlock::new(&instructions, trampoline_addr as u64),
+        BlockEncoderOptions::NONE,
+    )
+    .map_err(|_| RelocationError::FunctionHookRelocationFailed)?;
+
+    let code = relocated.code_buffer;
+    let jump_back = function_hook_jump_back(target + decoded_len);
+    let required_size = code.len() + jump_back.len();
+    if required_size > reserve_size {
+        return Err(RelocationError::FunctionHookRelocationFailed);
+    }
+
+    safe_write(trampoline_addr, &code);
+    safe_write(trampoline_addr + code.len(), &jump_back);
+
+    unsafe {
+        let _ = ffi::commonlib_write_branch5(target, dst);
+    }
+    if decoded_len > FUNCTION_HOOK_PATCH_SIZE {
+        safe_fill(
+            target + FUNCTION_HOOK_PATCH_SIZE,
+            0x90,
+            decoded_len - FUNCTION_HOOK_PATCH_SIZE,
+        );
+    }
+
+    Ok(trampoline_addr)
+}
+
+/// Installs a function-entry detour at `target`, using the exact number of
+/// bytes supplied in `stolen_len` as the relocated prologue.
+///
+/// This is a low-level primitive. It does not inspect argument nullability,
+/// resolve handles, or adapt user-friendly SDK types.
+pub fn write_function_hook_explicit<A: IntoAddress>(
+    target: A,
+    dst: usize,
+    stolen_len: usize,
+) -> usize {
+    match try_write_function_hook_explicit(target, dst, stolen_len) {
+        Ok(address) => address,
+        Err(error) => fatal_resolution("Failed to install explicit function hook", error),
+    }
+}
+
+/// Installs a function-entry detour at `target`, automatically decoding enough
+/// whole instructions to cover the entry patch.
+///
+/// This is a low-level primitive. It does not inspect argument nullability,
+/// resolve handles, or adapt user-friendly SDK types.
+pub fn write_function_hook_auto<A: IntoAddress>(target: A, dst: usize) -> usize {
+    match try_write_function_hook_auto(target, dst) {
+        Ok(address) => address,
+        Err(error) => fatal_resolution("Failed to install auto function hook", error),
+    }
+}
+
+pub fn try_write_function_hook_explicit<A: TryIntoAddress>(
+    target: A,
+    dst: usize,
+    stolen_len: usize,
+) -> Result<usize, RelocationError> {
+    relocate_function_hook_trampoline(target.try_into_address()?, dst, stolen_len)
+}
+
+pub fn try_write_function_hook_auto<A: TryIntoAddress>(
+    target: A,
+    dst: usize,
+) -> Result<usize, RelocationError> {
+    let target = target.try_into_address()?;
+    let stolen_len =
+        match decode_function_hook_instructions(target, FUNCTION_HOOK_PATCH_SIZE, false) {
+            Ok((_, decoded_len)) => decoded_len,
+            Err(error) => return Err(error),
+        };
+
+    relocate_function_hook_trampoline(target, dst, stolen_len)
+}
+
+/// Installs a function-entry detour at `target` using the MinHook backend.
+///
+/// This is the most general low-level function hook path and is intended for
+/// arbitrary callee-entry detours where users do not want to manage stolen-byte
+/// sizing themselves.
+pub fn write_function_hook_universal<A: IntoAddress>(target: A, dst: usize) -> usize {
+    match try_write_function_hook_universal(target, dst) {
+        Ok(address) => address,
+        Err(error) => fatal_resolution("Failed to install universal function hook", error),
+    }
+}
+
+pub fn try_write_function_hook_universal<A: TryIntoAddress>(
+    target: A,
+    dst: usize,
+) -> Result<usize, RelocationError> {
+    let target = target.try_into_address()?;
+    let original = unsafe { ffi::commonlib_write_function_hook_universal(target, dst) };
+    if original == 0 {
+        Err(RelocationError::FunctionHookUniversalInstallFailed)
+    } else {
+        Ok(original)
+    }
+}
+
+/// Backward-compatible low-level function detour entrypoint.
+///
+/// `size` is the number of original bytes stolen from the function prologue and
+/// relocated into the trampoline returned by this function.
+pub fn write_function_hook<A: IntoAddress>(target: A, dst: usize, size: usize) -> usize {
+    write_function_hook_explicit(target, dst, size)
+}
+
+pub fn try_write_function_hook<A: TryIntoAddress>(
+    target: A,
+    dst: usize,
+    size: usize,
+) -> Result<usize, RelocationError> {
+    try_write_function_hook_explicit(target, dst, size)
 }
 
 pub trait RttiType {
@@ -523,6 +904,26 @@ pub unsafe fn skyrim_cast<T: RttiType, U: RttiType>(from: *mut T) -> *mut U {
     let rtdc = unsafe { rtdc.get() };
     let result = rtdc(from as *mut c_void, 0, from_rtti, to_rtti, 0);
     result as *mut U
+}
+
+#[inline(always)]
+pub unsafe fn skyrim_cast_const<T: RttiType, U: RttiType>(from: *const T) -> *const U {
+    unsafe { skyrim_cast::<T, U>(from.cast_mut()) }.cast_const()
+}
+
+#[inline(always)]
+pub unsafe fn skyrim_cast_nonnull<T: RttiType, U: RttiType>(from: *mut T) -> Option<NonNull<U>> {
+    NonNull::new(unsafe { skyrim_cast::<T, U>(from) })
+}
+
+#[inline(always)]
+pub fn skyrim_cast_ref<T: RttiType, U: RttiType>(from: &T) -> Option<&U> {
+    unsafe { skyrim_cast_const::<T, U>(from as *const T).as_ref() }
+}
+
+#[inline(always)]
+pub fn skyrim_cast_mut<T: RttiType, U: RttiType>(from: &mut T) -> Option<&mut U> {
+    unsafe { skyrim_cast::<T, U>(from as *mut T).as_mut() }
 }
 
 #[inline(always)]
@@ -565,6 +966,25 @@ pub unsafe fn virtual_function<F: Copy, T, I: IntoOffset>(this: *const T, index:
     unsafe { virtual_relocation::<F, _, _>(this, index).get() }
 }
 
+#[inline(always)]
+pub fn try_vtable_index_from_slot<I: TryIntoOffset>(slot: I) -> Result<usize, RelocationError> {
+    let slot = slot.try_into_offset()?;
+    let stride = core::mem::size_of::<usize>();
+    if slot % stride != 0 {
+        Err(RelocationError::InvalidVtableSlot(slot))
+    } else {
+        Ok(slot / stride)
+    }
+}
+
+#[inline(always)]
+pub fn vtable_index_from_slot<I: IntoOffset>(slot: I) -> usize {
+    match try_vtable_index_from_slot(slot.into_offset()) {
+        Ok(index) => index,
+        Err(error) => fatal_resolution("Failed to use vtable slot", error),
+    }
+}
+
 #[macro_export]
 macro_rules! relocate_virtual {
     ($signature:ty, $receiver:expr, $index:expr $(, $arg:expr)* $(,)?) => {{
@@ -591,6 +1011,7 @@ macro_rules! define_vtable_hook {
     ) => {
         #[allow(non_snake_case)]
         $vis mod $hook_name {
+            #[allow(unused_imports)]
             use super::*;
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
             type Original = $crate::relocation::Relocation<Signature>;
@@ -613,7 +1034,7 @@ macro_rules! define_vtable_hook {
                 let orig_addr = $crate::relocation::write_vfunc(
                     $vtable.into_address(),
                     $offset.into_offset(),
-                    $hook_func as usize,
+                    $hook_func as *const () as usize,
                 );
                 ORIGINAL.init($crate::relocation::Relocation::from_address(orig_addr));
             }
@@ -633,6 +1054,7 @@ macro_rules! define_call_hook {
     ) => {
         #[allow(non_snake_case)]
         $vis mod $hook_name {
+            #[allow(unused_imports)]
             use super::*;
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
             type Original = $crate::relocation::Relocation<Signature>;
@@ -653,8 +1075,475 @@ macro_rules! define_call_hook {
                 use $crate::relocation::{IntoAddress, IntoOffset};
 
                 let target_addr = $address.into_address() + $offset.into_offset();
-                let orig_addr = $crate::relocation::write_call(target_addr, $hook_func as usize, $size);
+                let orig_addr = $crate::relocation::write_call(
+                    target_addr,
+                    $hook_func as *const () as usize,
+                    $size,
+                );
                 ORIGINAL.init($crate::relocation::Relocation::from_address(orig_addr));
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! define_vcall_hook {
+    (
+        $vis:vis $hook_name:ident {
+            address: $address:expr,
+            offset: $offset:expr,
+            size: $size:literal,
+            receiver: $receiver:ident,
+            index: $index:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        #[allow(non_snake_case)]
+        $vis mod $hook_name {
+            #[allow(unused_imports)]
+            use super::*;
+            type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
+
+            #[inline(always)]
+            pub fn callsite_relocation() -> $crate::relocation::Relocation<()> {
+                use $crate::relocation::{IntoAddress, IntoOffset};
+                $crate::relocation::Relocation::from_address(
+                    $address.into_address() + $offset.into_offset(),
+                )
+            }
+
+            #[inline(always)]
+            pub fn vtable_index() -> usize {
+                use $crate::relocation::IntoOffset;
+                $index.into_offset()
+            }
+
+            #[inline(always)]
+            pub fn original_virtual_relocation<T>(
+                receiver: *const T,
+            ) -> $crate::relocation::Relocation<Signature> {
+                unsafe {
+                    $crate::relocation::virtual_relocation::<Signature, _, _>(
+                        receiver,
+                        vtable_index(),
+                    )
+                }
+            }
+
+            #[inline(always)]
+            pub fn original($($arg_name: $arg_type),*) $(-> $ret)? {
+                let original = unsafe { original_virtual_relocation($receiver as *const _).get() };
+                original($($arg_name),*)
+            }
+
+            extern "C" fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? { $body }
+
+            pub fn install() {
+                use $crate::relocation::{IntoAddress, IntoOffset};
+
+                let target_addr = $address.into_address() + $offset.into_offset();
+                let _ = $crate::relocation::write_call(
+                    target_addr,
+                    $hook_func as *const () as usize,
+                    $size,
+                );
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! define_function_hook {
+    (
+        $vis:vis $hook_name:ident {
+            target: $target:expr,
+            size: $size:literal,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        #[allow(non_snake_case)]
+        $vis mod $hook_name {
+            #[allow(unused_imports)]
+            use super::*;
+            type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
+            type Original = $crate::relocation::Relocation<Signature>;
+            static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
+
+            #[inline(always)]
+            pub fn original_relocation() -> Original { *ORIGINAL }
+
+            #[inline(always)]
+            pub fn original($($arg_name: $arg_type),*) $(-> $ret)? {
+                let original = unsafe { original_relocation().get() };
+                original($($arg_name),*)
+            }
+
+            extern "C" fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? { $body }
+
+            pub fn install() {
+                use $crate::relocation::IntoAddress;
+
+                let orig_addr = $crate::relocation::write_function_hook_explicit(
+                    $target.into_address(),
+                    $hook_func as *const () as usize,
+                    $size,
+                );
+                ORIGINAL.init($crate::relocation::Relocation::from_address(orig_addr));
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! define_auto_function_hook {
+    (
+        $vis:vis $hook_name:ident {
+            target: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        #[allow(non_snake_case)]
+        $vis mod $hook_name {
+            #[allow(unused_imports)]
+            use super::*;
+            type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
+            type Original = $crate::relocation::Relocation<Signature>;
+            static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
+
+            #[inline(always)]
+            pub fn original_relocation() -> Original { *ORIGINAL }
+
+            #[inline(always)]
+            pub fn original($($arg_name: $arg_type),*) $(-> $ret)? {
+                let original = unsafe { original_relocation().get() };
+                original($($arg_name),*)
+            }
+
+            extern "C" fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? { $body }
+
+            pub fn install() {
+                use $crate::relocation::IntoAddress;
+
+                let orig_addr = $crate::relocation::write_function_hook_auto(
+                    $target.into_address(),
+                    $hook_func as *const () as usize,
+                );
+                ORIGINAL.init($crate::relocation::Relocation::from_address(orig_addr));
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! define_universal_function_hook {
+    (
+        $vis:vis $hook_name:ident {
+            target: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        #[allow(non_snake_case)]
+        $vis mod $hook_name {
+            #[allow(unused_imports)]
+            use super::*;
+            type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
+            type Original = $crate::relocation::Relocation<Signature>;
+            static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
+
+            #[inline(always)]
+            pub fn original_relocation() -> Original { *ORIGINAL }
+
+            #[inline(always)]
+            pub fn original($($arg_name: $arg_type),*) $(-> $ret)? {
+                let original = unsafe { original_relocation().get() };
+                original($($arg_name),*)
+            }
+
+            extern "C" fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? { $body }
+
+            pub fn install() {
+                use $crate::relocation::IntoAddress;
+
+                let orig_addr = $crate::relocation::write_function_hook_universal(
+                    $target.into_address(),
+                    $hook_func as *const () as usize,
+                );
+                ORIGINAL.init($crate::relocation::Relocation::from_address(orig_addr));
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! hook {
+    (
+        $vis:vis function $hook_name:ident {
+            target: $target:expr,
+            size: $size:literal,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::define_function_hook! {
+            $vis $hook_name {
+                target: $target,
+                size: $size,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis function $hook_name:ident {
+            target: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::define_universal_function_hook! {
+            $vis $hook_name {
+                target: $target,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis function $hook_name:ident {
+            address: $target:expr,
+            size: $size:literal,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis function $hook_name {
+                target: $target,
+                size: $size,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis function $hook_name:ident {
+            address: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis function $hook_name {
+                target: $target,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis detour $hook_name:ident {
+            target: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::define_auto_function_hook! {
+            $vis $hook_name {
+                target: $target,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis detour $hook_name:ident {
+            address: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis detour $hook_name {
+                target: $target,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis universal $hook_name:ident {
+            target: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::define_universal_function_hook! {
+            $vis $hook_name {
+                target: $target,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis universal $hook_name:ident {
+            address: $target:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis universal $hook_name {
+                target: $target,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis call $hook_name:ident {
+            target: $address:expr,
+            offset: $offset:expr,
+            size: $size:literal,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::define_call_hook! {
+            $vis $hook_name {
+                address: $address,
+                offset: $offset,
+                size: $size,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis call $hook_name:ident {
+            address: $address:expr,
+            offset: $offset:expr,
+            size: $size:literal,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis call $hook_name {
+                target: $address,
+                offset: $offset,
+                size: $size,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis vcall $hook_name:ident {
+            target: $address:expr,
+            offset: $offset:expr,
+            size: $size:literal,
+            receiver: $receiver:ident,
+            index: $index:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::define_vcall_hook! {
+            $vis $hook_name {
+                address: $address,
+                offset: $offset,
+                size: $size,
+                receiver: $receiver,
+                index: $index,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis vcall $hook_name:ident {
+            address: $address:expr,
+            offset: $offset:expr,
+            size: $size:literal,
+            receiver: $receiver:ident,
+            index: $index:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis vcall $hook_name {
+                target: $address,
+                offset: $offset,
+                size: $size,
+                receiver: $receiver,
+                index: $index,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis vcall $hook_name:ident {
+            target: $address:expr,
+            offset: $offset:expr,
+            size: $size:literal,
+            receiver: $receiver:ident,
+            slot: $slot:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis vcall $hook_name {
+                target: $address,
+                offset: $offset,
+                size: $size,
+                receiver: $receiver,
+                index: $crate::relocation::vtable_index_from_slot($slot),
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis vcall $hook_name:ident {
+            address: $address:expr,
+            offset: $offset:expr,
+            size: $size:literal,
+            receiver: $receiver:ident,
+            slot: $slot:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis vcall $hook_name {
+                target: $address,
+                offset: $offset,
+                size: $size,
+                receiver: $receiver,
+                slot: $slot,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis vtable $hook_name:ident {
+            vtable: $vtable:expr,
+            index: $index:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::define_vtable_hook! {
+            $vis $hook_name {
+                vtable: $vtable,
+                offset: $index,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
+            }
+        }
+    };
+
+    (
+        $vis:vis vtable $hook_name:ident {
+            vtable: $vtable:expr,
+            offset: $offset:expr,
+            fn $hook_func:ident($($arg_name:ident: $arg_type:ty),* $(,)?) $(-> $ret:ty)? $body:block
+        }
+    ) => {
+        $crate::hook! {
+            $vis vtable $hook_name {
+                vtable: $vtable,
+                index: $offset,
+                fn $hook_func($($arg_name: $arg_type),*) $(-> $ret)? $body
             }
         }
     };
@@ -897,5 +1786,113 @@ mod tests {
             as fn(&GenericVirtual<u32>, Option<u32>) -> Option<u32>;
         let _ = GenericVirtual::<u32>::relocated_echo_mut
             as fn(&mut GenericVirtual<u32>, Result<u32, u32>) -> Result<u32, u32>;
+    }
+
+    crate::hook! {
+        pub function TestFunctionHook {
+            target: 0usize,
+            size: 5,
+            fn detour(value: u32) -> u32 {
+                original(value)
+            }
+        }
+    }
+
+    crate::hook! {
+        pub function TestUniversalFunctionHook {
+            target: 0usize,
+            fn detour(value: u32) -> u32 {
+                original(value)
+            }
+        }
+    }
+
+    crate::hook! {
+        pub detour TestDetourHook {
+            target: 0usize,
+            fn detour(value: u32) -> u32 {
+                original(value)
+            }
+        }
+    }
+
+    crate::hook! {
+        pub universal TestUniversalAliasHook {
+            target: 0usize,
+            fn detour(value: u32) -> u32 {
+                original(value)
+            }
+        }
+    }
+
+    crate::hook! {
+        pub call TestCallHook {
+            target: 0usize,
+            offset: 0usize,
+            size: 5,
+            fn detour(value: u32) -> u32 {
+                original(value)
+            }
+        }
+    }
+
+    crate::hook! {
+        pub vtable TestVtableHook {
+            vtable: 0usize,
+            index: 0usize,
+            fn detour(value: u32) -> u32 {
+                original(value)
+            }
+        }
+    }
+
+    crate::hook! {
+        pub vcall TestVcallHook {
+            target: 0usize,
+            offset: 0usize,
+            size: 6,
+            receiver: this,
+            index: 0usize,
+            fn detour(this: *mut u8, value: u32) -> u32 {
+                original(this, value)
+            }
+        }
+    }
+
+    crate::hook! {
+        pub vcall TestVcallSlotHook {
+            target: 0usize,
+            offset: 0usize,
+            size: 6,
+            receiver: this,
+            slot: 0usize,
+            fn detour(this: *mut u8, value: u32) -> u32 {
+                original(this, value)
+            }
+        }
+    }
+
+    #[test]
+    fn hook_macro_expands_for_all_low_level_modes() {
+        let _ = TestFunctionHook::install as fn();
+        let _ = TestFunctionHook::original as fn(u32) -> u32;
+        let _ = TestUniversalFunctionHook::install as fn();
+        let _ = TestUniversalFunctionHook::original as fn(u32) -> u32;
+        let _ = TestDetourHook::install as fn();
+        let _ = TestDetourHook::original as fn(u32) -> u32;
+        let _ = TestUniversalAliasHook::install as fn();
+        let _ = TestUniversalAliasHook::original as fn(u32) -> u32;
+        let _ = TestCallHook::install as fn();
+        let _ = TestCallHook::original as fn(u32) -> u32;
+        let _ = TestVtableHook::install as fn();
+        let _ = TestVtableHook::original as fn(u32) -> u32;
+        let _ = TestVcallHook::install as fn();
+        let _ = TestVcallHook::callsite_relocation as fn() -> crate::relocation::Relocation<()>;
+        let _ = TestVcallHook::vtable_index as fn() -> usize;
+        let _ = TestVcallHook::original as fn(*mut u8, u32) -> u32;
+        let _ = TestVcallHook::original_virtual_relocation::<u8>
+            as fn(*const u8) -> crate::relocation::Relocation<extern "C" fn(*mut u8, u32) -> u32>;
+        let _ = TestVcallSlotHook::install as fn();
+        let _ = TestVcallSlotHook::original as fn(*mut u8, u32) -> u32;
     }
 }

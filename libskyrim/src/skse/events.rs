@@ -1,6 +1,7 @@
 use core_util::EnumSet;
 
 use crate::re::{Actor, BSFixedString, NiPointer, TESCameraState, TESForm, TESObjectREFR};
+use crate::sdk::core::{GameRef, NativeOwner};
 
 #[repr(C)]
 pub struct ModCallbackEvent {
@@ -10,15 +11,41 @@ pub struct ModCallbackEvent {
     pub sender: *mut TESForm,
 }
 
+impl ModCallbackEvent {
+    #[inline(always)]
+    pub fn sender_ref(&self) -> GameRef<'_, TESForm> {
+        unsafe { GameRef::from_raw(self.sender) }
+    }
+}
+
 #[repr(C)]
 pub struct CameraEvent {
     pub old_state: *mut TESCameraState,
     pub new_state: *mut TESCameraState,
 }
 
+impl CameraEvent {
+    #[inline(always)]
+    pub fn old_state_ref(&self) -> GameRef<'_, TESCameraState> {
+        unsafe { GameRef::from_raw(self.old_state) }
+    }
+
+    #[inline(always)]
+    pub fn new_state_ref(&self) -> GameRef<'_, TESCameraState> {
+        unsafe { GameRef::from_raw(self.new_state) }
+    }
+}
+
 #[repr(C)]
 pub struct CrosshairRefEvent {
     pub crosshair_ref: NiPointer<TESObjectREFR>,
+}
+
+impl CrosshairRefEvent {
+    #[inline(always)]
+    pub fn reference_ref(&self) -> GameRef<'_, TESObjectREFR> {
+        self.crosshair_ref.borrow()
+    }
 }
 
 #[repr(u32)]
@@ -53,9 +80,28 @@ pub struct ActionEvent {
     pub slot: EnumSet<ActionEventSlot, u32>,
 }
 
+impl ActionEvent {
+    #[inline(always)]
+    pub fn actor_ref(&self) -> GameRef<'_, Actor> {
+        unsafe { GameRef::from_raw(self.actor) }
+    }
+
+    #[inline(always)]
+    pub fn source_form_ref(&self) -> GameRef<'_, TESForm> {
+        unsafe { GameRef::from_raw(self.source_form) }
+    }
+}
+
 #[repr(C)]
 pub struct NiNodeUpdateEvent {
     pub reference: *mut TESObjectREFR,
+}
+
+impl NiNodeUpdateEvent {
+    #[inline(always)]
+    pub fn reference_ref(&self) -> GameRef<'_, TESObjectREFR> {
+        unsafe { GameRef::from_raw(self.reference) }
+    }
 }
 
 const _: () = assert!(core::mem::size_of::<ModCallbackEvent>() == 0x20);

@@ -32,8 +32,8 @@ pub fn register_listener(message_type: u32, callback: fn(&Message)) {
 
 pub(crate) fn initialize_messaging_listener(load_interface: &LoadInterface) -> bool {
     unsafe {
-        let messaging =
-            (load_interface.query_interface)(InterfaceId::Messaging) as *mut MessagingInterface;
+        let messaging = (load_interface.query_interface)(InterfaceId::Messaging as u32)
+            as *mut MessagingInterface;
         if messaging.is_null() {
             crate::skse_fatal!(window, "Failed to acquire the SKSE messaging interface");
             return false;

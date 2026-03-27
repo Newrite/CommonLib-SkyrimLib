@@ -1,5 +1,6 @@
 #include "PCH.h"
 
+#include <MinHook.h>
 #include <memory>
 #include <new>
 
@@ -7,7 +8,10 @@ namespace
 {
     using bst_event_sink_process_callback =
         std::int32_t (*)(void* ctx, const void* event, void* event_source);
+    using function_arguments_collect_callback = bool (*)(void* ctx, void* dst);
     using bst_event_sink_destroy_callback = void (*)(void* ctx);
+    using native_function_marshall_callback =
+        bool (*)(void* ctx, void* base_value, void* vm, std::uint32_t stack_id, void* result_value, const void* frame);
 
     template <class T>
     [[nodiscard]] bool bridge_emplace_vtable(T* ptr) noexcept
@@ -49,11 +53,38 @@ namespace
         }
     }
 
+    template <class T, class... Args>
+    [[nodiscard]] T* construct_game_object(Args&&... args) noexcept
+    {
+        auto* storage = RE::malloc<T>();
+        if (!storage) {
+            return nullptr;
+        }
+
+        try {
+            return std::construct_at(storage, std::forward<Args>(args)...);
+        } catch (...) {
+            RE::free(storage);
+            return nullptr;
+        }
+    }
+
     [[nodiscard]] RE::BSEventNotifyControl bridge_notify_control_from_i32(std::int32_t value) noexcept
     {
         return value == static_cast<std::int32_t>(RE::BSEventNotifyControl::kStop) ?
                    RE::BSEventNotifyControl::kStop :
                    RE::BSEventNotifyControl::kContinue;
+    }
+
+    [[nodiscard]] bool ensure_minhook_initialized() noexcept
+    {
+        const auto status = MH_Initialize();
+        if (status == MH_OK || status == MH_ERROR_ALREADY_INITIALIZED) {
+            return true;
+        }
+
+        logger::error("MinHook initialization failed: {}", MH_StatusToString(status));
+        return false;
     }
 
     class bridge_bst_event_sink final : public RE::BSTEventSink<void*>
@@ -93,12 +124,112 @@ namespace
         bst_event_sink_process_callback process;
         bst_event_sink_destroy_callback destroy;
     };
+
+    class bridge_function_arguments final : public RE::BSScript::IFunctionArguments
+    {
+    public:
+        bridge_function_arguments(
+            void* a_ctx,
+            function_arguments_collect_callback a_collect,
+            bst_event_sink_destroy_callback a_destroy) noexcept :
+            ctx(a_ctx),
+            collect(a_collect),
+            destroy(a_destroy)
+        {}
+
+        ~bridge_function_arguments() override
+        {
+            if (destroy && ctx) {
+                destroy(ctx);
+            }
+        }
+
+        bool operator()(RE::BSScrapArray<RE::BSScript::Variable>& a_dst) const override
+        {
+            if (!collect) {
+                return false;
+            }
+
+            return collect(ctx, std::addressof(a_dst));
+        }
+
+        void*                             ctx;
+        function_arguments_collect_callback collect;
+        bst_event_sink_destroy_callback   destroy;
+    };
+
+    class bridge_native_function final : public RE::BSScript::NF_util::NativeFunctionBase
+    {
+    public:
+        bridge_native_function(
+            void* a_ctx,
+            native_function_marshall_callback a_marshall,
+            bst_event_sink_destroy_callback a_destroy,
+            std::string_view a_fnName,
+            std::string_view a_className,
+            bool a_isStatic,
+            const RE::BSScript::TypeInfo& a_returnType,
+            const RE::BSScript::TypeInfo* a_paramTypes,
+            std::uint16_t a_paramCount,
+            bool a_isLatent) :
+            RE::BSScript::NF_util::NativeFunctionBase(a_fnName, a_className, a_isStatic, a_paramCount),
+            ctx(a_ctx),
+            marshall(a_marshall),
+            destroy(a_destroy)
+        {
+            for (std::uint16_t i = 0; i < a_paramCount; ++i) {
+                _descTable.entries[i].second = a_paramTypes[i];
+            }
+            _retType = a_returnType;
+            _isLatent = a_isLatent;
+        }
+
+        ~bridge_native_function() override
+        {
+            if (destroy && ctx) {
+                destroy(ctx);
+            }
+        }
+
+        bool HasStub() const override
+        {
+            return static_cast<bool>(marshall);
+        }
+
+        bool MarshallAndDispatch(
+            RE::BSScript::Variable& a_baseValue,
+            RE::BSScript::Internal::VirtualMachine& a_vm,
+            RE::VMStackID a_stackID,
+            RE::BSScript::Variable& a_resultValue,
+            const RE::BSScript::StackFrame& a_frame) const override
+        {
+            if (!marshall) {
+                return false;
+            }
+
+            return marshall(
+                ctx,
+                std::addressof(a_baseValue),
+                std::addressof(a_vm),
+                a_stackID,
+                std::addressof(a_resultValue),
+                std::addressof(a_frame));
+        }
+
+        void*                            ctx;
+        native_function_marshall_callback marshall;
+        bst_event_sink_destroy_callback  destroy;
+    };
 }
 
 extern "C" {
     // 1. Инициализация CommonLib
     void init_commonlib(const void* skse_interface) {
         SKSE::Init((const SKSE::LoadInterface*)skse_interface);
+    }
+
+    void init_commonlib_with_log(const void* skse_interface, bool log) {
+        SKSE::Init((const SKSE::LoadInterface*)skse_interface, log);
     }
 
     // 2. Получение адресов
@@ -134,6 +265,35 @@ extern "C" {
 
     uintptr_t commonlib_write_call6(uintptr_t src, uintptr_t dst) {
         return SKSE::GetTrampoline().write_call<6>(src, dst);
+    }
+
+    uintptr_t commonlib_write_function_hook_universal(uintptr_t target, uintptr_t dst) {
+        if (!ensure_minhook_initialized()) {
+            return 0;
+        }
+
+        void* original = nullptr;
+        const auto create_status =
+            MH_CreateHook(reinterpret_cast<void*>(target), reinterpret_cast<void*>(dst), std::addressof(original));
+        if (create_status != MH_OK) {
+            logger::error(
+                "MinHook create failed for target {:#016X}: {}",
+                target,
+                MH_StatusToString(create_status));
+            return 0;
+        }
+
+        const auto enable_status = MH_EnableHook(reinterpret_cast<void*>(target));
+        if (enable_status != MH_OK && enable_status != MH_ERROR_ENABLED) {
+            logger::error(
+                "MinHook enable failed for target {:#016X}: {}",
+                target,
+                MH_StatusToString(enable_status));
+            MH_RemoveHook(reinterpret_cast<void*>(target));
+            return 0;
+        }
+
+        return reinterpret_cast<uintptr_t>(original);
     }
 
     // Создает общий пул памяти (вызывается 1 раз при старте)
@@ -289,12 +449,72 @@ extern "C" {
         delete static_cast<bridge_bst_event_sink*>(sink);
     }
 
+    void* commonlib_function_arguments_create(
+        void* ctx,
+        function_arguments_collect_callback collect,
+        bst_event_sink_destroy_callback destroy) noexcept
+    {
+        return construct_game_object<bridge_function_arguments>(ctx, collect, destroy);
+    }
+
+    void* commonlib_function_arguments_create_zero() noexcept {
+        return construct_game_object<RE::BSScript::ZeroFunctionArguments>();
+    }
+
+    void commonlib_function_arguments_destroy(void* args) noexcept {
+        delete static_cast<RE::BSScript::IFunctionArguments*>(args);
+    }
+
+    void* commonlib_native_function_create(
+        void* ctx,
+        native_function_marshall_callback marshall,
+        bst_event_sink_destroy_callback destroy,
+        const char* fn_name,
+        const char* class_name,
+        bool is_static,
+        const void* return_type,
+        const void* param_types,
+        std::size_t param_count,
+        bool is_latent) noexcept
+    {
+        if (!fn_name || !class_name || !return_type || param_count > 0xFFFF ||
+            (param_count > 0 && !param_types)) {
+            return nullptr;
+        }
+
+        auto* param_type_info =
+            static_cast<const RE::BSScript::TypeInfo*>(param_types);
+        return construct_game_object<bridge_native_function>(
+            ctx,
+            marshall,
+            destroy,
+            fn_name,
+            class_name,
+            is_static,
+            *static_cast<const RE::BSScript::TypeInfo*>(return_type),
+            param_type_info,
+            static_cast<std::uint16_t>(param_count),
+            is_latent);
+    }
+
+    void commonlib_native_function_destroy(void* function) noexcept {
+        delete static_cast<bridge_native_function*>(function);
+    }
+
+    void* commonlib_skse_get_scaleform_interface() noexcept {
+        return const_cast<SKSE::ScaleformInterface*>(SKSE::GetScaleformInterface());
+    }
+
     void* commonlib_skse_get_serialization_interface() noexcept {
         return const_cast<SKSE::SerializationInterface*>(SKSE::GetSerializationInterface());
     }
 
     void* commonlib_skse_get_papyrus_interface() noexcept {
         return const_cast<SKSE::PapyrusInterface*>(SKSE::GetPapyrusInterface());
+    }
+
+    void* commonlib_skse_get_task_interface() noexcept {
+        return const_cast<SKSE::TaskInterface*>(SKSE::GetTaskInterface());
     }
 
     void* commonlib_skse_get_messaging_interface() noexcept {

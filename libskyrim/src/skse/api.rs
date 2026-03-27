@@ -5,13 +5,21 @@ use super::events::{
 };
 use super::interfaces::{
     LoadInterface, MessagingInterface, ObjectInterface, PapyrusInterface, SKSEDelayFunctorManager,
-    SKSEObjectRegistry, SKSEPersistentObjectStorage, SerializationInterface, TrampolineInterface,
+    SKSEObjectRegistry, SKSEPersistentObjectStorage, ScaleformInterface, SerializationInterface,
+    TaskInterface, TrampolineInterface,
 };
 
 #[inline(always)]
 pub unsafe fn init(load_interface: *const LoadInterface) {
     unsafe {
         crate::ffi::init_commonlib(load_interface.cast());
+    }
+}
+
+#[inline(always)]
+pub unsafe fn init_with_log(load_interface: *const LoadInterface, log: bool) {
+    unsafe {
+        crate::ffi::init_commonlib_with_log(load_interface.cast(), log);
     }
 }
 
@@ -23,6 +31,11 @@ pub fn alloc_trampoline(size: usize) {
 }
 
 #[inline(always)]
+pub fn get_scaleform_interface() -> *mut ScaleformInterface {
+    unsafe { crate::ffi::commonlib_skse_get_scaleform_interface().cast() }
+}
+
+#[inline(always)]
 pub fn get_serialization_interface() -> *mut SerializationInterface {
     unsafe { crate::ffi::commonlib_skse_get_serialization_interface().cast() }
 }
@@ -30,6 +43,11 @@ pub fn get_serialization_interface() -> *mut SerializationInterface {
 #[inline(always)]
 pub fn get_papyrus_interface() -> *mut PapyrusInterface {
     unsafe { crate::ffi::commonlib_skse_get_papyrus_interface().cast() }
+}
+
+#[inline(always)]
+pub fn get_task_interface() -> *mut TaskInterface {
+    unsafe { crate::ffi::commonlib_skse_get_task_interface().cast() }
 }
 
 #[inline(always)]
@@ -86,3 +104,8 @@ pub fn get_action_event_source() -> *mut BSTEventSource<ActionEvent> {
 pub fn get_ni_node_update_event_source() -> *mut BSTEventSource<NiNodeUpdateEvent> {
     unsafe { crate::ffi::commonlib_skse_get_ni_node_update_event_source().cast() }
 }
+
+// TODO: `SKSE::RegisterForAPIInitEvent(std::function<void()>)` is still omitted
+// here because libskyrim does not yet have a retained callback bridge for
+// stored `std::function` registrations. Expose it once the callback lifetime
+// and ownership model is implemented through the shared FFI bridge.

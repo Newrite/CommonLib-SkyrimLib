@@ -8,6 +8,7 @@ use crate::re::{
     ActiveEffect, BGSBaseAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm, VMHandle,
     VMTypeID,
 };
+use crate::sdk::core::GameRef;
 
 use super::SerializationInterface;
 
@@ -167,90 +168,131 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     }
 
     #[inline(always)]
-    pub fn register_form(&mut self, form: *const TESForm, filter: Filter) -> bool {
+    pub fn register_form<'a>(
+        &mut self,
+        form: impl Into<GameRef<'a, TESForm>>,
+        filter: Filter,
+    ) -> bool {
+        let form = form.into();
         if form.is_null() {
             return false;
         }
 
+        let form = form.as_ptr().cast_const();
         let type_id = unsafe { (*form).get_form_type() as VMTypeID };
         self.register_object(form.cast(), filter, type_id)
     }
 
     #[inline(always)]
-    pub fn register_alias(&mut self, alias: *const BGSBaseAlias, filter: Filter) -> bool {
+    pub fn register_alias<'a>(
+        &mut self,
+        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        filter: Filter,
+    ) -> bool {
+        let alias = alias.into();
         if alias.is_null() {
             return false;
         }
 
+        let alias = alias.as_ptr().cast_const();
         self.register_object(alias.cast(), filter, BGSBaseAlias::VM_TYPE_ID)
     }
 
     #[inline(always)]
-    pub fn register_active_effect(&mut self, effect: *const ActiveEffect, filter: Filter) -> bool {
+    pub fn register_active_effect<'a>(
+        &mut self,
+        effect: impl Into<GameRef<'a, ActiveEffect>>,
+        filter: Filter,
+    ) -> bool {
+        let effect = effect.into();
         if effect.is_null() {
             return false;
         }
 
+        let effect = effect.as_ptr().cast_const();
         self.register_object(effect.cast(), filter, ActiveEffect::VM_TYPE_ID)
     }
 
     #[inline(always)]
-    pub fn unregister_form(&mut self, form: *const TESForm, filter: Filter) -> bool {
+    pub fn unregister_form<'a>(
+        &mut self,
+        form: impl Into<GameRef<'a, TESForm>>,
+        filter: Filter,
+    ) -> bool {
+        let form = form.into();
         if form.is_null() {
             return false;
         }
 
+        let form = form.as_ptr().cast_const();
         let type_id = unsafe { (*form).get_form_type() as VMTypeID };
         self.unregister_object(form.cast(), filter, type_id)
     }
 
     #[inline(always)]
-    pub fn unregister_alias(&mut self, alias: *const BGSBaseAlias, filter: Filter) -> bool {
+    pub fn unregister_alias<'a>(
+        &mut self,
+        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        filter: Filter,
+    ) -> bool {
+        let alias = alias.into();
         if alias.is_null() {
             return false;
         }
 
+        let alias = alias.as_ptr().cast_const();
         self.unregister_object(alias.cast(), filter, BGSBaseAlias::VM_TYPE_ID)
     }
 
     #[inline(always)]
-    pub fn unregister_active_effect(
+    pub fn unregister_active_effect<'a>(
         &mut self,
-        effect: *const ActiveEffect,
+        effect: impl Into<GameRef<'a, ActiveEffect>>,
         filter: Filter,
     ) -> bool {
+        let effect = effect.into();
         if effect.is_null() {
             return false;
         }
 
+        let effect = effect.as_ptr().cast_const();
         self.unregister_object(effect.cast(), filter, ActiveEffect::VM_TYPE_ID)
     }
 
     #[inline(always)]
-    pub fn unregister_all_form(&mut self, form: *const TESForm) {
+    pub fn unregister_all_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) {
+        let form = form.into();
         if form.is_null() {
             return;
         }
 
+        let form = form.as_ptr().cast_const();
         let type_id = unsafe { (*form).get_form_type() as VMTypeID };
         self.unregister_all_object(form.cast(), type_id);
     }
 
     #[inline(always)]
-    pub fn unregister_all_alias(&mut self, alias: *const BGSBaseAlias) {
+    pub fn unregister_all_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSBaseAlias>>) {
+        let alias = alias.into();
         if alias.is_null() {
             return;
         }
 
+        let alias = alias.as_ptr().cast_const();
         self.unregister_all_object(alias.cast(), BGSBaseAlias::VM_TYPE_ID);
     }
 
     #[inline(always)]
-    pub fn unregister_all_active_effect(&mut self, effect: *const ActiveEffect) {
+    pub fn unregister_all_active_effect<'a>(
+        &mut self,
+        effect: impl Into<GameRef<'a, ActiveEffect>>,
+    ) {
+        let effect = effect.into();
         if effect.is_null() {
             return;
         }
 
+        let effect = effect.as_ptr().cast_const();
         self.unregister_all_object(effect.cast(), ActiveEffect::VM_TYPE_ID);
     }
 
@@ -493,51 +535,74 @@ impl<Filter: RegistrationFilter, Args> RegistrationMap<Filter, Args> {
     }
 
     #[inline(always)]
-    pub fn register_form(&mut self, form: *const TESForm, filter: Filter) -> bool {
+    pub fn register_form<'a>(
+        &mut self,
+        form: impl Into<GameRef<'a, TESForm>>,
+        filter: Filter,
+    ) -> bool {
         self.base.register_form(form, filter)
     }
 
     #[inline(always)]
-    pub fn register_alias(&mut self, alias: *const BGSBaseAlias, filter: Filter) -> bool {
+    pub fn register_alias<'a>(
+        &mut self,
+        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        filter: Filter,
+    ) -> bool {
         self.base.register_alias(alias, filter)
     }
 
     #[inline(always)]
-    pub fn register_active_effect(&mut self, effect: *const ActiveEffect, filter: Filter) -> bool {
+    pub fn register_active_effect<'a>(
+        &mut self,
+        effect: impl Into<GameRef<'a, ActiveEffect>>,
+        filter: Filter,
+    ) -> bool {
         self.base.register_active_effect(effect, filter)
     }
 
     #[inline(always)]
-    pub fn unregister_form(&mut self, form: *const TESForm, filter: Filter) -> bool {
+    pub fn unregister_form<'a>(
+        &mut self,
+        form: impl Into<GameRef<'a, TESForm>>,
+        filter: Filter,
+    ) -> bool {
         self.base.unregister_form(form, filter)
     }
 
     #[inline(always)]
-    pub fn unregister_alias(&mut self, alias: *const BGSBaseAlias, filter: Filter) -> bool {
+    pub fn unregister_alias<'a>(
+        &mut self,
+        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        filter: Filter,
+    ) -> bool {
         self.base.unregister_alias(alias, filter)
     }
 
     #[inline(always)]
-    pub fn unregister_active_effect(
+    pub fn unregister_active_effect<'a>(
         &mut self,
-        effect: *const ActiveEffect,
+        effect: impl Into<GameRef<'a, ActiveEffect>>,
         filter: Filter,
     ) -> bool {
         self.base.unregister_active_effect(effect, filter)
     }
 
     #[inline(always)]
-    pub fn unregister_all_form(&mut self, form: *const TESForm) {
+    pub fn unregister_all_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) {
         self.base.unregister_all_form(form);
     }
 
     #[inline(always)]
-    pub fn unregister_all_alias(&mut self, alias: *const BGSBaseAlias) {
+    pub fn unregister_all_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSBaseAlias>>) {
         self.base.unregister_all_alias(alias);
     }
 
     #[inline(always)]
-    pub fn unregister_all_active_effect(&mut self, effect: *const ActiveEffect) {
+    pub fn unregister_all_active_effect<'a>(
+        &mut self,
+        effect: impl Into<GameRef<'a, ActiveEffect>>,
+    ) {
         self.base.unregister_all_active_effect(effect);
     }
 

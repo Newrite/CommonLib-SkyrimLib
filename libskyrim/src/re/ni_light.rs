@@ -5,6 +5,7 @@ use crate::offsets::offsets_vtable::VTABLE_NiLight;
 use crate::re::NiAVObject;
 use crate::re::NiColor;
 use crate::re::NiPoint3;
+use crate::re::NiRef;
 use crate::relocation::{RttiType, VariantID};
 use crate::{runtime_data_accessor, runtime_data_mut_accessor};
 
@@ -33,6 +34,18 @@ impl RttiType for NiLight {
 }
 
 inherit!(NiLight : NiAVObject);
+
+impl NiRef for NiLight {
+    #[inline(always)]
+    fn inc_ref(&self) {
+        self.base.inc_ref();
+    }
+
+    #[inline(always)]
+    fn dec_ref(&self) {
+        self.base.dec_ref();
+    }
+}
 
 impl NiLight {
     pub const RTTI: VariantID = RTTI_NiLight;

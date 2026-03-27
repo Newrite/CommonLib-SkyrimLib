@@ -124,6 +124,10 @@ impl<T, M: BSTSmartPointerManager<T>> BSTSmartPointer<T, M> {
         unsafe { crate::ffi::try_construct_out_param(construct) }
     }
 
+    // TODO: CommonLib also exposes `make_smart<T>(Args&&...)` in
+    // `BSTSmartPointer.h`. Keep using `try_construct_with(...)` until there is
+    // an ABI-safe generic constructor bridge for arbitrary C++ `T`.
+
     /// Creates a new `BSTSmartPointer` from a raw pointer, acquiring the reference.
     /// Matches C++ `BSTSmartPointer(Y* a_rhs)`.
     ///

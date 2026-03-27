@@ -1,0 +1,1 @@
+//! Camera-oriented gameplay helpers.

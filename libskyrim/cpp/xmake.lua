@@ -53,6 +53,7 @@ package_end()
 
 -- 3. ТРЕБУЕМ НАШ ПАКЕТ
 add_requires("commonlibsse-ng")
+add_requires("minhook")
 
 -- 4. НАША ЦЕЛЬ (C++ Мост для Rust)
 target("commonlib_bridge")
@@ -71,7 +72,7 @@ target("commonlib_bridge")
     set_pcxxheader("include/PCH.h")
 
     -- Подключаем пакет
-    add_packages("commonlibsse-ng")
+    add_packages("commonlibsse-ng", "minhook")
 
     -- Исходники моста
     add_headerfiles("include/**.h", "include/**.hpp")

@@ -1,6 +1,7 @@
 use alloc::boxed::Box;
 use alloc::ffi::CString;
 use alloc::format;
+use alloc::vec::Vec;
 use core::ffi::{CStr, c_char, c_void};
 
 use core_util::inherit;
@@ -11,10 +12,6 @@ use crate::re::bs_core_types::{VMHandle, VMStackID, VMTypeID};
 use crate::re::bs_fixed_string::BSFixedString;
 use crate::re::bs_intrusive_ref_counted::BSIntrusiveRefCounted;
 use crate::re::bs_jobs::BSJobsJobList;
-use crate::re::bsscript_array::Array;
-use crate::re::bsscript_object::Object;
-use crate::re::bsscript_object_bind_policy::ObjectBindPolicy;
-use crate::re::bsscript_object_type_info::ObjectTypeInfo;
 use crate::re::bst_array::BSScrapArray;
 use crate::re::bst_event::BSTEventSink;
 use crate::re::bst_smart_pointer::BSTSmartPointer;
@@ -22,18 +19,28 @@ use crate::re::error_logger::{ErrorLogger, Severity};
 use crate::re::i_object_handle_policy::IObjectHandlePolicy;
 use crate::re::i_save_patcher_interface::ISavePatcherInterface;
 use crate::re::i_stack_callback_functor::IStackCallbackFunctor;
+use crate::re::ifunction::IFunction;
+use crate::re::ifunction_arguments::IFunctionArguments;
 use crate::re::log_event::LogEvent;
+use crate::re::native_function::{NativeFunction, NativeFunctionDesc, NativeFunctionHandler};
+use crate::re::native_latent_function::{
+    LatentStatus, NativeLatentFunction, NativeLatentFunctionDesc,
+};
+use crate::re::stack_frame::StackFrame;
 use crate::re::stats_event::StatsEvent;
 use crate::re::tes_form::TESForm;
 use crate::re::type_info::{RawType, TypeInfo};
+use crate::re::type_traits::{
+    PapyrusBase, PapyrusParameter, PapyrusParameterConvertible, PapyrusReturn,
+    PapyrusReturnConvertible, PapyrusValidBase,
+};
 use crate::re::variable::Variable;
+use crate::re::virtual_machine::VirtualMachine;
 use crate::relocation::{RttiType, VariantID, VariantOffset};
 use crate::virtual_method;
 
 core_util::abstract_type! {
     pub type IForEachScriptObjectFunctor;
-    pub type IFunction;
-    pub type IFunctionArguments;
     pub type ITypeLinkedCallback;
 }
 
@@ -177,7 +184,7 @@ impl Awaitable {
             Variable::default()
         } else {
             let callback = unsafe { &*(callback as *const CallbackFunctor) };
-            callback.result
+            callback.result.clone()
         }
     }
 }
@@ -199,6 +206,403 @@ inherit!(IVirtualMachine : BSIntrusiveRefCounted);
 impl RttiType for IVirtualMachine {
     const RTTI: VariantID = RTTI_BSScript__IVirtualMachine;
 }
+
+pub trait PapyrusFunctionSignature: Copy + 'static {
+    const IS_STATIC: bool;
+
+    fn return_type_info(vm: &IVirtualMachine) -> Option<TypeInfo>;
+
+    fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>>;
+
+    unsafe fn dispatch(
+        self,
+        base_value: &mut Variable,
+        vm: &mut VirtualMachine,
+        stack_id: VMStackID,
+        result_value: &mut Variable,
+        frame: &StackFrame,
+    ) -> bool;
+}
+
+pub trait PapyrusLongFunctionSignature: Copy + 'static {
+    const IS_STATIC: bool;
+
+    fn return_type_info(vm: &IVirtualMachine) -> Option<TypeInfo>;
+
+    fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>>;
+
+    unsafe fn dispatch(
+        self,
+        base_value: &mut Variable,
+        vm: &mut VirtualMachine,
+        stack_id: VMStackID,
+        result_value: &mut Variable,
+        frame: &StackFrame,
+    ) -> bool;
+}
+
+pub trait PapyrusLatentFunctionSignature: Copy + 'static {
+    const IS_STATIC: bool;
+
+    fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>>;
+
+    unsafe fn dispatch(
+        self,
+        base_value: &mut Variable,
+        vm: &mut VirtualMachine,
+        stack_id: VMStackID,
+        result_value: &mut Variable,
+        frame: &StackFrame,
+    ) -> bool;
+}
+
+struct RegisteredNativeFunctionHandler<F> {
+    callback: F,
+}
+
+impl<F> NativeFunctionHandler for RegisteredNativeFunctionHandler<F>
+where
+    F: PapyrusFunctionSignature,
+{
+    #[inline(always)]
+    unsafe fn marshall_and_dispatch(
+        &self,
+        base_value: &mut Variable,
+        vm: &mut VirtualMachine,
+        stack_id: VMStackID,
+        result_value: &mut Variable,
+        frame: &StackFrame,
+    ) -> bool {
+        unsafe {
+            self.callback
+                .dispatch(base_value, vm, stack_id, result_value, frame)
+        }
+    }
+}
+
+struct RegisteredLongNativeFunctionHandler<F> {
+    callback: F,
+}
+
+impl<F> NativeFunctionHandler for RegisteredLongNativeFunctionHandler<F>
+where
+    F: PapyrusLongFunctionSignature,
+{
+    #[inline(always)]
+    unsafe fn marshall_and_dispatch(
+        &self,
+        base_value: &mut Variable,
+        vm: &mut VirtualMachine,
+        stack_id: VMStackID,
+        result_value: &mut Variable,
+        frame: &StackFrame,
+    ) -> bool {
+        unsafe {
+            self.callback
+                .dispatch(base_value, vm, stack_id, result_value, frame)
+        }
+    }
+}
+
+struct RegisteredLatentNativeFunctionHandler<F> {
+    callback: F,
+}
+
+impl<F> NativeFunctionHandler for RegisteredLatentNativeFunctionHandler<F>
+where
+    F: PapyrusLatentFunctionSignature,
+{
+    #[inline(always)]
+    unsafe fn marshall_and_dispatch(
+        &self,
+        base_value: &mut Variable,
+        vm: &mut VirtualMachine,
+        stack_id: VMStackID,
+        result_value: &mut Variable,
+        frame: &StackFrame,
+    ) -> bool {
+        unsafe {
+            self.callback
+                .dispatch(base_value, vm, stack_id, result_value, frame)
+        }
+    }
+}
+
+macro_rules! impl_papyrus_function_signature_short {
+    ($(($param:ident, $arg:ident, $idx:expr)),* $(,)?) => {
+        impl<R, Base, $($param),*> PapyrusFunctionSignature for fn(Base, $($param),*) -> R
+        where
+            R: PapyrusReturn + PapyrusReturnConvertible + 'static,
+            Base: PapyrusBase + PapyrusValidBase + 'static,
+            $($param: PapyrusParameter + PapyrusParameterConvertible + 'static),*
+        {
+            const IS_STATIC: bool = Base::IS_STATIC;
+
+            #[inline(always)]
+            fn return_type_info(vm: &IVirtualMachine) -> Option<TypeInfo> {
+                R::return_type_info(vm)
+            }
+
+            #[inline(always)]
+            fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>> {
+                let _ = vm;
+                Some(alloc::vec![$($param::parameter_type_info(vm)?),*])
+            }
+
+            #[inline(always)]
+            unsafe fn dispatch(
+                self,
+                base_value: &mut Variable,
+                vm: &mut VirtualMachine,
+                _stack_id: VMStackID,
+                result_value: &mut Variable,
+                frame: &StackFrame,
+            ) -> bool {
+                let _ = frame;
+                let base = unsafe { Base::unpack_base(base_value) };
+                $(let $arg = unsafe {
+                    $param::unpack_parameter(
+                        frame.get_stack_frame_variable($idx, frame.get_page_for_frame()),
+                    )
+                };)*
+                R::pack_return(self(base, $($arg),*), result_value, vm)
+            }
+        }
+    };
+}
+
+macro_rules! impl_papyrus_function_signature_long {
+    ($(($param:ident, $arg:ident, $idx:expr)),* $(,)?) => {
+        impl<R, Base, $($param),*> PapyrusLongFunctionSignature
+            for fn(*mut IVirtualMachine, VMStackID, Base, $($param),*) -> R
+        where
+            R: PapyrusReturn + PapyrusReturnConvertible + 'static,
+            Base: PapyrusBase + PapyrusValidBase + 'static,
+            $($param: PapyrusParameter + PapyrusParameterConvertible + 'static),*
+        {
+            const IS_STATIC: bool = Base::IS_STATIC;
+
+            #[inline(always)]
+            fn return_type_info(vm: &IVirtualMachine) -> Option<TypeInfo> {
+                R::return_type_info(vm)
+            }
+
+            #[inline(always)]
+            fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>> {
+                let _ = vm;
+                Some(alloc::vec![$($param::parameter_type_info(vm)?),*])
+            }
+
+            #[inline(always)]
+            unsafe fn dispatch(
+                self,
+                base_value: &mut Variable,
+                vm: &mut VirtualMachine,
+                stack_id: VMStackID,
+                result_value: &mut Variable,
+                frame: &StackFrame,
+            ) -> bool {
+                let _ = frame;
+                let base = unsafe { Base::unpack_base(base_value) };
+                $(let $arg = unsafe {
+                    $param::unpack_parameter(
+                        frame.get_stack_frame_variable($idx, frame.get_page_for_frame()),
+                    )
+                };)*
+                R::pack_return(
+                    self(vm as *mut VirtualMachine as *mut IVirtualMachine, stack_id, base, $($arg),*),
+                    result_value,
+                    vm,
+                )
+            }
+        }
+
+        impl<R, Base, $($param),*> PapyrusLongFunctionSignature
+            for fn(*mut VirtualMachine, VMStackID, Base, $($param),*) -> R
+        where
+            R: PapyrusReturn + PapyrusReturnConvertible + 'static,
+            Base: PapyrusBase + PapyrusValidBase + 'static,
+            $($param: PapyrusParameter + PapyrusParameterConvertible + 'static),*
+        {
+            const IS_STATIC: bool = Base::IS_STATIC;
+
+            #[inline(always)]
+            fn return_type_info(vm: &IVirtualMachine) -> Option<TypeInfo> {
+                R::return_type_info(vm)
+            }
+
+            #[inline(always)]
+            fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>> {
+                let _ = vm;
+                Some(alloc::vec![$($param::parameter_type_info(vm)?),*])
+            }
+
+            #[inline(always)]
+            unsafe fn dispatch(
+                self,
+                base_value: &mut Variable,
+                vm: &mut VirtualMachine,
+                stack_id: VMStackID,
+                result_value: &mut Variable,
+                frame: &StackFrame,
+            ) -> bool {
+                let _ = frame;
+                let base = unsafe { Base::unpack_base(base_value) };
+                $(let $arg = unsafe {
+                    $param::unpack_parameter(
+                        frame.get_stack_frame_variable($idx, frame.get_page_for_frame()),
+                    )
+                };)*
+                R::pack_return(self(vm, stack_id, base, $($arg),*), result_value, vm)
+            }
+        }
+    };
+}
+
+macro_rules! impl_papyrus_function_signature_latent {
+    ($(($param:ident, $arg:ident, $idx:expr)),* $(,)?) => {
+        impl<Base, $($param),*> PapyrusLatentFunctionSignature
+            for fn(*mut IVirtualMachine, VMStackID, Base, $($param),*) -> LatentStatus
+        where
+            Base: PapyrusBase + PapyrusValidBase + 'static,
+            $($param: PapyrusParameter + PapyrusParameterConvertible + 'static),*
+        {
+            const IS_STATIC: bool = Base::IS_STATIC;
+
+            #[inline(always)]
+            fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>> {
+                let _ = vm;
+                Some(alloc::vec![$($param::parameter_type_info(vm)?),*])
+            }
+
+            #[inline(always)]
+            unsafe fn dispatch(
+                self,
+                base_value: &mut Variable,
+                vm: &mut VirtualMachine,
+                stack_id: VMStackID,
+                result_value: &mut Variable,
+                frame: &StackFrame,
+            ) -> bool {
+                let _ = frame;
+                let base = unsafe { Base::unpack_base(base_value) };
+                $(let $arg = unsafe {
+                    $param::unpack_parameter(
+                        frame.get_stack_frame_variable($idx, frame.get_page_for_frame()),
+                    )
+                };)*
+                result_value.set_bool(
+                    self(
+                        vm as *mut VirtualMachine as *mut IVirtualMachine,
+                        stack_id,
+                        base,
+                        $($arg),*
+                    )
+                    .0,
+                );
+                true
+            }
+        }
+
+        impl<Base, $($param),*> PapyrusLatentFunctionSignature
+            for fn(*mut VirtualMachine, VMStackID, Base, $($param),*) -> LatentStatus
+        where
+            Base: PapyrusBase + PapyrusValidBase + 'static,
+            $($param: PapyrusParameter + PapyrusParameterConvertible + 'static),*
+        {
+            const IS_STATIC: bool = Base::IS_STATIC;
+
+            #[inline(always)]
+            fn parameter_type_infos(vm: &IVirtualMachine) -> Option<Vec<TypeInfo>> {
+                let _ = vm;
+                Some(alloc::vec![$($param::parameter_type_info(vm)?),*])
+            }
+
+            #[inline(always)]
+            unsafe fn dispatch(
+                self,
+                base_value: &mut Variable,
+                vm: &mut VirtualMachine,
+                stack_id: VMStackID,
+                result_value: &mut Variable,
+                frame: &StackFrame,
+            ) -> bool {
+                let _ = frame;
+                let base = unsafe { Base::unpack_base(base_value) };
+                $(let $arg = unsafe {
+                    $param::unpack_parameter(
+                        frame.get_stack_frame_variable($idx, frame.get_page_for_frame()),
+                    )
+                };)*
+                result_value.set_bool(self(vm, stack_id, base, $($arg),*).0);
+                true
+            }
+        }
+    };
+}
+
+impl_papyrus_function_signature_short!();
+impl_papyrus_function_signature_short!((A0, a0, 0));
+impl_papyrus_function_signature_short!((A0, a0, 0), (A1, a1, 1));
+impl_papyrus_function_signature_short!((A0, a0, 0), (A1, a1, 1), (A2, a2, 2));
+impl_papyrus_function_signature_short!((A0, a0, 0), (A1, a1, 1), (A2, a2, 2), (A3, a3, 3));
+impl_papyrus_function_signature_short!(
+    (A0, a0, 0),
+    (A1, a1, 1),
+    (A2, a2, 2),
+    (A3, a3, 3),
+    (A4, a4, 4)
+);
+impl_papyrus_function_signature_short!(
+    (A0, a0, 0),
+    (A1, a1, 1),
+    (A2, a2, 2),
+    (A3, a3, 3),
+    (A4, a4, 4),
+    (A5, a5, 5)
+);
+
+impl_papyrus_function_signature_long!();
+impl_papyrus_function_signature_long!((A0, a0, 0));
+impl_papyrus_function_signature_long!((A0, a0, 0), (A1, a1, 1));
+impl_papyrus_function_signature_long!((A0, a0, 0), (A1, a1, 1), (A2, a2, 2));
+impl_papyrus_function_signature_long!((A0, a0, 0), (A1, a1, 1), (A2, a2, 2), (A3, a3, 3));
+impl_papyrus_function_signature_long!(
+    (A0, a0, 0),
+    (A1, a1, 1),
+    (A2, a2, 2),
+    (A3, a3, 3),
+    (A4, a4, 4)
+);
+impl_papyrus_function_signature_long!(
+    (A0, a0, 0),
+    (A1, a1, 1),
+    (A2, a2, 2),
+    (A3, a3, 3),
+    (A4, a4, 4),
+    (A5, a5, 5)
+);
+
+impl_papyrus_function_signature_latent!();
+impl_papyrus_function_signature_latent!((A0, a0, 0));
+impl_papyrus_function_signature_latent!((A0, a0, 0), (A1, a1, 1));
+impl_papyrus_function_signature_latent!((A0, a0, 0), (A1, a1, 1), (A2, a2, 2));
+impl_papyrus_function_signature_latent!((A0, a0, 0), (A1, a1, 1), (A2, a2, 2), (A3, a3, 3));
+impl_papyrus_function_signature_latent!(
+    (A0, a0, 0),
+    (A1, a1, 1),
+    (A2, a2, 2),
+    (A3, a3, 3),
+    (A4, a4, 4)
+);
+impl_papyrus_function_signature_latent!(
+    (A0, a0, 0),
+    (A1, a1, 1),
+    (A2, a2, 2),
+    (A3, a3, 3),
+    (A4, a4, 4),
+    (A5, a5, 5)
+);
 
 impl IVirtualMachine {
     pub const RTTI: VariantID = RTTI_BSScript__IVirtualMachine;
@@ -764,33 +1168,190 @@ impl IVirtualMachine {
         }
     }
 
-    #[inline(always)]
+    #[inline]
+    pub fn bind_native_function(
+        &self,
+        fn_name: &str,
+        class_name: &str,
+        function: NativeFunction,
+        callable_from_tasklets: bool,
+    ) -> bool {
+        let raw = function.into_raw();
+        if !self.bind_native_method(raw.cast()) {
+            unsafe {
+                crate::ffi::commonlib_native_function_destroy(raw.cast());
+            }
+            return false;
+        }
+
+        if callable_from_tasklets {
+            let Ok(c_class_name) = CString::new(class_name) else {
+                return false;
+            };
+            let Ok(c_fn_name) = CString::new(fn_name) else {
+                return false;
+            };
+            self.set_callable_from_tasklets_simple(c_class_name.as_ptr(), c_fn_name.as_ptr(), true);
+        }
+
+        true
+    }
+
+    #[inline]
+    pub fn bind_native_latent_function(
+        &self,
+        fn_name: &str,
+        class_name: &str,
+        function: NativeLatentFunction,
+        callable_from_tasklets: bool,
+    ) -> bool {
+        let raw = function.into_raw();
+        if !self.bind_native_method(raw.cast()) {
+            unsafe {
+                crate::ffi::commonlib_native_function_destroy(raw.cast());
+            }
+            return false;
+        }
+
+        if callable_from_tasklets {
+            let Ok(c_class_name) = CString::new(class_name) else {
+                return false;
+            };
+            let Ok(c_fn_name) = CString::new(fn_name) else {
+                return false;
+            };
+            self.set_callable_from_tasklets_simple(c_class_name.as_ptr(), c_fn_name.as_ptr(), true);
+        }
+
+        true
+    }
+
+    #[inline]
     pub fn register_function<F>(
         &self,
-        _fn_name: &str,
-        _class_name: &str,
-        _callback: F,
-        _callable_from_tasklets: bool,
-    ) where
-        F: Copy,
+        fn_name: &str,
+        class_name: &str,
+        callback: F,
+        callable_from_tasklets: bool,
+    ) -> bool
+    where
+        F: PapyrusFunctionSignature,
     {
+        let Some(param_types) = F::parameter_type_infos(self) else {
+            return false;
+        };
+        let Some(return_type) = F::return_type_info(self) else {
+            return false;
+        };
+        let Some(function) = NativeFunction::new(
+            NativeFunctionDesc {
+                fn_name,
+                class_name,
+                is_static: F::IS_STATIC,
+                return_type,
+                param_types: &param_types,
+            },
+            RegisteredNativeFunctionHandler { callback },
+        ) else {
+            return false;
+        };
+
+        self.bind_native_function(fn_name, class_name, function, callable_from_tasklets)
     }
 
-    #[inline(always)]
+    #[inline]
+    pub fn register_long_function<F>(
+        &self,
+        fn_name: &str,
+        class_name: &str,
+        callback: F,
+        callable_from_tasklets: bool,
+    ) -> bool
+    where
+        F: PapyrusLongFunctionSignature,
+    {
+        let Some(param_types) = F::parameter_type_infos(self) else {
+            return false;
+        };
+        let Some(return_type) = F::return_type_info(self) else {
+            return false;
+        };
+        let Some(function) = NativeFunction::new(
+            NativeFunctionDesc {
+                fn_name,
+                class_name,
+                is_static: F::IS_STATIC,
+                return_type,
+                param_types: &param_types,
+            },
+            RegisteredLongNativeFunctionHandler { callback },
+        ) else {
+            return false;
+        };
+
+        self.bind_native_function(fn_name, class_name, function, callable_from_tasklets)
+    }
+
+    #[inline]
     pub fn register_latent_function<R, F>(
         &self,
-        _fn_name: &str,
-        _class_name: &str,
-        _callback: F,
-        _callable_from_tasklets: bool,
-    ) where
-        F: Copy,
-        R: Copy,
+        fn_name: &str,
+        class_name: &str,
+        callback: F,
+        callable_from_tasklets: bool,
+    ) -> bool
+    where
+        R: PapyrusReturn + PapyrusReturnConvertible + 'static,
+        F: PapyrusLatentFunctionSignature,
     {
+        let Some(param_types) = F::parameter_type_infos(self) else {
+            return false;
+        };
+        let Some(latent_return_type) = R::return_type_info(self) else {
+            return false;
+        };
+        let Some(function) = NativeLatentFunction::new(
+            NativeLatentFunctionDesc {
+                fn_name,
+                class_name,
+                is_static: F::IS_STATIC,
+                latent_return_type,
+                param_types: &param_types,
+            },
+            RegisteredLatentNativeFunctionHandler { callback },
+        ) else {
+            return false;
+        };
+
+        self.bind_native_latent_function(fn_name, class_name, function, callable_from_tasklets)
+    }
+
+    #[inline]
+    pub fn return_latent_result<R>(&self, stack_id: VMStackID, result: R) -> bool
+    where
+        R: PapyrusReturn + PapyrusReturnConvertible,
+    {
+        let vm = VirtualMachine::get_singleton();
+        if vm.is_null() {
+            return false;
+        }
+
+        let vm = unsafe { &mut *vm };
+        let mut value = Variable::default();
+        if !R::pack_return(result, &mut value, vm) {
+            return false;
+        }
+
+        self.return_from_latent(stack_id, &value);
+        true
     }
 
     #[inline(always)]
-    pub fn return_latent_result(&self, stack_id: VMStackID, result: Variable) {
-        self.return_from_latent(stack_id, &result);
+    pub fn return_latent_variable(&self, stack_id: VMStackID, result: &Variable) {
+        self.return_from_latent(stack_id, result);
     }
 }
+use crate::re::bsscript_array::Array;
+use crate::re::bsscript_object::Object;
+use crate::re::bsscript_object_bind_policy::ObjectBindPolicy;
+use crate::re::bsscript_object_type_info::ObjectTypeInfo;

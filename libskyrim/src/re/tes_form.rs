@@ -7,7 +7,10 @@ use crate::re::bgs_keyword_form::BGSKeywordForm;
 use crate::re::bgs_list_form::BGSListForm;
 use crate::re::bs_container::BSContainerForEachResult;
 use crate::re::form_type::FormType;
-use crate::relocation::{RelocationID, RttiType, VariantID, skyrim_cast};
+use crate::relocation::{
+    RelocationID, RttiType, VariantID, skyrim_cast, skyrim_cast_const, skyrim_cast_mut,
+    skyrim_cast_ref,
+};
 
 use crate::offsets::offsets_rtti::RTTI_TESForm;
 use crate::offsets::offsets_vtable::VTABLE_TESForm;
@@ -808,6 +811,46 @@ impl TESForm {
         self.as_reference2()
     }
 
+    #[inline(always)]
+    pub fn can_cast<T>(&self) -> bool
+    where
+        T: FormCastable + RttiType,
+    {
+        self.try_cast::<T>().is_some()
+    }
+
+    #[inline(always)]
+    pub fn cast_const<T>(&self) -> *const T
+    where
+        T: FormCastable + RttiType,
+    {
+        unsafe { skyrim_cast_const::<TESForm, T>(self as *const TESForm) }
+    }
+
+    #[inline(always)]
+    pub fn try_cast<T>(&self) -> Option<&T>
+    where
+        T: FormCastable + RttiType,
+    {
+        skyrim_cast_ref::<TESForm, T>(self)
+    }
+
+    #[inline(always)]
+    pub fn cast_raw<T>(&mut self) -> *mut T
+    where
+        T: FormCastable + RttiType,
+    {
+        unsafe { skyrim_cast::<TESForm, T>(self as *mut TESForm) }
+    }
+
+    #[inline(always)]
+    pub fn try_cast_mut<T>(&mut self) -> Option<&mut T>
+    where
+        T: FormCastable + RttiType,
+    {
+        skyrim_cast_mut::<TESForm, T>(self)
+    }
+
     // РІвЂќР‚РІвЂќР‚РІвЂќР‚ Relocated Engine Functions РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚
 
     // RELOCATION_ID SE: 14509, AE: 14667
@@ -922,6 +965,21 @@ pub trait TESFormExt {
     fn is_deleted(&self) -> bool;
     fn has_world_model(&self) -> bool;
     fn is_inventory_object(&self) -> bool;
+    fn can_cast<U>(&self) -> bool
+    where
+        U: FormCastable + RttiType;
+    fn cast_const<U>(&self) -> *const U
+    where
+        U: FormCastable + RttiType;
+    fn try_cast<U>(&self) -> Option<&U>
+    where
+        U: FormCastable + RttiType;
+    fn cast_raw<U>(&mut self) -> *mut U
+    where
+        U: FormCastable + RttiType;
+    fn try_cast_mut<U>(&mut self) -> Option<&mut U>
+    where
+        U: FormCastable + RttiType;
     fn get_weight(&self) -> f32;
     fn set_player_knows(&self, known: bool);
 
@@ -983,6 +1041,41 @@ impl<T: AsRef<TESForm> + AsMut<TESForm>> TESFormExt for T {
 
     fn is_inventory_object(&self) -> bool {
         self.as_ref().is_inventory_object()
+    }
+
+    fn can_cast<U>(&self) -> bool
+    where
+        U: FormCastable + RttiType,
+    {
+        self.as_ref().can_cast::<U>()
+    }
+
+    fn cast_const<U>(&self) -> *const U
+    where
+        U: FormCastable + RttiType,
+    {
+        self.as_ref().cast_const::<U>()
+    }
+
+    fn try_cast<U>(&self) -> Option<&U>
+    where
+        U: FormCastable + RttiType,
+    {
+        self.as_ref().try_cast::<U>()
+    }
+
+    fn cast_raw<U>(&mut self) -> *mut U
+    where
+        U: FormCastable + RttiType,
+    {
+        self.as_mut().cast_raw::<U>()
+    }
+
+    fn try_cast_mut<U>(&mut self) -> Option<&mut U>
+    where
+        U: FormCastable + RttiType,
+    {
+        self.as_mut().try_cast_mut::<U>()
     }
 
     fn get_weight(&self) -> f32 {

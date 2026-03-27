@@ -2,8 +2,10 @@ use core::ffi::c_void;
 
 unsafe extern "C" {
     // SKSE interface getters.
+    pub fn commonlib_skse_get_scaleform_interface() -> *mut c_void;
     pub fn commonlib_skse_get_serialization_interface() -> *mut c_void;
     pub fn commonlib_skse_get_papyrus_interface() -> *mut c_void;
+    pub fn commonlib_skse_get_task_interface() -> *mut c_void;
     pub fn commonlib_skse_get_messaging_interface() -> *mut c_void;
     pub fn commonlib_skse_get_object_interface() -> *mut c_void;
     pub fn commonlib_skse_get_trampoline_interface() -> *mut c_void;

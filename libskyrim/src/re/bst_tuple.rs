@@ -21,6 +21,15 @@ impl<T1, T2> BSTTuple<T1, T2> {
     }
 }
 
+impl<T1: Default, T2: Default> Default for BSTTuple<T1, T2> {
+    fn default() -> Self {
+        Self {
+            first: T1::default(),
+            second: T2::default(),
+        }
+    }
+}
+
 impl<T1: Clone, T2: Clone> Clone for BSTTuple<T1, T2> {
     fn clone(&self) -> Self {
         Self {

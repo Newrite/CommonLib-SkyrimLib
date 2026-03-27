@@ -18,21 +18,20 @@ use crate::re::{
     BGSKeyword, BGSListForm, BGSLocation, BGSScene, BGSWorldLocation, BIPED_OBJECT,
     BSAnimationGraphEvent, BSContainerForEachResult, BSEventNotifyControl, BSFixedString,
     BSHandleRefObject, BSTEventSink, BSTEventSource, BSTSmallArray, BSTSmartPointer, BipedAnim,
-    DoorTeleportData, EnchantmentItem, ExtraCharge, ExtraContainerChanges, ExtraDataList,
-    ExtraDataType, ExtraDroppedItemList, ExtraEnchantment, ExtraFlags, ExtraFlagsFlag,
-    ExtraOwnership, ExtraPersistentCell, ExtraTextDisplayData, FormCastable, FormType,
-    IAnimationGraphManagerHolder, InventoryChanges, InventoryEntryData, LOCK_LEVEL, MagicCaster,
-    ModelReferenceEffect, NavMeshArray, NiAVObject, NiControllerManager, NiControllerSequence,
-    NiNode, NiPoint3, NiPointer, NiRef, NiTransform, ObjectRefHandle, Projectile, REFR_LOCK,
-    RefHandle, ShaderReferenceEffect, TESAmmo, TESBoundObject, TESContainer, TESDataHandler,
-    TESEffectShader, TESEnchantableForm, TESForm, TESNPC, TESObjectCELL, TESWaterForm,
-    TESWorldSpace, hkVector4, hkpCollidable, hkpMotionMotionType,
+    DoorTeleportData, EnchantmentItem, Explosion, ExtraCharge, ExtraContainerChanges,
+    ExtraDataList, ExtraDataType, ExtraDroppedItemList, ExtraEnchantment, ExtraFlags,
+    ExtraFlagsFlag, ExtraOwnership, ExtraPersistentCell, ExtraTextDisplayData, FormCastable,
+    FormType, IAnimationGraphManagerHolder, InventoryChanges, InventoryEntryData, LOCK_LEVEL,
+    MagicCaster, ModelReferenceEffect, NavMeshArray, NiAVObject, NiControllerManager,
+    NiControllerSequence, NiNode, NiPoint3, NiPointer, NiRef, NiTransform, ObjectRefHandle,
+    Projectile, REFR_LOCK, RefHandle, ShaderReferenceEffect, TESAmmo, TESBoundObject, TESContainer,
+    TESDataHandler, TESEffectShader, TESEnchantableForm, TESForm, TESNPC, TESObjectCELL,
+    TESWaterForm, TESWorldSpace, hkVector4, hkpCollidable, hkpMotionMotionType,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset, skyrim_cast};
 
 crate::core_util::abstract_type! {
     pub type BSAnimNoteReceiver;
-    pub type Explosion;
     pub type TargetEntry;
     pub type TrapData;
     pub type TrapEntry;

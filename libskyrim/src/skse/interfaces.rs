@@ -3,6 +3,7 @@ use core::ffi::{c_char, c_void};
 use crate::re::bs_core_types::VMHandle;
 use crate::re::tes_form::FormID;
 use crate::re::{IVirtualMachine, VirtualMachine};
+use crate::version::Version;
 
 core_util::abstract_type! {
     pub type SKSEDelayFunctorManager;
@@ -21,7 +22,7 @@ pub enum InterfaceId {
     Messaging,
     Object,
     Trampoline,
-    Max,
+    Total,
 }
 
 /// The ID assigned to a loaded plugin.
@@ -44,7 +45,7 @@ pub struct SkseInterface {
     pub runtime_version: u32,
     pub editor_version: u32,
     pub is_editor: u32,
-    pub query_interface: unsafe extern "system" fn(InterfaceId) -> *mut c_void,
+    pub query_interface: unsafe extern "system" fn(u32) -> *mut c_void,
     pub get_plugin_handle: unsafe extern "system" fn() -> PluginHandle,
     pub get_release_index: unsafe extern "system" fn() -> u32,
     pub get_plugin_info: unsafe extern "system" fn(*const c_char) -> *const PluginInfo,
@@ -56,11 +57,20 @@ pub struct Message {
     pub sender: *const c_char,
     pub msg_type: u32,
     pub data_len: u32,
-    pub data: *mut u8,
+    pub data: *mut c_void,
 }
 
 /// A callback function registered as a message listener.
 pub type MessageCallback = unsafe extern "system" fn(*mut Message);
+/// A raw callback function registered with the scaleform interface.
+///
+/// TODO: Replace the erased `c_void` parameters with `GFxMovieView`, `GFxValue`,
+/// and `InventoryEntryData` callback signatures once those RE dependencies have
+/// matching Rust translations in `libskyrim/src/re`.
+pub type ScaleformRegCallback = unsafe extern "system" fn(*mut c_void, *mut c_void) -> bool;
+/// A raw inventory callback function registered with the scaleform interface.
+pub type ScaleformInventoryCallback =
+    unsafe extern "system" fn(*mut c_void, *mut c_void, *mut c_void);
 
 /// A callback function registered with the papyrus interface.
 pub type PapyrusRegFunction1 = unsafe extern "system" fn(*mut VirtualMachine) -> bool;
@@ -83,6 +93,14 @@ pub struct SkseMessagingInterface {
 pub struct SksePapyrusInterface {
     pub interface_version: u32,
     pub register: unsafe extern "system" fn(*mut c_void) -> bool,
+}
+
+/// The raw scaleform interface returned by SKSE.
+#[repr(C)]
+pub struct SkseScaleformInterface {
+    pub interface_version: u32,
+    pub register: unsafe extern "system" fn(*const c_char, *mut c_void) -> bool,
+    pub register_for_inventory: unsafe extern "system" fn(*mut c_void),
 }
 
 /// The raw object interface returned by SKSE.
@@ -130,11 +148,21 @@ pub struct SkseTrampolineInterface {
     pub allocate_from_local_pool: unsafe extern "system" fn(PluginHandle, usize) -> *mut c_void,
 }
 
+/// The raw task interface returned by SKSE.
+#[repr(C)]
+pub struct SkseTaskInterface {
+    pub interface_version: u32,
+    pub add_task: unsafe extern "system" fn(*mut c_void),
+    pub add_ui_task: unsafe extern "system" fn(*mut c_void),
+}
+
 pub type LoadInterface = SkseInterface;
 pub type PapyrusInterface = SksePapyrusInterface;
+pub type ScaleformInterface = SkseScaleformInterface;
 pub type MessagingInterface = SkseMessagingInterface;
 pub type ObjectInterface = SkseObjectInterface;
 pub type SerializationInterface = SkseSerializationInterface;
+pub type TaskInterface = SkseTaskInterface;
 pub type TrampolineInterface = SkseTrampolineInterface;
 
 /// Messaging dispatchers exposed by `SKSE::MessagingInterface`.
@@ -146,6 +174,7 @@ pub enum MessagingDispatcher {
     CrosshairEvent = 2,
     ActionEvent = 3,
     NiNodeUpdateEvent = 4,
+    Total = 5,
 }
 
 impl PluginInfo {
@@ -156,7 +185,55 @@ impl PluginHandle {
     pub const INVALID: Self = Self(u32::MAX);
 }
 
+impl SkseInterface {
+    #[inline(always)]
+    pub fn skse_version(&self) -> u32 {
+        self.skse_version
+    }
+
+    #[inline(always)]
+    pub fn runtime_version(&self) -> Version {
+        Version::from_packed(self.runtime_version)
+    }
+
+    #[inline(always)]
+    pub fn editor_version(&self) -> u32 {
+        self.editor_version
+    }
+
+    #[inline(always)]
+    pub fn is_editor(&self) -> bool {
+        self.is_editor != 0
+    }
+
+    #[inline(always)]
+    pub fn get_plugin_handle(&self) -> PluginHandle {
+        unsafe { (self.get_plugin_handle)() }
+    }
+
+    #[inline(always)]
+    pub fn get_release_index(&self) -> u32 {
+        unsafe { (self.get_release_index)() }
+    }
+
+    #[inline(always)]
+    pub fn get_plugin_info(&self, name: *const c_char) -> *const PluginInfo {
+        unsafe { (self.get_plugin_info)(name) }
+    }
+
+    #[inline(always)]
+    pub fn query_interface_raw(&self, id: u32) -> *mut c_void {
+        unsafe { (self.query_interface)(id) }
+    }
+
+    #[inline(always)]
+    pub fn query_interface(&self, id: InterfaceId) -> *mut c_void {
+        self.query_interface_raw(id as u32)
+    }
+}
+
 impl Message {
+    pub const SKSE_TOTAL: usize = 9;
     pub const SKSE_POST_LOAD: u32 = 0;
     pub const SKSE_POST_POST_LOAD: u32 = 1;
     pub const SKSE_PRE_LOAD_GAME: u32 = 2;
@@ -166,7 +243,7 @@ impl Message {
     pub const SKSE_INPUT_LOADED: u32 = 6;
     pub const SKSE_NEW_GAME: u32 = 7;
     pub const SKSE_DATA_LOADED: u32 = 8;
-    pub const SKSE_MAX: usize = 9;
+    pub const SKSE_MAX: usize = Self::SKSE_TOTAL;
 }
 
 impl SkseMessagingInterface {
@@ -226,7 +303,10 @@ impl SksePapyrusInterface {
         if vm.is_null() {
             unsafe { (self.register)(callback as *mut c_void) }
         } else {
-            unsafe { callback(vm) }
+            unsafe {
+                callback(vm);
+            }
+            true
         }
     }
 
@@ -236,8 +316,30 @@ impl SksePapyrusInterface {
         if vm.is_null() {
             unsafe { (self.register)(callback as *mut c_void) }
         } else {
-            unsafe { callback(vm.cast()) }
+            unsafe {
+                callback(vm.cast());
+            }
+            true
         }
+    }
+}
+
+impl SkseScaleformInterface {
+    pub const VERSION: u32 = 2;
+
+    #[inline(always)]
+    pub fn version(&self) -> u32 {
+        self.interface_version
+    }
+
+    #[inline(always)]
+    pub fn register_raw(&self, callback: ScaleformRegCallback, name: *const c_char) -> bool {
+        unsafe { (self.register)(name, callback as *mut c_void) }
+    }
+
+    #[inline(always)]
+    pub fn register_for_inventory_raw(&self, callback: ScaleformInventoryCallback) {
+        unsafe { (self.register_for_inventory)(callback as *mut c_void) }
     }
 }
 
@@ -319,6 +421,12 @@ impl SkseSerializationInterface {
     }
 
     #[inline(always)]
+    pub fn write_record_data_ex(&self, diff: &mut u32, buf: *const c_void, length: u32) -> bool {
+        *diff = diff.saturating_add(length);
+        self.write_record_data(buf, length)
+    }
+
+    #[inline(always)]
     pub fn get_next_record_info(&self, ty: &mut u32, version: &mut u32, length: &mut u32) -> bool {
         unsafe { (self.get_next_record_info)(ty, version, length) }
     }
@@ -326,6 +434,13 @@ impl SkseSerializationInterface {
     #[inline(always)]
     pub fn read_record_data(&self, buf: *mut c_void, length: u32) -> u32 {
         unsafe { (self.read_record_data)(buf, length) }
+    }
+
+    #[inline(always)]
+    pub fn read_record_data_ex(&self, diff: &mut u32, buf: *mut c_void, length: u32) -> u32 {
+        let result = self.read_record_data(buf, length);
+        *diff = diff.saturating_sub(result);
+        result
     }
 
     #[inline(always)]
@@ -350,5 +465,24 @@ impl SkseTrampolineInterface {
     #[inline(always)]
     pub fn allocate_from_local_pool(&self, size: usize) -> *mut c_void {
         unsafe { (self.allocate_from_local_pool)(super::plugin_handle(), size) }
+    }
+}
+
+impl SkseTaskInterface {
+    pub const VERSION: u32 = 2;
+
+    #[inline(always)]
+    pub fn version(&self) -> u32 {
+        self.interface_version
+    }
+
+    #[inline(always)]
+    pub fn add_task_raw(&self, task: *mut c_void) {
+        unsafe { (self.add_task)(task) }
+    }
+
+    #[inline(always)]
+    pub fn add_ui_task_raw(&self, task: *mut c_void) {
+        unsafe { (self.add_ui_task)(task) }
     }
 }
