@@ -29,4 +29,9 @@ impl TESQuestStageItem {
     crate::relocation_func! {
         pub fn get_log_entry(&self, a_owner_quest: *const TESQuest) -> *const i8 => RelocationID::new(24778, 25259)
     }
+
+    #[inline(always)]
+    pub fn get_log_entry_as_str(&self, owner_quest: *const TESQuest) -> &str {
+        core_util::ptr_to_str(self.get_log_entry(owner_quest))
+    }
 }

@@ -93,4 +93,9 @@ impl BGSStoryManagerQuestNode {
             }
         }
     }
+
+    #[inline]
+    pub fn get_child_ref(&self, idx: u32) -> Option<&BGSStoryManagerTreeForm> {
+        unsafe { self.get_child(idx).as_ref() }
+    }
 }

@@ -3,9 +3,7 @@
 use core::fmt;
 
 use crate::relocation::RelocationError;
-use crate::sdk::core::{
-    GameRef, GameRefMut, HandleFamilyTarget, ResolvableHandle, Resolved, ResolvedHandle,
-};
+use crate::sdk::core::{HandleFamilyTarget, ResolvableHandle, Resolved, ResolvedHandle};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum HookGuardFailure {
@@ -176,30 +174,6 @@ impl<'a, T> HookArg<'a, *mut T> for Option<&'a mut T> {
     #[inline(always)]
     fn into_abi(self) -> *mut T {
         self.map_or(core::ptr::null_mut(), |value| value as *mut T)
-    }
-}
-
-impl<'a, T> HookArg<'a, *mut T> for GameRef<'a, T> {
-    #[inline(always)]
-    fn from_abi(arg: *mut T) -> Result<Self, HookGuardFailure> {
-        Ok(unsafe { Self::from_raw(arg) })
-    }
-
-    #[inline(always)]
-    fn into_abi(self) -> *mut T {
-        self.as_ptr()
-    }
-}
-
-impl<'a, T> HookArg<'a, *mut T> for GameRefMut<'a, T> {
-    #[inline(always)]
-    fn from_abi(arg: *mut T) -> Result<Self, HookGuardFailure> {
-        Ok(unsafe { Self::from_raw(arg) })
-    }
-
-    #[inline(always)]
-    fn into_abi(self) -> *mut T {
-        self.as_ptr()
     }
 }
 

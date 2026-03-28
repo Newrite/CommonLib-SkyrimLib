@@ -1,7 +1,7 @@
 use core_util::EnumSet;
 
 use crate::re::{Actor, BSFixedString, NiPointer, TESCameraState, TESForm, TESObjectREFR};
-use crate::sdk::core::{GameRef, NativeOwner};
+use crate::sdk::core::{NativeOwner, Resolved};
 
 #[repr(C)]
 pub struct ModCallbackEvent {
@@ -13,8 +13,13 @@ pub struct ModCallbackEvent {
 
 impl ModCallbackEvent {
     #[inline(always)]
-    pub fn sender_ref(&self) -> GameRef<'_, TESForm> {
-        unsafe { GameRef::from_raw(self.sender) }
+    pub const fn sender_ptr(&self) -> *mut TESForm {
+        self.sender
+    }
+
+    #[inline(always)]
+    pub fn sender(&self) -> Option<&TESForm> {
+        unsafe { self.sender.as_ref() }
     }
 }
 
@@ -26,13 +31,23 @@ pub struct CameraEvent {
 
 impl CameraEvent {
     #[inline(always)]
-    pub fn old_state_ref(&self) -> GameRef<'_, TESCameraState> {
-        unsafe { GameRef::from_raw(self.old_state) }
+    pub const fn old_state_ptr(&self) -> *mut TESCameraState {
+        self.old_state
     }
 
     #[inline(always)]
-    pub fn new_state_ref(&self) -> GameRef<'_, TESCameraState> {
-        unsafe { GameRef::from_raw(self.new_state) }
+    pub fn old_state(&self) -> Option<&TESCameraState> {
+        unsafe { self.old_state.as_ref() }
+    }
+
+    #[inline(always)]
+    pub const fn new_state_ptr(&self) -> *mut TESCameraState {
+        self.new_state
+    }
+
+    #[inline(always)]
+    pub fn new_state(&self) -> Option<&TESCameraState> {
+        unsafe { self.new_state.as_ref() }
     }
 }
 
@@ -43,8 +58,18 @@ pub struct CrosshairRefEvent {
 
 impl CrosshairRefEvent {
     #[inline(always)]
-    pub fn reference_ref(&self) -> GameRef<'_, TESObjectREFR> {
-        self.crosshair_ref.borrow()
+    pub fn reference_owner(&self) -> &NiPointer<TESObjectREFR> {
+        &self.crosshair_ref
+    }
+
+    #[inline(always)]
+    pub fn reference(&self) -> Option<&TESObjectREFR> {
+        self.crosshair_ref.as_ref()
+    }
+
+    #[inline(always)]
+    pub fn reference_resolved(&self) -> Option<Resolved<TESObjectREFR>> {
+        self.reference().and_then(Resolved::try_from_ref)
     }
 }
 
@@ -82,13 +107,28 @@ pub struct ActionEvent {
 
 impl ActionEvent {
     #[inline(always)]
-    pub fn actor_ref(&self) -> GameRef<'_, Actor> {
-        unsafe { GameRef::from_raw(self.actor) }
+    pub const fn actor_ptr(&self) -> *mut Actor {
+        self.actor
     }
 
     #[inline(always)]
-    pub fn source_form_ref(&self) -> GameRef<'_, TESForm> {
-        unsafe { GameRef::from_raw(self.source_form) }
+    pub fn actor(&self) -> Option<&Actor> {
+        unsafe { self.actor.as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn actor_resolved(&self) -> Option<Resolved<Actor>> {
+        self.actor().and_then(Resolved::try_from_ref)
+    }
+
+    #[inline(always)]
+    pub const fn source_form_ptr(&self) -> *mut TESForm {
+        self.source_form
+    }
+
+    #[inline(always)]
+    pub fn source_form(&self) -> Option<&TESForm> {
+        unsafe { self.source_form.as_ref() }
     }
 }
 
@@ -99,8 +139,18 @@ pub struct NiNodeUpdateEvent {
 
 impl NiNodeUpdateEvent {
     #[inline(always)]
-    pub fn reference_ref(&self) -> GameRef<'_, TESObjectREFR> {
-        unsafe { GameRef::from_raw(self.reference) }
+    pub const fn reference_ptr(&self) -> *mut TESObjectREFR {
+        self.reference
+    }
+
+    #[inline(always)]
+    pub fn reference(&self) -> Option<&TESObjectREFR> {
+        unsafe { self.reference.as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn reference_resolved(&self) -> Option<Resolved<TESObjectREFR>> {
+        self.reference().and_then(Resolved::try_from_ref)
     }
 }
 

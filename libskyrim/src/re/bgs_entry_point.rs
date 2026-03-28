@@ -112,6 +112,13 @@ pub struct BGSEntryPointParameter {
 
 const _: () = assert!(core::mem::size_of::<BGSEntryPointParameter>() == 0x10);
 
+impl BGSEntryPointParameter {
+    #[inline(always)]
+    pub fn get_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.name)
+    }
+}
+
 /// C++ `RE::BGSEntryPoint::EntryPointParameters`
 #[repr(C)]
 pub struct BGSEntryPointParameters {
@@ -121,6 +128,17 @@ pub struct BGSEntryPointParameters {
 }
 
 const _: () = assert!(core::mem::size_of::<BGSEntryPointParameters>() == 0x10);
+
+impl BGSEntryPointParameters {
+    #[inline(always)]
+    pub fn as_slice(&self) -> &[BGSEntryPointParameter] {
+        if self.data.is_null() || self.count == 0 {
+            &[]
+        } else {
+            unsafe { core::slice::from_raw_parts(self.data, self.count as usize) }
+        }
+    }
+}
 
 /// C++ `RE::BGSEntryPoint::EntryPoint`
 #[repr(C)]
@@ -134,6 +152,18 @@ pub struct BGSEntryPointData {
 const _: () = assert!(core::mem::size_of::<BGSEntryPointData>() == 0x20);
 const _: () = assert!(core::mem::offset_of!(BGSEntryPointData, parameters) == 0x08);
 const _: () = assert!(core::mem::offset_of!(BGSEntryPointData, function_type) == 0x18);
+
+impl BGSEntryPointData {
+    #[inline(always)]
+    pub fn get_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.name)
+    }
+
+    #[inline(always)]
+    pub fn parameters_slice(&self) -> &[BGSEntryPointParameter] {
+        self.parameters.as_slice()
+    }
+}
 
 /// C++ `RE::BGSEntryPoint::ENTRY_POINTS`
 pub struct BGSEntryPoints;
@@ -159,6 +189,13 @@ impl BGSEntryPoint {
         } else {
             core::ptr::null_mut()
         }
+    }
+
+    #[inline(always)]
+    pub fn get_entry_point_ref(
+        entry_point: BGSEntryPointEntryPoint,
+    ) -> Option<&'static BGSEntryPointData> {
+        unsafe { Self::get_entry_point(entry_point).as_ref() }
     }
 
     // TODO: Add source-backed call-site-specific wrappers for `BGSEntryPoint::HandleEntryPoint`

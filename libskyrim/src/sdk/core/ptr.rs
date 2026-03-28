@@ -9,4 +9,4 @@ pub use super::handles::{
     CanonicalHandle, HandleFamilyTarget, HandleTarget, ResolvableHandle, Resolved, ResolvedHandle,
 };
 pub use super::owners::{NativeOwner, NativeOwnerCastExt, NativeOwnerFamily};
-pub use super::refs::{GameRef, GameRefMut};
+pub use super::refs::{GamePtr, GameRef};

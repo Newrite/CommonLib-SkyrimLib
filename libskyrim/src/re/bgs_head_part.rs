@@ -82,6 +82,17 @@ impl BGSHeadPart {
     pub const VTABLE: &'static [VariantID] = &VTABLE_BGSHeadPart;
     pub const FORMTYPE: FormType = FormType::HeadPart;
 
+    #[inline]
+    pub fn get_form_editor_id_as_str(&self) -> &str {
+        self.form_editor_id.as_str()
+    }
+
+    #[inline]
+    pub fn set_form_editor_id_from_str(&mut self, editor_id: &str) -> bool {
+        self.form_editor_id = BSFixedString::from_str(editor_id);
+        true
+    }
+
     // override (TESForm)
     // void InitializeData() override;                    // 04
     // void ClearData() override;                         // 05
@@ -98,10 +109,15 @@ impl BGSHeadPart {
 
 pub trait BGSHeadPartExt {
     fn is_extra_part(&self) -> bool;
+    fn get_form_editor_id_as_str(&self) -> &str;
 }
 
 impl<T: AsRef<BGSHeadPart>> BGSHeadPartExt for T {
     fn is_extra_part(&self) -> bool {
         self.as_ref().is_extra_part()
+    }
+
+    fn get_form_editor_id_as_str(&self) -> &str {
+        self.as_ref().get_form_editor_id_as_str()
     }
 }

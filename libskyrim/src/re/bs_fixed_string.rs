@@ -88,6 +88,14 @@ impl BSFixedString {
             Some(unsafe { CStr::from_ptr(self.data) })
         }
     }
+
+    #[inline(always)]
+    pub fn as_str(&self) -> &str {
+        match self.as_c_str() {
+            Some(c_str) => c_str.to_str().unwrap_or("<invalid utf8>"),
+            None => "",
+        }
+    }
 }
 
 impl Default for BSFixedString {

@@ -47,6 +47,12 @@ that fill smart-pointer out-params, prefer the ABI-safe bridge pattern through
 `BSTSmartPointer`. Do not fake nontrivial C++ construction with raw Rust
 allocation alone.
 
+Do not worsen the Rust-facing API only to mirror a C++ wrapper literally when
+that literal shape carries no real behavioral, layout, ownership, or ABI
+difference. Preserve source-backed low-level behavior where it matters, but
+prefer more idiomatic Rust helpers such as `&self` getters or `*_as_str()`
+wrappers when they do not hide a real contract.
+
 Do not use executable placeholders such as `todo!()` or `unimplemented!()` in
 translated RE code. If a translation keeps an honest compromise such as a raw
 pointer stand-in, opaque stub, missing helper, or skipped factory/delete path,

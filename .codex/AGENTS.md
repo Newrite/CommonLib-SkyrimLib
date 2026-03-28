@@ -43,6 +43,9 @@ Key source locations:
 ## Hard Rules
 
 - Read the matching `.cpp` whenever it exists. It is not optional.
+- Do not worsen the Rust-facing API only to mirror a C++ signature literally
+  when that literal shape carries no real behavioral, layout, ownership, or ABI
+  difference.
 - When a Rust RE translation corresponds to a same-name CommonLib header/source
   file pair, carry over the full source-backed data surface from that file
   pair, not only the layout-critical fields and methods. This includes nested
@@ -64,6 +67,40 @@ Key source locations:
   prerequisite, and the intended end state.
 - Do not use `std`, `static mut`, or ad-hoc unwind assumptions.
 - Do not derive `Debug` for raw RE structs unless manual debugging value is clear.
+
+## Rust API Surface Policy
+
+Preserve source-backed fidelity where it matters:
+
+- memory layout
+- field types and offsets
+- inheritance and vtable slot ownership
+- relocation semantics
+- pointer ownership and lifetime contracts
+- any wrapper behavior that meaningfully changes what the engine call can do
+
+Do not preserve C++ surface details mechanically when they only make the Rust
+API worse and do not carry a real behavioral difference.
+
+Typical examples:
+
+- a getter or name helper that is semantically read-only may use `&self` in
+  Rust even if the CommonLib wrapper is not `const`
+- a raw `*const c_char` / `const char*` getter may keep the low-level method
+  but should usually also expose an ergonomic `*_as_str()` helper
+- a low-level raw pointer entrypoint may stay available while higher-level
+  wrappers use `Option<&T>`, `GameRef`, or similar Rust-facing helpers when the
+  contract is clearer that way
+
+When relaxing a literal C++ signature:
+
+- keep the source-backed low-level semantics honest
+- do not hide mutation, ownership transfer, retained callbacks, or other real
+  contracts
+- prefer adding or repairing an ergonomic wrapper/helper over inventing new
+  engine behavior
+- if there is any real uncertainty, keep the raw/strict method and add the more
+  ergonomic helper alongside it instead of narrowing the contract silently
 
 ## Relocation Model
 
@@ -372,6 +409,9 @@ Use these `.codex` skills for repository work:
 - `port-hooking`
   Port plugin-side hooks from CommonLib C++ to Rust using the current
   relocation/hook macro layer.
+- `reconcile-api-ergonomics`
+  Repair overly literal Rust-facing RE/SDK APIs when a direct C++ mirror harms
+  ergonomics without preserving a meaningful behavioral difference.
 
 ## Recommended Pipeline
 
@@ -390,10 +430,12 @@ Use these `.codex` skills for repository work:
 
 1. `python scripts/audit_translation.py <TypeName>`
 2. `translate-partial`
-3. `add-extension-trait` if needed
-4. `verify-translation`
-5. `python scripts/check_generated_staleness.py`
-6. standard validation commands
+3. `reconcile-api-ergonomics` if the public Rust surface still feels more
+   literal than semantically necessary
+4. `add-extension-trait` if needed
+5. `verify-translation`
+6. `python scripts/check_generated_staleness.py`
+7. standard validation commands
 
 ### Runtime-divergent layout
 
@@ -413,6 +455,20 @@ Use these `.codex` skills for repository work:
 1. `python scripts/bootstrap_translation.py <TypeName>` when the hook targets a translated RE type
 2. `port-hooking`
 3. `python scripts/check_generated_staleness.py`
+4. standard validation commands
+
+### Rust-facing API ergonomics reconciliation
+
+Use once the low-level contract is already understood, either as a late
+translation pass before final verification or as a post-verification cleanup
+when the file or SDK surface is source-backed but unnecessarily awkward for
+Rust consumers.
+
+1. `translation-auditor` or `verify-translation` to confirm the low-level
+   source-backed contract first
+2. `reconcile-api-ergonomics`
+3. `python scripts/check_generated_staleness.py` if generated files may have
+   changed
 4. standard validation commands
 
 ### Offsets regeneration

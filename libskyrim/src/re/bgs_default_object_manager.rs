@@ -920,6 +920,13 @@ pub struct DEFAULT_OBJECT_DATA {
 
 const _: () = assert!(core::mem::size_of::<DEFAULT_OBJECT_DATA>() == 0x18);
 
+impl DEFAULT_OBJECT_DATA {
+    #[inline(always)]
+    pub fn get_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.name)
+    }
+}
+
 /// C++ `RE::BGSDefaultObjectManager::RecordFlags`
 pub struct BGSDefaultObjectManagerRecordFlags;
 
@@ -976,6 +983,16 @@ impl BGSDefaultObjectManager {
     }
 
     #[inline(always)]
+    pub fn get_object_ref(&self, object: DEFAULT_OBJECT) -> Option<&TESForm> {
+        unsafe { self.get_object(object).as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn get_object_as_ref<T: FormCastable>(&self, object: DEFAULT_OBJECT) -> Option<&T> {
+        unsafe { self.get_object_as::<T>(object).as_ref() }
+    }
+
+    #[inline(always)]
     pub fn get_object_by_index(&self, idx: usize) -> *mut TESForm {
         assert!(idx < Self::TOTAL.offset());
         if !self.is_object_initialized_index(idx) {
@@ -993,6 +1010,32 @@ impl BGSDefaultObjectManager {
         } else {
             obj.cast()
         }
+    }
+
+    #[inline(always)]
+    pub fn get_object_by_index_ref(&self, idx: usize) -> Option<&TESForm> {
+        unsafe { self.get_object_by_index(idx).as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn get_object_by_index_as_ref<T: FormCastable>(&self, idx: usize) -> Option<&T> {
+        unsafe { self.get_object_by_index_as::<T>(idx).as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn get_object_by_id_ref(&self, object: DefaultObjectID) -> Option<&TESForm> {
+        let idx = Self::map_index(object);
+        (idx != usize::MAX)
+            .then(|| self.get_object_by_index_ref(idx))
+            .flatten()
+    }
+
+    #[inline(always)]
+    pub fn get_object_by_id_as_ref<T: FormCastable>(&self, object: DefaultObjectID) -> Option<&T> {
+        let idx = Self::map_index(object);
+        (idx != usize::MAX)
+            .then(|| self.get_object_by_index_as_ref::<T>(idx))
+            .flatten()
     }
 
     #[inline(always)]

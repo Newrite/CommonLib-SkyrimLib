@@ -9,8 +9,8 @@ use crate::re::{
 };
 use crate::relocation::RttiType;
 use crate::sdk::core::{
-    CanonicalHandle, ConstRttiCastSource, GameRef, GameRefMut, HandleFamilyTarget,
-    MutRttiCastSource, Resolved, ResolvedHandle, sealed as sdk_core_sealed,
+    CanonicalHandle, ConstRttiCastSource, GamePtr, GameRef, HandleFamilyTarget, MutRttiCastSource,
+    Resolved, ResolvedHandle, sealed as sdk_core_sealed,
 };
 
 use super::api;
@@ -81,18 +81,18 @@ impl<T> PapyrusRef<T> {
     }
 
     #[inline(always)]
-    pub fn as_game_ref(&self) -> GameRef<'_, T> {
-        unsafe { GameRef::from_raw(self.raw) }
+    pub fn as_game_ptr(&self) -> GamePtr<T> {
+        unsafe { GamePtr::from_raw(self.raw) }
+    }
+
+    #[inline(always)]
+    pub fn as_game_ref(&self) -> Option<GameRef<T>> {
+        self.as_game_ptr().into_option()
     }
 
     #[inline(always)]
     pub unsafe fn as_mut(&mut self) -> Option<&mut T> {
         unsafe { self.raw.as_mut() }
-    }
-
-    #[inline(always)]
-    pub fn as_game_ref_mut(&mut self) -> GameRefMut<'_, T> {
-        unsafe { GameRefMut::from_raw(self.raw) }
     }
 
     #[inline(always)]
@@ -106,7 +106,10 @@ impl<T> PapyrusRef<T> {
         T: RttiType,
         U: RttiType,
     {
-        self.as_game_ref().try_cast::<U>().map(PapyrusRef::from)
+        self.as_game_ptr()
+            .try_cast::<U>()
+            .into_option()
+            .map(PapyrusRef::from)
     }
 }
 
@@ -124,31 +127,17 @@ impl<T> From<*mut T> for PapyrusRef<T> {
     }
 }
 
-impl<T> From<GameRef<'_, T>> for PapyrusRef<T> {
+impl<T> From<GameRef<T>> for PapyrusRef<T> {
     #[inline(always)]
-    fn from(value: GameRef<'_, T>) -> Self {
+    fn from(value: GameRef<T>) -> Self {
         Self::from_raw(value.as_ptr())
     }
 }
 
-impl<T> From<GameRefMut<'_, T>> for PapyrusRef<T> {
+impl<T> From<GamePtr<T>> for PapyrusRef<T> {
     #[inline(always)]
-    fn from(value: GameRefMut<'_, T>) -> Self {
+    fn from(value: GamePtr<T>) -> Self {
         Self::from_raw(value.as_ptr())
-    }
-}
-
-impl<'a, T> From<&'a PapyrusRef<T>> for GameRef<'a, T> {
-    #[inline(always)]
-    fn from(value: &'a PapyrusRef<T>) -> Self {
-        value.as_game_ref()
-    }
-}
-
-impl<'a, T> From<&'a mut PapyrusRef<T>> for GameRefMut<'a, T> {
-    #[inline(always)]
-    fn from(value: &'a mut PapyrusRef<T>) -> Self {
-        value.as_game_ref_mut()
     }
 }
 
@@ -194,13 +183,13 @@ impl Context {
     }
 
     #[inline(always)]
-    pub fn vm_ref(&self) -> GameRef<'_, IVirtualMachine> {
-        unsafe { GameRef::from_raw(self.vm) }
+    pub fn vm_ref(&self) -> GamePtr<IVirtualMachine> {
+        unsafe { GamePtr::from_raw(self.vm) }
     }
 
     #[inline(always)]
     pub fn vm(&self) -> Option<&IVirtualMachine> {
-        self.vm_ref().as_ref()
+        unsafe { self.vm.as_ref() }
     }
 
     #[inline(always)]
@@ -233,7 +222,7 @@ impl LatentContext {
     }
 
     #[inline(always)]
-    pub fn vm_ref(&self) -> GameRef<'_, IVirtualMachine> {
+    pub fn vm_ref(&self) -> GamePtr<IVirtualMachine> {
         self.inner.vm_ref()
     }
 
@@ -826,7 +815,7 @@ where
     }
 }
 
-impl<'a, T> UserPapyrusBase for GameRef<'a, T>
+impl<T> UserPapyrusBase for GameRef<T>
 where
     *mut T: PapyrusBase + PapyrusValidBase + 'static,
 {
@@ -834,11 +823,11 @@ where
 
     #[inline(always)]
     unsafe fn try_from_raw(raw: Self::Raw) -> Option<Self> {
-        Some(unsafe { GameRef::from_raw(raw) })
+        unsafe { GamePtr::from_raw(raw) }.into_option()
     }
 }
 
-impl<'a, T> UserPapyrusBase for GameRefMut<'a, T>
+impl<T> UserPapyrusBase for GamePtr<T>
 where
     *mut T: PapyrusBase + PapyrusValidBase + 'static,
 {
@@ -846,7 +835,7 @@ where
 
     #[inline(always)]
     unsafe fn try_from_raw(raw: Self::Raw) -> Option<Self> {
-        Some(unsafe { GameRefMut::from_raw(raw) })
+        Some(unsafe { GamePtr::from_raw(raw) })
     }
 }
 
@@ -934,7 +923,7 @@ where
     }
 }
 
-impl<'a, T> UserPapyrusParameter for GameRef<'a, T>
+impl<T> UserPapyrusParameter for GameRef<T>
 where
     *mut T: PapyrusParameter + PapyrusParameterConvertible + 'static,
 {
@@ -942,11 +931,11 @@ where
 
     #[inline(always)]
     unsafe fn try_from_raw(raw: Self::Raw) -> Option<Self> {
-        Some(unsafe { GameRef::from_raw(raw) })
+        unsafe { GamePtr::from_raw(raw) }.into_option()
     }
 }
 
-impl<'a, T> UserPapyrusParameter for GameRefMut<'a, T>
+impl<T> UserPapyrusParameter for GamePtr<T>
 where
     *mut T: PapyrusParameter + PapyrusParameterConvertible + 'static,
 {
@@ -954,7 +943,7 @@ where
 
     #[inline(always)]
     unsafe fn try_from_raw(raw: Self::Raw) -> Option<Self> {
-        Some(unsafe { GameRefMut::from_raw(raw) })
+        Some(unsafe { GamePtr::from_raw(raw) })
     }
 }
 

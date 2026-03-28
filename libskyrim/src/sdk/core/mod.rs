@@ -18,4 +18,4 @@ pub use handles::{
 };
 pub use owners::{NativeOwner, NativeOwnerCastExt, NativeOwnerFamily};
 pub use phase::{GameLifecyclePhase, LifecyclePhase, PluginLifecyclePhase};
-pub use refs::{GameRef, GameRefMut};
+pub use refs::{GamePtr, GameRef};

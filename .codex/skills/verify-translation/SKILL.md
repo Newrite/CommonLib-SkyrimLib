@@ -105,6 +105,11 @@ preflight when the existing Rust file may already be mostly correct.
 
 - extension traits exist for reusable virtual mixins
 - trait blanket impls use `AsRef` / `AsMut` correctly
+- public Rust-facing getters and helpers do not require stronger mutability or
+  raw-pointer-only consumption unless the source-backed contract truly needs it
+- when a CommonLib wrapper is non-const but semantically read-only, Rust may
+  expose `&self` and companion helpers such as `*_as_str()` as long as the
+  underlying low-level behavior stays honest
 
 ### Generated artifacts
 

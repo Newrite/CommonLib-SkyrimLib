@@ -74,6 +74,17 @@ where
     }
 }
 
+impl<E, U> EnumSet<E, U>
+where
+    E: EnumSetType<U>,
+    U: EnumSetInteger,
+{
+    #[inline(always)]
+    pub fn new(value: E) -> Self {
+        Self::from_underlying(value.to_underlying())
+    }
+}
+
 macro_rules! impl_enum_set_const_storage {
     ($($ty:ty),* $(,)?) => {
         $(
@@ -362,6 +373,12 @@ mod tests {
         let value = EnumSet::<TestValue, u8>::from(TestValue::Two);
         assert_eq!(value.underlying(), 2u8);
         assert_eq!(value.get(), Some(TestValue::Two));
+    }
+
+    #[test]
+    fn supports_new_from_enum_value() {
+        let value = EnumSet::<TestValue, i32>::new(TestValue::One);
+        assert_eq!(value.underlying(), 1);
     }
 
     const CONST_FLAGS: EnumSet<TestFlags, u8> = EnumSet::from_underlying(0b101);

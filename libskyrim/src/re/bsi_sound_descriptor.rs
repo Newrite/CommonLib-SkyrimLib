@@ -77,7 +77,7 @@ impl BSISoundDescriptor {
 
 pub trait BSISoundDescriptorExt {
     fn do_resolve(&mut self, resolution: *mut BSISoundDescriptorResolution) -> bool;
-    fn resolve(&mut self, resolution: &mut BSISoundDescriptorResolution) -> bool;
+    fn resolve(&self, resolution: &mut BSISoundDescriptorResolution) -> bool;
     fn unk_02(&mut self);
 }
 
@@ -86,8 +86,8 @@ impl<T: AsRef<BSISoundDescriptor> + AsMut<BSISoundDescriptor>> BSISoundDescripto
         self.as_mut().do_resolve(resolution)
     }
 
-    fn resolve(&mut self, resolution: &mut BSISoundDescriptorResolution) -> bool {
-        self.as_mut().resolve(resolution)
+    fn resolve(&self, resolution: &mut BSISoundDescriptorResolution) -> bool {
+        self.as_ref().resolve(resolution)
     }
 
     fn unk_02(&mut self) {

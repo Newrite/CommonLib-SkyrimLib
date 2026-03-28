@@ -311,7 +311,7 @@ pub trait NiObjectExt {
     fn stream_can_skip(&self) -> bool;
     fn get_streamable_rtti(&self) -> *const NiRTTI;
     fn get_block_allocation_size(&self) -> u32;
-    fn get_group(&mut self) -> *mut NiObjectGroup;
+    fn get_group(&self) -> *mut NiObjectGroup;
     fn set_group(&mut self, a_group: *mut NiObjectGroup);
     fn as_ni_controller_manager(&mut self) -> *mut NiControllerManager;
     fn clone(&mut self) -> *mut NiObject;
@@ -455,8 +455,8 @@ impl<T: AsRef<NiObject> + AsMut<NiObject>> NiObjectExt for T {
         NiObject::get_block_allocation_size(self.as_ref())
     }
 
-    fn get_group(&mut self) -> *mut NiObjectGroup {
-        NiObject::get_group(self.as_mut())
+    fn get_group(&self) -> *mut NiObjectGroup {
+        NiObject::get_group(self.as_ref())
     }
 
     fn set_group(&mut self, a_group: *mut NiObjectGroup) {

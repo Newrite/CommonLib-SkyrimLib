@@ -186,6 +186,20 @@ impl NiNode {
     }
 }
 
+impl AsRef<NiNode> for NiNode {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl AsMut<NiNode> for NiNode {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
 pub trait NiNodeExt {
     fn get_children(&self) -> &NiTObjectArray<NiPointer<NiAVObject>>;
     fn attach_child(&mut self, a_child: *mut NiAVObject, a_first_avail: bool);

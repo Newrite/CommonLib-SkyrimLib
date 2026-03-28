@@ -12,6 +12,7 @@ use crate::re::{
 use crate::relocation::{RttiType, skyrim_cast, skyrim_cast_const};
 
 use super::owners::{NativeOwner, NativeOwnerCastExt, NativeOwnerFamily};
+use super::refs::{GamePtr, GameRef};
 use super::sealed;
 
 /// Trait for native handle types that can resolve into a native owner.
@@ -279,6 +280,31 @@ impl<T> Resolved<T>
 where
     T: HandleFamilyTarget,
 {
+    #[inline(always)]
+    pub fn try_from_ptr(ptr: *mut T) -> Option<Self> {
+        Self::from_ptr(ptr)
+    }
+
+    #[inline(always)]
+    pub fn try_from_ref(value: &T) -> Option<Self> {
+        Self::from_ptr(value as *const T as *mut T)
+    }
+
+    #[inline(always)]
+    pub fn try_from_mut(value: &mut T) -> Option<Self> {
+        Self::from_ptr(value as *mut T)
+    }
+
+    #[inline(always)]
+    pub fn try_from_game_ref(value: GameRef<T>) -> Option<Self> {
+        Self::from_ptr(value.as_ptr())
+    }
+
+    #[inline(always)]
+    pub fn try_from_game_ptr(value: GamePtr<T>) -> Option<Self> {
+        Self::from_ptr(value.as_ptr())
+    }
+
     #[inline(always)]
     pub fn from_inner(inner: ResolvedHandle<T::Handle>) -> Option<Self> {
         let typed =

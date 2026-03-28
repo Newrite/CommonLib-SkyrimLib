@@ -129,6 +129,11 @@ impl BGSDestructibleObjectForm {
     }
 
     #[inline(always)]
+    pub fn get_destructible_data_ref(&self) -> Option<&DestructibleObjectData> {
+        unsafe { self.get_destructible_data_ptr().as_ref() }
+    }
+
+    #[inline(always)]
     pub const fn has_destructible_data(&self) -> bool {
         !self.data.is_null()
     }
@@ -140,6 +145,7 @@ pub trait BGSDestructibleObjectFormExt {
     fn clear_data_component(&mut self);
     fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_destructible_data_ptr(&self) -> *mut DestructibleObjectData;
+    fn get_destructible_data_ref(&self) -> Option<&DestructibleObjectData>;
     fn has_destructible_data(&self) -> bool;
 }
 
@@ -164,6 +170,10 @@ impl<T: AsRef<BGSDestructibleObjectForm> + AsMut<BGSDestructibleObjectForm>>
 
     fn get_destructible_data_ptr(&self) -> *mut DestructibleObjectData {
         self.as_ref().get_destructible_data_ptr()
+    }
+
+    fn get_destructible_data_ref(&self) -> Option<&DestructibleObjectData> {
+        self.as_ref().get_destructible_data_ref()
     }
 
     fn has_destructible_data(&self) -> bool {

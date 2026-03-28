@@ -111,11 +111,11 @@ impl TESObjectARMO {
     // override (BGSKeywordForm)
     // [[nodiscard]] BGSKeyword* GetDefaultKeyword() const override;  // 05
 
-    pub fn get_armor_rating(&mut self) -> f32 {
+    pub fn get_armor_rating(&self) -> f32 {
         self.armor_rating as f32 / 100.0
     }
 
-    pub fn get_armor_addon(&mut self, _a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
+    pub fn get_armor_addon(&self, _a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
         if _a_race.is_null() {
             return core::ptr::null_mut();
         }
@@ -134,7 +134,7 @@ impl TESObjectARMO {
     }
 
     pub fn get_armor_addon_by_mask(
-        &mut self,
+        &self,
         _a_race: *mut crate::re::TESRace,
         _a_slot: crate::re::BipedObjectSlot,
     ) -> *mut TESObjectARMA {
@@ -162,10 +162,10 @@ impl TESObjectARMO {
 }
 
 pub trait TESObjectARMOExt {
-    fn get_armor_rating(&mut self) -> f32;
-    fn get_armor_addon(&mut self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA;
+    fn get_armor_rating(&self) -> f32;
+    fn get_armor_addon(&self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA;
     fn get_armor_addon_by_mask(
-        &mut self,
+        &self,
         a_race: *mut crate::re::TESRace,
         a_slot: crate::re::BipedObjectSlot,
     ) -> *mut TESObjectARMA;
@@ -177,20 +177,20 @@ pub trait TESObjectARMOExt {
 }
 
 impl<T: AsRef<TESObjectARMO> + AsMut<TESObjectARMO>> TESObjectARMOExt for T {
-    fn get_armor_rating(&mut self) -> f32 {
-        self.as_mut().get_armor_rating()
+    fn get_armor_rating(&self) -> f32 {
+        self.as_ref().get_armor_rating()
     }
 
-    fn get_armor_addon(&mut self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
-        self.as_mut().get_armor_addon(a_race)
+    fn get_armor_addon(&self, a_race: *mut crate::re::TESRace) -> *mut TESObjectARMA {
+        self.as_ref().get_armor_addon(a_race)
     }
 
     fn get_armor_addon_by_mask(
-        &mut self,
+        &self,
         a_race: *mut crate::re::TESRace,
         a_slot: crate::re::BipedObjectSlot,
     ) -> *mut TESObjectARMA {
-        self.as_mut().get_armor_addon_by_mask(a_race, a_slot)
+        self.as_ref().get_armor_addon_by_mask(a_race, a_slot)
     }
 
     fn init_worn_armor(

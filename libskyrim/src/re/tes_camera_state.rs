@@ -84,12 +84,12 @@ impl TESCameraState {
 
     crate::relocated_virtual_method! {
         pub const VFUNC_GET_ROTATION: VariantOffset = VariantOffset::new_se_ae(0x04, 0x05);
-        pub fn get_rotation(&mut self, rotation: &mut NiQuaternion)
+        pub fn get_rotation(&self, rotation: &mut NiQuaternion)
     }
 
     crate::relocated_virtual_method! {
         pub const VFUNC_GET_TRANSLATION: VariantOffset = VariantOffset::new_se_ae(0x05, 0x06);
-        pub fn get_translation(&mut self, translation: &mut NiPoint3)
+        pub fn get_translation(&self, translation: &mut NiPoint3)
     }
 
     crate::relocated_virtual_method! {
@@ -114,8 +114,8 @@ pub trait TESCameraStateExt {
     fn end(&mut self);
     fn unk_03(&mut self);
     fn update(&mut self, next_state: &mut BSTSmartPointer<TESCameraState>);
-    fn get_rotation(&mut self, rotation: &mut NiQuaternion);
-    fn get_translation(&mut self, translation: &mut NiPoint3);
+    fn get_rotation(&self, rotation: &mut NiQuaternion);
+    fn get_translation(&self, translation: &mut NiPoint3);
     fn save_game(&mut self, buf: *mut BGSSaveFormBuffer);
     fn load_game(&mut self, buf: *mut BGSLoadFormBuffer);
     fn revert(&mut self, buf: *mut BGSLoadFormBuffer);
@@ -151,13 +151,13 @@ where
     }
 
     #[inline(always)]
-    fn get_rotation(&mut self, rotation: &mut NiQuaternion) {
-        TESCameraState::get_rotation(self.as_mut(), rotation)
+    fn get_rotation(&self, rotation: &mut NiQuaternion) {
+        TESCameraState::get_rotation(self.as_ref(), rotation)
     }
 
     #[inline(always)]
-    fn get_translation(&mut self, translation: &mut NiPoint3) {
-        TESCameraState::get_translation(self.as_mut(), translation)
+    fn get_translation(&self, translation: &mut NiPoint3) {
+        TESCameraState::get_translation(self.as_ref(), translation)
     }
 
     #[inline(always)]

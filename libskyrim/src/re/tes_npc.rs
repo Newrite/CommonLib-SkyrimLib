@@ -354,7 +354,7 @@ impl TESNPC {
     }
 
     crate::relocation_func! {
-        pub fn get_unique_actor(&mut self) -> *mut Actor => RelocationID::new(24180, 24684)
+        pub fn get_unique_actor(&self) -> *mut Actor => RelocationID::new(24180, 24684)
     }
 
     crate::relocation_func! {
@@ -362,7 +362,7 @@ impl TESNPC {
     }
 
     crate::relocation_func! {
-        pub fn has_overlays(&mut self) -> bool => RelocationID::new(24274, 24790)
+        pub fn has_overlays(&self) -> bool => RelocationID::new(24274, 24790)
     }
 
     crate::relocation_func! {
@@ -466,7 +466,7 @@ impl TESNPC {
         }
     }
 
-    pub fn get_current_head_part_by_type(&mut self, part_type: HeadPartType) -> *mut BGSHeadPart {
+    pub fn get_current_head_part_by_type(&self, part_type: HeadPartType) -> *mut BGSHeadPart {
         if self.has_overlays() {
             self.get_head_part_overlay_by_type(part_type)
         } else {
@@ -543,16 +543,8 @@ impl TESNPC {
         self.race_form.race
     }
 
-    pub fn get_root_face_npc(&mut self) -> *mut TESNPC {
-        let mut iter = self as *mut TESNPC;
-        while !iter.is_null() {
-            let next = unsafe { (*iter).face_npc };
-            if next.is_null() {
-                break;
-            }
-            iter = next;
-        }
-        iter
+    pub fn get_root_face_npc(&self) -> *mut TESNPC {
+        self.get_root_face_npc_const().cast_mut()
     }
 
     pub fn get_root_face_npc_const(&self) -> *const TESNPC {

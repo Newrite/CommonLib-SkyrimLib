@@ -91,20 +91,29 @@ impl BGSStoryManagerNodeBase {
     // TESCondition* QConditions() override;  // 3D - { return &conditions; }
 
     #[inline]
-    pub fn q_conditions(&mut self) -> *mut TESCondition {
-        &mut self.conditions
+    pub fn q_conditions(&self) -> *mut TESCondition {
+        core::ptr::addr_of!(self.conditions) as *mut TESCondition
+    }
+
+    #[inline]
+    pub fn q_conditions_ref(&self) -> &TESCondition {
+        &self.conditions
     }
 }
 
 pub trait BGSStoryManagerNodeBaseExt {
-    fn q_conditions(&mut self) -> *mut TESCondition;
+    fn q_conditions(&self) -> *mut TESCondition;
+    fn q_conditions_ref(&self) -> &TESCondition;
 }
 
-impl<T: AsRef<BGSStoryManagerNodeBase> + AsMut<BGSStoryManagerNodeBase>> BGSStoryManagerNodeBaseExt
-    for T
-{
+impl<T: AsRef<BGSStoryManagerNodeBase>> BGSStoryManagerNodeBaseExt for T {
     #[inline(always)]
-    fn q_conditions(&mut self) -> *mut TESCondition {
-        BGSStoryManagerNodeBase::q_conditions(self.as_mut())
+    fn q_conditions(&self) -> *mut TESCondition {
+        BGSStoryManagerNodeBase::q_conditions(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn q_conditions_ref(&self) -> &TESCondition {
+        BGSStoryManagerNodeBase::q_conditions_ref(self.as_ref())
     }
 }

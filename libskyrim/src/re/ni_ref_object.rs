@@ -33,23 +33,28 @@ impl NiRefObject {
     }
 
     virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor()
+    }
+
+    virtual_method! {
         pub const VFUNC_DELETE_THIS: usize = 0x01;
         pub fn delete_this()
     }
 
     #[inline(always)]
     pub fn get_ref_count(&self) -> u32 {
-        self.ref_count.load(Ordering::Acquire)
+        self.ref_count.load(Ordering::SeqCst)
     }
 
     #[inline(always)]
     pub fn inc_ref_count(&self) {
-        self.ref_count.fetch_add(1, Ordering::Relaxed);
+        self.ref_count.fetch_add(1, Ordering::SeqCst);
     }
 
     #[inline(always)]
     pub fn dec_ref_count(&self) {
-        if self.ref_count.fetch_sub(1, Ordering::AcqRel) == 1 {
+        if self.ref_count.fetch_sub(1, Ordering::SeqCst) == 1 {
             self.delete_this();
         }
     }

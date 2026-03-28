@@ -47,6 +47,10 @@ Check all of these:
   pointer-only API
 - duplicated local stop/continue enums that should use `BSContainerForEachResult`
 - missing extension trait for reusable virtual mixins
+- overly literal Rust-facing wrapper signatures or missing ergonomic helpers
+  where source shows no meaningful behavioral difference, for example
+  unnecessary `&mut self` on getters or missing `*_as_str()` sugar over
+  read-only C-string getters
 - stale `todo!()` or placeholder comments in translated logic
 
 ## Relocation Rules
@@ -116,6 +120,11 @@ Check all of these:
 Preserve correct existing code. Patch narrowly. If a larger refactor is required
 to make the file honest, do it, but keep the resulting structure idiomatic for
 the current `libskyrim` architecture.
+
+Preserve the source-backed low-level contract, but do not keep a mechanically
+literal C++ signature when it only makes the Rust API worse without preserving
+real behavior. If needed, keep the raw method and add a more ergonomic helper
+alongside it.
 
 If you must leave an honest compromise in place, add a source-backed `// TODO:`
 comment at the exact site. Do not hide the compromise only in the final report,

@@ -43,6 +43,16 @@ impl BGSKeyword {
     pub const RTTI: VariantID = RTTI_BGSKeyword;
     pub const VTABLE: &'static [VariantID] = &VTABLE_BGSKeyword;
 
+    #[inline(always)]
+    pub fn get_form_editor_id_as_str(&self) -> &str {
+        self.form_editor_id.as_str()
+    }
+
+    #[inline(always)]
+    pub fn create_keyword_from_str(form_editor_id: &str) -> *mut BGSKeyword {
+        Self::create_keyword(&BSFixedString::from_str(form_editor_id))
+    }
+
     pub fn create_keyword(form_editor_id: &BSFixedString) -> *mut BGSKeyword {
         let factory = IFormFactory::get_form_factory_by_type(FormType::Keyword);
         if !factory.is_null() {

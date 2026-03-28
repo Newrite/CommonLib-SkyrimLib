@@ -572,6 +572,11 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_actor_base_ref(&self) -> Option<&TESNPC> {
+        unsafe { self.get_actor_base().as_ref() }
+    }
+
+    #[inline(always)]
     pub fn get_actor_value_max(&self, value: ActorValue) -> f32 {
         self.as_actor_value_owner().get_permanent_actor_value(value)
             + self.get_actor_value_modifier(ActorValueModifier::Temporary, value)
@@ -593,10 +598,20 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_current_package_ref(&self) -> Option<&TESPackage> {
+        unsafe { self.get_current_package().as_ref() }
+    }
+
+    #[inline(always)]
     pub fn get_current_shout(&self) -> *mut TESShout {
         self.current_process()
             .map(AIProcess::get_current_shout)
             .unwrap_or(core::ptr::null_mut())
+    }
+
+    #[inline(always)]
+    pub fn get_current_shout_ref(&self) -> Option<&TESShout> {
+        unsafe { self.get_current_shout().as_ref() }
     }
 
     #[inline(always)]
@@ -696,6 +711,11 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_race_ref(&self) -> Option<&TESRace> {
+        unsafe { self.get_race().as_ref() }
+    }
+
+    #[inline(always)]
     pub fn get_middle_high_process(&self) -> *mut MiddleHighProcessData {
         self.current_process()
             .map(|process| process.middle_high)
@@ -723,11 +743,21 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_template_base_ref(&self) -> Option<&TESNPC> {
+        unsafe { self.get_template_base().as_ref() }
+    }
+
+    #[inline(always)]
     pub fn get_vendor_faction(&self) -> *mut TESFaction {
         if self.get_actor_runtime_data().vendor_faction.is_null() {
             self.calculate_current_vendor_faction();
         }
         self.get_actor_runtime_data().vendor_faction
+    }
+
+    #[inline(always)]
+    pub fn get_vendor_faction_ref(&self) -> Option<&TESFaction> {
+        unsafe { self.get_vendor_faction().as_ref() }
     }
 
     #[inline(always)]
@@ -1869,13 +1899,16 @@ pub trait ActorExt {
     fn create_ref_handle(&self) -> ActorHandle;
     fn get_handle(&self) -> ActorHandle;
     fn get_actor_base(&self) -> *mut TESNPC;
+    fn get_actor_base_ref(&self) -> Option<&TESNPC>;
     fn get_actor_value_max(&self, value: ActorValue) -> f32;
     fn get_actor_value_modifier(&self, modifier: ACTOR_VALUE_MODIFIER, value: ActorValue) -> f32;
     fn get_aim_angle(&self) -> f32;
     fn get_aim_heading(&self) -> f32;
     fn get_commanding_actor(&self) -> NiPointer<Actor>;
     fn get_current_package(&self) -> *mut TESPackage;
+    fn get_current_package_ref(&self) -> Option<&TESPackage>;
     fn get_current_shout(&self) -> *mut TESShout;
+    fn get_current_shout_ref(&self) -> Option<&TESShout>;
     fn get_equipped_entry_data(&self, left_hand: bool) -> *mut InventoryEntryData;
     fn get_equipped_object(&self, left_hand: bool) -> *mut TESForm;
     fn get_equipped_object_in_slot(&self, slot: *const BGSEquipSlot) -> *mut TESForm;
@@ -1885,9 +1918,11 @@ pub trait ActorExt {
     fn get_occupied_furniture(&self) -> ObjectRefHandle;
     fn get_process_level(&self) -> PROCESS_TYPE;
     fn get_race(&self) -> *mut TESRace;
+    fn get_race_ref(&self) -> Option<&TESRace>;
     fn get_middle_high_process(&self) -> *mut MiddleHighProcessData;
     fn get_tracked_damage(&self) -> f32;
     fn get_vendor_faction(&self) -> *mut TESFaction;
+    fn get_vendor_faction_ref(&self) -> Option<&TESFaction>;
     fn get_voice_recovery_time(&self) -> f32;
     fn get_char_controller(&self) -> *mut bhkCharacterController;
     fn calculate_los_location(&self, location: ACTOR_LOS_LOCATION) -> NiPoint3;
@@ -2072,6 +2107,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_actor_base_ref(&self) -> Option<&TESNPC> {
+        Actor::get_actor_base_ref(self.as_ref())
+    }
+
+    #[inline(always)]
     fn get_actor_value_max(&self, value: ActorValue) -> f32 {
         Actor::get_actor_value_max(self.as_ref(), value)
     }
@@ -2102,8 +2142,18 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_current_package_ref(&self) -> Option<&TESPackage> {
+        Actor::get_current_package_ref(self.as_ref())
+    }
+
+    #[inline(always)]
     fn get_current_shout(&self) -> *mut TESShout {
         Actor::get_current_shout(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_current_shout_ref(&self) -> Option<&TESShout> {
+        Actor::get_current_shout_ref(self.as_ref())
     }
 
     #[inline(always)]
@@ -2152,6 +2202,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_race_ref(&self) -> Option<&TESRace> {
+        Actor::get_race_ref(self.as_ref())
+    }
+
+    #[inline(always)]
     fn get_middle_high_process(&self) -> *mut MiddleHighProcessData {
         Actor::get_middle_high_process(self.as_ref())
     }
@@ -2164,6 +2219,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn get_vendor_faction(&self) -> *mut TESFaction {
         Actor::get_vendor_faction(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_vendor_faction_ref(&self) -> Option<&TESFaction> {
+        Actor::get_vendor_faction_ref(self.as_ref())
     }
 
     #[inline(always)]

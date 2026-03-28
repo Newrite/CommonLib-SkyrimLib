@@ -66,7 +66,7 @@ impl BGSEntryPointFunctionData {
 
     crate::virtual_method! {
         pub const VFUNC_GET_ID: usize = 0x05;
-        pub fn get_id(&mut self) -> u16
+        pub fn get_id(&self) -> u16
     }
 
     crate::virtual_method! {
@@ -76,7 +76,7 @@ impl BGSEntryPointFunctionData {
 
     crate::virtual_method! {
         pub const VFUNC_GET_PARENT_PERK: usize = 0x07;
-        pub fn get_parent_perk(&mut self) -> *mut BGSPerk
+        pub fn get_parent_perk(&self) -> *mut BGSPerk
     }
 }
 
@@ -86,9 +86,10 @@ pub trait BGSEntryPointFunctionDataExt {
     fn load_impl(&mut self, mod_file: *mut TESFile) -> bool;
     fn init_item(&mut self, form: *mut TESForm);
     fn apply_on_add(&mut self, form: *mut TESForm, perk_entry: *mut BGSPerkEntry);
-    fn get_id(&mut self) -> u16;
+    fn get_id(&self) -> u16;
     fn set_parent_perk(&mut self, perk: *mut BGSPerk);
-    fn get_parent_perk(&mut self) -> *mut BGSPerk;
+    fn get_parent_perk(&self) -> *mut BGSPerk;
+    fn get_parent_perk_ref(&self) -> Option<&BGSPerk>;
 }
 
 impl<T: AsRef<BGSEntryPointFunctionData> + AsMut<BGSEntryPointFunctionData>>
@@ -120,8 +121,8 @@ impl<T: AsRef<BGSEntryPointFunctionData> + AsMut<BGSEntryPointFunctionData>>
     }
 
     #[inline(always)]
-    fn get_id(&mut self) -> u16 {
-        BGSEntryPointFunctionData::get_id(self.as_mut())
+    fn get_id(&self) -> u16 {
+        BGSEntryPointFunctionData::get_id(self.as_ref())
     }
 
     #[inline(always)]
@@ -130,7 +131,12 @@ impl<T: AsRef<BGSEntryPointFunctionData> + AsMut<BGSEntryPointFunctionData>>
     }
 
     #[inline(always)]
-    fn get_parent_perk(&mut self) -> *mut BGSPerk {
-        BGSEntryPointFunctionData::get_parent_perk(self.as_mut())
+    fn get_parent_perk(&self) -> *mut BGSPerk {
+        BGSEntryPointFunctionData::get_parent_perk(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_parent_perk_ref(&self) -> Option<&BGSPerk> {
+        unsafe { BGSEntryPointFunctionData::get_parent_perk(self.as_ref()).as_ref() }
     }
 }

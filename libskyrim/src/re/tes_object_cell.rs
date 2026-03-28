@@ -374,12 +374,12 @@ impl TESObjectCELL {
 
     crate::virtual_method! {
         pub const VFUNC_IS_PARENT_FORM: usize = 0x34;
-        pub fn is_parent_form(&mut self) -> bool
+        pub fn is_parent_form(&self) -> bool
     }
 
     crate::virtual_method! {
         pub const VFUNC_IS_FORM_TYPE_CHILD: usize = 0x36;
-        pub fn is_form_type_child(&mut self, form_type: FormType) -> bool
+        pub fn is_form_type_child(&self, form_type: FormType) -> bool
     }
 
     crate::runtime_data_ptr_accessor! {
@@ -416,7 +416,7 @@ impl TESObjectCELL {
     }
 
     crate::relocation_func! {
-        pub fn get_water_height(&mut self, pos: &NiPoint3, water_height: &mut f32) -> bool => RelocationID::new(18543, 19002)
+        pub fn get_water_height(&self, pos: &NiPoint3, water_height: &mut f32) -> bool => RelocationID::new(18543, 19002)
     }
 
     crate::relocation_func! {
@@ -463,7 +463,7 @@ impl TESObjectCELL {
     }
 
     #[inline]
-    pub fn get_actor_owner(&mut self) -> *mut TESNPC {
+    pub fn get_actor_owner(&self) -> *mut TESNPC {
         let owner = self.get_owner();
         if owner.is_null() || !unsafe { (*owner).is(FormType::NPC) } {
             core::ptr::null_mut()
@@ -473,7 +473,7 @@ impl TESObjectCELL {
     }
 
     #[inline]
-    pub fn get_coordinates(&mut self) -> *mut EXTERIOR_DATA {
+    pub fn get_coordinates(&self) -> *mut EXTERIOR_DATA {
         if self.is_exterior_cell() {
             unsafe { self.get_runtime_data().cell_data.exterior }
         } else {
@@ -482,7 +482,7 @@ impl TESObjectCELL {
     }
 
     #[inline]
-    pub fn get_faction_owner(&mut self) -> *mut TESFaction {
+    pub fn get_faction_owner(&self) -> *mut TESFaction {
         let owner = self.get_owner();
         if owner.is_null() || !unsafe { (*owner).is(FormType::Faction) } {
             core::ptr::null_mut()
@@ -492,7 +492,7 @@ impl TESObjectCELL {
     }
 
     #[inline]
-    pub fn get_lighting(&mut self) -> *mut INTERIOR_DATA {
+    pub fn get_lighting(&self) -> *mut INTERIOR_DATA {
         if self.is_interior_cell() {
             unsafe { self.get_runtime_data().cell_data.interior }
         } else {
@@ -513,7 +513,7 @@ impl TESObjectCELL {
         }
     }
 
-    pub fn get_owner(&mut self) -> *mut TESForm {
+    pub fn get_owner(&self) -> *mut TESForm {
         let runtime_data = self.get_runtime_data();
         let owner = self.extra_list.get_owner();
         if !owner.is_null() {
@@ -541,6 +541,11 @@ impl TESObjectCELL {
         } else {
             unsafe { (*zone).data.zone_owner.cast() }
         }
+    }
+
+    #[inline(always)]
+    pub fn get_form_editor_id_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_form_editor_id())
     }
 
     pub fn get_exterior_water_height(&self) -> f32 {

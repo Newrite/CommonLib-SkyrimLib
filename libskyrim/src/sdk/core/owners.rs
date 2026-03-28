@@ -3,7 +3,6 @@
 use crate::re::{BSTSmartPointer, BSTSmartPointerManager, HkRef, NiPointer, NiRef, hkRefPtr};
 use crate::relocation::{RttiType, skyrim_cast};
 
-use super::refs::{GameRef, GameRefMut};
 use super::sealed;
 
 /// Small shared surface over native Bethesda smart-pointer families.
@@ -32,16 +31,6 @@ pub trait NativeOwner: sealed::Sealed {
     #[inline(always)]
     fn as_mut(&mut self) -> Option<&mut Self::Target> {
         unsafe { self.as_ptr().as_mut() }
-    }
-
-    #[inline(always)]
-    fn borrow(&self) -> GameRef<'_, Self::Target> {
-        unsafe { GameRef::from_raw(self.as_ptr()) }
-    }
-
-    #[inline(always)]
-    fn borrow_mut(&mut self) -> GameRefMut<'_, Self::Target> {
-        unsafe { GameRefMut::from_raw(self.as_ptr()) }
     }
 }
 

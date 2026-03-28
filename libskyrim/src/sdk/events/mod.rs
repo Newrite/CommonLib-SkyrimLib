@@ -84,7 +84,6 @@ pub use crate::__libskyrim_sdk_events_install_all_or_fatal as install_all_or_fat
 #[cfg(test)]
 mod tests {
     use crate::re::{MenuOpenCloseEvent, TESHitEvent};
-    use crate::sdk::core::GameRef;
     use crate::sdk::events::{self, Bus, EventFlow, InputEvents};
     use crate::skse::ActionEvent;
     use alloc::boxed::Box;
@@ -105,7 +104,7 @@ mod tests {
     fn sdk_ui_example(_event: &MenuOpenCloseEvent) {}
 
     #[crate::sdk::events::dispatcher_event(event = crate::skse::ActionEvent)]
-    fn sdk_dispatcher_example(_event: GameRef<'_, ActionEvent>) -> EventFlow {
+    fn sdk_dispatcher_example(_event: &ActionEvent) -> EventFlow {
         EventFlow::Continue
     }
 

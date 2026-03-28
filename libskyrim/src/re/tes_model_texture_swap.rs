@@ -87,7 +87,7 @@ pub trait TESModelTextureSwapExt {
     fn initialize_data_component(&mut self);
     fn clear_data_component(&mut self);
     fn copy_component(&mut self, rhs: *mut BaseFormComponent);
-    fn get_as_model_texture_swap(&mut self) -> *mut TESModelTextureSwap;
+    fn get_as_model_texture_swap(&self) -> *mut TESModelTextureSwap;
     fn get_alternate_textures(&self) -> &[AlternateTexture];
 }
 
@@ -108,8 +108,8 @@ impl<T: AsRef<TESModelTextureSwap> + AsMut<TESModelTextureSwap>> TESModelTexture
         TESModelTextureSwap::copy_component(self.as_mut(), rhs)
     }
 
-    fn get_as_model_texture_swap(&mut self) -> *mut TESModelTextureSwap {
-        TESModelTextureSwap::get_as_model_texture_swap(self.as_mut())
+    fn get_as_model_texture_swap(&self) -> *mut TESModelTextureSwap {
+        TESModelTextureSwap::get_as_model_texture_swap(self.as_ref())
     }
 
     fn get_alternate_textures(&self) -> &[AlternateTexture] {

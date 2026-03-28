@@ -34,6 +34,9 @@ Audit the requested translation and compare it to CommonLibVR.
   `MagicCaster::PostCreationCallback : MagicTarget::IPostCreationModification`
 - event category: fixed event base, runtime-varying event base, or raw sink
   pointer-only API
+- overly literal Rust-facing API choices that do not preserve a meaningful
+  behavioral difference, for example a semantically read-only getter requiring
+  `&mut self` or a raw C-string getter with no ergonomic `*_as_str()` helper
 - whether the file uses local moved-base helpers that should be replaced with
   `runtime_cast_accessor!` / `runtime_cast_mut_accessor!` or other shared
   runtime accessors

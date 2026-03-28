@@ -242,7 +242,7 @@ impl TESObjectBOOK {
     }
 
     #[inline(always)]
-    pub fn get_spell(&mut self) -> *mut SpellItem {
+    pub fn get_spell(&self) -> *mut SpellItem {
         if self.teaches_spell() {
             unsafe { self.data.teaches.spell }
         } else {

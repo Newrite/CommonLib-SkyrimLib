@@ -14,7 +14,7 @@ use crate::re::bs_intrusive_ref_counted::BSIntrusiveRefCounted;
 use crate::re::bs_jobs::BSJobsJobList;
 use crate::re::bst_array::BSScrapArray;
 use crate::re::bst_event::BSTEventSink;
-use crate::re::bst_smart_pointer::BSTSmartPointer;
+use crate::re::bst_smart_pointer::{BSTSmartPointer, BSTSmartPointerIntrusiveRefCountable};
 use crate::re::error_logger::{ErrorLogger, Severity};
 use crate::re::i_object_handle_policy::IObjectHandlePolicy;
 use crate::re::i_save_patcher_interface::ISavePatcherInterface;
@@ -205,6 +205,23 @@ inherit!(IVirtualMachine : BSIntrusiveRefCounted);
 
 impl RttiType for IVirtualMachine {
     const RTTI: VariantID = RTTI_BSScript__IVirtualMachine;
+}
+
+impl BSTSmartPointerIntrusiveRefCountable for IVirtualMachine {
+    #[inline(always)]
+    fn bst_inc_ref(&self) {
+        self.base.inc_ref();
+    }
+
+    #[inline(always)]
+    fn bst_dec_ref(&self) -> u32 {
+        self.base.dec_ref()
+    }
+
+    #[inline(always)]
+    unsafe fn bst_delete(&self) {
+        self.dtor();
+    }
 }
 
 pub trait PapyrusFunctionSignature: Copy + 'static {

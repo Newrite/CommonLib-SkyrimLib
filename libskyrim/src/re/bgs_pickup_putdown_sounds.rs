@@ -52,8 +52,18 @@ impl BGSPickupPutdownSounds {
     }
 
     #[inline(always)]
+    pub fn get_pickup_sound_ref(&self) -> Option<&BGSSoundDescriptorForm> {
+        unsafe { self.get_pickup_sound().as_ref() }
+    }
+
+    #[inline(always)]
     pub const fn get_putdown_sound(&self) -> *mut BGSSoundDescriptorForm {
         self.putdown_sound
+    }
+
+    #[inline(always)]
+    pub fn get_putdown_sound_ref(&self) -> Option<&BGSSoundDescriptorForm> {
+        unsafe { self.get_putdown_sound().as_ref() }
     }
 }
 
@@ -63,7 +73,9 @@ pub trait BGSPickupPutdownSoundsExt {
     fn clear_data_component(&mut self);
     fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_pickup_sound(&self) -> *mut BGSSoundDescriptorForm;
+    fn get_pickup_sound_ref(&self) -> Option<&BGSSoundDescriptorForm>;
     fn get_putdown_sound(&self) -> *mut BGSSoundDescriptorForm;
+    fn get_putdown_sound_ref(&self) -> Option<&BGSSoundDescriptorForm>;
 }
 
 impl<T: AsRef<BGSPickupPutdownSounds> + AsMut<BGSPickupPutdownSounds>> BGSPickupPutdownSoundsExt
@@ -89,7 +101,15 @@ impl<T: AsRef<BGSPickupPutdownSounds> + AsMut<BGSPickupPutdownSounds>> BGSPickup
         BGSPickupPutdownSounds::get_pickup_sound(self.as_ref())
     }
 
+    fn get_pickup_sound_ref(&self) -> Option<&BGSSoundDescriptorForm> {
+        BGSPickupPutdownSounds::get_pickup_sound_ref(self.as_ref())
+    }
+
     fn get_putdown_sound(&self) -> *mut BGSSoundDescriptorForm {
         BGSPickupPutdownSounds::get_putdown_sound(self.as_ref())
+    }
+
+    fn get_putdown_sound_ref(&self) -> Option<&BGSSoundDescriptorForm> {
+        BGSPickupPutdownSounds::get_putdown_sound_ref(self.as_ref())
     }
 }

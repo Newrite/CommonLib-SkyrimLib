@@ -64,6 +64,31 @@ impl BSIInputDevice {
         pub const VFUNC_CLEAR_INPUT_STATE: usize = 0x08;
         pub fn clear_input_state(&mut self)
     }
+
+    #[inline(always)]
+    pub fn try_get_button_name_from_id(&mut self, id: i32) -> Option<BSFixedString> {
+        let mut button_name = BSFixedString::empty();
+        if self.get_button_name_from_id(id, &mut button_name) {
+            Some(button_name)
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_mapping_key_from_str(&mut self, mapping: &str) -> u32 {
+        self.get_mapping_key(BSFixedString::from_str(mapping))
+    }
+
+    #[inline(always)]
+    pub fn try_get_key_code_from_id(&mut self, id: i32) -> Option<u32> {
+        let mut key_code = 0;
+        if self.get_key_code_from_id(id, &mut key_code) {
+            Some(key_code)
+        } else {
+            None
+        }
+    }
 }
 
 impl AsRef<BSIInputDevice> for BSIInputDevice {
@@ -86,8 +111,11 @@ pub trait BSIInputDeviceExt {
     fn poll(&mut self, time_delta: f32);
     fn shutdown(&mut self);
     fn get_button_name_from_id(&mut self, id: i32, button_name: &mut BSFixedString) -> bool;
+    fn try_get_button_name_from_id(&mut self, id: i32) -> Option<BSFixedString>;
     fn get_mapping_key(&mut self, mapping: BSFixedString) -> u32;
+    fn get_mapping_key_from_str(&mut self, mapping: &str) -> u32;
     fn get_key_code_from_id(&mut self, id: i32, key_code: &mut u32) -> bool;
+    fn try_get_key_code_from_id(&mut self, id: i32) -> Option<u32>;
     fn is_enabled(&self) -> bool;
     fn clear_input_state(&mut self);
 }
@@ -122,13 +150,28 @@ where
     }
 
     #[inline(always)]
+    fn try_get_button_name_from_id(&mut self, id: i32) -> Option<BSFixedString> {
+        BSIInputDevice::try_get_button_name_from_id(self.as_mut(), id)
+    }
+
+    #[inline(always)]
     fn get_mapping_key(&mut self, mapping: BSFixedString) -> u32 {
         BSIInputDevice::get_mapping_key(self.as_mut(), mapping)
     }
 
     #[inline(always)]
+    fn get_mapping_key_from_str(&mut self, mapping: &str) -> u32 {
+        BSIInputDevice::get_mapping_key_from_str(self.as_mut(), mapping)
+    }
+
+    #[inline(always)]
     fn get_key_code_from_id(&mut self, id: i32, key_code: &mut u32) -> bool {
         BSIInputDevice::get_key_code_from_id(self.as_mut(), id, key_code)
+    }
+
+    #[inline(always)]
+    fn try_get_key_code_from_id(&mut self, id: i32) -> Option<u32> {
+        BSIInputDevice::try_get_key_code_from_id(self.as_mut(), id)
     }
 
     #[inline(always)]

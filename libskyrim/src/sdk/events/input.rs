@@ -6,7 +6,6 @@ use crate::re::{
     BSInputDeviceManager, ButtonEvent, CharEvent, IDEvent, InputEvent, MouseMoveEvent,
     ThumbstickEvent,
 };
-use crate::sdk::core::{GameRef, GameRefMut};
 
 use super::source::{self, EventInstallError, EventSubscription, IntoEventFlow};
 
@@ -37,16 +36,6 @@ impl<'a> InputEvents<'a> {
     #[inline(always)]
     pub const fn is_empty(&self) -> bool {
         self.head.is_null()
-    }
-
-    #[inline(always)]
-    pub fn head(&self) -> GameRef<'_, InputEvent> {
-        unsafe { GameRef::from_raw(self.head) }
-    }
-
-    #[inline(always)]
-    pub fn head_mut(&mut self) -> GameRefMut<'_, InputEvent> {
-        unsafe { GameRefMut::from_raw(self.head) }
     }
 
     #[inline(always)]

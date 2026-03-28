@@ -12,7 +12,7 @@ pub use registry::{
     PapyrusModule, Registry, register, register_module,
 };
 pub use types::{
-    GameRef, GameRefMut, PapyrusMethodFunctionSignature, PapyrusMethodLatentFunctionSignature,
+    GamePtr, GameRef, PapyrusMethodFunctionSignature, PapyrusMethodLatentFunctionSignature,
     PapyrusMethodLongFunctionSignature, PapyrusRef, PapyrusStaticFunctionSignature,
     PapyrusStaticLatentFunctionSignature, PapyrusStaticLongFunctionSignature, UserPapyrusBase,
     UserPapyrusParameter,

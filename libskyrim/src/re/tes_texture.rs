@@ -60,6 +60,17 @@ impl TESTexture {
         pub const GET_DEFAULT_PATH: usize = 0x06;
         pub fn get_default_path() -> *const core::ffi::c_char
     }
+
+    #[inline]
+    pub fn get_as_normal_file_as_str<'a>(&self, a_out: &'a mut BSString) -> &'a str {
+        let _ = self.get_as_normal_file(a_out);
+        a_out.as_str()
+    }
+
+    #[inline]
+    pub fn get_default_path_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_default_path())
+    }
 }
 
 pub trait TESTextureExt {
@@ -69,7 +80,9 @@ pub trait TESTextureExt {
     fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_max_allowed_size(&self) -> u32;
     fn get_as_normal_file(&self, a_out: &mut BSString) -> *const core::ffi::c_char;
+    fn get_as_normal_file_as_str<'a>(&self, a_out: &'a mut BSString) -> &'a str;
     fn get_default_path(&self) -> *const core::ffi::c_char;
+    fn get_default_path_as_str(&self) -> &str;
 }
 
 impl<T: AsRef<TESTexture> + AsMut<TESTexture>> TESTextureExt for T {
@@ -97,7 +110,16 @@ impl<T: AsRef<TESTexture> + AsMut<TESTexture>> TESTextureExt for T {
         self.as_ref().get_as_normal_file(a_out)
     }
 
+    fn get_as_normal_file_as_str<'a>(&self, a_out: &'a mut BSString) -> &'a str {
+        let _ = self.get_as_normal_file(a_out);
+        a_out.as_str()
+    }
+
     fn get_default_path(&self) -> *const core::ffi::c_char {
         self.as_ref().get_default_path()
+    }
+
+    fn get_default_path_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_default_path())
     }
 }

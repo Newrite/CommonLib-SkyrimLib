@@ -100,13 +100,27 @@ impl BSInputDeviceManager {
 
     #[inline(always)]
     pub fn get_button_name_from_id(
-        &mut self,
+        &self,
         device: INPUT_DEVICE,
         id: i32,
         button_name: &mut BSFixedString,
     ) -> bool {
         let device = self.device_by_type(device);
         !device.is_null() && unsafe { (*device).get_button_name_from_id(id, button_name) }
+    }
+
+    #[inline(always)]
+    pub fn try_get_button_name_from_id(
+        &self,
+        device: INPUT_DEVICE,
+        id: i32,
+    ) -> Option<BSFixedString> {
+        let mut button_name = BSFixedString::empty();
+        if self.get_button_name_from_id(device, id, &mut button_name) {
+            Some(button_name)
+        } else {
+            None
+        }
     }
 
     #[inline(always)]
@@ -192,7 +206,7 @@ impl BSInputDeviceManager {
 
     #[inline(always)]
     pub fn get_device_button_name_from_id(
-        &mut self,
+        &self,
         device: INPUT_DEVICE,
         key: u32,
         mapping: &mut BSFixedString,
@@ -202,14 +216,38 @@ impl BSInputDeviceManager {
     }
 
     #[inline(always)]
+    pub fn try_get_device_button_name_from_id(
+        &self,
+        device: INPUT_DEVICE,
+        key: u32,
+    ) -> Option<BSFixedString> {
+        let mut mapping = BSFixedString::empty();
+        if self.get_device_button_name_from_id(device, key, &mut mapping) {
+            Some(mapping)
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
     pub fn get_device_key_code_from_id(
-        &mut self,
+        &self,
         device: INPUT_DEVICE,
         key: u32,
         out_key_code: &mut u32,
     ) -> bool {
         let device = self.device_by_type(device);
         !device.is_null() && unsafe { (*device).get_key_code_from_id(key as i32, out_key_code) }
+    }
+
+    #[inline(always)]
+    pub fn try_get_device_key_code_from_id(&self, device: INPUT_DEVICE, key: u32) -> Option<u32> {
+        let mut out_key_code = 0;
+        if self.get_device_key_code_from_id(device, key, &mut out_key_code) {
+            Some(out_key_code)
+        } else {
+            None
+        }
     }
 
     #[inline(always)]

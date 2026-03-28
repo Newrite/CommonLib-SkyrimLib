@@ -1,6 +1,6 @@
 #![allow(non_camel_case_types)]
 
-use core::ffi::{c_char, c_void};
+use core::ffi::{CStr, c_char, c_void};
 
 use core_util::{EnumSet, inherit};
 
@@ -1279,6 +1279,11 @@ impl PlayerCharacter {
     #[inline(always)]
     pub fn center_on_cell_name(&mut self, cell_name: *const c_char) -> bool {
         self.center_on_cell_impl(cell_name, core::ptr::null_mut())
+    }
+
+    #[inline(always)]
+    pub fn center_on_cell_name_cstr(&mut self, cell_name: &CStr) -> bool {
+        self.center_on_cell_name(cell_name.as_ptr())
     }
 
     #[inline(always)]

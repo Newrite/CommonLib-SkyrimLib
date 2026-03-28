@@ -62,4 +62,9 @@ impl BGSSoundDescriptorForm {
         pub const GET_DESCRIPTOR_TYPE: usize = 0x3B;
         pub fn get_descriptor_type() -> u32
     }
+
+    #[inline(always)]
+    pub fn get_sound_descriptor_ref(&self) -> Option<&BGSSoundDescriptor> {
+        unsafe { self.sound_descriptor.as_ref() }
+    }
 }

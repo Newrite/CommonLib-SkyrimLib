@@ -120,3 +120,88 @@ impl NiExtraData {
         Self::create(core::mem::size_of::<T>(), vtable).cast()
     }
 }
+
+impl AsRef<NiExtraData> for NiExtraData {
+    #[inline(always)]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl AsMut<NiExtraData> for NiExtraData {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
+pub trait NiExtraDataExt {
+    fn dtor(&mut self);
+    fn get_rtti(&self) -> *const NiRTTI;
+    fn load_binary(&mut self, a_stream: *mut crate::re::NiStream);
+    fn link_object(&mut self, a_stream: *mut crate::re::NiStream);
+    fn register_streamables(&mut self, a_stream: *mut crate::re::NiStream) -> bool;
+    fn save_binary(&mut self, a_stream: *mut crate::re::NiStream);
+    fn is_equal(&mut self, a_object: *mut NiObject) -> bool;
+    fn is_streamable(&self) -> bool;
+    fn is_cloneable(&self) -> bool;
+    fn get_name(&self) -> &BSFixedString;
+    fn set_name(&mut self, name: &BSFixedString);
+}
+
+impl<T: AsRef<NiExtraData> + AsMut<NiExtraData>> NiExtraDataExt for T {
+    #[inline(always)]
+    fn dtor(&mut self) {
+        NiExtraData::dtor(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn get_rtti(&self) -> *const NiRTTI {
+        NiExtraData::get_rtti(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn load_binary(&mut self, a_stream: *mut crate::re::NiStream) {
+        NiExtraData::load_binary(self.as_mut(), a_stream)
+    }
+
+    #[inline(always)]
+    fn link_object(&mut self, a_stream: *mut crate::re::NiStream) {
+        NiExtraData::link_object(self.as_mut(), a_stream)
+    }
+
+    #[inline(always)]
+    fn register_streamables(&mut self, a_stream: *mut crate::re::NiStream) -> bool {
+        NiExtraData::register_streamables(self.as_mut(), a_stream)
+    }
+
+    #[inline(always)]
+    fn save_binary(&mut self, a_stream: *mut crate::re::NiStream) {
+        NiExtraData::save_binary(self.as_mut(), a_stream)
+    }
+
+    #[inline(always)]
+    fn is_equal(&mut self, a_object: *mut NiObject) -> bool {
+        NiExtraData::is_equal(self.as_mut(), a_object)
+    }
+
+    #[inline(always)]
+    fn is_streamable(&self) -> bool {
+        NiExtraData::is_streamable(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_cloneable(&self) -> bool {
+        NiExtraData::is_cloneable(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_name(&self) -> &BSFixedString {
+        NiExtraData::get_name(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn set_name(&mut self, name: &BSFixedString) {
+        NiExtraData::set_name(self.as_mut(), name)
+    }
+}

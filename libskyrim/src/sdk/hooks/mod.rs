@@ -4,7 +4,7 @@
 //! relocation hook layer:
 //!
 //! - attribute-driven hook definitions
-//! - typed hook arguments (`GameRef`, `Resolved`, `ResolvedHandle`, ...)
+//! - typed hook arguments (`&T`, `&mut T`, `Resolved`, `ResolvedHandle`, ...)
 //! - named guard presets
 //! - typed installers and batch installation helpers
 //!
@@ -18,7 +18,7 @@ pub mod patterns;
 pub mod runtime;
 pub mod trampoline;
 
-pub use crate::sdk::core::{GameRef, GameRefMut, Resolved, ResolvedHandle};
+pub use crate::sdk::core::{Resolved, ResolvedHandle};
 pub use install::{
     HookBatchError, HookBatchInstallResult, HookInstallFn, HookInstallResult, HookInstaller,
     install_batch_or_fatal, try_install_all,
@@ -61,12 +61,12 @@ pub use crate::__libskyrim_sdk_hooks_install_all_or_fatal as install_all_or_fata
 #[cfg(test)]
 mod tests {
     use crate::re::Actor;
-    use crate::sdk::hooks::{self, GameRef, Resolved};
+    use crate::sdk::hooks::{self, Resolved};
 
     #[crate::sdk::hooks::function_hook(target = 0usize, guard = crate::sdk::hooks::guards::default())]
     fn sdk_function_example(
-        original: crate::sdk::hooks::Original<fn(GameRef<'_, Actor>, u32) -> u32>,
-        actor: GameRef<'_, Actor>,
+        original: crate::sdk::hooks::Original<fn(&Actor, u32) -> u32>,
+        actor: &Actor,
         value: u32,
     ) -> u32 {
         original.call(actor, value)
@@ -78,10 +78,7 @@ mod tests {
         size = 5,
         guard = crate::sdk::hooks::guards::skip()
     )]
-    fn sdk_call_example(
-        original: crate::sdk::hooks::Original<fn(GameRef<'_, Actor>)>,
-        actor: GameRef<'_, Actor>,
-    ) {
+    fn sdk_call_example(original: crate::sdk::hooks::Original<fn(&Actor)>, actor: &Actor) {
         original.call(actor);
     }
 

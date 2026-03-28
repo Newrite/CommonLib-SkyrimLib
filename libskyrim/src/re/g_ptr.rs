@@ -51,6 +51,11 @@ impl<T: GPtrTarget> GPtr<T> {
         unsafe { crate::ffi::try_construct_out_param(construct) }
     }
 
+    // TODO: CommonLib's `GPtr.h` also exposes converting constructors and
+    // assignments between `GPtr<Y>` and `GPtr<T>` when `Y*` is convertible to
+    // `T*`. Keep the current same-type Rust surface until there is a
+    // source-backed generic trait bound that expresses that pointer
+    // convertibility honestly.
     // TODO: CommonLib also exposes `make_gptr<T>(Args&&...)` in `GPtr.h`.
     // Keep using `try_construct_with(...)` and per-type constructor bridges
     // until there is an ABI-safe generic factory path for arbitrary C++ `T`.

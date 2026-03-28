@@ -121,6 +121,11 @@ impl TESIdleForm {
     }
 
     #[inline(always)]
+    pub fn get_form_editor_id_local_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_form_editor_id_local())
+    }
+
+    #[inline(always)]
     pub fn set_form_editor_id_local(&mut self, editor_id: *const c_char) -> bool {
         self.form_editor_id.set_c_str(editor_id, 0)
     }

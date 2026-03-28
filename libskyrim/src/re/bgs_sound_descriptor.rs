@@ -63,6 +63,11 @@ impl BGSSoundDescriptor {
     }
 
     #[inline(always)]
+    pub fn get_category_ref(&self) -> Option<&BGSSoundCategory> {
+        unsafe { self.get_category().as_ref() }
+    }
+
+    #[inline(always)]
     pub const fn get_alternate_sound_form_id(&self) -> FormID {
         self.alternate_sound_form_id
     }
@@ -74,6 +79,7 @@ pub trait BGSSoundDescriptorExt {
     fn get_type(&self) -> u32;
     fn get_max_audible_distance(&self) -> f32;
     fn get_category(&self) -> *mut BGSSoundCategory;
+    fn get_category_ref(&self) -> Option<&BGSSoundCategory>;
     fn get_alternate_sound_form_id(&self) -> FormID;
 }
 
@@ -96,6 +102,10 @@ impl<T: AsRef<BGSSoundDescriptor> + AsMut<BGSSoundDescriptor>> BGSSoundDescripto
 
     fn get_category(&self) -> *mut BGSSoundCategory {
         self.as_ref().get_category()
+    }
+
+    fn get_category_ref(&self) -> Option<&BGSSoundCategory> {
+        self.as_ref().get_category_ref()
     }
 
     fn get_alternate_sound_form_id(&self) -> FormID {

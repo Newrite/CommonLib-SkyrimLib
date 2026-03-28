@@ -277,12 +277,12 @@ impl TESWorldSpace {
 
     // RELOCATION_ID SE: 20103, AE: 20551
     crate::relocation_func! {
-        pub fn get_max_height_at(&mut self, xy: &NiPoint3, out_height: &mut f32) -> bool => RelocationID::new(20103, 20551)
+        pub fn get_max_height_at(&self, xy: &NiPoint3, out_height: &mut f32) -> bool => RelocationID::new(20103, 20551)
     }
 
     // RELOCATION_ID SE: 20095, AE: 20543
     crate::relocation_func! {
-        pub fn get_sky_cell(&mut self) -> *mut TESObjectCELL => RelocationID::new(20095, 20543)
+        pub fn get_sky_cell(&self) -> *mut TESObjectCELL => RelocationID::new(20095, 20543)
     }
 
     #[inline]
@@ -309,6 +309,11 @@ impl TESWorldSpace {
     #[inline(always)]
     pub fn get_form_editor_id_local(&self) -> *const c_char {
         self.editor_id.c_str()
+    }
+
+    #[inline(always)]
+    pub fn get_form_editor_id_local_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_form_editor_id_local())
     }
 
     #[inline(always)]

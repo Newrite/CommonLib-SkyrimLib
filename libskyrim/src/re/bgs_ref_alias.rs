@@ -214,6 +214,11 @@ impl BGSRefAlias {
     }
 
     #[inline(always)]
+    pub fn get_reference_ref(&self) -> Option<&TESObjectREFR> {
+        unsafe { self.get_reference().as_ref() }
+    }
+
+    #[inline(always)]
     pub fn get_actor_reference(&self) -> *mut Actor {
         let refr = self.get_reference();
         if refr.is_null() {
@@ -221,6 +226,11 @@ impl BGSRefAlias {
         } else {
             unsafe { skyrim_cast::<TESObjectREFR, Actor>(refr) }
         }
+    }
+
+    #[inline(always)]
+    pub fn get_actor_reference_ref(&self) -> Option<&Actor> {
+        unsafe { self.get_actor_reference().as_ref() }
     }
 
     #[inline(always)]

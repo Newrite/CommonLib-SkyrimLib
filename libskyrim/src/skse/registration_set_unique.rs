@@ -7,7 +7,7 @@ use crate::re::{
     ActiveEffect, BGSRefAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm,
     TESObjectREFR, VMHandle, VMTypeID,
 };
-use crate::sdk::core::GameRef;
+use crate::sdk::core::GamePtr;
 
 use super::SerializationInterface;
 use super::registration_arguments::{RegistrationEventArgs, with_vm};
@@ -103,7 +103,7 @@ impl RegistrationSetUniqueBase {
     }
 
     #[inline(always)]
-    pub fn register_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) -> bool {
+    pub fn register_form(&mut self, form: impl Into<GamePtr<TESForm>>) -> bool {
         let form = form.into();
         if form.is_null() {
             return false;
@@ -125,7 +125,7 @@ impl RegistrationSetUniqueBase {
     }
 
     #[inline(always)]
-    pub fn register_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSRefAlias>>) -> bool {
+    pub fn register_alias(&mut self, alias: impl Into<GamePtr<BGSRefAlias>>) -> bool {
         let alias = alias.into();
         if alias.is_null() {
             return false;
@@ -146,10 +146,7 @@ impl RegistrationSetUniqueBase {
     }
 
     #[inline(always)]
-    pub fn register_active_effect<'a>(
-        &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
-    ) -> bool {
+    pub fn register_active_effect(&mut self, effect: impl Into<GamePtr<ActiveEffect>>) -> bool {
         let effect = effect.into();
         if effect.is_null() {
             return false;
@@ -170,7 +167,7 @@ impl RegistrationSetUniqueBase {
     }
 
     #[inline(always)]
-    pub fn unregister_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) -> bool {
+    pub fn unregister_form(&mut self, form: impl Into<GamePtr<TESForm>>) -> bool {
         let form = form.into();
         if form.is_null() {
             return false;
@@ -192,7 +189,7 @@ impl RegistrationSetUniqueBase {
     }
 
     #[inline(always)]
-    pub fn unregister_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSRefAlias>>) -> bool {
+    pub fn unregister_alias(&mut self, alias: impl Into<GamePtr<BGSRefAlias>>) -> bool {
         let alias = alias.into();
         if alias.is_null() {
             return false;
@@ -213,10 +210,7 @@ impl RegistrationSetUniqueBase {
     }
 
     #[inline(always)]
-    pub fn unregister_active_effect<'a>(
-        &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
-    ) -> bool {
+    pub fn unregister_active_effect(&mut self, effect: impl Into<GamePtr<ActiveEffect>>) -> bool {
         let effect = effect.into();
         if effect.is_null() {
             return false;
@@ -495,38 +489,32 @@ impl<Args> RegistrationSetUnique<Args> {
     }
 
     #[inline(always)]
-    pub fn register_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) -> bool {
+    pub fn register_form(&mut self, form: impl Into<GamePtr<TESForm>>) -> bool {
         self.base.register_form(form)
     }
 
     #[inline(always)]
-    pub fn register_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSRefAlias>>) -> bool {
+    pub fn register_alias(&mut self, alias: impl Into<GamePtr<BGSRefAlias>>) -> bool {
         self.base.register_alias(alias)
     }
 
     #[inline(always)]
-    pub fn register_active_effect<'a>(
-        &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
-    ) -> bool {
+    pub fn register_active_effect(&mut self, effect: impl Into<GamePtr<ActiveEffect>>) -> bool {
         self.base.register_active_effect(effect)
     }
 
     #[inline(always)]
-    pub fn unregister_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) -> bool {
+    pub fn unregister_form(&mut self, form: impl Into<GamePtr<TESForm>>) -> bool {
         self.base.unregister_form(form)
     }
 
     #[inline(always)]
-    pub fn unregister_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSRefAlias>>) -> bool {
+    pub fn unregister_alias(&mut self, alias: impl Into<GamePtr<BGSRefAlias>>) -> bool {
         self.base.unregister_alias(alias)
     }
 
     #[inline(always)]
-    pub fn unregister_active_effect<'a>(
-        &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
-    ) -> bool {
+    pub fn unregister_active_effect(&mut self, effect: impl Into<GamePtr<ActiveEffect>>) -> bool {
         self.base.unregister_active_effect(effect)
     }
 
@@ -586,7 +574,7 @@ impl<Args> RegistrationSetUnique<Args> {
     /// `RegistrationSetUnique<(i32, bool)>` expects
     /// `send_event(target, (42, true))`.
     #[inline(always)]
-    pub fn send_event<'a>(&self, target: impl Into<GameRef<'a, TESObjectREFR>>, args: Args)
+    pub fn send_event(&self, target: impl Into<GamePtr<TESObjectREFR>>, args: Args)
     where
         Args: RegistrationEventArgs,
     {
@@ -602,7 +590,7 @@ impl<Args> RegistrationSetUnique<Args> {
     /// The task queue may outlive the current stack frame, so this requires a
     /// long-lived registration container reference.
     #[inline(always)]
-    pub fn queue_event<'a>(&'static self, target: impl Into<GameRef<'a, TESObjectREFR>>, args: Args)
+    pub fn queue_event(&'static self, target: impl Into<GamePtr<TESObjectREFR>>, args: Args)
     where
         Args: RegistrationEventArgs + Send + 'static,
     {

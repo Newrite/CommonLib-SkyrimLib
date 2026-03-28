@@ -477,7 +477,7 @@ impl TESDataHandler {
 
     // RELOCATION_ID SE: 13618, AE: 13716
     crate::relocation_func! {
-        pub fn get_ext_cell_data_from_file_by_editor_id(&mut self, cell_id: *const c_char, out_x: &mut i32, out_y: &mut i32) -> *mut TESWorldSpace
+        pub fn get_ext_cell_data_from_file_by_editor_id(&self, cell_id: *const c_char, out_x: &mut i32, out_y: &mut i32) -> *mut TESWorldSpace
             => RelocationID::new(13618, 13716)
     }
 

@@ -424,7 +424,7 @@ impl TESQuest {
     }
 
     crate::relocation_func! {
-        pub fn get_journal_text_for_instance(&mut self, out: &mut BSString, instance_id: u32) => RelocationID::new(24549, 25078)
+        pub fn get_journal_text_for_instance(&self, out: &mut BSString, instance_id: u32) => RelocationID::new(24549, 25078)
     }
 
     crate::relocation_func! {
@@ -489,13 +489,28 @@ impl TESQuest {
     }
 
     #[inline]
-    pub fn q_conditions(&mut self) -> *mut TESCondition {
+    pub fn q_conditions(&self) -> *mut TESCondition {
+        &self.obj_conditions as *const TESCondition as *mut TESCondition
+    }
+
+    #[inline]
+    pub fn q_conditions_ref(&self) -> &TESCondition {
+        &self.obj_conditions
+    }
+
+    #[inline]
+    pub fn q_conditions_mut(&mut self) -> &mut TESCondition {
         &mut self.obj_conditions
     }
 
     #[inline]
     pub fn get_form_editor_id(&self) -> *const c_char {
         self.form_editor_id.c_str()
+    }
+
+    #[inline]
+    pub fn get_form_editor_id_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_form_editor_id())
     }
 
     #[inline]

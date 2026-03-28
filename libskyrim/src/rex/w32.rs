@@ -8,8 +8,9 @@ pub mod W32 {
     pub use windows_sys::Win32::Foundation::FILETIME;
     pub use windows_sys::Win32::System::LibraryLoader::{GetModuleHandleW, GetProcAddress};
     pub use windows_sys::Win32::System::Threading::{
-        CRITICAL_SECTION, CRITICAL_SECTION_DEBUG, FLS_OUT_OF_INDEXES, FlsAlloc, FlsGetValue,
-        FlsSetValue, GetCurrentThreadId, Sleep,
+        CRITICAL_SECTION, CRITICAL_SECTION_DEBUG, DeleteCriticalSection, EnterCriticalSection,
+        FLS_OUT_OF_INDEXES, FlsAlloc, FlsGetValue, FlsSetValue, GetCurrentThreadId,
+        InitializeCriticalSectionAndSpinCount, LeaveCriticalSection, Sleep,
     };
 
     core_util::abstract_type! {

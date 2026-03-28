@@ -89,24 +89,25 @@ inventing replacement pointer systems.
 The intended model is:
 
 - borrowed access inside a callback or hook:
-  `&T`, `&mut T`, and small SDK wrappers such as `GameRef<'a, T>`
+  `&T`, `Option<&T>`, `&mut T`, and `Option<&mut T>`
 - engine identity across frames or save/load boundaries:
   native handle types such as `ActorHandle`, `ObjectRefHandle`, and similar
   `BSPointerHandle`-style wrappers
 - engine-owned refcounted retention:
   native smart pointers such as `NiPointer<T>`, `BSTSmartPointer<T>`, and
   `hkRefPtr<T>`
+- stable engine pointers from trusted sources:
+  `GameRef<T>` and `GamePtr<T>`
 
 The SDK should compose these, not erase them. High-level helpers may wrap them
 for ergonomics, but the native Bethesda types remain first-class values.
 
 Planned shared SDK support types:
 
-- `GameRef<'a, T>`
-  borrowed nullable engine reference used across Papyrus, events, and hooks
-- `GameRefMut<'a, T>`
-  nullable mutable borrowed engine reference for APIs that can honestly hand
-  out mutable access
+- `GameRef<T>`
+  non-null wrapper for stable engine objects sourced from trusted pointers
+- `GamePtr<T>`
+  nullable wrapper for stable optional engine pointers
 - `ResolvableHandle`
   trait for native handles that can resolve to an engine-owned smart pointer
 - `ResolvedHandle<H>`
@@ -122,7 +123,7 @@ Planned shared SDK support types:
   relationship between one native owner family and another pointee type in the
   same ownership model
 - `DynamicCastExt` / `DynamicCastMutExt`
-  shared RTTI-backed cast helpers for borrowed refs, native owners, and
+  shared RTTI-backed cast helpers for SDK wrappers, native owners, and
   resolved handles
 
 ## Domain Layout
@@ -427,7 +428,6 @@ For gameplay/UI/dispatcher events, the callback parameter may currently be:
 
 - `&Event`
 - `Option<&Event>`
-- `GameRef<'_, Event>`
 - or no parameter at all
 
 For input events, the callback parameter may be `InputEvents<'_>` or omitted.
@@ -739,10 +739,9 @@ re-exports four separate attributes:
 Users can import the module and apply the attribute with any ordinary free
 function name; the hook function does not need to be called `detour`.
 
-The `hooks` namespace also re-exports the common hook-facing wrapper types:
+The `hooks` namespace also re-exports the retained runtime-object wrappers used
+by high-level hook signatures:
 
-- `GameRef`
-- `GameRefMut`
 - `Resolved`
 - `ResolvedHandle`
 
@@ -769,7 +768,7 @@ fn invert_actor_bool(
     invalid = skip
 )]
 fn maybe_skip_call(
-    original: hooks::Original<fn(GameRef<'_, RE::TESObjectREFR>, f32)>,
+    original: hooks::Original<fn(&RE::TESObjectREFR, f32)>,
     refr: &RE::TESObjectREFR,
     delta: f32,
 ) {
@@ -861,10 +860,6 @@ Hook argument adaptation is driven by the user-visible signature:
   strict non-null borrowed argument; failure triggers hook guard policy
 - `Option<&T>` / `Option<&mut T>`
   null is accepted and delivered as `None`
-- `GameRef<'_, T>`
-  nullable borrowed SDK wrapper
-- `GameRefMut<'_, T>`
-  nullable mutable SDK wrapper
 - `NiPointer<T>` / `BSTSmartPointer<T>` / `hkRefPtr<T>`
   native owner form for retention-capable APIs
 - native handle types such as `ActorHandle`
@@ -1152,11 +1147,11 @@ The SDK is no longer documentation-only.
 Implemented foundation:
 
 - `sdk::core`
-  shared `GameRef` / `GameRefMut`, native-owner traits, handle resolution, and
+  shared `GameRef` / `GamePtr`, native-owner traits, handle resolution, and
   shared RTTI cast helpers
 - `sdk::papyrus`
   SDK-facing facade over the current high-level Papyrus authoring layer in
-  `skse::papyrus`, including callback-facing `GameRef`, `GameRefMut`,
+  `skse::papyrus`, including callback-facing `GameRef`, `GamePtr`,
   `ResolvedHandle<H>`, `Resolved<T>`, and `Option<...>` parameter/base support
 - `sdk::core::handles`
   family-based resolved runtime-object model with immediate support for the

@@ -125,12 +125,24 @@ impl BGSStoryManagerTreeForm {
         pub const VFUNC_ACCEPT_VISITOR: usize = 0x3E;
         pub fn accept_visitor(visitor: &mut BGSStoryManagerTreeVisitor) -> BGSStoryManagerVisitControl
     }
+
+    #[inline(always)]
+    pub fn get_child_ref(&self, idx: u32) -> Option<&BGSStoryManagerTreeForm> {
+        unsafe { self.get_child(idx).as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn q_conditions_ref(&self) -> Option<&TESCondition> {
+        unsafe { self.q_conditions().as_ref() }
+    }
 }
 
 pub trait BGSStoryManagerTreeFormExt {
     fn q_child_count(&self) -> u32;
     fn get_child(&self, idx: u32) -> *mut BGSStoryManagerTreeForm;
-    fn q_conditions(&mut self) -> *mut TESCondition;
+    fn get_child_ref(&self, idx: u32) -> Option<&BGSStoryManagerTreeForm>;
+    fn q_conditions(&self) -> *mut TESCondition;
+    fn q_conditions_ref(&self) -> Option<&TESCondition>;
     fn accept_visitor(
         &mut self,
         visitor: &mut BGSStoryManagerTreeVisitor,
@@ -151,8 +163,18 @@ impl<T: AsRef<BGSStoryManagerTreeForm> + AsMut<BGSStoryManagerTreeForm>> BGSStor
     }
 
     #[inline(always)]
-    fn q_conditions(&mut self) -> *mut TESCondition {
-        BGSStoryManagerTreeForm::q_conditions(self.as_mut())
+    fn get_child_ref(&self, idx: u32) -> Option<&BGSStoryManagerTreeForm> {
+        self.as_ref().get_child_ref(idx)
+    }
+
+    #[inline(always)]
+    fn q_conditions(&self) -> *mut TESCondition {
+        BGSStoryManagerTreeForm::q_conditions(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn q_conditions_ref(&self) -> Option<&TESCondition> {
+        BGSStoryManagerTreeForm::q_conditions_ref(self.as_ref())
     }
 
     #[inline(always)]

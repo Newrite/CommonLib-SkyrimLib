@@ -1,8 +1,10 @@
 #![allow(non_camel_case_types)]
 
 use alloc::collections::BTreeMap;
+use alloc::ffi::CString;
 use alloc::string::String;
 use alloc::vec::Vec;
+use core::ffi::CStr;
 use core::ops::{Index, IndexMut};
 
 use crate::offsets::offsets_rtti::RTTI_BSInputDevice;
@@ -237,6 +239,20 @@ impl BSInputDevice {
         pub fn load_controls_definition_file(&mut self, file_name: *const i8) -> bool => RelocationID::new(67438, 68745)
     }
 
+    #[inline(always)]
+    pub fn load_controls_definition_file_c_str(&mut self, file_name: &CStr) -> bool {
+        self.load_controls_definition_file(file_name.as_ptr())
+    }
+
+    #[inline]
+    pub fn load_controls_definition_file_str(
+        &mut self,
+        file_name: &str,
+    ) -> Result<bool, alloc::ffi::NulError> {
+        let file_name = CString::new(file_name)?;
+        Ok(self.load_controls_definition_file(file_name.as_ptr()))
+    }
+
     crate::relocation_func! {
         pub fn set_button_state(
             &mut self,
@@ -284,6 +300,11 @@ impl BSInputDevice {
 
 pub trait BSInputDeviceExt {
     fn load_controls_definition_file(&mut self, file_name: *const i8) -> bool;
+    fn load_controls_definition_file_c_str(&mut self, file_name: &CStr) -> bool;
+    fn load_controls_definition_file_str(
+        &mut self,
+        file_name: &str,
+    ) -> Result<bool, alloc::ffi::NulError>;
     fn set_button_state(
         &mut self,
         button_id: u32,
@@ -305,6 +326,19 @@ where
     #[inline(always)]
     fn load_controls_definition_file(&mut self, file_name: *const i8) -> bool {
         BSInputDevice::load_controls_definition_file(self.as_mut(), file_name)
+    }
+
+    #[inline(always)]
+    fn load_controls_definition_file_c_str(&mut self, file_name: &CStr) -> bool {
+        BSInputDevice::load_controls_definition_file_c_str(self.as_mut(), file_name)
+    }
+
+    #[inline(always)]
+    fn load_controls_definition_file_str(
+        &mut self,
+        file_name: &str,
+    ) -> Result<bool, alloc::ffi::NulError> {
+        BSInputDevice::load_controls_definition_file_str(self.as_mut(), file_name)
     }
 
     #[inline(always)]

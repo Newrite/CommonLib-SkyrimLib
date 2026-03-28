@@ -85,7 +85,9 @@ Write files in this order:
    - `relocation_func!` for `.cpp` relocated methods
    - `relocation_variable!` for globals/singletons
    - non-public helpers from `.cpp`
-9. extension trait if the type is a reusable virtual mixin
+9. ergonomic Rust-facing helpers when they do not hide a real contract, for
+   example `*_as_str()` wrappers or semantically read-only `&self` getters
+10. extension trait if the type is a reusable virtual mixin
 
 If an honest blocker remains, do not use `todo!()` or `unimplemented!()`.
 Instead, leave a source-backed `// TODO:` comment at the exact compromise site

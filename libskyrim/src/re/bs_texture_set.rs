@@ -67,10 +67,16 @@ impl BSTextureSet {
         pub const VFUNC_SET_TEXTURE_PATH: usize = 0x27;
         pub fn set_texture_path(a_texture: BSTextureType, a_path: *const c_char)
     }
+
+    #[inline(always)]
+    pub fn get_texture_path_as_str(&self, a_texture: BSTextureType) -> &str {
+        core_util::ptr_to_str(self.get_texture_path(a_texture))
+    }
 }
 
 pub trait BSTextureSetExt {
     fn get_texture_path(&self, a_texture: BSTextureType) -> *const c_char;
+    fn get_texture_path_as_str(&self, a_texture: BSTextureType) -> &str;
     fn set_texture(
         &mut self,
         a_texture: BSTextureType,
@@ -82,6 +88,10 @@ pub trait BSTextureSetExt {
 impl<T: AsRef<BSTextureSet> + AsMut<BSTextureSet>> BSTextureSetExt for T {
     fn get_texture_path(&self, a_texture: BSTextureType) -> *const c_char {
         self.as_ref().get_texture_path(a_texture)
+    }
+
+    fn get_texture_path_as_str(&self, a_texture: BSTextureType) -> &str {
+        self.as_ref().get_texture_path_as_str(a_texture)
     }
 
     fn set_texture(

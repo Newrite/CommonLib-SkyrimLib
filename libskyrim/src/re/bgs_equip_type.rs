@@ -38,16 +38,26 @@ impl BGSEquipType {
         pub const SET_EQUIP_SLOT: usize = 0x05;
         pub fn set_equip_slot(slot: *mut BGSEquipSlot)
     }
+
+    #[inline(always)]
+    pub fn get_equip_slot_ref(&self) -> Option<&BGSEquipSlot> {
+        unsafe { self.get_equip_slot().as_ref() }
+    }
 }
 
 pub trait BGSEquipTypeExt {
     fn get_equip_slot(&self) -> *mut BGSEquipSlot;
+    fn get_equip_slot_ref(&self) -> Option<&BGSEquipSlot>;
     fn set_equip_slot(&mut self, slot: *mut BGSEquipSlot);
 }
 
 impl<T: AsRef<BGSEquipType> + AsMut<BGSEquipType>> BGSEquipTypeExt for T {
     fn get_equip_slot(&self) -> *mut BGSEquipSlot {
         self.as_ref().get_equip_slot()
+    }
+
+    fn get_equip_slot_ref(&self) -> Option<&BGSEquipSlot> {
+        self.as_ref().get_equip_slot_ref()
     }
 
     fn set_equip_slot(&mut self, slot: *mut BGSEquipSlot) {

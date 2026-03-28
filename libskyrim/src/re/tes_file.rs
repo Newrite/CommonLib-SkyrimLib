@@ -219,13 +219,13 @@ impl TESFile {
     // ADDED: gap-fill
     // RELOCATION_ID SE: 13902, AE: 13988
     crate::relocation_func! {
-        pub fn get_current_sub_record_type(&mut self) -> u32 => RelocationID::new(13902, 13988)
+        pub fn get_current_sub_record_type(&self) -> u32 => RelocationID::new(13902, 13988)
     }
 
     // ADDED: gap-fill
     // RELOCATION_ID SE: 13897, AE: 13982
     crate::relocation_func! {
-        pub fn get_form_type(&mut self) -> FormType => RelocationID::new(13897, 13982)
+        pub fn get_form_type(&self) -> FormType => RelocationID::new(13897, 13982)
     }
 
     // ADDED: gap-fill

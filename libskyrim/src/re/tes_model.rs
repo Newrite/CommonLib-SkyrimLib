@@ -83,7 +83,7 @@ pub trait TESModelExt {
     fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_model(&self) -> *const core::ffi::c_char;
     fn set_model(&mut self, model: *const core::ffi::c_char);
-    fn get_as_model_texture_swap(&mut self) -> *mut crate::re::TESModelTextureSwap;
+    fn get_as_model_texture_swap(&self) -> *mut crate::re::TESModelTextureSwap;
     fn get_model_as_str(&self) -> &str;
 }
 
@@ -112,8 +112,8 @@ impl<T: AsRef<TESModel> + AsMut<TESModel>> TESModelExt for T {
         self.as_mut().set_model(model)
     }
 
-    fn get_as_model_texture_swap(&mut self) -> *mut crate::re::TESModelTextureSwap {
-        self.as_mut().get_as_model_texture_swap()
+    fn get_as_model_texture_swap(&self) -> *mut crate::re::TESModelTextureSwap {
+        self.as_ref().get_as_model_texture_swap()
     }
 
     fn get_model_as_str(&self) -> &str {

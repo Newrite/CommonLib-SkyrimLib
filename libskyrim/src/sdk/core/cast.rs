@@ -5,7 +5,7 @@ use crate::relocation::{RttiType, skyrim_cast, skyrim_cast_const};
 
 use super::handles::{HandleFamilyTarget, Resolved, ResolvedHandle};
 use super::owners::NativeOwner;
-use super::refs::{GameRef, GameRefMut};
+use super::refs::{GamePtr, GameRef};
 use super::sealed;
 
 /// Read-only cast source backed by Skyrim RTTI.
@@ -95,9 +95,9 @@ where
     }
 }
 
-impl<T> sealed::Sealed for GameRef<'_, T> where T: RttiType {}
+impl<T> sealed::Sealed for GameRef<T> where T: RttiType {}
 
-impl<T> ConstRttiCastSource for GameRef<'_, T>
+impl<T> ConstRttiCastSource for GameRef<T>
 where
     T: RttiType,
 {
@@ -109,9 +109,9 @@ where
     }
 }
 
-impl<T> sealed::Sealed for GameRefMut<'_, T> where T: RttiType {}
+impl<T> sealed::Sealed for GamePtr<T> where T: RttiType {}
 
-impl<T> ConstRttiCastSource for GameRefMut<'_, T>
+impl<T> ConstRttiCastSource for GamePtr<T>
 where
     T: RttiType,
 {
@@ -119,16 +119,6 @@ where
 
     #[inline(always)]
     fn raw_const_source_ptr(&self) -> *const Self::Source {
-        self.as_ptr().cast_const()
-    }
-}
-
-impl<T> MutRttiCastSource for GameRefMut<'_, T>
-where
-    T: RttiType,
-{
-    #[inline(always)]
-    fn raw_mut_source_ptr(&mut self) -> *mut Self::Source {
         self.as_ptr()
     }
 }

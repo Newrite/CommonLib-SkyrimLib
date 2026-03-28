@@ -9,7 +9,7 @@ use crate::re::{
     ActiveEffect, BGSBaseAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm, VMHandle,
     VMTypeID,
 };
-use crate::sdk::core::GameRef;
+use crate::sdk::core::GamePtr;
 
 use super::SerializationInterface;
 use super::registration_arguments::{RegistrationEventArgs, with_vm};
@@ -259,11 +259,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     }
 
     #[inline(always)]
-    pub fn register_form<'a>(
-        &mut self,
-        form: impl Into<GameRef<'a, TESForm>>,
-        filter: Filter,
-    ) -> bool {
+    pub fn register_form<'a>(&mut self, form: impl Into<GamePtr<TESForm>>, filter: Filter) -> bool {
         let form = form.into();
         if form.is_null() {
             return false;
@@ -277,7 +273,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     #[inline(always)]
     pub fn register_alias<'a>(
         &mut self,
-        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        alias: impl Into<GamePtr<BGSBaseAlias>>,
         filter: Filter,
     ) -> bool {
         let alias = alias.into();
@@ -292,7 +288,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     #[inline(always)]
     pub fn register_active_effect<'a>(
         &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
+        effect: impl Into<GamePtr<ActiveEffect>>,
         filter: Filter,
     ) -> bool {
         let effect = effect.into();
@@ -307,7 +303,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     #[inline(always)]
     pub fn unregister_form<'a>(
         &mut self,
-        form: impl Into<GameRef<'a, TESForm>>,
+        form: impl Into<GamePtr<TESForm>>,
         filter: Filter,
     ) -> bool {
         let form = form.into();
@@ -323,7 +319,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     #[inline(always)]
     pub fn unregister_alias<'a>(
         &mut self,
-        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        alias: impl Into<GamePtr<BGSBaseAlias>>,
         filter: Filter,
     ) -> bool {
         let alias = alias.into();
@@ -338,7 +334,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     #[inline(always)]
     pub fn unregister_active_effect<'a>(
         &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
+        effect: impl Into<GamePtr<ActiveEffect>>,
         filter: Filter,
     ) -> bool {
         let effect = effect.into();
@@ -351,7 +347,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     }
 
     #[inline(always)]
-    pub fn unregister_all_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) {
+    pub fn unregister_all_form(&mut self, form: impl Into<GamePtr<TESForm>>) {
         let form = form.into();
         if form.is_null() {
             return;
@@ -363,7 +359,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     }
 
     #[inline(always)]
-    pub fn unregister_all_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSBaseAlias>>) {
+    pub fn unregister_all_alias(&mut self, alias: impl Into<GamePtr<BGSBaseAlias>>) {
         let alias = alias.into();
         if alias.is_null() {
             return;
@@ -374,10 +370,7 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
     }
 
     #[inline(always)]
-    pub fn unregister_all_active_effect<'a>(
-        &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
-    ) {
+    pub fn unregister_all_active_effect<'a>(&mut self, effect: impl Into<GamePtr<ActiveEffect>>) {
         let effect = effect.into();
         if effect.is_null() {
             return;
@@ -622,18 +615,14 @@ impl<Filter: RegistrationFilter, Args> RegistrationMap<Filter, Args> {
     }
 
     #[inline(always)]
-    pub fn register_form<'a>(
-        &mut self,
-        form: impl Into<GameRef<'a, TESForm>>,
-        filter: Filter,
-    ) -> bool {
+    pub fn register_form<'a>(&mut self, form: impl Into<GamePtr<TESForm>>, filter: Filter) -> bool {
         self.base.register_form(form, filter)
     }
 
     #[inline(always)]
     pub fn register_alias<'a>(
         &mut self,
-        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        alias: impl Into<GamePtr<BGSBaseAlias>>,
         filter: Filter,
     ) -> bool {
         self.base.register_alias(alias, filter)
@@ -642,7 +631,7 @@ impl<Filter: RegistrationFilter, Args> RegistrationMap<Filter, Args> {
     #[inline(always)]
     pub fn register_active_effect<'a>(
         &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
+        effect: impl Into<GamePtr<ActiveEffect>>,
         filter: Filter,
     ) -> bool {
         self.base.register_active_effect(effect, filter)
@@ -651,7 +640,7 @@ impl<Filter: RegistrationFilter, Args> RegistrationMap<Filter, Args> {
     #[inline(always)]
     pub fn unregister_form<'a>(
         &mut self,
-        form: impl Into<GameRef<'a, TESForm>>,
+        form: impl Into<GamePtr<TESForm>>,
         filter: Filter,
     ) -> bool {
         self.base.unregister_form(form, filter)
@@ -660,7 +649,7 @@ impl<Filter: RegistrationFilter, Args> RegistrationMap<Filter, Args> {
     #[inline(always)]
     pub fn unregister_alias<'a>(
         &mut self,
-        alias: impl Into<GameRef<'a, BGSBaseAlias>>,
+        alias: impl Into<GamePtr<BGSBaseAlias>>,
         filter: Filter,
     ) -> bool {
         self.base.unregister_alias(alias, filter)
@@ -669,27 +658,24 @@ impl<Filter: RegistrationFilter, Args> RegistrationMap<Filter, Args> {
     #[inline(always)]
     pub fn unregister_active_effect<'a>(
         &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
+        effect: impl Into<GamePtr<ActiveEffect>>,
         filter: Filter,
     ) -> bool {
         self.base.unregister_active_effect(effect, filter)
     }
 
     #[inline(always)]
-    pub fn unregister_all_form<'a>(&mut self, form: impl Into<GameRef<'a, TESForm>>) {
+    pub fn unregister_all_form(&mut self, form: impl Into<GamePtr<TESForm>>) {
         self.base.unregister_all_form(form);
     }
 
     #[inline(always)]
-    pub fn unregister_all_alias<'a>(&mut self, alias: impl Into<GameRef<'a, BGSBaseAlias>>) {
+    pub fn unregister_all_alias(&mut self, alias: impl Into<GamePtr<BGSBaseAlias>>) {
         self.base.unregister_all_alias(alias);
     }
 
     #[inline(always)]
-    pub fn unregister_all_active_effect<'a>(
-        &mut self,
-        effect: impl Into<GameRef<'a, ActiveEffect>>,
-    ) {
+    pub fn unregister_all_active_effect<'a>(&mut self, effect: impl Into<GamePtr<ActiveEffect>>) {
         self.base.unregister_all_active_effect(effect);
     }
 

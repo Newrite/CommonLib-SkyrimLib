@@ -518,15 +518,15 @@ impl TESForm {
     }
     virtual_method! {
         pub const VFUNC_IS_PARENT_FORM: usize = 0x34;
-        pub fn is_parent_form(&mut self) -> bool
+        pub fn is_parent_form(&self) -> bool
     }
     virtual_method! {
         pub const VFUNC_IS_PARENT_FORM_TREE: usize = 0x35;
-        pub fn is_parent_form_tree(&mut self) -> bool
+        pub fn is_parent_form_tree(&self) -> bool
     }
     virtual_method! {
         pub const VFUNC_IS_FORM_TYPE_CHILD: usize = 0x36;
-        pub fn is_form_type_child(&mut self, form_type: FormType) -> bool
+        pub fn is_form_type_child(&self, form_type: FormType) -> bool
     }
     virtual_method! {
         pub const VFUNC_ACTIVATE: usize = 0x37;
@@ -581,6 +581,11 @@ impl TESForm {
     #[inline]
     pub fn get_name_as_str(&self) -> &str {
         core_util::ptr_to_str(self.get_name())
+    }
+
+    #[inline]
+    pub fn get_text_for_parsed_sub_tag_as_str(&self, tag: &BSFixedString) -> &str {
+        core_util::ptr_to_str(self.get_text_for_parsed_sub_tag(tag))
     }
 
     #[inline(always)]
@@ -1019,6 +1024,7 @@ pub trait TESFormExt {
     fn set_file(&mut self, file: *mut TESFile);
     fn set_player_knows(&mut self, known: bool);
 
+    fn get_text_for_parsed_sub_tag_as_str(&self, tag: &BSFixedString) -> &str;
     fn get_form_editor_id_as_str(&self) -> &str;
     fn get_object_type_name_as_str(&self) -> &str;
 
@@ -1189,6 +1195,10 @@ impl<T: AsRef<TESForm> + AsMut<TESForm>> TESFormExt for T {
 
     fn set_player_knows(&mut self, known: bool) {
         TESForm::set_player_knows(self.as_mut(), known)
+    }
+
+    fn get_text_for_parsed_sub_tag_as_str(&self, tag: &BSFixedString) -> &str {
+        TESForm::get_text_for_parsed_sub_tag_as_str(self.as_ref(), tag)
     }
 
     fn get_form_editor_id_as_str(&self) -> &str {

@@ -61,6 +61,13 @@ const _: () = assert!(core::mem::size_of::<BGSEntryPointFunctionInfo>() == 0x18)
 const _: () = assert!(core::mem::offset_of!(BGSEntryPointFunctionInfo, function_type) == 0x08);
 const _: () = assert!(core::mem::offset_of!(BGSEntryPointFunctionInfo, function) == 0x10);
 
+impl BGSEntryPointFunctionInfo {
+    #[inline(always)]
+    pub fn get_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.name)
+    }
+}
+
 /// C++ `RE::BGSEntryPointFunction`
 pub struct BGSEntryPointFunction;
 
@@ -97,5 +104,12 @@ impl BGSEntryPointFunction {
         } else {
             core::ptr::null_mut()
         }
+    }
+
+    #[inline(always)]
+    pub fn get_entry_point_function_ref(
+        function: BGSEntryPointFunctionEntryPointFunction,
+    ) -> Option<&'static BGSEntryPointFunctionInfo> {
+        unsafe { Self::get_entry_point_function(function).as_ref() }
     }
 }

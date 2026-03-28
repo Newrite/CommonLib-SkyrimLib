@@ -31,11 +31,17 @@ impl TESIcon {
         pub const GET_DEFAULT_PATH: usize = 0x06;
         pub fn get_default_path() -> *const core::ffi::c_char
     }
+
+    #[inline]
+    pub fn get_default_path_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_default_path())
+    }
 }
 
 pub trait TESIconExt {
     fn dtor(&mut self);
     fn get_default_path(&self) -> *const core::ffi::c_char;
+    fn get_default_path_as_str(&self) -> &str;
 }
 
 impl<T: AsRef<TESIcon> + AsMut<TESIcon>> TESIconExt for T {
@@ -45,5 +51,9 @@ impl<T: AsRef<TESIcon> + AsMut<TESIcon>> TESIconExt for T {
 
     fn get_default_path(&self) -> *const core::ffi::c_char {
         self.as_ref().get_default_path()
+    }
+
+    fn get_default_path_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_default_path())
     }
 }

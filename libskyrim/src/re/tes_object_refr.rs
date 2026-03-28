@@ -826,7 +826,12 @@ impl TESObjectREFR {
     }
 
     crate::relocation_func! {
-        pub fn get_display_full_name(&mut self) -> *const c_char => RelocationID::new(19354, 19781)
+        pub fn get_display_full_name(&self) -> *const c_char => RelocationID::new(19354, 19781)
+    }
+
+    #[inline(always)]
+    pub fn get_display_full_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_display_full_name())
     }
 
     crate::relocation_func! {
@@ -884,7 +889,7 @@ impl TESObjectREFR {
     }
 
     crate::relocation_func! {
-        pub fn get_weight_in_container(&mut self) -> f32 => RelocationID::new(19277, 19703)
+        pub fn get_weight_in_container(&self) -> f32 => RelocationID::new(19277, 19703)
     }
 
     crate::relocation_func! {
@@ -911,7 +916,7 @@ impl TESObjectREFR {
     }
 
     crate::relocation_func! {
-        pub fn is_crime_to_activate(&mut self) -> bool => RelocationID::new(19400, 19827)
+        pub fn is_crime_to_activate(&self) -> bool => RelocationID::new(19400, 19827)
     }
 
     crate::relocation_func! {
@@ -1423,6 +1428,11 @@ impl TESObjectREFR {
     }
 
     #[inline(always)]
+    pub fn get_name_as_str(&self) -> &str {
+        core_util::ptr_to_str(self.get_name())
+    }
+
+    #[inline(always)]
     pub fn get_node_by_name(&self, node_name: &BSFixedString) -> *mut NiAVObject {
         let node = self.get_3d();
         if node.is_null() {
@@ -1747,7 +1757,7 @@ impl TESObjectREFR {
     }
 
     #[inline(always)]
-    pub fn is_off_limits(&mut self) -> bool {
+    pub fn is_off_limits(&self) -> bool {
         self.is_crime_to_activate()
     }
 
@@ -1905,7 +1915,7 @@ impl TESObjectREFR {
 
     #[inline(always)]
     pub fn name_includes(&self, word: &str) -> bool {
-        core_util::ptr_to_str(self.get_name()).contains(word)
+        self.get_name_as_str().contains(word)
     }
 
     pub fn place_object_at_me(
@@ -2256,7 +2266,8 @@ pub trait TESObjectREFRExt {
     fn get_reference_runtime_data(&self) -> &REFERENCE_RUNTIME_DATA;
     fn get_reference_runtime_data_mut(&mut self) -> &mut REFERENCE_RUNTIME_DATA;
     fn get_magic_caster(&mut self, source: CastingSource) -> *mut MagicCaster;
-    fn get_display_full_name(&mut self) -> *const c_char;
+    fn get_display_full_name(&self) -> *const c_char;
+    fn get_display_full_name_as_str(&self) -> &str;
     fn get_distance(
         &self,
         other: *mut TESObjectREFR,
@@ -2291,6 +2302,7 @@ pub trait TESObjectREFRExt {
     fn get_lock_level(&self) -> LOCK_LEVEL;
     fn get_magic_target(&mut self) -> *mut MagicTarget;
     fn get_name(&self) -> *const c_char;
+    fn get_name_as_str(&self) -> &str;
     fn get_node_by_name(&self, node_name: &BSFixedString) -> *mut NiAVObject;
     fn get_object_reference(&self) -> *mut TESBoundObject;
     fn get_owner(&self) -> *mut TESForm;
@@ -2305,7 +2317,7 @@ pub trait TESObjectREFRExt {
     fn get_submerge_level(&self, z_pos: f32, cell: *mut TESObjectCELL) -> f32;
     fn get_water_height(&self) -> f32;
     fn get_weight(&self) -> f32;
-    fn get_weight_in_container(&mut self) -> f32;
+    fn get_weight_in_container(&self) -> f32;
     fn get_world_location(&self) -> BGSWorldLocation;
     fn get_worldspace(&self) -> *mut TESWorldSpace;
     fn has_collision(&self) -> bool;
@@ -2324,7 +2336,7 @@ pub trait TESObjectREFRExt {
         use_faction: bool,
         requires_owner: bool,
     ) -> bool;
-    fn is_crime_to_activate(&mut self) -> bool;
+    fn is_crime_to_activate(&self) -> bool;
     fn is_disabled(&self) -> bool;
     fn is_dragon(&self) -> bool;
     fn is_enchanted(&self) -> bool;
@@ -2336,7 +2348,7 @@ pub trait TESObjectREFRExt {
     fn is_jewelry(&self) -> bool;
     fn is_locked(&self) -> bool;
     fn is_marked_for_deletion(&self) -> bool;
-    fn is_off_limits(&mut self) -> bool;
+    fn is_off_limits(&self) -> bool;
     fn is_persistent(&self) -> bool;
     fn is_point_submerged_more_than(
         &self,
@@ -2514,8 +2526,12 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::get_magic_caster(self.as_mut(), source)
     }
 
-    fn get_display_full_name(&mut self) -> *const c_char {
-        TESObjectREFR::get_display_full_name(self.as_mut())
+    fn get_display_full_name(&self) -> *const c_char {
+        TESObjectREFR::get_display_full_name(self.as_ref())
+    }
+
+    fn get_display_full_name_as_str(&self) -> &str {
+        TESObjectREFR::get_display_full_name_as_str(self.as_ref())
     }
 
     fn get_distance(
@@ -2627,6 +2643,10 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::get_name(self.as_ref())
     }
 
+    fn get_name_as_str(&self) -> &str {
+        TESObjectREFR::get_name_as_str(self.as_ref())
+    }
+
     fn get_node_by_name(&self, node_name: &BSFixedString) -> *mut NiAVObject {
         TESObjectREFR::get_node_by_name(self.as_ref(), node_name)
     }
@@ -2683,8 +2703,8 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::get_weight(self.as_ref())
     }
 
-    fn get_weight_in_container(&mut self) -> f32 {
-        TESObjectREFR::get_weight_in_container(self.as_mut())
+    fn get_weight_in_container(&self) -> f32 {
+        TESObjectREFR::get_weight_in_container(self.as_ref())
     }
 
     fn get_world_location(&self) -> BGSWorldLocation {
@@ -2744,8 +2764,8 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::is_an_owner(self.as_ref(), test_owner, use_faction, requires_owner)
     }
 
-    fn is_crime_to_activate(&mut self) -> bool {
-        TESObjectREFR::is_crime_to_activate(self.as_mut())
+    fn is_crime_to_activate(&self) -> bool {
+        TESObjectREFR::is_crime_to_activate(self.as_ref())
     }
 
     fn is_disabled(&self) -> bool {
@@ -2792,8 +2812,8 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::is_marked_for_deletion(self.as_ref())
     }
 
-    fn is_off_limits(&mut self) -> bool {
-        TESObjectREFR::is_off_limits(self.as_mut())
+    fn is_off_limits(&self) -> bool {
+        TESObjectREFR::is_off_limits(self.as_ref())
     }
 
     fn is_persistent(&self) -> bool {

@@ -4,7 +4,7 @@
 //! workflows without dragging large advanced surfaces into scope by default.
 
 pub use crate::sdk::core::{
-    DynamicCastExt, DynamicCastMutExt, GameLifecyclePhase, GameRef, GameRefMut, HandleFamilyTarget,
+    DynamicCastExt, DynamicCastMutExt, GameLifecyclePhase, GamePtr, GameRef, HandleFamilyTarget,
     HandleTarget, LifecyclePhase, NativeOwner, NativeOwnerCastExt, PluginLifecyclePhase,
     ResolvableHandle, Resolved, ResolvedHandle,
 };

@@ -45,6 +45,10 @@ translations and hook ports with Codex.
   in `libskyrim/src/ffi.rs`, and construct the Rust smart pointer through
   `hkRefPtr::try_construct_with`, `NiPointer::try_construct_with`, or
   `BSTSmartPointer::try_construct_with`.
+- Keep source-backed low-level behavior honest, but do not worsen the public
+  Rust API only to mirror a C++ signature literally when there is no real
+  behavioral, ownership, layout, or ABI difference. If needed, keep the raw
+  method and add a more ergonomic helper alongside it.
 - If a source-backed compromise remains, leave a `// TODO:` comment at the exact
   site describing the current stand-in, the missing prerequisite, and the
   intended end state. Do not use `todo!()` / `unimplemented!()` in translated
@@ -60,6 +64,7 @@ translations and hook ports with Codex.
 | `verify-translation` | main | `gpt-5.4` | `high` |
 | `translate-runtime-layout` | main | `gpt-5.4` | `high` |
 | `port-hooking` | main | `gpt-5.4` | `high` |
+| `reconcile-api-ergonomics` | main or subagent | `gpt-5.4-mini` or `gpt-5.4` | `medium` |
 | `add-extension-trait` | subagent or main | `gpt-5.4-mini` | `medium` |
 
 Use `xhigh` only for unusually hard cases such as `SkyrimVM` or very large
@@ -285,6 +290,45 @@ Then in the main thread:
 Run cargo fmt, cargo check -p libskyrim, and cargo check -p libskyrim --tests.
 ```
 
+## Template 6C: Rust-Facing API Ergonomics Reconciliation
+
+Use when a translation is source-backed but the public Rust surface is more
+literal to C++ than semantically necessary.
+
+```text
+Use $reconcile-api-ergonomics for <TypeName or path>.
+
+Keep the main thread on gpt-5.4 with high reasoning effort for coupled public
+API changes. For small isolated wrappers, a subagent on gpt-5.4-mini medium is
+fine.
+
+Before editing:
+- read the existing Rust public surface
+- read the matching CommonLib header
+- read the matching .cpp if it exists
+- classify each candidate issue as:
+  - layout / ABI / ownership critical
+  - behaviorally meaningful wrapper contract
+  - ergonomics-only surface choice
+
+Then:
+- preserve the source-backed low-level contract
+- do not worsen the Rust API just to mirror a non-const C++ wrapper or raw
+  pointer return if no meaningful behavioral difference is preserved by that
+  choice
+- keep raw/strict methods when they are still useful, but add or repair
+  ergonomic helpers alongside them
+- typical fixes include:
+  - semantically read-only getters: `&mut self` -> `&self`
+  - read-only C-string getters: add `*_as_str()`
+  - small Rust-facing helper wrappers over raw methods where the contract
+    becomes clearer without hiding real edge cases
+
+Validate with cargo fmt, cargo check -p libskyrim, and cargo check -p libskyrim --tests.
+If the change affects plugin-facing public APIs and S:/Programming/RustSKSETemplate is available,
+prefer a quick smoke check there too.
+```
+
 ## Template 7: Parallel Batch of Independent RE Files
 
 Use when multiple files can be edited independently without overlapping write
@@ -371,6 +415,7 @@ Split this into subagents:
 - Default main thread: `gpt-5.4 high`
 - Default audit subagent: `gpt-5.4-mini medium`
 - Default partial-translation subagent: `gpt-5.4-mini high`
+- Default ergonomics-pass subagent: `gpt-5.4-mini medium`
 - Use `xhigh` rarely and only for the hardest runtime-layout or MI cases
 - For event-heavy owners, keep final translation and event-contract decisions in
   the main thread; use subagents only for read-only source classification

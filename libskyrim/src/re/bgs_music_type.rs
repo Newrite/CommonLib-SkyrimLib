@@ -70,8 +70,24 @@ impl BGSMusicType {
     }
 
     #[inline(always)]
+    pub fn get_form_editor_id_local_as_str(&self) -> &str {
+        self.form_editor_id.as_str()
+    }
+
+    #[inline(always)]
+    pub fn get_form_editor_id_as_str(&self) -> &str {
+        self.form_editor_id.as_str()
+    }
+
+    #[inline(always)]
     pub fn set_form_editor_id_local(&mut self, editor_id: *const c_char) -> bool {
         self.form_editor_id = BSFixedString::new(editor_id);
+        true
+    }
+
+    #[inline(always)]
+    pub fn set_form_editor_id_from_str(&mut self, editor_id: &str) -> bool {
+        self.form_editor_id = BSFixedString::from_str(editor_id);
         true
     }
 }

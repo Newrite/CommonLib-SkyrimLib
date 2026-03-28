@@ -3,3 +3,8 @@ libskyrim/cpp/.xmake
 libskyrim/target
 libskyrim/cpp/build
 .idea
+CommonLibVR
+CommonLibSSE-NG
+scripts/__pycache__
+SKSESources
+RustSKSETemplate

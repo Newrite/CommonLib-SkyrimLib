@@ -700,12 +700,15 @@ fn map_user_ty_to_abi(ty: &Type) -> syn::Result<Type> {
                     let inner = option_inner_type(path)?;
                     map_option_inner_to_abi(&inner)
                 }
-                _ if last_ident == "GameRef"
-                    || last_ident == "GameRefMut"
-                    || last_ident == "Resolved" =>
-                {
+                _ if last_ident == "Resolved" => {
                     let inner = last_type_arg(path)?;
                     Ok(parse_quote!(*mut #inner))
+                }
+                _ if last_ident == "GameRef" || last_ident == "GamePtr" => {
+                    Err(syn::Error::new_spanned(
+                        path,
+                        "stable SDK pointer wrappers are not supported as hook parameters; use `&T`, `Option<&T>`, `&mut T`, raw pointers, or `Resolved<T>` instead",
+                    ))
                 }
                 _ if last_ident == "ResolvedHandle" => {
                     let inner = last_type_arg(path)?;
@@ -1185,7 +1188,6 @@ enum EventParamKind {
     None,
     Ref,
     OptionRef,
-    GameRef,
     InputEvents,
     MessageRawRef,
     MessageRef,
@@ -1626,12 +1628,10 @@ fn parse_event_callback_param(ty: &Type, event_ty: &Type) -> syn::Result<EventPa
         Ok(EventParamKind::OptionRef)
     } else if is_ref_to_type(ty, event_ty) {
         Ok(EventParamKind::Ref)
-    } else if is_game_ref_to_type(ty, event_ty) {
-        Ok(EventParamKind::GameRef)
     } else {
         Err(syn::Error::new_spanned(
             ty,
-            "event callback parameter must be `&Event`, `Option<&Event>`, or `GameRef<'_, Event>`",
+            "event callback parameter must be `&Event`, `Option<&Event>`, or omitted",
         ))
     }
 }
@@ -1699,10 +1699,6 @@ fn build_event_callback(
                     let Some(event) = event else {
                         return ::libskyrim::sdk::events::EventFlow::Continue;
                     };
-                    ::libskyrim::sdk::events::IntoEventFlow::into_event_flow(super::#fn_name(event))
-                },
-                EventParamKind::GameRef => quote! {
-                    let event = ::libskyrim::sdk::core::GameRef::from(event);
                     ::libskyrim::sdk::events::IntoEventFlow::into_event_flow(super::#fn_name(event))
                 },
                 _ => {
@@ -1955,26 +1951,6 @@ fn is_option_ref_to_type(ty: &Type, target: &Type) -> bool {
         return false;
     };
     is_ref_to_type(inner_ty, target)
-}
-
-fn is_game_ref_to_type(ty: &Type, target: &Type) -> bool {
-    let Type::Path(path) = peel_type_groups(ty) else {
-        return false;
-    };
-    let Some(segment) = path.path.segments.last() else {
-        return false;
-    };
-    if segment.ident != "GameRef" {
-        return false;
-    }
-    let PathArguments::AngleBracketed(arguments) = &segment.arguments else {
-        return false;
-    };
-
-    arguments
-        .args
-        .iter()
-        .any(|arg| matches!(arg, GenericArgument::Type(inner_ty) if types_equal(inner_ty, target)))
 }
 
 fn is_ref_to_terminal_ident(ty: &Type, ident: &str) -> bool {

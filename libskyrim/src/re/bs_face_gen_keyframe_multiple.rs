@@ -215,20 +215,62 @@ impl BSFaceGenKeyframeMultiple {
     }
 
     #[inline]
-    pub fn get_value_name(keyframe_type: crate::re::BSFaceGenKeyframeType, idx: u32) -> String {
-        let name = match keyframe_type {
-            crate::re::BSFaceGenKeyframeType::Expression => Self::get_expression_name(idx),
-            crate::re::BSFaceGenKeyframeType::Modifier => Self::get_modifier_name(idx),
-            crate::re::BSFaceGenKeyframeType::Phoneme => Self::get_phoneme_name(idx),
-            crate::re::BSFaceGenKeyframeType::Custom => Self::get_custom_name(idx),
-            crate::re::BSFaceGenKeyframeType::Undefined => core::ptr::null(),
-        };
-
+    pub fn get_expression_name_as_str(a_expression: u32) -> &'static str {
+        let name = Self::get_expression_name(a_expression);
         if name.is_null() {
-            String::new()
+            ""
         } else {
-            String::from(core_util::ptr_to_str(name))
+            core_util::ptr_to_str(name)
         }
+    }
+
+    #[inline]
+    pub fn get_modifier_name_as_str(a_modifier: u32) -> &'static str {
+        let name = Self::get_modifier_name(a_modifier);
+        if name.is_null() {
+            ""
+        } else {
+            core_util::ptr_to_str(name)
+        }
+    }
+
+    #[inline]
+    pub fn get_phoneme_name_as_str(a_phoneme: u32) -> &'static str {
+        let name = Self::get_phoneme_name(a_phoneme);
+        if name.is_null() {
+            ""
+        } else {
+            core_util::ptr_to_str(name)
+        }
+    }
+
+    #[inline]
+    pub fn get_custom_name_as_str(a_custom: u32) -> &'static str {
+        let name = Self::get_custom_name(a_custom);
+        if name.is_null() {
+            ""
+        } else {
+            core_util::ptr_to_str(name)
+        }
+    }
+
+    #[inline]
+    pub fn get_value_name_as_str(
+        keyframe_type: crate::re::BSFaceGenKeyframeType,
+        idx: u32,
+    ) -> &'static str {
+        match keyframe_type {
+            crate::re::BSFaceGenKeyframeType::Expression => Self::get_expression_name_as_str(idx),
+            crate::re::BSFaceGenKeyframeType::Modifier => Self::get_modifier_name_as_str(idx),
+            crate::re::BSFaceGenKeyframeType::Phoneme => Self::get_phoneme_name_as_str(idx),
+            crate::re::BSFaceGenKeyframeType::Custom => Self::get_custom_name_as_str(idx),
+            crate::re::BSFaceGenKeyframeType::Undefined => "",
+        }
+    }
+
+    #[inline]
+    pub fn get_value_name(keyframe_type: crate::re::BSFaceGenKeyframeType, idx: u32) -> String {
+        String::from(Self::get_value_name_as_str(keyframe_type, idx))
     }
 
     #[inline]

@@ -186,6 +186,11 @@ impl BGSLocation {
         false
     }
 
+    #[inline(always)]
+    pub fn is_child_ref(&self, possible_child: &BGSLocation) -> bool {
+        self.is_child(possible_child as *const BGSLocation)
+    }
+
     pub fn is_parent(&self, possible_parent: *const BGSLocation) -> bool {
         if possible_parent.is_null() {
             return false;
@@ -200,6 +205,11 @@ impl BGSLocation {
         }
 
         false
+    }
+
+    #[inline(always)]
+    pub fn is_parent_ref(&self, possible_parent: &BGSLocation) -> bool {
+        self.is_parent(possible_parent as *const BGSLocation)
     }
 
     #[inline(always)]

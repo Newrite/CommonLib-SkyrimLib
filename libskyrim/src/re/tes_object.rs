@@ -61,7 +61,7 @@ impl TESObject {
 
     virtual_method! {
         pub const IS_BOUND_ANIM_OBJECT: usize = 0x3C;
-        pub fn is_bound_anim_object(&mut self) -> bool
+        pub fn is_bound_anim_object(&self) -> bool
     }
 
     virtual_method! {
@@ -91,12 +91,12 @@ impl TESObject {
 
     virtual_method! {
         pub const IS_MARKER: usize = 0x42;
-        pub fn is_marker(&mut self) -> bool
+        pub fn is_marker(&self) -> bool
     }
 
     virtual_method! {
         pub const IS_OCCLUSION_MARKER: usize = 0x43;
-        pub fn is_occlusion_marker(&mut self) -> bool
+        pub fn is_occlusion_marker(&self) -> bool
     }
 
     virtual_method! {
@@ -125,14 +125,14 @@ pub trait TESObjectExt {
     fn is_object(&self) -> bool;
     fn get_ref_count(&self) -> u32;
     fn unk_3b(&mut self);
-    fn is_bound_anim_object(&mut self) -> bool;
+    fn is_bound_anim_object(&self) -> bool;
     fn get_water_type(&self) -> *mut TESWaterForm;
     fn is_auto_calc(&self) -> bool;
     fn set_auto_calc(&mut self, auto_calc: bool);
     fn clone_3d(&mut self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject;
     fn un_clone_3d(&mut self, a_ref: *mut TESObjectREFR);
-    fn is_marker(&mut self) -> bool;
-    fn is_occlusion_marker(&mut self) -> bool;
+    fn is_marker(&self) -> bool;
+    fn is_occlusion_marker(&self) -> bool;
     fn replace_model(&mut self) -> bool;
     fn inc_ref(&mut self) -> u32;
     fn dec_ref(&mut self) -> u32;
@@ -156,8 +156,8 @@ impl<T: AsRef<TESObject> + AsMut<TESObject>> TESObjectExt for T {
         self.as_mut().unk_3b()
     }
 
-    fn is_bound_anim_object(&mut self) -> bool {
-        self.as_mut().is_bound_anim_object()
+    fn is_bound_anim_object(&self) -> bool {
+        self.as_ref().is_bound_anim_object()
     }
 
     fn get_water_type(&self) -> *mut TESWaterForm {
@@ -180,12 +180,12 @@ impl<T: AsRef<TESObject> + AsMut<TESObject>> TESObjectExt for T {
         self.as_mut().un_clone_3d(a_ref)
     }
 
-    fn is_marker(&mut self) -> bool {
-        self.as_mut().is_marker()
+    fn is_marker(&self) -> bool {
+        self.as_ref().is_marker()
     }
 
-    fn is_occlusion_marker(&mut self) -> bool {
-        self.as_mut().is_occlusion_marker()
+    fn is_occlusion_marker(&self) -> bool {
+        self.as_ref().is_occlusion_marker()
     }
 
     fn replace_model(&mut self) -> bool {

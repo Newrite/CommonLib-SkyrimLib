@@ -54,7 +54,7 @@ impl BGSPerkEntry {
 
     crate::virtual_method! {
         pub const VFUNC_GET_FUNCTION: usize = 0x01;
-        pub fn get_function(&mut self) -> BGSEntryPointEntryPoint
+        pub fn get_function(&self) -> BGSEntryPointEntryPoint
     }
 
     crate::virtual_method! {
@@ -121,8 +121,9 @@ impl BGSPerkEntry {
 pub trait BGSPerkEntryExt {
     fn check_condition_filters(&mut self, num_args: u32, args: *mut core::ffi::c_void) -> bool;
     fn dtor(&mut self);
-    fn get_function(&mut self) -> BGSEntryPointEntryPoint;
+    fn get_function(&self) -> BGSEntryPointEntryPoint;
     fn get_function_data(&self) -> *mut BGSEntryPointFunctionData;
+    fn get_function_data_ref(&self) -> Option<&BGSEntryPointFunctionData>;
     fn get_type(&self) -> PERK_ENTRY_TYPE;
     fn clear_data(&mut self);
     fn init_item(&mut self, owner: *mut TESFile);
@@ -147,13 +148,18 @@ impl<T: AsRef<BGSPerkEntry> + AsMut<BGSPerkEntry>> BGSPerkEntryExt for T {
     }
 
     #[inline(always)]
-    fn get_function(&mut self) -> BGSEntryPointEntryPoint {
-        BGSPerkEntry::get_function(self.as_mut())
+    fn get_function(&self) -> BGSEntryPointEntryPoint {
+        BGSPerkEntry::get_function(self.as_ref())
     }
 
     #[inline(always)]
     fn get_function_data(&self) -> *mut BGSEntryPointFunctionData {
         BGSPerkEntry::get_function_data(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_function_data_ref(&self) -> Option<&BGSEntryPointFunctionData> {
+        unsafe { BGSPerkEntry::get_function_data(self.as_ref()).as_ref() }
     }
 
     #[inline(always)]

@@ -77,7 +77,7 @@ impl BGSKeywordForm {
         let mut result = false;
         self.for_each_keyword(|keyword| {
             let current = unsafe { &*keyword };
-            if core_util::ptr_to_str(current.form_editor_id.as_ptr()).contains(editor_id) {
+            if current.get_form_editor_id_as_str().contains(editor_id) {
                 result = true;
                 BSContainerForEachResult::Stop
             } else {
@@ -111,6 +111,11 @@ impl BGSKeywordForm {
         self.get_keywords().get(idx as usize).copied()
     }
 
+    #[inline]
+    pub fn get_keyword_ref_at(&self, idx: u32) -> Option<&BGSKeyword> {
+        unsafe { self.get_keyword_at(idx)?.as_ref() }
+    }
+
     pub fn get_keyword_index(&self, keyword: *mut BGSKeyword) -> Option<u32> {
         self.get_keywords()
             .iter()
@@ -141,7 +146,7 @@ impl BGSKeywordForm {
         let mut result = false;
         self.for_each_keyword(|keyword| {
             let current = unsafe { &*keyword };
-            if core_util::ptr_to_str(current.form_editor_id.as_ptr()) == editor_id {
+            if current.get_form_editor_id_as_str() == editor_id {
                 result = true;
                 BSContainerForEachResult::Stop
             } else {
@@ -223,6 +228,7 @@ pub trait BGSKeywordFormExt {
         F: FnMut(*mut BGSKeyword) -> BSContainerForEachResult;
     fn get_default_keyword(&self) -> *mut BGSKeyword;
     fn get_keyword_at(&self, idx: u32) -> Option<*mut BGSKeyword>;
+    fn get_keyword_ref_at(&self, idx: u32) -> Option<&BGSKeyword>;
     fn get_keyword_index(&self, keyword: *mut BGSKeyword) -> Option<u32>;
     fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
     fn has_keyword_id(&self, form_id: FormID) -> bool;
@@ -261,6 +267,10 @@ impl<T: AsRef<BGSKeywordForm> + AsMut<BGSKeywordForm>> BGSKeywordFormExt for T {
 
     fn get_keyword_at(&self, idx: u32) -> Option<*mut BGSKeyword> {
         self.as_ref().get_keyword_at(idx)
+    }
+
+    fn get_keyword_ref_at(&self, idx: u32) -> Option<&BGSKeyword> {
+        self.as_ref().get_keyword_ref_at(idx)
     }
 
     fn get_keyword_index(&self, keyword: *mut BGSKeyword) -> Option<u32> {

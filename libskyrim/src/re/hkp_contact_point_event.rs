@@ -2,12 +2,10 @@
 
 use core_util::inherit;
 
+use crate::re::hkp_shape::hkpShapeKey;
 use crate::re::{
     hkContactPoint, hkpCollisionEvent, hkpContactPointProperties, hkpVelocityAccumulator,
 };
-
-#[allow(non_camel_case_types)]
-pub type hkpShapeKey = u32;
 
 /// C++ `RE::hkpContactPointEvent::Type`
 #[repr(u32)]

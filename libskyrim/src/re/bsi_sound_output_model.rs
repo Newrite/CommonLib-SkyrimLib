@@ -80,6 +80,16 @@ impl BSISoundOutputModel {
     pub fn get_speaker_bias_into(&self, arg1: u32, arg2: u32, out_bias: &mut [f32; 8]) -> bool {
         self.do_get_speaker_bias(arg1, arg2, out_bias as *mut [f32; 8])
     }
+
+    #[inline(always)]
+    pub fn get_speaker_bias(&self, arg1: u32, arg2: u32) -> Option<[f32; 8]> {
+        let mut out_bias = [0.0; 8];
+        if self.get_speaker_bias_into(arg1, arg2, &mut out_bias) {
+            Some(out_bias)
+        } else {
+            None
+        }
+    }
 }
 
 pub trait BSISoundOutputModelExt {
@@ -93,6 +103,7 @@ pub trait BSISoundOutputModelExt {
     fn do_get_supports_monitor(&self, arg1: u32) -> bool;
     fn get_attenuation(&self) -> Option<&BSIAttenuationCharacteristics>;
     fn get_speaker_bias_into(&self, arg1: u32, arg2: u32, out_bias: &mut [f32; 8]) -> bool;
+    fn get_speaker_bias(&self, arg1: u32, arg2: u32) -> Option<[f32; 8]>;
 }
 
 impl<T: AsRef<BSISoundOutputModel>> BSISoundOutputModelExt for T {
@@ -134,5 +145,9 @@ impl<T: AsRef<BSISoundOutputModel>> BSISoundOutputModelExt for T {
 
     fn get_speaker_bias_into(&self, arg1: u32, arg2: u32, out_bias: &mut [f32; 8]) -> bool {
         self.as_ref().get_speaker_bias_into(arg1, arg2, out_bias)
+    }
+
+    fn get_speaker_bias(&self, arg1: u32, arg2: u32) -> Option<[f32; 8]> {
+        self.as_ref().get_speaker_bias(arg1, arg2)
     }
 }
