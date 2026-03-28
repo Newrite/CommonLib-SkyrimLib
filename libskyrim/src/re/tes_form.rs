@@ -5,6 +5,7 @@ use crate::re::base_form_component::BaseFormComponent;
 use crate::re::bgs_keyword::BGSKeyword;
 use crate::re::bgs_keyword_form::BGSKeywordForm;
 use crate::re::bgs_list_form::BGSListForm;
+use crate::re::bs_atomic::{BSReadLockGuard, BSReadWriteLock};
 use crate::re::bs_container::BSContainerForEachResult;
 use crate::re::form_type::FormType;
 use crate::relocation::{
@@ -232,10 +233,22 @@ impl TESForm {
     // РІвЂќР‚РІвЂќР‚РІвЂќР‚ Virtual Methods РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚
 
     // override (BaseFormComponent)
-    // ~TESForm() override;                          // 00
-    // void InitializeDataComponent() override;      // 01
-    // void ClearDataComponent() override;           // 02
-    // void CopyComponent(BaseFormComponent* a_rhs); // 03
+    virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+    virtual_method! {
+        pub const VFUNC_INITIALIZE_DATA_COMPONENT: usize = 0x01;
+        pub fn initialize_data_component(&mut self)
+    }
+    virtual_method! {
+        pub const VFUNC_CLEAR_DATA_COMPONENT: usize = 0x02;
+        pub fn clear_data_component(&mut self)
+    }
+    virtual_method! {
+        pub const VFUNC_COPY_COMPONENT: usize = 0x03;
+        pub fn copy_component(&mut self, rhs: *mut BaseFormComponent)
+    }
     pub fn get_raw_form_id(&self) -> FormID {
         let mod_file = self.get_file(0);
         if mod_file.is_null() {
@@ -313,67 +326,67 @@ impl TESForm {
 
     virtual_method! {
         pub const VFUNC_INITIALIZE_DATA: usize = 0x04;
-        pub fn initialize_data()
+        pub fn initialize_data(&mut self)
     }
     virtual_method! {
         pub const VFUNC_CLEAR_DATA: usize = 0x05;
-        pub fn clear_data()
+        pub fn clear_data(&mut self)
     }
     virtual_method! {
         pub const VFUNC_LOAD: usize = 0x06;
-        pub fn load(mod_file: *mut TESFile) -> bool
+        pub fn load(&mut self, mod_file: *mut TESFile) -> bool
     }
     virtual_method! {
         pub const VFUNC_LOAD_PARTIAL: usize = 0x07;
-        pub fn load_partial(mod_file: *mut TESFile) -> bool
+        pub fn load_partial(&mut self, mod_file: *mut TESFile) -> bool
     }
     virtual_method! {
         pub const VFUNC_LOAD_EDIT: usize = 0x08;
-        pub fn load_edit(mod_file: *mut TESFile) -> bool
+        pub fn load_edit(&mut self, mod_file: *mut TESFile) -> bool
     }
     virtual_method! {
         pub const VFUNC_CREATE_DUPLICATE_FORM: usize = 0x09;
-        pub fn create_duplicate_form(create_editor_id: bool, copy_map: *mut NiTPointerMap) -> *mut TESForm
+        pub fn create_duplicate_form(&mut self, create_editor_id: bool, copy_map: *mut NiTPointerMap) -> *mut TESForm
     }
     virtual_method! {
         pub const VFUNC_ADD_CHANGE: usize = 0x0A;
-        pub fn add_change(change_flags: u32) -> bool
+        pub fn add_change(&mut self, change_flags: u32) -> bool
     }
     virtual_method! {
         pub const VFUNC_REMOVE_CHANGE: usize = 0x0B;
-        pub fn remove_change(change_flags: u32)
+        pub fn remove_change(&mut self, change_flags: u32)
     }
     virtual_method! {
         pub const VFUNC_FIND_IN_FILE_FAST: usize = 0x0C;
-        pub fn find_in_file_fast(mod_file: *mut TESFile) -> bool
+        pub fn find_in_file_fast(&mut self, mod_file: *mut TESFile) -> bool
     }
     virtual_method! {
         pub const VFUNC_CHECK_SAVE_GAME: usize = 0x0D;
-        pub fn check_save_game(buf: *mut BGSSaveFormBuffer) -> bool
+        pub fn check_save_game(&mut self, buf: *mut BGSSaveFormBuffer) -> bool
     }
     virtual_method! {
         pub const VFUNC_SAVE_GAME: usize = 0x0E;
-        pub fn save_game(buf: *mut BGSSaveFormBuffer)
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
     }
     virtual_method! {
         pub const VFUNC_LOAD_GAME: usize = 0x0F;
-        pub fn load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
     virtual_method! {
         pub const VFUNC_INIT_LOAD_GAME: usize = 0x10;
-        pub fn init_load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn init_load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
     virtual_method! {
         pub const VFUNC_FINISH_LOAD_GAME: usize = 0x11;
-        pub fn finish_load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn finish_load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
     virtual_method! {
         pub const VFUNC_REVERT: usize = 0x12;
-        pub fn revert(buf: *mut BGSLoadFormBuffer)
+        pub fn revert(&mut self, buf: *mut BGSLoadFormBuffer)
     }
     virtual_method! {
         pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
-        pub fn init_item_impl()
+        pub fn init_item_impl(&mut self)
     }
     virtual_method! {
         pub const VFUNC_GET_DESCRIPTION_OWNER_FILE: usize = 0x14;
@@ -385,7 +398,7 @@ impl TESForm {
     }
     virtual_method! {
         pub const VFUNC_GET_FORM_DETAILED_STRING: usize = 0x16;
-        pub fn get_form_detailed_string(buf: *mut c_char, buf_len: u32)
+        pub fn get_form_detailed_string(&mut self, buf: *mut c_char, buf_len: u32)
     }
     virtual_method! {
         pub const VFUNC_GET_KNOWN: usize = 0x17;
@@ -429,7 +442,7 @@ impl TESForm {
     }
     virtual_method! {
         pub const VFUNC_SET_ON_LOCAL_MAP: usize = 0x21;
-        pub fn set_on_local_map(set: bool)
+        pub fn set_on_local_map(&mut self, set: bool)
     }
     virtual_method! {
         pub const VFUNC_GET_IGNORED_BY_SANDBOX: usize = 0x22;
@@ -437,19 +450,19 @@ impl TESForm {
     }
     virtual_method! {
         pub const VFUNC_SET_DELETE: usize = 0x23;
-        pub fn set_delete(set: bool)
+        pub fn set_delete(&mut self, set: bool)
     }
     virtual_method! {
         pub const VFUNC_SET_ALTERED: usize = 0x24;
-        pub fn set_altered(set: bool)
+        pub fn set_altered(&mut self, set: bool)
     }
     virtual_method! {
         pub const VFUNC_SAVE_OBJECT_BOUND: usize = 0x25;
-        pub fn save_object_bound()
+        pub fn save_object_bound(&mut self)
     }
     virtual_method! {
         pub const VFUNC_LOAD_OBJECT_BOUND: usize = 0x26;
-        pub fn load_object_bound(mod_file: *mut TESFile)
+        pub fn load_object_bound(&mut self, mod_file: *mut TESFile)
     }
     virtual_method! {
         pub const VFUNC_IS_BOUND_OBJECT: usize = 0x27;
@@ -469,7 +482,7 @@ impl TESForm {
     }
     virtual_method! {
         pub const VFUNC_AS_REFERENCE1: usize = 0x2B;
-        pub fn as_reference1() -> *mut TESObjectREFR
+        pub fn as_reference1(&mut self) -> *mut TESObjectREFR
     }
     virtual_method! {
         pub const VFUNC_AS_REFERENCE2: usize = 0x2C;
@@ -485,15 +498,15 @@ impl TESForm {
     }
     virtual_method! {
         pub const VFUNC_COPY: usize = 0x2F;
-        pub fn copy(src_form: *mut TESForm)
+        pub fn copy(&mut self, src_form: *mut TESForm)
     }
     virtual_method! {
         pub const VFUNC_BELONGS_IN_GROUP: usize = 0x30;
-        pub fn belongs_in_group(form: *mut Form, allow_parent_groups: bool, current_only: bool) -> bool
+        pub fn belongs_in_group(&mut self, form: *mut Form, allow_parent_groups: bool, current_only: bool) -> bool
     }
     virtual_method! {
         pub const VFUNC_CREATE_GROUP_DATA: usize = 0x31;
-        pub fn create_group_data(form: *mut Form, group: *mut FormGroup)
+        pub fn create_group_data(&mut self, form: *mut Form, group: *mut FormGroup)
     }
     virtual_method! {
         pub const VFUNC_GET_FORM_EDITOR_ID: usize = 0x32;
@@ -501,27 +514,27 @@ impl TESForm {
     }
     virtual_method! {
         pub const VFUNC_SET_FORM_EDITOR_ID: usize = 0x33;
-        pub fn set_form_editor_id(str: *const c_char) -> bool
+        pub fn set_form_editor_id(&mut self, str: *const c_char) -> bool
     }
     virtual_method! {
         pub const VFUNC_IS_PARENT_FORM: usize = 0x34;
-        pub fn is_parent_form() -> bool
+        pub fn is_parent_form(&mut self) -> bool
     }
     virtual_method! {
         pub const VFUNC_IS_PARENT_FORM_TREE: usize = 0x35;
-        pub fn is_parent_form_tree() -> bool
+        pub fn is_parent_form_tree(&mut self) -> bool
     }
     virtual_method! {
         pub const VFUNC_IS_FORM_TYPE_CHILD: usize = 0x36;
-        pub fn is_form_type_child(form_type: FormType) -> bool
+        pub fn is_form_type_child(&mut self, form_type: FormType) -> bool
     }
     virtual_method! {
         pub const VFUNC_ACTIVATE: usize = 0x37;
-        pub fn activate(target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool
+        pub fn activate(&mut self, target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool
     }
     virtual_method! {
         pub const VFUNC_SET_FORM_ID: usize = 0x38;
-        pub fn set_form_id(id: FormID, update_file: bool)
+        pub fn set_form_id(&mut self, id: FormID, update_file: bool)
     }
     virtual_method! {
         pub const VFUNC_GET_OBJECT_TYPE_NAME: usize = 0x39;
@@ -556,7 +569,7 @@ impl TESForm {
 
     pub fn get_name(&self) -> *const c_char {
         let full_name =
-            unsafe { skyrim_cast::<TESForm, TESFullName>(self as *const _ as *mut TESForm) };
+            unsafe { skyrim_cast_const::<TESForm, TESFullName>(self as *const TESForm) };
         if full_name.is_null() {
             c"".as_ptr()
         } else {
@@ -677,7 +690,7 @@ impl TESForm {
 
     pub fn has_keyword_in_array(&self, keywords: &[*mut BGSKeyword], match_all: bool) -> bool {
         let keyword_form =
-            unsafe { skyrim_cast::<TESForm, BGSKeywordForm>(self as *const _ as *mut TESForm) };
+            unsafe { skyrim_cast_const::<TESForm, BGSKeywordForm>(self as *const TESForm) };
         if keyword_form.is_null() {
             return false;
         }
@@ -695,23 +708,17 @@ impl TESForm {
 
     pub fn has_keyword_by_editor_id(&self, editor_id: &str) -> bool {
         let keyword_form =
-            unsafe { skyrim_cast::<TESForm, BGSKeywordForm>(self as *const _ as *mut TESForm) };
+            unsafe { skyrim_cast_const::<TESForm, BGSKeywordForm>(self as *const TESForm) };
         if keyword_form.is_null() {
             return false;
         }
 
-        unsafe { (*keyword_form).get_keywords() }
-            .iter()
-            .copied()
-            .any(|keyword| {
-                !keyword.is_null()
-                    && unsafe { (*keyword).base.get_form_editor_id_as_str() == editor_id }
-            })
+        unsafe { (*keyword_form).has_keyword_string(editor_id) }
     }
 
     pub fn has_any_keyword_by_editor_id(&self, editor_ids: &[&str]) -> bool {
         let keyword_form =
-            unsafe { skyrim_cast::<TESForm, BGSKeywordForm>(self as *const _ as *mut TESForm) };
+            unsafe { skyrim_cast_const::<TESForm, BGSKeywordForm>(self as *const TESForm) };
         if keyword_form.is_null() {
             return false;
         }
@@ -733,7 +740,7 @@ impl TESForm {
         }
 
         let keyword_form =
-            unsafe { skyrim_cast::<TESForm, BGSKeywordForm>(self as *const _ as *mut TESForm) };
+            unsafe { skyrim_cast_const::<TESForm, BGSKeywordForm>(self as *const TESForm) };
         if keyword_form.is_null() {
             return false;
         }
@@ -777,7 +784,7 @@ impl TESForm {
 
     #[inline(always)]
     pub fn has_world_model(&self) -> bool {
-        !unsafe { skyrim_cast::<TESForm, TESModel>(self as *const _ as *mut TESForm) }.is_null()
+        !unsafe { skyrim_cast_const::<TESForm, TESModel>(self as *const TESForm) }.is_null()
     }
 
     pub fn is_inventory_object(&self) -> bool {
@@ -865,12 +872,12 @@ impl TESForm {
 
     // RELOCATION_ID SE: 14467, AE: 14623
     crate::relocation_func! {
-        pub fn set_file(&self, file: *mut TESFile) => RelocationID::new(14467, 14623)
+        pub fn set_file(&mut self, file: *mut TESFile) => RelocationID::new(14467, 14623)
     }
 
     // RELOCATION_ID SE: 14482, AE: 14639
     crate::relocation_func! {
-        pub fn set_player_knows(&self, known: bool) => RelocationID::new(14482, 14639)
+        pub fn set_player_knows(&mut self, known: bool) => RelocationID::new(14482, 14639)
     }
 
     // РІвЂќР‚РІвЂќР‚РІвЂќР‚ Global Variables (Maps) РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚
@@ -882,7 +889,7 @@ impl TESForm {
 
     // RELOCATION_ID SE: 514360, AE: 400517
     crate::relocation_variable! {
-        pub fn get_all_forms_map_lock() -> &'static *mut crate::re::bs_read_write_lock::BSReadWriteLock => RelocationID::new(514360, 400517)
+        pub fn get_all_forms_map_lock() -> &'static *mut BSReadWriteLock => RelocationID::new(514360, 400517)
     }
 
     // RELOCATION_ID SE: 514352, AE: 400509
@@ -892,7 +899,7 @@ impl TESForm {
 
     // RELOCATION_ID SE: 514361, AE: 400518
     crate::relocation_variable! {
-        pub fn get_all_forms_editor_id_map_lock() -> &'static *mut crate::re::bs_read_write_lock::BSReadWriteLock => RelocationID::new(514361, 400518)
+        pub fn get_all_forms_editor_id_map_lock() -> &'static *mut BSReadWriteLock => RelocationID::new(514361, 400518)
     }
 
     #[inline]
@@ -908,7 +915,7 @@ impl TESForm {
     #[inline(always)]
     pub fn get_all_forms() -> (
         *mut crate::re::bst_hash_map::BSTHashMap<FormID, *mut TESForm>,
-        *mut crate::re::bs_read_write_lock::BSReadWriteLock,
+        *mut BSReadWriteLock,
     ) {
         (*Self::get_all_forms_map(), *Self::get_all_forms_map_lock())
     }
@@ -916,7 +923,7 @@ impl TESForm {
     #[inline(always)]
     pub fn get_all_forms_by_editor_id() -> (
         *mut crate::re::bst_hash_map::BSTHashMap<BSFixedString, *mut TESForm>,
-        *mut crate::re::bs_read_write_lock::BSReadWriteLock,
+        *mut BSReadWriteLock,
     ) {
         (
             *Self::get_all_forms_by_editor_id_map(),
@@ -925,10 +932,16 @@ impl TESForm {
     }
 
     pub fn lookup_by_id(form_id: FormID) -> Option<*mut TESForm> {
-        let (map, _) = Self::get_all_forms();
+        let (map, lock) = Self::get_all_forms();
         if map.is_null() {
             return None;
         }
+
+        let _lock_guard = if lock.is_null() {
+            None
+        } else {
+            Some(BSReadLockGuard::new(unsafe { &*lock }))
+        };
 
         let value = unsafe { (*map).find(&form_id) };
         if value.is_null() {
@@ -939,10 +952,16 @@ impl TESForm {
     }
 
     pub fn lookup_by_editor_id(editor_id: &str) -> Option<*mut TESForm> {
-        let (map, _) = Self::get_all_forms_by_editor_id();
+        let (map, lock) = Self::get_all_forms_by_editor_id();
         if map.is_null() {
             return None;
         }
+
+        let _lock_guard = if lock.is_null() {
+            None
+        } else {
+            Some(BSReadLockGuard::new(unsafe { &*lock }))
+        };
 
         let key = BSFixedString::from_str(editor_id);
         let value = unsafe { (*map).find(&key) };
@@ -955,11 +974,22 @@ impl TESForm {
 }
 
 pub trait TESFormExt {
+    fn dtor(&mut self);
+    fn initialize_data_component(&mut self);
+    fn clear_data_component(&mut self);
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_form_type(&self) -> FormType;
     fn get_form_flags(&self) -> RecordFlags;
     fn get_form_id(&self) -> FormID;
+    fn get_file(&self, idx: i32) -> *mut TESFile;
+    fn get_local_form_id(&self) -> FormID;
+    fn get_raw_form_id(&self) -> FormID;
     fn get_gold_value(&self) -> i32;
+    fn get_name(&self) -> *const c_char;
     fn get_name_as_str(&self) -> &str;
+    fn get_description_owner_file(&self) -> *mut TESFile;
+    fn get_playable(&self) -> bool;
+    fn get_object_type_name(&self) -> *const c_char;
     fn player_knows(&self) -> bool;
     fn is(&self, form_type: FormType) -> bool;
     fn is_deleted(&self) -> bool;
@@ -981,7 +1011,13 @@ pub trait TESFormExt {
     where
         U: FormCastable + RttiType;
     fn get_weight(&self) -> f32;
-    fn set_player_knows(&self, known: bool);
+    fn has_keyword_in_array(&self, keywords: &[*mut BGSKeyword], match_all: bool) -> bool;
+    fn has_keyword_by_editor_id(&self, editor_id: &str) -> bool;
+    fn has_any_keyword_by_editor_id(&self, editor_ids: &[&str]) -> bool;
+    fn has_keyword_in_list(&self, keyword_list: *mut BGSListForm, match_all: bool) -> bool;
+    fn has_vmad(&self) -> bool;
+    fn set_file(&mut self, file: *mut TESFile);
+    fn set_player_knows(&mut self, known: bool);
 
     fn get_form_editor_id_as_str(&self) -> &str;
     fn get_object_type_name_as_str(&self) -> &str;
@@ -992,6 +1028,7 @@ pub trait TESFormExt {
     fn load(&mut self, mod_file: *mut TESFile) -> bool;
     fn save_game(&mut self, buf: *mut BGSSaveFormBuffer);
     fn load_game(&mut self, buf: *mut BGSLoadFormBuffer);
+    fn copy(&mut self, src_form: *mut TESForm);
     fn activate(
         &mut self,
         target_ref: *mut TESObjectREFR,
@@ -1003,115 +1040,187 @@ pub trait TESFormExt {
 }
 
 impl<T: AsRef<TESForm> + AsMut<TESForm>> TESFormExt for T {
+    fn dtor(&mut self) {
+        TESForm::dtor(self.as_mut())
+    }
+
+    fn initialize_data_component(&mut self) {
+        TESForm::initialize_data_component(self.as_mut())
+    }
+
+    fn clear_data_component(&mut self) {
+        TESForm::clear_data_component(self.as_mut())
+    }
+
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent) {
+        TESForm::copy_component(self.as_mut(), rhs)
+    }
+
     fn get_form_type(&self) -> FormType {
-        self.as_ref().get_form_type()
+        TESForm::get_form_type(self.as_ref())
     }
 
     fn get_form_flags(&self) -> RecordFlags {
-        self.as_ref().get_form_flags()
+        TESForm::get_form_flags(self.as_ref())
     }
 
     fn get_form_id(&self) -> FormID {
-        self.as_ref().get_form_id()
+        TESForm::get_form_id(self.as_ref())
+    }
+
+    fn get_file(&self, idx: i32) -> *mut TESFile {
+        TESForm::get_file(self.as_ref(), idx)
+    }
+
+    fn get_local_form_id(&self) -> FormID {
+        TESForm::get_local_form_id(self.as_ref())
+    }
+
+    fn get_raw_form_id(&self) -> FormID {
+        TESForm::get_raw_form_id(self.as_ref())
     }
 
     fn get_gold_value(&self) -> i32 {
-        self.as_ref().get_gold_value()
+        TESForm::get_gold_value(self.as_ref())
+    }
+
+    fn get_name(&self) -> *const c_char {
+        TESForm::get_name(self.as_ref())
     }
 
     fn get_name_as_str(&self) -> &str {
-        self.as_ref().get_name_as_str()
+        TESForm::get_name_as_str(self.as_ref())
+    }
+
+    fn get_description_owner_file(&self) -> *mut TESFile {
+        TESForm::get_description_owner_file(self.as_ref())
+    }
+
+    fn get_playable(&self) -> bool {
+        TESForm::get_playable(self.as_ref())
+    }
+
+    fn get_object_type_name(&self) -> *const c_char {
+        TESForm::get_object_type_name(self.as_ref())
     }
 
     fn player_knows(&self) -> bool {
-        self.as_ref().player_knows()
-    }
-
-    fn is(&self, form_type: FormType) -> bool {
-        self.as_ref().is(form_type)
+        TESForm::player_knows(self.as_ref())
     }
 
     fn is_deleted(&self) -> bool {
-        self.as_ref().is_deleted()
+        TESForm::is_deleted(self.as_ref())
     }
 
     fn has_world_model(&self) -> bool {
-        self.as_ref().has_world_model()
+        TESForm::has_world_model(self.as_ref())
     }
 
     fn is_inventory_object(&self) -> bool {
-        self.as_ref().is_inventory_object()
+        TESForm::is_inventory_object(self.as_ref())
+    }
+
+    fn is(&self, form_type: FormType) -> bool {
+        TESForm::is(self.as_ref(), form_type)
     }
 
     fn can_cast<U>(&self) -> bool
     where
         U: FormCastable + RttiType,
     {
-        self.as_ref().can_cast::<U>()
+        TESForm::can_cast::<U>(self.as_ref())
     }
 
     fn cast_const<U>(&self) -> *const U
     where
         U: FormCastable + RttiType,
     {
-        self.as_ref().cast_const::<U>()
+        TESForm::cast_const::<U>(self.as_ref())
     }
 
     fn try_cast<U>(&self) -> Option<&U>
     where
         U: FormCastable + RttiType,
     {
-        self.as_ref().try_cast::<U>()
+        TESForm::try_cast::<U>(self.as_ref())
     }
 
     fn cast_raw<U>(&mut self) -> *mut U
     where
         U: FormCastable + RttiType,
     {
-        self.as_mut().cast_raw::<U>()
+        TESForm::cast_raw::<U>(self.as_mut())
     }
 
     fn try_cast_mut<U>(&mut self) -> Option<&mut U>
     where
         U: FormCastable + RttiType,
     {
-        self.as_mut().try_cast_mut::<U>()
+        TESForm::try_cast_mut::<U>(self.as_mut())
     }
 
     fn get_weight(&self) -> f32 {
         TESForm::get_weight(self.as_ref())
     }
 
-    fn set_player_knows(&self, known: bool) {
-        TESForm::set_player_knows(self.as_ref(), known)
+    fn has_keyword_in_array(&self, keywords: &[*mut BGSKeyword], match_all: bool) -> bool {
+        TESForm::has_keyword_in_array(self.as_ref(), keywords, match_all)
+    }
+
+    fn has_keyword_by_editor_id(&self, editor_id: &str) -> bool {
+        TESForm::has_keyword_by_editor_id(self.as_ref(), editor_id)
+    }
+
+    fn has_any_keyword_by_editor_id(&self, editor_ids: &[&str]) -> bool {
+        TESForm::has_any_keyword_by_editor_id(self.as_ref(), editor_ids)
+    }
+
+    fn has_keyword_in_list(&self, keyword_list: *mut BGSListForm, match_all: bool) -> bool {
+        TESForm::has_keyword_in_list(self.as_ref(), keyword_list, match_all)
+    }
+
+    fn has_vmad(&self) -> bool {
+        TESForm::has_vmad(self.as_ref())
+    }
+
+    fn set_file(&mut self, file: *mut TESFile) {
+        TESForm::set_file(self.as_mut(), file)
+    }
+
+    fn set_player_knows(&mut self, known: bool) {
+        TESForm::set_player_knows(self.as_mut(), known)
     }
 
     fn get_form_editor_id_as_str(&self) -> &str {
-        self.as_ref().get_form_editor_id_as_str()
+        TESForm::get_form_editor_id_as_str(self.as_ref())
     }
 
     fn get_object_type_name_as_str(&self) -> &str {
-        self.as_ref().get_object_type_name_as_str()
+        TESForm::get_object_type_name_as_str(self.as_ref())
     }
 
     fn initialize_data(&mut self) {
-        self.as_mut().initialize_data()
+        TESForm::initialize_data(self.as_mut())
     }
 
     fn clear_data(&mut self) {
-        self.as_mut().clear_data()
+        TESForm::clear_data(self.as_mut())
     }
 
     fn load(&mut self, mod_file: *mut TESFile) -> bool {
-        self.as_mut().load(mod_file)
+        TESForm::load(self.as_mut(), mod_file)
     }
 
     fn save_game(&mut self, buf: *mut BGSSaveFormBuffer) {
-        self.as_mut().save_game(buf)
+        TESForm::save_game(self.as_mut(), buf)
     }
 
     fn load_game(&mut self, buf: *mut BGSLoadFormBuffer) {
-        self.as_mut().load_game(buf)
+        TESForm::load_game(self.as_mut(), buf)
+    }
+
+    fn copy(&mut self, src_form: *mut TESForm) {
+        TESForm::copy(self.as_mut(), src_form)
     }
 
     fn activate(
@@ -1122,8 +1231,14 @@ impl<T: AsRef<TESForm> + AsMut<TESForm>> TESFormExt for T {
         object: *mut TESBoundObject,
         target_count: i32,
     ) -> bool {
-        self.as_mut()
-            .activate(target_ref, activator_ref, arg3, object, target_count)
+        TESForm::activate(
+            self.as_mut(),
+            target_ref,
+            activator_ref,
+            arg3,
+            object,
+            target_count,
+        )
     }
 }
 

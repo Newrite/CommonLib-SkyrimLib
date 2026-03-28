@@ -105,7 +105,22 @@ impl BGSDestructibleObjectForm {
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
+    }
+
+    virtual_method! {
+        pub const VFUNC_INITIALIZE_DATA_COMPONENT: usize = 0x01;
+        pub fn initialize_data_component(&mut self)
+    }
+
+    virtual_method! {
+        pub const VFUNC_CLEAR_DATA_COMPONENT: usize = 0x02;
+        pub fn clear_data_component(&mut self)
+    }
+
+    virtual_method! {
+        pub const VFUNC_COPY_COMPONENT: usize = 0x03;
+        pub fn copy_component(&mut self, rhs: *mut BaseFormComponent)
     }
 
     #[inline(always)]
@@ -117,15 +132,13 @@ impl BGSDestructibleObjectForm {
     pub const fn has_destructible_data(&self) -> bool {
         !self.data.is_null()
     }
-
-    // override (BaseFormComponent)
-    // void InitializeDataComponent() override;                // 01
-    // void ClearDataComponent() override;                     // 02
-    // void CopyComponent(BaseFormComponent* a_rhs) override;  // 03
 }
 
 pub trait BGSDestructibleObjectFormExt {
     fn dtor(&mut self);
+    fn initialize_data_component(&mut self);
+    fn clear_data_component(&mut self);
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_destructible_data_ptr(&self) -> *mut DestructibleObjectData;
     fn has_destructible_data(&self) -> bool;
 }
@@ -134,7 +147,19 @@ impl<T: AsRef<BGSDestructibleObjectForm> + AsMut<BGSDestructibleObjectForm>>
     BGSDestructibleObjectFormExt for T
 {
     fn dtor(&mut self) {
-        self.as_mut().dtor()
+        BGSDestructibleObjectForm::dtor(self.as_mut())
+    }
+
+    fn initialize_data_component(&mut self) {
+        BGSDestructibleObjectForm::initialize_data_component(self.as_mut())
+    }
+
+    fn clear_data_component(&mut self) {
+        BGSDestructibleObjectForm::clear_data_component(self.as_mut())
+    }
+
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent) {
+        BGSDestructibleObjectForm::copy_component(self.as_mut(), rhs)
     }
 
     fn get_destructible_data_ptr(&self) -> *mut DestructibleObjectData {

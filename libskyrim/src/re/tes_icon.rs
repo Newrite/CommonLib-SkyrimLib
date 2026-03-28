@@ -23,16 +23,26 @@ impl TESIcon {
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESTexture;
 
     virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+
+    virtual_method! {
         pub const GET_DEFAULT_PATH: usize = 0x06;
         pub fn get_default_path() -> *const core::ffi::c_char
     }
 }
 
 pub trait TESIconExt {
+    fn dtor(&mut self);
     fn get_default_path(&self) -> *const core::ffi::c_char;
 }
 
-impl<T: AsRef<TESIcon>> TESIconExt for T {
+impl<T: AsRef<TESIcon> + AsMut<TESIcon>> TESIconExt for T {
+    fn dtor(&mut self) {
+        TESIcon::dtor(self.as_mut())
+    }
+
     fn get_default_path(&self) -> *const core::ffi::c_char {
         self.as_ref().get_default_path()
     }

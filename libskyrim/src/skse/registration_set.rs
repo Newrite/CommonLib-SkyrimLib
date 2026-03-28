@@ -10,6 +10,7 @@ use crate::re::{
 use crate::sdk::core::GameRef;
 
 use super::SerializationInterface;
+use super::registration_arguments::{RegistrationEventArgs, with_vm};
 
 fn get_handle_policy() -> *mut IObjectHandlePolicy {
     let skyrim_vm = SkyrimVM::get_singleton();
@@ -294,11 +295,6 @@ impl RegistrationSetBase {
 }
 
 /// Rust-side port of `SKSE::RegistrationSet<Args...>`.
-///
-/// TODO: Add typed `send_event(...)` / `queue_event(...)` parity once libskyrim
-/// exposes source-backed `MakeFunctionArguments` / `VMArg` construction for
-/// arbitrary Papyrus-convertible argument packs. CommonLib creates a fresh
-/// argument object per handle, so a shared raw-pointer helper would be dishonest.
 pub struct RegistrationSet<Args = ()> {
     base: RegistrationSetBase,
     _marker: PhantomData<fn() -> Args>,
@@ -418,5 +414,40 @@ impl<Args> RegistrationSet<Args> {
         for &handle in self.base.handles() {
             f(handle);
         }
+    }
+
+    /// Sends a Papyrus event to all currently registered handles.
+    ///
+    /// `Args` is modeled as a Rust tuple pack. For example:
+    /// `RegistrationSet<(i32, bool)>` expects `send_event((42, true))`.
+    #[inline(always)]
+    pub fn send_event(&self, args: Args)
+    where
+        Args: RegistrationEventArgs,
+    {
+        let event_name = self.base.event_name_fixed();
+        let handles = self.base.handles();
+        let _ = with_vm(|vm| {
+            for &handle in handles {
+                let Some(arguments) = args.to_function_arguments(vm) else {
+                    continue;
+                };
+                vm.base.send_event(handle, &event_name, arguments.as_ptr());
+            }
+        });
+    }
+
+    /// Queues a Papyrus event dispatch on the SKSE task interface.
+    ///
+    /// The task queue may outlive the current stack frame, so this requires a
+    /// long-lived registration container reference.
+    #[inline(always)]
+    pub fn queue_event(&'static self, args: Args)
+    where
+        Args: RegistrationEventArgs + Send + 'static,
+    {
+        super::task::add_task(move || {
+            self.send_event(args);
+        });
     }
 }

@@ -12,6 +12,7 @@ use crate::re::bst_array::BSTArray;
 use crate::re::bst_hash_map::BSTSet;
 use crate::re::bst_smart_pointer::BSTSmartPointer;
 use crate::re::extra_data_list::ExtraDataList;
+use crate::re::form::{Form, FormGroup};
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
 use crate::re::ni_av_object::NiAVObject;
@@ -19,10 +20,12 @@ use crate::re::ni_matrix3::NiMatrix3;
 use crate::re::ni_point3::NiPoint3;
 use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::ni_t_map::NiTMap;
+use crate::re::ni_t_pointer_map::NiTPointerMap;
 use crate::re::{
-    BGSEncounterZone, BGSLightingTemplate, BGSLocation, BSPortalGraph, BSTempEffectParticle, Color,
-    ExtraNorthRotation, INTERIOR_DATA, NavMesh, ObjectRefHandle, TESFaction, TESForm, TESFullName,
-    TESNPC, TESObjectLAND, TESObjectREFR, TESRegionList, TESWorldSpace, bhkWorld,
+    BGSEncounterZone, BGSLightingTemplate, BGSLoadFormBuffer, BGSLocation, BGSSaveFormBuffer,
+    BSPortalGraph, BSTempEffectParticle, Color, ExtraNorthRotation, INTERIOR_DATA, NavMesh,
+    ObjectRefHandle, TESFaction, TESFile, TESForm, TESFullName, TESNPC, TESObjectLAND,
+    TESObjectREFR, TESRegionList, TESWorldSpace, bhkWorld,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset};
 
@@ -294,22 +297,90 @@ impl TESObjectCELL {
     pub const RUNTIME_DATA_OFFSET: VariantOffset = VariantOffset::new(0x60, 0x68, 0x60);
 
     // override (TESForm)
-    // void        ClearData() override;                                                                               // 05
-    // bool        Load(TESFile* a_mod) override;                                                                      // 06
-    // TESForm*    CreateDuplicateForm(bool a_createEditorID, NiTPointerMap<TESForm*, TESForm*>* a_copyMap) override; // 09
-    // bool        FindInFileFast(TESFile* a_mod) override;                                                            // 0C
-    // void        SaveGame(BGSSaveFormBuffer* a_buf) override;                                                        // 0E
-    // void        LoadGame(BGSLoadFormBuffer* a_buf) override;                                                        // 0F
-    // void        Revert(BGSLoadFormBuffer* a_buf) override;                                                          // 12
-    // void        InitItemImpl() override;                                                                            // 13
-    // void        GetFormDetailedString(char* a_buf, std::uint32_t a_bufLen) override;                                // 16
-    // void        SetAltered(bool a_set) override;                                                                    // 24
-    // bool        BelongsInGroup(FORM* a_form, bool a_allowParentGroups, bool a_currentOnly) override;                // 30
-    // void        CreateGroupData(FORM* a_form, FORM_GROUP* a_group) override;                                        // 31
-    // const char* GetFormEditorID() const override;                                                                   // 32
-    // bool        SetFormEditorID(const char* a_str) override;                                                        // 33
-    // bool        IsParentForm() override;                                                                            // 34
-    // bool        IsFormTypeChild(FormType a_type) override;                                                          // 36
+    crate::virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CLEAR_DATA: usize = 0x05;
+        pub fn clear_data(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_LOAD: usize = 0x06;
+        pub fn load(&mut self, mod_: *mut TESFile) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CREATE_DUPLICATE_FORM: usize = 0x09;
+        pub fn create_duplicate_form(&mut self, create_editor_id: bool, copy_map: *mut NiTPointerMap) -> *mut TESForm
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_FIND_IN_FILE_FAST: usize = 0x0C;
+        pub fn find_in_file_fast(&mut self, mod_: *mut TESFile) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SAVE_GAME: usize = 0x0E;
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_LOAD_GAME: usize = 0x0F;
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_REVERT: usize = 0x12;
+        pub fn revert(&mut self, buf: *mut BGSLoadFormBuffer)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
+        pub fn init_item_impl(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_FORM_DETAILED_STRING: usize = 0x16;
+        pub fn get_form_detailed_string(&mut self, buf: *mut c_char, buf_len: u32)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_ALTERED: usize = 0x24;
+        pub fn set_altered(&mut self, set: bool)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_BELONGS_IN_GROUP: usize = 0x30;
+        pub fn belongs_in_group(&mut self, form: *mut Form, allow_parent_groups: bool, current_only: bool) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CREATE_GROUP_DATA: usize = 0x31;
+        pub fn create_group_data(&mut self, form: *mut Form, group: *mut FormGroup)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_FORM_EDITOR_ID: usize = 0x32;
+        pub fn get_form_editor_id() -> *const c_char
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_FORM_EDITOR_ID: usize = 0x33;
+        pub fn set_form_editor_id(&mut self, str: *const c_char) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_IS_PARENT_FORM: usize = 0x34;
+        pub fn is_parent_form(&mut self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_IS_FORM_TYPE_CHILD: usize = 0x36;
+        pub fn is_form_type_child(&mut self, form_type: FormType) -> bool
+    }
 
     crate::runtime_data_ptr_accessor! {
         fn runtime_data_ptr() -> TESObjectCELLRuntimeData {

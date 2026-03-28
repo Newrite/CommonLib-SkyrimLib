@@ -3,17 +3,13 @@ use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_TESObjectACTI;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectACTI;
-use crate::re::bgs_destructible_object_form::BGSDestructibleObjectForm;
-use crate::re::bgs_keyword_form::BGSKeywordForm;
-use crate::re::bgs_open_close_form::BGSOpenCloseForm;
-use crate::re::bgs_sound_descriptor_form::BGSSoundDescriptorForm;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
-use crate::re::tes_bound_anim_object::TESBoundAnimObject;
-use crate::re::tes_full_name::TESFullName;
-use crate::re::tes_magic_target_form::TESMagicTargetForm;
-use crate::re::tes_model_texture_swap::TESModelTextureSwap;
-use crate::re::tes_water_form::TESWaterForm;
+use crate::re::{
+    Actor, BGSDestructibleObjectForm, BGSKeywordForm, BGSLoadFormBuffer, BGSOpenCloseForm,
+    BGSSaveFormBuffer, BGSSoundDescriptorForm, BSString, TESBoundAnimObject, TESBoundObject,
+    TESFile, TESFullName, TESMagicTargetForm, TESModelTextureSwap, TESObjectREFR, TESWaterForm,
+};
 use crate::relocation::{RttiType, VariantID};
 
 bitflags! {
@@ -78,6 +74,8 @@ const _: () = assert!(core::mem::offset_of!(TESObjectACTI, sound_loop) == 0xA8);
 const _: () = assert!(core::mem::offset_of!(TESObjectACTI, sound_activate) == 0xB0);
 const _: () = assert!(core::mem::offset_of!(TESObjectACTI, water_form) == 0xB8);
 const _: () = assert!(core::mem::offset_of!(TESObjectACTI, flags) == 0xC0);
+const _: () = assert!(core::mem::offset_of!(TESObjectACTI, padc2) == 0xC2);
+const _: () = assert!(core::mem::offset_of!(TESObjectACTI, padc4) == 0xC4);
 
 impl RttiType for TESObjectACTI {
     const RTTI: VariantID = RTTI_TESObjectACTI;
@@ -122,6 +120,36 @@ impl TESObjectACTI {
         pub fn dtor()
     }
 
+    crate::virtual_method! {
+        pub const VFUNC_INITIALIZE_DATA: usize = 0x04;
+        pub fn initialize_data()
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CLEAR_DATA: usize = 0x05;
+        pub fn clear_data()
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_LOAD: usize = 0x06;
+        pub fn load(mod_: *mut TESFile) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SAVE_GAME: usize = 0x0E;
+        pub fn save_game(buf: *mut BGSSaveFormBuffer)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_LOAD_GAME: usize = 0x0F;
+        pub fn load_game(buf: *mut BGSLoadFormBuffer)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
+        pub fn init_item_impl()
+    }
+
     #[inline(always)]
     pub const fn get_sound_loop(&self) -> *mut BGSSoundDescriptorForm {
         self.sound_loop
@@ -137,71 +165,151 @@ impl TESObjectACTI {
         self.water_form
     }
 
-    #[inline(always)]
-    pub const fn get_water_type(&self) -> *mut TESWaterForm {
-        self.water_form
+    crate::virtual_method! {
+        pub const VFUNC_GET_IGNORED_BY_SANDBOX: usize = 0x22;
+        pub fn get_ignored_by_sandbox(&self) -> bool
     }
 
-    #[inline(always)]
-    pub fn get_ignored_by_sandbox(&self) -> bool {
-        self.flags.contains(TESObjectACTIFlags::IGNORED_BY_SANDBOX)
+    crate::virtual_method! {
+        pub const VFUNC_IS_WATER: usize = 0x2A;
+        pub fn is_water(&self) -> bool
     }
 
-    #[inline(always)]
-    pub fn is_water(&self) -> bool {
-        !self.water_form.is_null()
+    crate::virtual_method! {
+        pub const VFUNC_ACTIVATE: usize = 0x37;
+        pub fn activate(target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool
     }
 
-    // void          InitializeData() override;                                                                // 04
-    // void          ClearData() override;                                                                     // 05
-    // bool          Load(TESFile* a_mod) override;                                                            // 06
-    // void          SaveGame(BGSSaveFormBuffer* a_buf) override;                                              // 0E
-    // void          LoadGame(BGSLoadFormBuffer* a_buf) override;                                              // 0F
-    // void          InitItemImpl() override;                                                                  // 13
-    // bool          GetIgnoredBySandbox() const override;                                                     // 22
-    // bool          IsWater() const override;                                                                 // 2A
-    // bool          Activate(...) override;                                                                   // 37
-    // TESWaterForm* GetWaterType() const override;                                                            // 3D
-    // bool          GetActivateText(TESObjectREFR* a_activator, BSString& a_dst) override;                   // 4C
-    // bool          CalculateDoFavor(Actor* a_activator, bool a_arg2, TESObjectREFR* a_toActivate, float) override;  // 4D
+    crate::virtual_method! {
+        pub const VFUNC_GET_WATER_TYPE: usize = 0x3D;
+        pub fn get_water_type(&self) -> *mut TESWaterForm
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_ACTIVATE_TEXT: usize = 0x4C;
+        pub fn get_activate_text(activator: *mut TESObjectREFR, dst: *mut BSString) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CALCULATE_DO_FAVOR: usize = 0x4D;
+        pub fn calculate_do_favor(activator: *mut Actor, arg2: bool, to_activate: *mut TESObjectREFR, arg3: f32) -> bool
+    }
 }
 
 pub trait TESObjectACTIExt {
     fn dtor(&mut self);
+    fn initialize_data(&mut self);
+    fn clear_data(&mut self);
+    fn load(&mut self, mod_: *mut TESFile) -> bool;
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer);
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer);
+    fn init_item_impl(&mut self);
     fn get_sound_loop(&self) -> *mut BGSSoundDescriptorForm;
     fn get_sound_activate(&self) -> *mut BGSSoundDescriptorForm;
     fn get_water_form(&self) -> *mut TESWaterForm;
     fn get_water_type(&self) -> *mut TESWaterForm;
     fn get_ignored_by_sandbox(&self) -> bool;
     fn is_water(&self) -> bool;
+    fn activate(
+        &mut self,
+        target_ref: *mut TESObjectREFR,
+        activator_ref: *mut TESObjectREFR,
+        arg3: u8,
+        object: *mut TESBoundObject,
+        target_count: i32,
+    ) -> bool;
+    fn get_activate_text(&self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool;
+    fn calculate_do_favor(
+        &self,
+        activator: *mut Actor,
+        arg2: bool,
+        to_activate: *mut TESObjectREFR,
+        arg3: f32,
+    ) -> bool;
 }
 
 impl<T: AsRef<TESObjectACTI> + AsMut<TESObjectACTI>> TESObjectACTIExt for T {
     fn dtor(&mut self) {
-        self.as_mut().dtor()
+        TESObjectACTI::dtor(self.as_mut())
+    }
+
+    fn initialize_data(&mut self) {
+        TESObjectACTI::initialize_data(self.as_mut())
+    }
+
+    fn clear_data(&mut self) {
+        TESObjectACTI::clear_data(self.as_mut())
+    }
+
+    fn load(&mut self, mod_: *mut TESFile) -> bool {
+        TESObjectACTI::load(self.as_mut(), mod_)
+    }
+
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer) {
+        TESObjectACTI::save_game(self.as_mut(), buf)
+    }
+
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer) {
+        TESObjectACTI::load_game(self.as_mut(), buf)
+    }
+
+    fn init_item_impl(&mut self) {
+        TESObjectACTI::init_item_impl(self.as_mut())
     }
 
     fn get_sound_loop(&self) -> *mut BGSSoundDescriptorForm {
-        self.as_ref().get_sound_loop()
+        TESObjectACTI::get_sound_loop(self.as_ref())
     }
 
     fn get_sound_activate(&self) -> *mut BGSSoundDescriptorForm {
-        self.as_ref().get_sound_activate()
+        TESObjectACTI::get_sound_activate(self.as_ref())
     }
 
     fn get_water_form(&self) -> *mut TESWaterForm {
-        self.as_ref().get_water_form()
+        TESObjectACTI::get_water_form(self.as_ref())
     }
 
     fn get_water_type(&self) -> *mut TESWaterForm {
-        self.as_ref().get_water_type()
+        TESObjectACTI::get_water_type(self.as_ref())
     }
 
     fn get_ignored_by_sandbox(&self) -> bool {
-        self.as_ref().get_ignored_by_sandbox()
+        TESObjectACTI::get_ignored_by_sandbox(self.as_ref())
     }
 
     fn is_water(&self) -> bool {
-        self.as_ref().is_water()
+        TESObjectACTI::is_water(self.as_ref())
+    }
+
+    fn activate(
+        &mut self,
+        target_ref: *mut TESObjectREFR,
+        activator_ref: *mut TESObjectREFR,
+        arg3: u8,
+        object: *mut TESBoundObject,
+        target_count: i32,
+    ) -> bool {
+        TESObjectACTI::activate(
+            self.as_mut(),
+            target_ref,
+            activator_ref,
+            arg3,
+            object,
+            target_count,
+        )
+    }
+
+    fn get_activate_text(&self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool {
+        TESObjectACTI::get_activate_text(self.as_ref(), activator, dst)
+    }
+
+    fn calculate_do_favor(
+        &self,
+        activator: *mut Actor,
+        arg2: bool,
+        to_activate: *mut TESObjectREFR,
+        arg3: f32,
+    ) -> bool {
+        TESObjectACTI::calculate_do_favor(self.as_ref(), activator, arg2, to_activate, arg3)
     }
 }

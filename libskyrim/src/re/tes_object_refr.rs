@@ -9,24 +9,27 @@ use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_TESObjectREFR;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectREFR;
 use crate::re::bgs_default_object_manager::BGSDefaultObjectManager;
+use crate::re::item_remove_reason::ITEM_REMOVE_REASON;
 use crate::re::magic_system::CastingSource;
 use crate::re::ni_av_object::NiAVObjectExt;
 use crate::re::ni_object::NiObjectExt;
 use crate::re::tes_form::RecordFlags as TESFormRecordFlags;
 use crate::re::{
-    Actor, ActorCause, BGSAnimationSequencer, BGSArtObject, BGSDecalGroup, BGSEncounterZone,
-    BGSKeyword, BGSListForm, BGSLocation, BGSScene, BGSWorldLocation, BIPED_OBJECT,
-    BSAnimationGraphEvent, BSContainerForEachResult, BSEventNotifyControl, BSFixedString,
+    Actor, ActorCause, BGSAnimationSequencer, BGSArtObject, BGSDecalGroup, BGSDialogueBranch,
+    BGSEncounterZone, BGSKeyword, BGSListForm, BGSLocation, BGSScene, BGSWorldLocation,
+    BIPED_OBJECT, BSAnimationGraphEvent, BSAnimationUpdateData, BSContainerForEachResult,
+    BSEventNotifyControl, BSFaceGenAnimationData, BSFaceGenNiNode, BSFixedString,
     BSHandleRefObject, BSTEventSink, BSTEventSource, BSTSmallArray, BSTSmartPointer, BipedAnim,
-    DoorTeleportData, EnchantmentItem, Explosion, ExtraCharge, ExtraContainerChanges,
-    ExtraDataList, ExtraDataType, ExtraDroppedItemList, ExtraEnchantment, ExtraFlags,
-    ExtraFlagsFlag, ExtraOwnership, ExtraPersistentCell, ExtraTextDisplayData, FormCastable,
-    FormType, IAnimationGraphManagerHolder, InventoryChanges, InventoryEntryData, LOCK_LEVEL,
-    MagicCaster, ModelReferenceEffect, NavMeshArray, NiAVObject, NiControllerManager,
-    NiControllerSequence, NiNode, NiPoint3, NiPointer, NiRef, NiTransform, ObjectRefHandle,
-    Projectile, REFR_LOCK, RefHandle, ShaderReferenceEffect, TESAmmo, TESBoundObject, TESContainer,
-    TESDataHandler, TESEffectShader, TESEnchantableForm, TESForm, TESNPC, TESObjectCELL,
-    TESWaterForm, TESWorldSpace, hkVector4, hkpCollidable, hkpMotionMotionType,
+    DialogueResponse, DoorTeleportData, EnchantmentItem, Explosion, ExtraCharge,
+    ExtraContainerChanges, ExtraDataList, ExtraDataType, ExtraDroppedItemList, ExtraEnchantment,
+    ExtraFlags, ExtraFlagsFlag, ExtraOwnership, ExtraPersistentCell, ExtraTextDisplayData,
+    FormCastable, FormType, IAnimationGraphManagerHolder, InventoryChanges, InventoryEntryData,
+    LOCK_LEVEL, MagicCaster, MagicTarget, ModelReferenceEffect, NavMeshArray, NiAVObject,
+    NiControllerManager, NiControllerSequence, NiNode, NiPoint3, NiPointer, NiRef, NiTransform,
+    ObjectRefHandle, Projectile, REFR_LOCK, RefHandle, ShaderReferenceEffect, TESActorBase,
+    TESAmmo, TESBoundObject, TESContainer, TESDataHandler, TESEffectShader, TESEnchantableForm,
+    TESForm, TESNPC, TESObjectCELL, TESPackage, TESTopicInfo, TESWaterForm, TESWorldSpace,
+    hkVector4, hkpCollidable, hkpMotionMotionType,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset, skyrim_cast};
 
@@ -349,13 +352,19 @@ impl TESObjectREFR {
     }
 
     crate::virtual_method! {
+        pub const VFUNC_PREDESTROY: usize = 0x3B;
+        pub fn predestroy(&mut self)
+    }
+
+    crate::virtual_method! {
         pub const VFUNC_GET_EDITOR_LOCATION1: usize = 0x3C;
-        pub fn get_editor_location1() -> *mut BGSLocation
+        pub fn get_editor_location1(&self) -> *mut BGSLocation
     }
 
     crate::virtual_method! {
         pub const VFUNC_GET_EDITOR_LOCATION2: usize = 0x3D;
         pub fn get_editor_location2(
+            &mut self,
             out_pos: &mut NiPoint3,
             out_rot: &mut NiPoint3,
             out_world_or_cell: &mut *mut TESForm,
@@ -364,73 +373,350 @@ impl TESObjectREFR {
     }
 
     crate::virtual_method! {
+        pub const VFUNC_FORCE_EDITOR_LOCATION: usize = 0x3E;
+        pub fn force_editor_location(&mut self, location: *mut BGSLocation)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UPDATE_3D_POSITION: usize = 0x3F;
+        pub fn update_3d_position(&mut self, warp: bool)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UPDATE_SOUND_CALLBACK: usize = 0x40;
+        pub fn update_sound_callback(&mut self, end_scene_action: bool)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_DIALOGUE_WITH_PLAYER: usize = 0x41;
+        pub fn set_dialogue_with_player(
+            &mut self,
+            flag: bool,
+            force_greet: bool,
+            topic: *mut TESTopicInfo
+        ) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_DAMAGE_OBJECT: usize = 0x42;
+        pub fn damage_object(&mut self, object_health: f32, arg3: bool)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_FULL_LOD_REF: usize = 0x43;
+        pub fn get_full_lod_ref(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_FULL_LOD_REF: usize = 0x44;
+        pub fn set_full_lod_ref(&mut self, set: bool)
+    }
+
+    crate::virtual_method! {
         pub const VFUNC_GET_SEQUENCER: usize = 0x45;
-        pub fn get_sequencer() -> *mut BGSAnimationSequencer
+        pub fn get_sequencer(&self) -> *mut BGSAnimationSequencer
     }
 
     crate::virtual_method! {
-        pub const VFUNC_GET_CURRENT_SCENE: usize = 0x4A;
-        pub fn get_current_scene() -> *mut BGSScene
+        pub const VFUNC_Q_CAN_UPDATE_SYNC: usize = 0x46;
+        pub fn q_can_update_sync(&self) -> bool
     }
 
     crate::virtual_method! {
-        pub const VFUNC_SET_CURRENT_SCENE: usize = 0x4B;
-        pub fn set_current_scene(scene: *mut BGSScene)
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_STOP_CURRENT_DIALOGUE: usize = 0x4F;
-        pub fn stop_current_dialogue()
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_SET_ACTOR_CAUSE: usize = 0x50;
-        pub fn set_actor_cause(cause: *mut ActorCause)
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_ACTOR_CAUSE: usize = 0x51;
-        pub fn get_actor_cause() -> *mut ActorCause
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_MAGIC_CASTER: usize = 0x5C;
-        pub fn get_magic_caster(source: CastingSource) -> *mut MagicCaster
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_STARTING_ANGLE: usize = 0x52;
-        pub fn get_starting_angle() -> NiPoint3
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_STARTING_LOCATION: usize = 0x53;
-        pub fn get_starting_location() -> NiPoint3
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_3D1: usize = 0x6F;
-        pub fn get_3d1(first_person: bool) -> *mut NiAVObject
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_3D2: usize = 0x70;
-        pub fn get_3d2() -> *mut NiAVObject
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_BOUND_MIN: usize = 0x73;
-        pub fn get_bound_min() -> NiPoint3
-    }
-
-    crate::virtual_method! {
-        pub const VFUNC_GET_BOUND_MAX: usize = 0x74;
-        pub fn get_bound_max() -> NiPoint3
+        pub const VFUNC_GET_ALLOW_PROMOTE_TO_PERSISTENT: usize = 0x47;
+        pub fn get_allow_promote_to_persistent(&self) -> bool
     }
 
     crate::virtual_method! {
         pub const VFUNC_HAS_KEYWORD_HELPER: usize = 0x48;
-        pub fn has_keyword_helper(keyword: *const BGSKeyword) -> bool
+        pub fn has_keyword_helper(&self, keyword: *const BGSKeyword) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CHECK_FOR_CURRENT_ALIAS_PACKAGE: usize = 0x49;
+        pub fn check_for_current_alias_package(&mut self) -> *mut TESPackage
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_CURRENT_SCENE: usize = 0x4A;
+        pub fn get_current_scene(&self) -> *mut BGSScene
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_CURRENT_SCENE: usize = 0x4B;
+        pub fn set_current_scene(&mut self, scene: *mut BGSScene)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UPDATE_IN_DIALOGUE: usize = 0x4C;
+        pub fn update_in_dialogue(&mut self, response: *mut DialogueResponse, unused: bool) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_EXCLUSIVE_BRANCH: usize = 0x4D;
+        pub fn get_exclusive_branch(&self) -> *mut BGSDialogueBranch
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_EXCLUSIVE_BRANCH: usize = 0x4E;
+        pub fn set_exclusive_branch(&mut self, branch: *mut BGSDialogueBranch)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_STOP_CURRENT_DIALOGUE: usize = 0x4F;
+        pub fn stop_current_dialogue(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_ACTOR_CAUSE: usize = 0x50;
+        pub fn set_actor_cause(&mut self, cause: *mut ActorCause)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_ACTOR_CAUSE: usize = 0x51;
+        pub fn get_actor_cause(&self) -> *mut ActorCause
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_STARTING_ANGLE: usize = 0x52;
+        pub fn get_starting_angle(&self) -> NiPoint3
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_STARTING_LOCATION: usize = 0x53;
+        pub fn get_starting_location(&self) -> NiPoint3
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_STARTING_POSITION: usize = 0x54;
+        pub fn set_starting_position(&mut self, pos: &NiPoint3)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UPDATE_REF_LIGHT: usize = 0x55;
+        pub fn update_ref_light(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_REMOVE_ITEM: usize = 0x56;
+        pub fn remove_item(
+            &mut self,
+            item: *mut TESBoundObject,
+            count: i32,
+            reason: ITEM_REMOVE_REASON,
+            extra_list: *mut ExtraDataList,
+            move_to_ref: *mut TESObjectREFR,
+            drop_loc: *const NiPoint3,
+            rotate: *const NiPoint3
+        ) -> ObjectRefHandle
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_ADD_WORN_ITEM: usize = 0x57;
+        pub fn add_worn_item(
+            &mut self,
+            item: *mut TESBoundObject,
+            count: i32,
+            force_equip: bool,
+            arg4: u32,
+            arg5: u32
+        ) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_DO_TRAP1: usize = 0x58;
+        pub fn do_trap1(&mut self, data: &mut TrapData)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_DO_TRAP2: usize = 0x59;
+        pub fn do_trap2(&mut self, trap: *mut TrapEntry, target: *mut TargetEntry)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_ADD_OBJECT_TO_CONTAINER: usize = 0x5A;
+        pub fn add_object_to_container(
+            &mut self,
+            object: *mut TESBoundObject,
+            extra_list: *mut ExtraDataList,
+            count: i32,
+            from_refr: *mut TESObjectREFR
+        )
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_LOOKING_AT_LOCATION: usize = 0x5B;
+        pub fn get_looking_at_location(&self) -> NiPoint3
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_MAGIC_CASTER: usize = 0x5C;
+        pub fn get_magic_caster(&mut self, source: CastingSource) -> *mut MagicCaster
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_MAGIC_TARGET: usize = 0x5D;
+        pub fn get_magic_target(&mut self) -> *mut MagicTarget
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_IS_CHILD: usize = 0x5E;
+        pub fn is_child(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_TEMPLATE_ACTOR_BASE: usize = 0x5F;
+        pub fn get_template_actor_base(&mut self) -> *mut TESActorBase
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_TEMPLATE_ACTOR_BASE: usize = 0x60;
+        pub fn set_template_actor_base(&mut self, template: *mut TESActorBase)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_FACE_NODE_SKINNED: usize = 0x61;
+        pub fn get_face_node_skinned(&mut self) -> *mut BSFaceGenNiNode
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_FACE_NODE: usize = 0x62;
+        pub fn get_face_node(&mut self) -> *mut BSFaceGenNiNode
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_FACE_GEN_ANIMATION_DATA: usize = 0x63;
+        pub fn get_face_gen_animation_data(&mut self) -> *mut BSFaceGenAnimationData
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CLAMP_TO_GROUND: usize = 0x64;
+        pub fn clamp_to_ground(&mut self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_DETACH_HAVOK: usize = 0x65;
+        pub fn detach_havok(&mut self, obj_3d: *mut NiAVObject) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INIT_HAVOK: usize = 0x66;
+        pub fn init_havok(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UNK_67: usize = 0x67;
+        pub fn unk_67(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UNK_68: usize = 0x68;
+        pub fn unk_68(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UNK_69: usize = 0x69;
+        pub fn unk_69(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_LOAD_3D: usize = 0x6A;
+        pub fn load_3d(&mut self, background_loading: bool) -> *mut NiAVObject
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_RELEASE_3D_RELATED_DATA: usize = 0x6B;
+        pub fn release_3d_related_data(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SET_3D: usize = 0x6C;
+        pub fn set_3d(&mut self, object: *mut NiAVObject, queue_3d_tasks: bool)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SHOULD_BACKGROUND_CLONE: usize = 0x6D;
+        pub fn should_background_clone(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UNK_6E: usize = 0x6E;
+        pub fn unk_6e(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_3D1: usize = 0x6F;
+        pub fn get_3d1(&self, first_person: bool) -> *mut NiAVObject
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_3D2: usize = 0x70;
+        pub fn get_3d2(&self) -> *mut NiAVObject
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_IS_3RD_PERSON_VISIBLE: usize = 0x71;
+        pub fn is_3rd_person_visible(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_POPULATE_GRAPH_PROJECTS_TO_LOAD: usize = 0x72;
+        pub fn populate_graph_projects_to_load(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_BOUND_MIN: usize = 0x73;
+        pub fn get_bound_min(&self) -> NiPoint3
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_BOUND_MAX: usize = 0x74;
+        pub fn get_bound_max(&self) -> NiPoint3
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UNK_75: usize = 0x75;
+        pub fn unk_75(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INIT_NON_NPC_ANIMATION: usize = 0x76;
+        pub fn init_non_npc_animation(&mut self, node_for_anim: &mut NiNode) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CHECK_AND_FIX_SKIN_AND_BONE_ORDER: usize = 0x77;
+        pub fn check_and_fix_skin_and_bone_order(&mut self, node_to_test: &mut NiNode) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UNK_78: usize = 0x78;
+        pub fn unk_78(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_MODIFY_ANIMATION_UPDATE_DATA: usize = 0x79;
+        pub fn modify_animation_update_data(&mut self, data: &mut BSAnimationUpdateData)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SHOULD_SAVE_ANIMATION_ON_UNLOADING: usize = 0x7A;
+        pub fn should_save_animation_on_unloading(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SHOULD_SAVE_ANIMATION_ON_SAVING: usize = 0x7B;
+        pub fn should_save_animation_on_saving(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SHOULD_PERFORM_REVERT: usize = 0x7C;
+        pub fn should_perform_revert(&self) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_UPDATE_ANIMATION: usize = 0x7D;
+        pub fn update_animation(&mut self, delta: f32)
     }
 
     #[inline(always)]
@@ -456,7 +742,7 @@ impl TESObjectREFR {
 
     crate::virtual_method! {
         pub const VFUNC_SET_BIPED: usize = 0x81;
-        pub fn set_biped(biped: &BSTSmartPointer<BipedAnim>)
+        pub fn set_biped(&mut self, biped: &BSTSmartPointer<BipedAnim>)
     }
 }
 
@@ -724,16 +1010,12 @@ impl TESObjectREFR {
 impl TESObjectREFR {
     #[inline(always)]
     pub fn do_trap_data(&mut self, data: &mut TrapData) {
-        let func: extern "C" fn(*mut Self, *mut TrapData) =
-            unsafe { crate::relocation::virtual_function(self as *mut Self, 0x58) };
-        func(self, data);
+        self.do_trap1(data);
     }
 
     #[inline(always)]
     pub fn do_trap_entry(&mut self, trap: *mut TrapEntry, target: *mut TargetEntry) {
-        let func: extern "C" fn(*mut Self, *mut TrapEntry, *mut TargetEntry) =
-            unsafe { crate::relocation::virtual_function(self as *mut Self, 0x59) };
-        func(self, trap, target);
+        self.do_trap2(trap, target);
     }
 
     #[inline(always)]
@@ -846,7 +1128,7 @@ impl TESObjectREFR {
 
     #[inline(always)]
     pub fn get_editor_location_data(
-        &self,
+        &mut self,
         out_pos: &mut NiPoint3,
         out_rot: &mut NiPoint3,
         out_world_or_cell: &mut *mut TESForm,
@@ -1775,6 +2057,9 @@ impl TESObjectREFR {
 }
 
 impl TESObjectREFR {
+    // TODO: `AttachWeapon` is still omitted here. CommonLib exposes it as a VR-only virtual slot
+    // before `RemoveWeapon`, but the flat-runtime path is non-virtual and no source-backed
+    // relocation/helper body is vendored for a unified cross-runtime wrapper yet.
     crate::relocated_virtual_method! {
         pub const VFUNC_REMOVE_WEAPON: VariantOffset = VariantOffset::new_se_ae(0x82, 0x83);
         pub fn remove_weapon(&mut self, equip_index: BIPED_OBJECT)
@@ -1953,6 +2238,8 @@ impl TESObjectREFR {
 }
 
 pub trait TESObjectREFRExt {
+    fn predestroy(&mut self);
+    fn enable(&mut self, reset_inventory: bool);
     fn get_3d(&self) -> *mut NiAVObject;
     fn get_3d_with_view(&self, first_person: bool) -> *mut NiAVObject;
     fn get_angle(&self) -> NiPoint3;
@@ -1979,7 +2266,7 @@ pub trait TESObjectREFRExt {
     fn get_dropped_inventory(&self) -> TESObjectREFRInventoryDropMap;
     fn get_editor_location(&self) -> *mut BGSLocation;
     fn get_editor_location_data(
-        &self,
+        &mut self,
         out_pos: &mut NiPoint3,
         out_rot: &mut NiPoint3,
         out_world_or_cell: &mut *mut TESForm,
@@ -1988,6 +2275,9 @@ pub trait TESObjectREFRExt {
     fn get_enchantment(&self) -> *mut EnchantmentItem;
     fn get_enchantment_charge(&self) -> Option<f64>;
     fn get_actor_owner(&self) -> *mut TESNPC;
+    fn get_face_node_skinned(&mut self) -> *mut BSFaceGenNiNode;
+    fn get_face_node(&mut self) -> *mut BSFaceGenNiNode;
+    fn get_face_gen_animation_data(&mut self) -> *mut BSFaceGenAnimationData;
     fn get_faction_owner(&self) -> *mut crate::re::TESFaction;
     fn get_handle(&self) -> ObjectRefHandle;
     fn get_heading_angle(&self, pos: &NiPoint3, abs: bool) -> f32;
@@ -1999,13 +2289,18 @@ pub trait TESObjectREFRExt {
     fn get_linked_ref(&self, keyword: *mut BGSKeyword) -> *mut TESObjectREFR;
     fn get_lock(&self) -> *mut REFR_LOCK;
     fn get_lock_level(&self) -> LOCK_LEVEL;
+    fn get_magic_target(&mut self) -> *mut MagicTarget;
     fn get_name(&self) -> *const c_char;
     fn get_node_by_name(&self, node_name: &BSFixedString) -> *mut NiAVObject;
     fn get_object_reference(&self) -> *mut TESBoundObject;
     fn get_owner(&self) -> *mut TESForm;
     fn get_parent_cell(&self) -> *mut TESObjectCELL;
     fn get_position(&self) -> NiPoint3;
+    fn get_current_3d(&self) -> *mut NiAVObject;
+    fn get_current_ammo(&self) -> *mut TESAmmo;
+    fn get_decal_group(&self) -> *mut BGSDecalGroup;
     fn get_scale(&self) -> f32;
+    fn get_save_parent_cell(&self) -> *mut TESObjectCELL;
     fn get_sequence(&self, name: &str) -> *mut NiControllerSequence;
     fn get_submerge_level(&self, z_pos: f32, cell: *mut TESObjectCELL) -> f32;
     fn get_water_height(&self) -> f32;
@@ -2036,6 +2331,7 @@ pub trait TESObjectREFRExt {
     fn is_horse(&self) -> bool;
     fn is_humanoid(&self) -> bool;
     fn is_in_water(&self) -> bool;
+    fn is_dead(&self, not_essential: bool) -> bool;
     fn is_initially_disabled(&self) -> bool;
     fn is_jewelry(&self) -> bool;
     fn is_locked(&self) -> bool;
@@ -2066,11 +2362,45 @@ pub trait TESObjectREFRExt {
         force_persist: bool,
     ) -> NiPointer<TESObjectREFR>;
     fn play_animation_by_name(&mut self, from: &str, to: &str);
+    fn remove_item(
+        &mut self,
+        item: *mut TESBoundObject,
+        count: i32,
+        reason: ITEM_REMOVE_REASON,
+        extra_list: *mut ExtraDataList,
+        move_to_ref: *mut TESObjectREFR,
+        drop_loc: *const NiPoint3,
+        rotate: *const NiPoint3,
+    ) -> ObjectRefHandle;
     fn process_animation_graph_event(
         &mut self,
         event: *const BSAnimationGraphEvent,
         event_source: *mut BSTEventSource<BSAnimationGraphEvent>,
     ) -> BSEventNotifyControl;
+    fn remove_weapon(&mut self, equip_index: BIPED_OBJECT);
+    fn move_havok(&mut self, force_rec: bool);
+    fn get_linear_velocity(&self, velocity: &mut NiPoint3);
+    fn disable(&mut self);
+    fn reset_inventory(&mut self, leveled_only: bool);
+    fn get_fire_node(&mut self) -> *mut NiNode;
+    fn set_fire_node(&mut self, fire_node: *mut NiNode);
+    fn as_explosion(&mut self) -> *mut Explosion;
+    fn as_projectile(&mut self) -> *mut Projectile;
+    fn on_add_cell_perform_queue_reference(&self, cell: &mut TESObjectCELL) -> bool;
+    fn do_move_to_high(&mut self);
+    fn try_move_to_middle_low(&mut self);
+    fn try_change_sky_cell_actors_process_level(&mut self) -> bool;
+    fn try_update_actor_last_seen_time(&mut self);
+    fn create_anim_note_receiver(&mut self) -> *mut BSAnimNoteReceiver;
+    fn get_anim_note_receiver(&mut self) -> *mut BSAnimNoteReceiver;
+    fn process_in_water(
+        &mut self,
+        collidable: *mut hkpCollidable,
+        water_height: f32,
+        delta_time: f32,
+    ) -> bool;
+    fn apply_current(&mut self, velocity_time: f32, velocity: &hkVector4) -> bool;
+    fn unequip_item(&mut self, arg1: u64, object: *mut TESBoundObject);
     fn set_activation_blocked(&mut self, blocked: bool);
     fn set_angle(&mut self, angle: &NiPoint3);
     fn set_biped(&mut self, biped: &BSTSmartPointer<BipedAnim>);
@@ -2078,10 +2408,15 @@ pub trait TESObjectREFRExt {
     fn set_display_name(&mut self, name: &BSFixedString, force: bool) -> bool;
     fn set_encounter_zone(&mut self, zone: *mut BGSEncounterZone);
     fn set_motion_type(&mut self, motion_type: hkpMotionMotionType, allow_activate: bool) -> bool;
+    fn set_object_reference(&mut self, object: *mut TESBoundObject);
     fn set_owner(&mut self, owner: *mut TESForm);
     fn set_position(&mut self, pos: &NiPoint3);
     fn set_position_xyz(&mut self, x: f32, y: f32, z: f32);
     fn set_scale(&mut self, scale: f32);
+    fn set_action_complete(&mut self, set: bool);
+    fn set_movement_complete(&mut self, set: bool);
+    fn get_template_actor_base(&mut self) -> *mut TESActorBase;
+    fn set_template_actor_base(&mut self, template: *mut TESActorBase);
     fn set_temporary(&mut self);
     fn instantiate_hit_art(
         &self,
@@ -2103,9 +2438,18 @@ pub trait TESObjectREFRExt {
         attach_node: *mut NiAVObject,
         interface_effect: bool,
     ) -> *mut ShaderReferenceEffect;
+    fn is_child(&self) -> bool;
 }
 
 impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
+    fn predestroy(&mut self) {
+        TESObjectREFR::predestroy(self.as_mut())
+    }
+
+    fn enable(&mut self, reset_inventory: bool) {
+        TESObjectREFR::enable(self.as_mut(), reset_inventory)
+    }
+
     fn get_3d(&self) -> *mut NiAVObject {
         TESObjectREFR::get_3d(self.as_ref())
     }
@@ -2192,14 +2536,14 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
     }
 
     fn get_editor_location_data(
-        &self,
+        &mut self,
         out_pos: &mut NiPoint3,
         out_rot: &mut NiPoint3,
         out_world_or_cell: &mut *mut TESForm,
         fallback: *mut TESObjectCELL,
     ) -> bool {
         TESObjectREFR::get_editor_location_data(
-            self.as_ref(),
+            self.as_mut(),
             out_pos,
             out_rot,
             out_world_or_cell,
@@ -2217,6 +2561,18 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
 
     fn get_actor_owner(&self) -> *mut TESNPC {
         TESObjectREFR::get_actor_owner(self.as_ref())
+    }
+
+    fn get_face_node_skinned(&mut self) -> *mut BSFaceGenNiNode {
+        TESObjectREFR::get_face_node_skinned(self.as_mut())
+    }
+
+    fn get_face_node(&mut self) -> *mut BSFaceGenNiNode {
+        TESObjectREFR::get_face_node(self.as_mut())
+    }
+
+    fn get_face_gen_animation_data(&mut self) -> *mut BSFaceGenAnimationData {
+        TESObjectREFR::get_face_gen_animation_data(self.as_mut())
     }
 
     fn get_faction_owner(&self) -> *mut crate::re::TESFaction {
@@ -2263,6 +2619,10 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::get_lock_level(self.as_ref())
     }
 
+    fn get_magic_target(&mut self) -> *mut MagicTarget {
+        TESObjectREFR::get_magic_target(self.as_mut())
+    }
+
     fn get_name(&self) -> *const c_char {
         TESObjectREFR::get_name(self.as_ref())
     }
@@ -2287,8 +2647,24 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::get_position(self.as_ref())
     }
 
+    fn get_current_3d(&self) -> *mut NiAVObject {
+        TESObjectREFR::get_current_3d(self.as_ref())
+    }
+
+    fn get_current_ammo(&self) -> *mut TESAmmo {
+        TESObjectREFR::get_current_ammo(self.as_ref())
+    }
+
+    fn get_decal_group(&self) -> *mut BGSDecalGroup {
+        TESObjectREFR::get_decal_group(self.as_ref())
+    }
+
     fn get_scale(&self) -> f32 {
         TESObjectREFR::get_scale(self.as_ref())
+    }
+
+    fn get_save_parent_cell(&self) -> *mut TESObjectCELL {
+        TESObjectREFR::get_save_parent_cell(self.as_ref())
     }
 
     fn get_sequence(&self, name: &str) -> *mut NiControllerSequence {
@@ -2396,6 +2772,10 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::is_in_water(self.as_ref())
     }
 
+    fn is_dead(&self, not_essential: bool) -> bool {
+        TESObjectREFR::is_dead(self.as_ref(), not_essential)
+    }
+
     fn is_initially_disabled(&self) -> bool {
         TESObjectREFR::is_initially_disabled(self.as_ref())
     }
@@ -2477,12 +2857,115 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::play_animation_by_name(self.as_mut(), from, to)
     }
 
+    fn remove_item(
+        &mut self,
+        item: *mut TESBoundObject,
+        count: i32,
+        reason: ITEM_REMOVE_REASON,
+        extra_list: *mut ExtraDataList,
+        move_to_ref: *mut TESObjectREFR,
+        drop_loc: *const NiPoint3,
+        rotate: *const NiPoint3,
+    ) -> ObjectRefHandle {
+        TESObjectREFR::remove_item(
+            self.as_mut(),
+            item,
+            count,
+            reason,
+            extra_list,
+            move_to_ref,
+            drop_loc,
+            rotate,
+        )
+    }
+
     fn process_animation_graph_event(
         &mut self,
         event: *const BSAnimationGraphEvent,
         event_source: *mut BSTEventSource<BSAnimationGraphEvent>,
     ) -> BSEventNotifyControl {
         TESObjectREFR::process_animation_graph_event(self.as_mut(), event, event_source)
+    }
+
+    fn remove_weapon(&mut self, equip_index: BIPED_OBJECT) {
+        TESObjectREFR::remove_weapon(self.as_mut(), equip_index)
+    }
+
+    fn move_havok(&mut self, force_rec: bool) {
+        TESObjectREFR::move_havok(self.as_mut(), force_rec)
+    }
+
+    fn get_linear_velocity(&self, velocity: &mut NiPoint3) {
+        TESObjectREFR::get_linear_velocity(self.as_ref(), velocity)
+    }
+
+    fn disable(&mut self) {
+        TESObjectREFR::disable(self.as_mut())
+    }
+
+    fn reset_inventory(&mut self, leveled_only: bool) {
+        TESObjectREFR::reset_inventory(self.as_mut(), leveled_only)
+    }
+
+    fn get_fire_node(&mut self) -> *mut NiNode {
+        TESObjectREFR::get_fire_node(self.as_mut())
+    }
+
+    fn set_fire_node(&mut self, fire_node: *mut NiNode) {
+        TESObjectREFR::set_fire_node(self.as_mut(), fire_node)
+    }
+
+    fn as_explosion(&mut self) -> *mut Explosion {
+        TESObjectREFR::as_explosion(self.as_mut())
+    }
+
+    fn as_projectile(&mut self) -> *mut Projectile {
+        TESObjectREFR::as_projectile(self.as_mut())
+    }
+
+    fn on_add_cell_perform_queue_reference(&self, cell: &mut TESObjectCELL) -> bool {
+        TESObjectREFR::on_add_cell_perform_queue_reference(self.as_ref(), cell)
+    }
+
+    fn do_move_to_high(&mut self) {
+        TESObjectREFR::do_move_to_high(self.as_mut())
+    }
+
+    fn try_move_to_middle_low(&mut self) {
+        TESObjectREFR::try_move_to_middle_low(self.as_mut())
+    }
+
+    fn try_change_sky_cell_actors_process_level(&mut self) -> bool {
+        TESObjectREFR::try_change_sky_cell_actors_process_level(self.as_mut())
+    }
+
+    fn try_update_actor_last_seen_time(&mut self) {
+        TESObjectREFR::try_update_actor_last_seen_time(self.as_mut())
+    }
+
+    fn create_anim_note_receiver(&mut self) -> *mut BSAnimNoteReceiver {
+        TESObjectREFR::create_anim_note_receiver(self.as_mut())
+    }
+
+    fn get_anim_note_receiver(&mut self) -> *mut BSAnimNoteReceiver {
+        TESObjectREFR::get_anim_note_receiver(self.as_mut())
+    }
+
+    fn process_in_water(
+        &mut self,
+        collidable: *mut hkpCollidable,
+        water_height: f32,
+        delta_time: f32,
+    ) -> bool {
+        TESObjectREFR::process_in_water(self.as_mut(), collidable, water_height, delta_time)
+    }
+
+    fn apply_current(&mut self, velocity_time: f32, velocity: &hkVector4) -> bool {
+        TESObjectREFR::apply_current(self.as_mut(), velocity_time, velocity)
+    }
+
+    fn unequip_item(&mut self, arg1: u64, object: *mut TESBoundObject) {
+        TESObjectREFR::unequip_item(self.as_mut(), arg1, object)
     }
 
     fn set_activation_blocked(&mut self, blocked: bool) {
@@ -2513,6 +2996,10 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
         TESObjectREFR::set_motion_type(self.as_mut(), motion_type, allow_activate)
     }
 
+    fn set_object_reference(&mut self, object: *mut TESBoundObject) {
+        TESObjectREFR::set_object_reference(self.as_mut(), object)
+    }
+
     fn set_owner(&mut self, owner: *mut TESForm) {
         TESObjectREFR::set_owner(self.as_mut(), owner)
     }
@@ -2527,6 +3014,22 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
 
     fn set_scale(&mut self, scale: f32) {
         TESObjectREFR::set_scale(self.as_mut(), scale)
+    }
+
+    fn set_action_complete(&mut self, set: bool) {
+        TESObjectREFR::set_action_complete(self.as_mut(), set)
+    }
+
+    fn set_movement_complete(&mut self, set: bool) {
+        TESObjectREFR::set_movement_complete(self.as_mut(), set)
+    }
+
+    fn get_template_actor_base(&mut self) -> *mut TESActorBase {
+        TESObjectREFR::get_template_actor_base(self.as_mut())
+    }
+
+    fn set_template_actor_base(&mut self, template: *mut TESActorBase) {
+        TESObjectREFR::set_template_actor_base(self.as_mut(), template)
     }
 
     fn set_temporary(&mut self) {
@@ -2575,6 +3078,10 @@ impl<T: AsRef<TESObjectREFR> + AsMut<TESObjectREFR>> TESObjectREFRExt for T {
             attach_node,
             interface_effect,
         )
+    }
+
+    fn is_child(&self) -> bool {
+        TESObjectREFR::is_child(self.as_ref())
     }
 }
 

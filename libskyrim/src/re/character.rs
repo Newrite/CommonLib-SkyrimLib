@@ -6,7 +6,7 @@ use crate::re::{
     Actor, BGSLoadFormBuffer, BGSSaveFormBuffer, BSFaceGenAnimationData, BSFaceGenNiNode,
     BSTSmartPointer, BipedAnim, FormCastable, FormType,
 };
-use crate::relocation::{RttiType, VariantID};
+use crate::relocation::{RttiType, VariantID, VariantOffset};
 
 bitflags! {
     /// C++ `RE::Character::RecordFlags::RecordFlag`
@@ -103,10 +103,21 @@ impl Character {
         pub fn set_biped(&mut self, biped: &BSTSmartPointer<BipedAnim>)
     }
 
+    // add
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UNK_128: VariantOffset = VariantOffset::new(0x128, 0x128, 0x12A);
+        pub fn unk_128(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UNK_129: VariantOffset = VariantOffset::new(0x129, 0x129, 0x12B);
+        pub fn unk_129(&mut self)
+    }
+
     // TODO: `Character.h` has no matching `.cpp`, and the vendored source only proves the
-    // flat-only override block (`0x0C0..0x120`) plus fresh slots `Unk_128` / `Unk_129` through
-    // header comments. Add those methods once a source-backed verify pass confirms the correct
-    // cross-runtime vtable indices instead of guessing the VR numbering.
+    // flat-only override block (`0x0C0..0x120`) through header comments. Keep those late
+    // overrides unmodeled until a source-backed pass confirms their VR/runtime behavior instead
+    // of guessing whether they disappear, move, or reuse parent implementations in VR.
 }
 
 pub trait CharacterExt {
@@ -121,6 +132,8 @@ pub trait CharacterExt {
     fn get_face_node_skinned(&mut self) -> *mut BSFaceGenNiNode;
     fn get_face_gen_animation_data(&mut self) -> *mut BSFaceGenAnimationData;
     fn set_biped(&mut self, biped: &BSTSmartPointer<BipedAnim>);
+    fn unk_128(&mut self);
+    fn unk_129(&mut self);
 }
 
 impl<T> CharacterExt for T
@@ -180,5 +193,15 @@ where
     #[inline(always)]
     fn set_biped(&mut self, biped: &BSTSmartPointer<BipedAnim>) {
         Character::set_biped(self.as_mut(), biped)
+    }
+
+    #[inline(always)]
+    fn unk_128(&mut self) {
+        Character::unk_128(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn unk_129(&mut self) {
+        Character::unk_129(self.as_mut())
     }
 }

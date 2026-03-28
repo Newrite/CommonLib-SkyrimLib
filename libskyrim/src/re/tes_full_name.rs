@@ -24,6 +24,26 @@ impl TESFullName {
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESFullName;
 
     virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+
+    virtual_method! {
+        pub const VFUNC_INITIALIZE_DATA_COMPONENT: usize = 0x01;
+        pub fn initialize_data_component(&mut self)
+    }
+
+    virtual_method! {
+        pub const VFUNC_CLEAR_DATA_COMPONENT: usize = 0x02;
+        pub fn clear_data_component(&mut self)
+    }
+
+    virtual_method! {
+        pub const VFUNC_COPY_COMPONENT: usize = 0x03;
+        pub fn copy_component(&mut self, rhs: *mut BaseFormComponent)
+    }
+
+    virtual_method! {
         pub const VFUNC_GET_FULL_NAME_LENGTH: usize = 0x04;
         pub fn get_full_name_length() -> u32
     }
@@ -45,6 +65,10 @@ impl TESFullName {
 }
 
 pub trait TESFullNameExt {
+    fn dtor(&mut self);
+    fn initialize_data_component(&mut self);
+    fn clear_data_component(&mut self);
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_name_as_str(&self) -> &str;
     fn get_full_name_length(&self) -> u32;
     fn set_full_name(&mut self, name: *const core::ffi::c_char);
@@ -52,6 +76,22 @@ pub trait TESFullNameExt {
 }
 
 impl<T: AsRef<TESFullName> + AsMut<TESFullName>> TESFullNameExt for T {
+    fn dtor(&mut self) {
+        TESFullName::dtor(self.as_mut())
+    }
+
+    fn initialize_data_component(&mut self) {
+        TESFullName::initialize_data_component(self.as_mut())
+    }
+
+    fn clear_data_component(&mut self) {
+        TESFullName::clear_data_component(self.as_mut())
+    }
+
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent) {
+        TESFullName::copy_component(self.as_mut(), rhs)
+    }
+
     fn get_name_as_str(&self) -> &str {
         self.as_ref().get_name_as_str()
     }

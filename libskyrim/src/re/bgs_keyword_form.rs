@@ -221,6 +221,7 @@ pub trait BGSKeywordFormExt {
     fn for_each_keyword<F>(&self, callback: F)
     where
         F: FnMut(*mut BGSKeyword) -> BSContainerForEachResult;
+    fn get_default_keyword(&self) -> *mut BGSKeyword;
     fn get_keyword_at(&self, idx: u32) -> Option<*mut BGSKeyword>;
     fn get_keyword_index(&self, keyword: *mut BGSKeyword) -> Option<u32>;
     fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
@@ -252,6 +253,10 @@ impl<T: AsRef<BGSKeywordForm> + AsMut<BGSKeywordForm>> BGSKeywordFormExt for T {
         F: FnMut(*mut BGSKeyword) -> BSContainerForEachResult,
     {
         self.as_ref().for_each_keyword(callback)
+    }
+
+    fn get_default_keyword(&self) -> *mut BGSKeyword {
+        self.as_ref().get_default_keyword()
     }
 
     fn get_keyword_at(&self, idx: u32) -> Option<*mut BGSKeyword> {

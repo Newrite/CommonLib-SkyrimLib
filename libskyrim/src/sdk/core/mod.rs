@@ -17,4 +17,5 @@ pub use handles::{
     CanonicalHandle, HandleFamilyTarget, HandleTarget, ResolvableHandle, Resolved, ResolvedHandle,
 };
 pub use owners::{NativeOwner, NativeOwnerCastExt, NativeOwnerFamily};
+pub use phase::{GameLifecyclePhase, LifecyclePhase, PluginLifecyclePhase};
 pub use refs::{GameRef, GameRefMut};

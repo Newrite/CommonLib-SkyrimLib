@@ -1147,8 +1147,20 @@ impl PlayerCharacter {
         }
     }
 
+    crate::runtime_data_mut_accessor! {
+        fn crime_value_impl_mut() -> CrimeValue {
+            offset: Self::CRIME_VALUE_OFFSET
+        }
+    }
+
     crate::runtime_data_accessor! {
         fn race_data_impl() -> RaceData {
+            offset: Self::RACE_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn race_data_impl_mut() -> RaceData {
             offset: Self::RACE_DATA_OFFSET
         }
     }
@@ -1159,8 +1171,20 @@ impl PlayerCharacter {
         }
     }
 
+    crate::runtime_data_mut_accessor! {
+        fn game_state_data_impl_mut() -> GameStateData {
+            offset: Self::GAME_STATE_DATA_OFFSET
+        }
+    }
+
     crate::runtime_optional_data_accessor! {
         fn info_runtime_data_flat() -> INFO_RUNTIME_DATA {
+            offset: Self::INFO_RUNTIME_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_optional_data_mut_accessor! {
+        fn info_runtime_data_flat_mut() -> INFO_RUNTIME_DATA {
             offset: Self::INFO_RUNTIME_DATA_OFFSET
         }
     }
@@ -1297,6 +1321,12 @@ impl PlayerCharacter {
     }
 
     #[inline(always)]
+    pub fn get_crime_value_mut(&mut self) -> &mut CrimeValue {
+        crate::runtime_assert_size!(CrimeValue, se_ae: 0x60, vr: 0x60);
+        self.crime_value_impl_mut()
+    }
+
+    #[inline(always)]
     pub fn get_equipped_weapons_damage(&self) -> f32 {
         if crate::runtime::is_ae() {
             self.get_equipped_weapons_damage_ae()
@@ -1315,6 +1345,12 @@ impl PlayerCharacter {
     }
 
     #[inline(always)]
+    pub fn get_game_stats_data_mut(&mut self) -> &mut GameStateData {
+        crate::runtime_assert_size!(GameStateData, se_ae: 0x0C, vr: 0x0C);
+        self.game_state_data_impl_mut()
+    }
+
+    #[inline(always)]
     pub fn get_grabbed_ref(&self, device: VR_DEVICE) -> NiPointer<TESObjectREFR> {
         if crate::runtime::is_vr() {
             self.get_vr_player_runtime_data().grabbed_object_data[device as usize]
@@ -1330,6 +1366,14 @@ impl PlayerCharacter {
         crate::runtime::require_non_vr("PlayerCharacter::get_info_runtime_data");
         crate::runtime_assert_size!(INFO_RUNTIME_DATA, se: 0x13C, ae: 0x13C, vr: 0x0);
         self.info_runtime_data_flat()
+            .expect("flat INFO_RUNTIME_DATA should exist outside VR")
+    }
+
+    #[inline(always)]
+    pub fn get_info_runtime_data_mut(&mut self) -> &mut INFO_RUNTIME_DATA {
+        crate::runtime::require_non_vr("PlayerCharacter::get_info_runtime_data_mut");
+        crate::runtime_assert_size!(INFO_RUNTIME_DATA, se: 0x13C, ae: 0x13C, vr: 0x0);
+        self.info_runtime_data_flat_mut()
             .expect("flat INFO_RUNTIME_DATA should exist outside VR")
     }
 
@@ -1373,6 +1417,12 @@ impl PlayerCharacter {
     }
 
     #[inline(always)]
+    pub fn get_race_data_mut(&mut self) -> &mut RaceData {
+        crate::runtime_assert_size!(RaceData, se_ae: 0x18, vr: 0x18);
+        self.race_data_impl_mut()
+    }
+
+    #[inline(always)]
     pub fn get_tint_list(&self) -> *mut BSTArray<*mut TintMask> {
         // TODO: `PlayerCharacter.cpp` still returns `nullptr` in VR for tint-list access because
         // the VR tint storage layout is unresolved in CommonLib itself.
@@ -1409,9 +1459,21 @@ impl PlayerCharacter {
     }
 
     #[inline(always)]
+    pub fn get_vr_info_runtime_data_mut(&mut self) -> Option<&mut VR_INFO_RUNTIME_DATA> {
+        crate::runtime_assert_size!(VR_INFO_RUNTIME_DATA, se: 0x0, ae: 0x0, vr: 0x140);
+        unsafe { self.vr_info_runtime_data_ptr().as_mut() }
+    }
+
+    #[inline(always)]
     pub fn get_vr_node_data(&self) -> Option<&VR_NODE_DATA> {
         crate::runtime_assert_size!(VR_NODE_DATA, se: 0x0, ae: 0x0, vr: 0x290);
         unsafe { self.vr_node_data_ptr().as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn get_vr_node_data_mut(&mut self) -> Option<&mut VR_NODE_DATA> {
+        crate::runtime_assert_size!(VR_NODE_DATA, se: 0x0, ae: 0x0, vr: 0x290);
+        unsafe { self.vr_node_data_ptr().as_mut() }
     }
 
     #[inline(always)]

@@ -70,6 +70,14 @@ unsafe extern "C" {
     // Smart-pointer and factory helpers.
     pub fn commonlib_make_hkref_hk_referenced_object(out: *mut c_void) -> bool;
     pub fn commonlib_make_nismart_ni_ref_object(out: *mut c_void) -> bool;
+    pub fn commonlib_gfx_movie_view_add_ref(movie_view: *mut c_void);
+    pub fn commonlib_gfx_movie_view_release(movie_view: *mut c_void);
+    pub fn commonlib_fx_delegate_add_ref(delegate: *mut c_void);
+    pub fn commonlib_fx_delegate_release(delegate: *mut c_void);
+    pub fn commonlib_fx_delegate_handler_add_ref(handler: *mut c_void);
+    pub fn commonlib_fx_delegate_handler_release(handler: *mut c_void);
+    pub fn commonlib_imenu_add_ref(menu: *mut c_void);
+    pub fn commonlib_imenu_release(menu: *mut c_void);
     pub fn commonlib_bgs_attack_data_create() -> *mut c_void;
 
     // Input device helpers.

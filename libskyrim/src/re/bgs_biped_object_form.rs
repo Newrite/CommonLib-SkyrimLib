@@ -3,6 +3,7 @@ use crate::offsets::offsets_vtable::VTABLE_BGSBipedObjectForm;
 
 use crate::core_util::inherit;
 use crate::re::BaseFormComponent;
+use crate::virtual_method;
 
 bitflags::bitflags! {
     #[repr(transparent)]
@@ -77,9 +78,25 @@ impl BGSBipedObjectForm {
     pub const VTABLE: &'static [crate::relocation::VariantID] = &VTABLE_BGSBipedObjectForm;
 
     // override (BaseFormComponent)
-    // void InitializeDataComponent() override;                // 01
-    // void ClearDataComponent() override;                     // 02 - { return; }
-    // void CopyComponent(BaseFormComponent* a_rhs) override;  // 03
+    virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor()
+    }
+
+    virtual_method! {
+        pub const VFUNC_INITIALIZE_DATA_COMPONENT: usize = 0x01;
+        pub fn initialize_data_component()
+    }
+
+    virtual_method! {
+        pub const VFUNC_CLEAR_DATA_COMPONENT: usize = 0x02;
+        pub fn clear_data_component()
+    }
+
+    virtual_method! {
+        pub const VFUNC_COPY_COMPONENT: usize = 0x03;
+        pub fn copy_component(rhs: *mut BaseFormComponent)
+    }
 
     pub fn add_slot_to_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot {
         self.biped_model_data.biped_object_slots.insert(a_slot);
@@ -129,6 +146,10 @@ impl BGSBipedObjectForm {
 }
 
 pub trait BGSBipedObjectFormExt {
+    fn dtor(&mut self);
+    fn initialize_data_component(&mut self);
+    fn clear_data_component(&mut self);
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn add_slot_to_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot;
     fn get_armor_type(&self) -> ArmorType;
     fn get_slot_mask(&self) -> BipedObjectSlot;
@@ -142,43 +163,59 @@ pub trait BGSBipedObjectFormExt {
 }
 
 impl<T: AsRef<BGSBipedObjectForm> + AsMut<BGSBipedObjectForm>> BGSBipedObjectFormExt for T {
+    fn dtor(&mut self) {
+        BGSBipedObjectForm::dtor(self.as_mut())
+    }
+
+    fn initialize_data_component(&mut self) {
+        BGSBipedObjectForm::initialize_data_component(self.as_mut())
+    }
+
+    fn clear_data_component(&mut self) {
+        BGSBipedObjectForm::clear_data_component(self.as_mut())
+    }
+
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent) {
+        BGSBipedObjectForm::copy_component(self.as_mut(), rhs)
+    }
+
     fn add_slot_to_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot {
-        self.as_mut().add_slot_to_mask(a_slot)
+        BGSBipedObjectForm::add_slot_to_mask(self.as_mut(), a_slot)
     }
 
     fn get_armor_type(&self) -> ArmorType {
-        self.as_ref().get_armor_type()
+        BGSBipedObjectForm::get_armor_type(self.as_ref())
     }
 
     fn get_slot_mask(&self) -> BipedObjectSlot {
-        self.as_ref().get_slot_mask()
+        BGSBipedObjectForm::get_slot_mask(self.as_ref())
     }
 
     fn has_part_of(&self, a_flag: BipedObjectSlot) -> bool {
-        self.as_ref().has_part_of(a_flag)
+        BGSBipedObjectForm::has_part_of(self.as_ref(), a_flag)
     }
 
     fn is_clothing(&self) -> bool {
-        self.as_ref().is_clothing()
+        BGSBipedObjectForm::is_clothing(self.as_ref())
     }
 
     fn is_heavy_armor(&self) -> bool {
-        self.as_ref().is_heavy_armor()
+        BGSBipedObjectForm::is_heavy_armor(self.as_ref())
     }
 
     fn is_light_armor(&self) -> bool {
-        self.as_ref().is_light_armor()
+        BGSBipedObjectForm::is_light_armor(self.as_ref())
     }
 
     fn is_shield(&self) -> bool {
-        self.as_ref().is_shield()
+        BGSBipedObjectForm::is_shield(self.as_ref())
     }
 
     fn remove_slot_from_mask(&mut self, a_slot: BipedObjectSlot) -> BipedObjectSlot {
-        self.as_mut().remove_slot_from_mask(a_slot)
+        BGSBipedObjectForm::remove_slot_from_mask(self.as_mut(), a_slot)
     }
 
     fn set_slot_mask(&mut self, a_mask: BipedObjectSlot) {
-        self.as_mut().set_slot_mask(a_mask)
+        BGSBipedObjectForm::set_slot_mask(self.as_mut(), a_mask)
     }
 }

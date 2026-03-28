@@ -15,10 +15,12 @@ use crate::re::BGSOverridePackCollection;
 use crate::re::BGSPerk;
 use crate::re::BGSRelationship;
 use crate::re::BGSTextureSet;
+use crate::re::BSEventNotifyControl;
 use crate::re::BSFaceGenNiNode;
 use crate::re::BSFixedString;
 use crate::re::BSTArray;
 use crate::re::BSTEventSink;
+use crate::re::BSTEventSource;
 use crate::re::Color;
 use crate::re::FormCastable;
 use crate::re::FormType;
@@ -306,6 +308,12 @@ impl TESNPC {
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESNPC;
     pub const FORMTYPE: FormType = FormType::NPC;
 
+    crate::virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor()
+    }
+
+    // ~TESNPC() override;                                      // 00
     // override (TESActorBase)
     // void          InitializeData() override;                     // 04
     // void          ClearData() override;                          // 05
@@ -368,6 +376,15 @@ impl TESNPC {
 
     crate::relocation_func! {
         pub fn update_neck(&mut self, face_node: *mut BSFaceGenNiNode) => RelocationID::new(24207, 24711)
+    }
+
+    #[inline(always)]
+    pub fn process_menu_open_close_event(
+        &mut self,
+        event: *const MenuOpenCloseEvent,
+        event_source: *mut BSTEventSource<MenuOpenCloseEvent>,
+    ) -> BSEventNotifyControl {
+        unsafe { self.event_sink.process_event(event, event_source) }
     }
 
     fn copy_perk_rank_array(&mut self, copied_data: &[PerkRankData]) {
@@ -526,10 +543,22 @@ impl TESNPC {
         self.race_form.race
     }
 
-    pub fn get_root_face_npc(&self) -> *mut TESNPC {
-        let mut iter = self as *const TESNPC as *mut TESNPC;
+    pub fn get_root_face_npc(&mut self) -> *mut TESNPC {
+        let mut iter = self as *mut TESNPC;
         while !iter.is_null() {
             let next = unsafe { (*iter).face_npc };
+            if next.is_null() {
+                break;
+            }
+            iter = next;
+        }
+        iter
+    }
+
+    pub fn get_root_face_npc_const(&self) -> *const TESNPC {
+        let mut iter = self as *const TESNPC;
+        while !iter.is_null() {
+            let next = unsafe { (*iter).face_npc } as *const TESNPC;
             if next.is_null() {
                 break;
             }

@@ -4,12 +4,13 @@ use core::ffi::c_void;
 use core::marker::PhantomData;
 
 use crate::re::{
-    ActiveEffect, BGSRefAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm, VMHandle,
-    VMTypeID,
+    ActiveEffect, BGSRefAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm,
+    TESObjectREFR, VMHandle, VMTypeID,
 };
 use crate::sdk::core::GameRef;
 
 use super::SerializationInterface;
+use super::registration_arguments::{RegistrationEventArgs, with_vm};
 
 fn get_handle_policy() -> *mut IObjectHandlePolicy {
     let skyrim_vm = SkyrimVM::get_singleton();
@@ -430,11 +431,6 @@ impl RegistrationSetUniqueBase {
 }
 
 /// Rust-side port of `SKSE::RegistrationSetUnique<Args...>`.
-///
-/// TODO: Add typed `send_event(...)` / `queue_event(...)` parity once libskyrim
-/// exposes source-backed `MakeFunctionArguments` / `VMArg` construction for
-/// Papyrus-convertible argument packs. CommonLib builds a fresh argument object
-/// per handle, so a shared raw-pointer shortcut here would be dishonest.
 pub struct RegistrationSetUnique<Args = ()> {
     base: RegistrationSetUniqueBase,
     _marker: PhantomData<fn() -> Args>,
@@ -450,6 +446,26 @@ impl<Args> Clone for RegistrationSetUnique<Args> {
 }
 
 impl<Args> RegistrationSetUnique<Args> {
+    #[inline(always)]
+    fn send_event_for_target_id(&self, target_id: u32, args: Args)
+    where
+        Args: RegistrationEventArgs,
+    {
+        let Some(handles) = self.base.regs().get(&target_id) else {
+            return;
+        };
+
+        let event_name = self.base.event_name_fixed();
+        let _ = with_vm(|vm| {
+            for &handle in handles {
+                let Some(arguments) = args.to_function_arguments(vm) else {
+                    continue;
+                };
+                vm.base.send_event(handle, &event_name, arguments.as_ptr());
+            }
+        });
+    }
+
     #[inline(always)]
     pub fn new(event_name: impl Into<String>) -> Self {
         Self {
@@ -561,5 +577,42 @@ impl<Args> RegistrationSetUnique<Args> {
                 f(handle);
             }
         }
+    }
+
+    /// Sends a Papyrus event to all handles currently registered under
+    /// `target`.
+    ///
+    /// `Args` is modeled as a Rust tuple pack. For example:
+    /// `RegistrationSetUnique<(i32, bool)>` expects
+    /// `send_event(target, (42, true))`.
+    #[inline(always)]
+    pub fn send_event<'a>(&self, target: impl Into<GameRef<'a, TESObjectREFR>>, args: Args)
+    where
+        Args: RegistrationEventArgs,
+    {
+        let target = target.into();
+        let Some(target) = target.as_ref() else {
+            return;
+        };
+        self.send_event_for_target_id(target.get_form_id(), args);
+    }
+
+    /// Queues a Papyrus event dispatch on the SKSE task interface.
+    ///
+    /// The task queue may outlive the current stack frame, so this requires a
+    /// long-lived registration container reference.
+    #[inline(always)]
+    pub fn queue_event<'a>(&'static self, target: impl Into<GameRef<'a, TESObjectREFR>>, args: Args)
+    where
+        Args: RegistrationEventArgs + Send + 'static,
+    {
+        let target = target.into();
+        let target_id = match target.as_ref() {
+            Some(target) => target.get_form_id(),
+            None => return,
+        };
+        super::task::add_task(move || {
+            self.send_event_for_target_id(target_id, args);
+        });
     }
 }

@@ -21,6 +21,9 @@ pub struct NiNPShortPoint3 {
     pub z: i16, // 4
 }
 const _: () = assert!(core::mem::size_of::<NiNPShortPoint3>() == 0x6);
+const _: () = assert!(core::mem::offset_of!(NiNPShortPoint3, x) == 0x0);
+const _: () = assert!(core::mem::offset_of!(NiNPShortPoint3, y) == 0x2);
+const _: () = assert!(core::mem::offset_of!(NiNPShortPoint3, z) == 0x4);
 
 #[repr(C)]
 #[derive(bytemuck::Zeroable)]
@@ -30,6 +33,8 @@ pub struct BoundData {
     pub bound_max: NiNPShortPoint3, // 6
 }
 const _: () = assert!(core::mem::size_of::<BoundData>() == 0xC);
+const _: () = assert!(core::mem::offset_of!(BoundData, bound_min) == 0x0);
+const _: () = assert!(core::mem::offset_of!(BoundData, bound_max) == 0x6);
 
 #[repr(C)]
 pub struct TESBoundObject {
@@ -39,6 +44,9 @@ pub struct TESBoundObject {
 }
 
 const _: () = assert!(core::mem::size_of::<TESBoundObject>() == 0x30);
+const _: () = assert!(core::mem::offset_of!(TESBoundObject, base) == 0x0);
+const _: () = assert!(core::mem::offset_of!(TESBoundObject, bound_data) == 0x20);
+const _: () = assert!(core::mem::offset_of!(TESBoundObject, pad2c) == 0x2C);
 
 impl RttiType for TESBoundObject {
     const RTTI: VariantID = RTTI_TESBoundObject;
@@ -51,8 +59,14 @@ impl TESBoundObject {
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESBoundObject;
 
     virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+
+    // override (TESObject)
+    virtual_method! {
         pub const LOAD_OBJECT_BOUND: usize = 0x26;
-        pub fn load_object_bound(a_mod: *mut TESFile)
+        pub fn load_object_bound(&mut self, a_mod: *mut TESFile)
     }
 
     virtual_method! {
@@ -62,17 +76,17 @@ impl TESBoundObject {
 
     virtual_method! {
         pub const ACTIVATE: usize = 0x37;
-        pub fn activate(a_target_ref: *mut TESObjectREFR, a_activator_ref: *mut TESObjectREFR, a_arg3: u8, a_object: *mut TESBoundObject, a_target_count: i32) -> bool
+        pub fn activate(&mut self, a_target_ref: *mut TESObjectREFR, a_activator_ref: *mut TESObjectREFR, a_arg3: u8, a_object: *mut TESBoundObject, a_target_count: i32) -> bool
     }
 
     virtual_method! {
         pub const CLONE_3D_OVERRIDE: usize = 0x40;
-        pub fn clone_3d_override(a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject
+        pub fn clone_3d_override(&mut self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject
     }
 
     virtual_method! {
         pub const REPLACE_MODEL_OVERRIDE: usize = 0x44;
-        pub fn replace_model_override() -> bool
+        pub fn replace_model_override(&mut self) -> bool
     }
 
     crate::relocation_func! {
@@ -81,7 +95,7 @@ impl TESBoundObject {
 
     virtual_method! {
         pub const SET_OBJECT_VOICE_TYPE: usize = 0x48;
-        pub fn set_object_voice_type(voice_type: *mut BGSVoiceType)
+        pub fn set_object_voice_type(&mut self, voice_type: *mut BGSVoiceType)
     }
 
     virtual_method! {
@@ -91,27 +105,27 @@ impl TESBoundObject {
 
     virtual_method! {
         pub const CLONE_3D: usize = 0x4A;
-        pub fn clone_3d(a_ref: *mut TESObjectREFR) -> *mut NiAVObject
+        pub fn clone_3d(&mut self, a_ref: *mut TESObjectREFR) -> *mut NiAVObject
     }
 
     virtual_method! {
         pub const REPLACE_MODEL: usize = 0x4B;
-        pub fn replace_model(a_str: *const core::ffi::c_char) -> bool
+        pub fn replace_model(&mut self, a_str: *const core::ffi::c_char) -> bool
     }
 
     virtual_method! {
         pub const GET_ACTIVATE_TEXT: usize = 0x4C;
-        pub fn get_activate_text(a_activator: *mut TESObjectREFR, a_dst: *mut BSString) -> bool
+        pub fn get_activate_text(&mut self, a_activator: *mut TESObjectREFR, a_dst: *mut BSString) -> bool
     }
 
     virtual_method! {
         pub const CALCULATE_DO_FAVOR: usize = 0x4D;
-        pub fn calculate_do_favor(a_activator: *mut Actor, a_arg2: bool, a_to_activate: *mut TESObjectREFR, a_arg3: f32) -> bool
+        pub fn calculate_do_favor(&mut self, a_activator: *mut Actor, a_arg2: bool, a_to_activate: *mut TESObjectREFR, a_arg3: f32) -> bool
     }
 
     virtual_method! {
         pub const HANDLE_REMOVE_ITEM_FROM_CONTAINER: usize = 0x4E;
-        pub fn handle_remove_item_from_container(a_container: *mut TESObjectREFR)
+        pub fn handle_remove_item_from_container(&mut self, a_container: *mut TESObjectREFR)
     }
 
     virtual_method! {
@@ -136,6 +150,7 @@ impl TESBoundObject {
 }
 
 pub trait TESBoundObjectExt {
+    fn dtor(&mut self);
     fn load_object_bound(&mut self, mod_file: *mut TESFile);
     fn is_bound_object(&self) -> bool;
     fn activate(
@@ -146,16 +161,16 @@ pub trait TESBoundObjectExt {
         object: *mut TESBoundObject,
         target_count: i32,
     ) -> bool;
-    fn clone_3d_override(&self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject;
-    fn replace_model_override(&self) -> bool;
+    fn clone_3d_override(&mut self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject;
+    fn replace_model_override(&mut self) -> bool;
     fn get_destructible_form(&self) -> *mut BGSDestructibleObjectForm;
     fn set_object_voice_type(&mut self, voice_type: *mut BGSVoiceType);
     fn get_object_voice_type(&self) -> *mut BGSVoiceType;
-    fn clone_3d(&self, a_ref: *mut TESObjectREFR) -> *mut NiAVObject;
+    fn clone_3d(&mut self, a_ref: *mut TESObjectREFR) -> *mut NiAVObject;
     fn replace_model(&mut self, model_path: *const core::ffi::c_char) -> bool;
-    fn get_activate_text(&self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool;
+    fn get_activate_text(&mut self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool;
     fn calculate_do_favor(
-        &self,
+        &mut self,
         activator: *mut Actor,
         arg2: bool,
         to_activate: *mut TESObjectREFR,
@@ -169,6 +184,10 @@ pub trait TESBoundObjectExt {
 }
 
 impl<T: AsRef<TESBoundObject> + AsMut<TESBoundObject>> TESBoundObjectExt for T {
+    fn dtor(&mut self) {
+        TESBoundObject::dtor(self.as_mut())
+    }
+
     fn load_object_bound(&mut self, mod_file: *mut TESFile) {
         self.as_mut().load_object_bound(mod_file)
     }
@@ -189,12 +208,12 @@ impl<T: AsRef<TESBoundObject> + AsMut<TESBoundObject>> TESBoundObjectExt for T {
             .activate(target_ref, activator_ref, arg3, object, target_count)
     }
 
-    fn clone_3d_override(&self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject {
-        self.as_ref().clone_3d_override(a_ref, a_arg3)
+    fn clone_3d_override(&mut self, a_ref: *mut TESObjectREFR, a_arg3: bool) -> *mut NiAVObject {
+        self.as_mut().clone_3d_override(a_ref, a_arg3)
     }
 
-    fn replace_model_override(&self) -> bool {
-        self.as_ref().replace_model_override()
+    fn replace_model_override(&mut self) -> bool {
+        self.as_mut().replace_model_override()
     }
 
     fn get_destructible_form(&self) -> *mut BGSDestructibleObjectForm {
@@ -209,26 +228,26 @@ impl<T: AsRef<TESBoundObject> + AsMut<TESBoundObject>> TESBoundObjectExt for T {
         self.as_ref().get_object_voice_type()
     }
 
-    fn clone_3d(&self, a_ref: *mut TESObjectREFR) -> *mut NiAVObject {
-        self.as_ref().clone_3d(a_ref)
+    fn clone_3d(&mut self, a_ref: *mut TESObjectREFR) -> *mut NiAVObject {
+        self.as_mut().clone_3d(a_ref)
     }
 
     fn replace_model(&mut self, model_path: *const core::ffi::c_char) -> bool {
         self.as_mut().replace_model(model_path)
     }
 
-    fn get_activate_text(&self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool {
-        self.as_ref().get_activate_text(activator, dst)
+    fn get_activate_text(&mut self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool {
+        self.as_mut().get_activate_text(activator, dst)
     }
 
     fn calculate_do_favor(
-        &self,
+        &mut self,
         activator: *mut Actor,
         arg2: bool,
         to_activate: *mut TESObjectREFR,
         arg3: f32,
     ) -> bool {
-        self.as_ref()
+        self.as_mut()
             .calculate_do_favor(activator, arg2, to_activate, arg3)
     }
 

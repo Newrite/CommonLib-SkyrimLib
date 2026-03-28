@@ -4,11 +4,12 @@ use core::ffi::c_void;
 use core::marker::PhantomData;
 
 use crate::re::{
-    ActiveEffect, BGSRefAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm, VMHandle,
-    VMTypeID,
+    ActiveEffect, BGSRefAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm,
+    TESObjectREFR, VMHandle, VMTypeID,
 };
 use crate::sdk::core::GameRef;
 
+use super::registration_arguments::{RegistrationEventArgs, with_vm};
 use super::{RegistrationFilter, SerializationInterface};
 
 fn get_handle_policy() -> *mut IObjectHandlePolicy {
@@ -494,9 +495,8 @@ impl<Filter: RegistrationFilter> RegistrationMapUniqueBase<Filter> {
             );
 
             for _ in 0..num_filters {
-                let Some(filter) = Filter::load_filter(serialization) else {
-                    return false;
-                };
+                let mut filter = Filter::default();
+                let loaded_filter = filter.load_filter(serialization);
 
                 let mut match_filter = false;
                 serialization.read_record_data(
@@ -518,7 +518,10 @@ impl<Filter: RegistrationFilter> RegistrationMapUniqueBase<Filter> {
                     );
 
                     let mut resolved_handle = handle;
-                    if resolved && serialization.resolve_handle(handle, &mut resolved_handle) {
+                    if resolved
+                        && loaded_filter
+                        && serialization.resolve_handle(handle, &mut resolved_handle)
+                    {
                         self.regs
                             .entry(resolved_form_id)
                             .or_default()
@@ -629,11 +632,6 @@ impl<Filter: RegistrationFilter> RegistrationMapUniqueBase<Filter> {
 }
 
 /// Rust-side port of `SKSE::RegistrationMapUnique<Filter, Args...>`.
-///
-/// TODO: Add typed `send_event(...)` / `queue_event(...)` parity once libskyrim
-/// exposes source-backed `MakeFunctionArguments` / `VMArg` construction for
-/// Papyrus-convertible argument packs. CommonLib rebuilds argument storage per
-/// handle, so a shared raw bridge would be dishonest here.
 pub struct RegistrationMapUnique<Filter: RegistrationFilter, Args = ()> {
     base: RegistrationMapUniqueBase<Filter>,
     _marker: PhantomData<fn() -> Args>,
@@ -649,6 +647,36 @@ impl<Filter: RegistrationFilter, Args> Clone for RegistrationMapUnique<Filter, A
 }
 
 impl<Filter: RegistrationFilter, Args> RegistrationMapUnique<Filter, Args> {
+    #[inline(always)]
+    fn send_event_for_target_id(
+        &self,
+        target_id: u32,
+        mut pass_filter: impl FnMut(&Filter, bool) -> bool,
+        args: Args,
+    ) where
+        Args: RegistrationEventArgs,
+    {
+        let Some(handles_by_filter) = self.base.regs().get(&target_id) else {
+            return;
+        };
+
+        let event_name = self.base.event_name_fixed();
+        let _ = with_vm(|vm| {
+            for ((filter, match_filter), handles) in handles_by_filter {
+                if !pass_filter(filter, *match_filter) {
+                    continue;
+                }
+
+                for &handle in handles {
+                    let Some(arguments) = args.to_function_arguments(vm) else {
+                        continue;
+                    };
+                    vm.base.send_event(handle, &event_name, arguments.as_ptr());
+                }
+            }
+        });
+    }
+
     #[inline(always)]
     pub fn new(event_name: impl Into<String>) -> Self {
         Self {
@@ -813,5 +841,52 @@ impl<Filter: RegistrationFilter, Args> RegistrationMapUnique<Filter, Args> {
                 }
             }
         }
+    }
+
+    /// Sends a Papyrus event to all handles currently registered under
+    /// `target` whose stored filter passes `pass_filter`.
+    ///
+    /// `Args` is modeled as a Rust tuple pack. For example:
+    /// `RegistrationMapUnique<MyFilter, (i32, bool)>` expects
+    /// `send_event(target, pass_filter, (42, true))`.
+    #[inline(always)]
+    pub fn send_event<'a>(
+        &self,
+        target: impl Into<GameRef<'a, TESObjectREFR>>,
+        pass_filter: impl FnMut(&Filter, bool) -> bool,
+        args: Args,
+    ) where
+        Args: RegistrationEventArgs,
+    {
+        let target = target.into();
+        let Some(target) = target.as_ref() else {
+            return;
+        };
+        self.send_event_for_target_id(target.get_form_id(), pass_filter, args);
+    }
+
+    /// Queues a Papyrus event dispatch on the SKSE task interface.
+    ///
+    /// The task queue may outlive the current stack frame, so this requires a
+    /// long-lived registration container reference.
+    #[inline(always)]
+    pub fn queue_event<'a, PassFilter>(
+        &'static self,
+        target: impl Into<GameRef<'a, TESObjectREFR>>,
+        pass_filter: PassFilter,
+        args: Args,
+    ) where
+        Filter: Send + Sync + 'static,
+        Args: RegistrationEventArgs + Send + 'static,
+        PassFilter: FnMut(&Filter, bool) -> bool + Send + 'static,
+    {
+        let target = target.into();
+        let target_id = match target.as_ref() {
+            Some(target) => target.get_form_id(),
+            None => return,
+        };
+        super::task::add_task(move || {
+            self.send_event_for_target_id(target_id, pass_filter, args);
+        });
     }
 }

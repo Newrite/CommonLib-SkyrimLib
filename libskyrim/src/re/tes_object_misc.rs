@@ -4,12 +4,16 @@ use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_TESObjectMISC;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectMISC;
 use crate::re::bgs_destructible_object_form::BGSDestructibleObjectForm;
+use crate::re::bgs_keyword::BGSKeyword;
 use crate::re::bgs_keyword_form::BGSKeywordForm;
+use crate::re::bgs_load_form_buffer::BGSLoadFormBuffer;
 use crate::re::bgs_message_icon::BGSMessageIcon;
 use crate::re::bgs_pickup_putdown_sounds::BGSPickupPutdownSounds;
+use crate::re::bgs_save_form_buffer::BGSSaveFormBuffer;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
 use crate::re::tes_bound_object::TESBoundObject;
+use crate::re::tes_file::TESFile;
 use crate::re::tes_full_name::TESFullName;
 use crate::re::tes_icon::TESIcon;
 use crate::re::tes_model_texture_swap::TESModelTextureSwap;
@@ -80,28 +84,51 @@ impl TESObjectMISC {
     pub const FORMTYPE: FormType = FormType::Misc;
 
     // override (TESBoundObject)
-    // bool Load(TESFile* a_mod) override;                // 06
-    // void SaveGame(BGSSaveFormBuffer* a_buf) override;  // 0E
-    // void LoadGame(BGSLoadFormBuffer* a_buf) override;  // 0F
-    // void InitItemImpl() override;                      // 13
+    virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+
+    virtual_method! {
+        pub const VFUNC_LOAD: usize = 0x06;
+        pub fn load(&mut self, mod_: *mut TESFile) -> bool
+    }
+
+    virtual_method! {
+        pub const VFUNC_SAVE_GAME: usize = 0x0E;
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
+    }
+
+    virtual_method! {
+        pub const VFUNC_LOAD_GAME: usize = 0x0F;
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
+    }
+
+    virtual_method! {
+        pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
+        pub fn init_item_impl(&mut self)
+    }
 
     // override (BGSKeywordForm)
-    // BGSKeyword* GetDefaultKeyword() const override;  // 05
+    #[inline(always)]
+    pub fn get_default_keyword(&self) -> *mut BGSKeyword {
+        self.keyword_form.get_default_keyword()
+    }
 
     // add
     virtual_method! {
         pub const SAVE_IMPL: usize = 0x53;
-        pub fn save_impl()
+        pub fn save_impl(&mut self)
     }
 
     virtual_method! {
         pub const LOAD_IMPL: usize = 0x54;
-        pub fn load_impl(a_mod: *mut crate::re::tes_file::TESFile, a_chunk_id: u32)
+        pub fn load_impl(&mut self, a_mod: *mut crate::re::tes_file::TESFile, a_chunk_id: u32)
     }
 
     virtual_method! {
         pub const INIT_IMPL: usize = 0x55;
-        pub fn init_impl()
+        pub fn init_impl(&mut self)
     }
 }
 
@@ -120,19 +147,55 @@ impl AsMut<TESObjectMISC> for TESObjectMISC {
 }
 
 pub trait TESObjectMISCExt {
+    fn dtor(&mut self);
+    fn load(&mut self, mod_: *mut TESFile) -> bool;
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer);
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer);
+    fn init_item_impl(&mut self);
+    fn get_default_keyword(&self) -> *mut BGSKeyword;
     fn save_impl(&mut self);
-    fn load_impl(&mut self, a_mod: *mut crate::re::tes_file::TESFile, a_chunk_id: u32);
+    fn load_impl(&mut self, a_mod: *mut TESFile, a_chunk_id: u32);
     fn init_impl(&mut self);
 }
 
 impl<T: AsRef<TESObjectMISC> + AsMut<TESObjectMISC>> TESObjectMISCExt for T {
+    #[inline(always)]
+    fn dtor(&mut self) {
+        TESObjectMISC::dtor(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn load(&mut self, mod_: *mut TESFile) -> bool {
+        TESObjectMISC::load(self.as_mut(), mod_)
+    }
+
+    #[inline(always)]
+    fn save_game(&mut self, buf: *mut BGSSaveFormBuffer) {
+        TESObjectMISC::save_game(self.as_mut(), buf)
+    }
+
+    #[inline(always)]
+    fn load_game(&mut self, buf: *mut BGSLoadFormBuffer) {
+        TESObjectMISC::load_game(self.as_mut(), buf)
+    }
+
+    #[inline(always)]
+    fn init_item_impl(&mut self) {
+        TESObjectMISC::init_item_impl(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn get_default_keyword(&self) -> *mut BGSKeyword {
+        TESObjectMISC::get_default_keyword(self.as_ref())
+    }
+
     #[inline(always)]
     fn save_impl(&mut self) {
         TESObjectMISC::save_impl(self.as_mut())
     }
 
     #[inline(always)]
-    fn load_impl(&mut self, a_mod: *mut crate::re::tes_file::TESFile, a_chunk_id: u32) {
+    fn load_impl(&mut self, a_mod: *mut TESFile, a_chunk_id: u32) {
         TESObjectMISC::load_impl(self.as_mut(), a_mod, a_chunk_id)
     }
 

@@ -177,7 +177,14 @@ sdk/
   events/
     game.rs
     input.rs
-    skse.rs
+    install.rs
+    source.rs
+    ui.rs
+    bus.rs
+    skse/
+      mod.rs
+      dispatchers.rs
+      messages.rs
 
   ui/
     menus.rs
@@ -250,6 +257,463 @@ Typical patterns:
 
 The SDK should reduce friction, not block advanced users from dropping to the
 ABI layer when they need functionality that has not been wrapped yet.
+
+## Event System Design
+
+The SDK event layer should unify authoring style, not pretend that every Skyrim
+and SKSE event source follows one runtime model.
+
+The underlying ecosystems are meaningfully different:
+
+- engine-owned `BSTEventSource<T>` values such as `ScriptEventSourceHolder` and
+  `UI`
+- input dispatch through `BSTEventSource<InputEvent*>`, where the payload is a
+  linked event chain rather than a simple `&T`
+- SKSE dispatcher-backed `BSTEventSource<T>` values exposed through the SKSE
+  API storage
+- SKSE plugin messaging through `MessagingInterface::RegisterListener`, which
+  behaves more like install-once lifecycle callbacks than ordinary removable
+  event sinks
+
+Because of that, `sdk::events` is split by domain:
+
+- `sdk::events::game`
+  gameplay and script-owned singleton event sources from
+  `ScriptEventSourceHolder`
+- `sdk::events::ui`
+  `UI`-owned singleton event sources such as `MenuOpenCloseEvent`
+- `sdk::events::input`
+  `BSInputDeviceManager` registrations plus ergonomic wrappers over
+  `InputEvent*` chains
+- `sdk::events::source`
+  an escape hatch for direct subscription to a known raw
+  `BSTEventSource<T>*`
+- `sdk::events::skse::dispatchers`
+  typed helpers for SKSE dispatcher-backed event sources such as
+  `ActionEvent`, `CameraEvent`, `ModCallbackEvent`, `CrosshairRefEvent`, and
+  `NiNodeUpdateEvent`
+- `sdk::events::skse::messages`
+  lifecycle and plugin messaging registration over `MessagingInterface`
+- `sdk::events::bus`
+  a Rust-local plugin event bus for intra-plugin coordination
+
+### Event Goals
+
+The first implementation wave should focus on a small shared foundation:
+
+- `EventFlow`
+  a stable SDK-facing alias over continue/stop semantics
+- `EventSubscription`
+  an RAII handle for removable event sinks
+- `EventInstallError`
+  fallible installation instead of fatal-only registration
+- `IntoEventFlow`
+  callback sugar so `()` naturally means `Continue`
+- typed domain `subscribe(...)` functions instead of raw pointer plumbing
+- batched installation support similar to `sdk::hooks`
+
+The most important safety boundary is that sink registration should only become
+safe/high-level where source-backed code proves synchronous `ProcessEvent`
+dispatch against retained sink pointers. `BSTEventSource<T>` satisfies that
+contract; `MessagingInterface` does not share the same unregister and ownership
+story, so it remains a separate domain.
+
+The current implemented foundation already includes:
+
+- `EventFlow`
+- `EventInstallError`
+- `IntoEventFlow`
+- `EventSubscription`
+- raw `sdk::events::source::{subscribe, prepend}` over `BSTEventSource<T>*`
+- safe singleton-domain subscriptions in `sdk::events::game`,
+  `sdk::events::ui`, and `sdk::events::skse::dispatchers`
+- typed lifecycle registration in `sdk::events::skse::messages::{on, on_raw}`
+  plus `MessageRef<'_>` sender/payload helpers, lifecycle-phase mapping, and
+  sender-filtered helpers
+- `sdk::events::input::subscribe(...)` / `prepend(...)` plus `InputEvents<'_>`
+  for iterating and mutating one `InputEvent*` chain without manual raw linked
+  list traversal, device filtering, and per-device iteration helpers
+- `sdk::events::bus::{Bus, BusSubscription, SubscriberPriority}` for
+  synchronous plugin-local mutable event dispatch with deterministic priority
+  ordering, owned-payload publish, `publish_with(...)`, and priority
+  convenience helpers
+- `sdk::events::{EventBatch, EventInstaller}` for owning RAII event
+  registrations and install-once message listeners together in one place
+- `sdk::events::install_all!(&mut batch, ...)` and `try_install_all(...)` for
+  typed batched installation
+- attribute-driven event modules via:
+  `#[events::game_event]`, `#[events::ui_event]`,
+  `#[events::dispatcher_event]`, `#[events::input_event]`, and
+  `#[events::message_event]`, plus `#[events::bus_event]` for local
+  `Bus<T>` subscriptions
+
+### Event Installers
+
+Unlike hooks, event registrations are not modeled as permanent global installs.
+Engine subscriptions are RAII-owned, and dropping them should unsubscribe
+cleanly. Because of that, the high-level event authoring surface is centered on
+`EventBatch` instead of a global `is_installed()` flag.
+
+`EventBatch` owns:
+
+- retained `BSTEventSource<T>` subscriptions
+- local `Bus<T>` subscriptions
+- install-once SKSE messaging listeners
+
+Dropping the batch removes everything removable and leaves message listeners in
+their already-registered SKSE state.
+
+The typed installer layer looks like this:
+
+```rust
+let mut batch = sdk::events::EventBatch::new();
+
+batch.game::<RE::TESHitEvent, _, _>("hit", |event| {
+    let _ = event;
+})?;
+
+batch.message(
+    "data_loaded",
+    sdk::events::skse::messages::MessageKind::DataLoaded,
+    |message| {
+        let _ = message.sender();
+    },
+);
+
+sdk::events::install_all!(&mut batch, some_game_event, some_input_event)?;
+```
+
+When a plugin subsystem already owns a borrowed dynamic source, use
+`EventSourceRef<'a, T>` instead of spelling raw `*mut BSTEventSource<T>`:
+
+```rust
+let mut source = RE::BSTEventSource::<RE::TESHitEvent>::new();
+let _sub = sdk::events::EventSourceRef::new(&mut source).subscribe(|event| {
+    let _ = event;
+})?;
+```
+
+Each attribute-generated event module exposes:
+
+- `try_install(&mut EventBatch<'_>) -> Result<(), EventBatchError>`
+- `install(&mut EventBatch<'_>) -> Result<(), EventBatchError>`
+- `INSTALLER: EventInstaller`
+- `installer() -> EventInstaller`
+- `install_or_fatal(&mut EventBatch<'_>)`
+
+This keeps installation explicit about ownership and makes duplicate installs a
+user choice instead of a hidden global state machine.
+
+### Event Attributes
+
+The first high-level authoring sugar on top of the batch/install foundation is
+attribute-driven event registration.
+
+Supported attributes:
+
+- `#[events::game_event(event = RE::TESHitEvent)]`
+- `#[events::ui_event(event = RE::MenuOpenCloseEvent)]`
+- `#[events::dispatcher_event(event = skse::ActionEvent)]`
+- `#[events::input_event]`
+- `#[events::message_event(kind = events::skse::messages::MessageKind::DataLoaded)]`
+- `#[events::message_event(plugin_phase = sdk::core::PluginLifecyclePhase::DataLoaded)]`
+- `#[events::message_event(game_phase = sdk::core::GameLifecyclePhase::PostLoadGame)]`
+- `#[events::message_event(phase = sdk::core::LifecyclePhase::Plugin(...))]`
+- `#[events::bus_event(bus = some_bus())]`
+- `#[events::bus_event(bus = some_bus(), early)]`
+- `#[events::bus_event(bus = some_bus(), priority = events::SubscriberPriority::LAST)]`
+
+For gameplay/UI/dispatcher events, the callback parameter may currently be:
+
+- `&Event`
+- `Option<&Event>`
+- `GameRef<'_, Event>`
+- or no parameter at all
+
+For input events, the callback parameter may be `InputEvents<'_>` or omitted.
+For SKSE messages, the callback parameter may be `MessageRef<'_>`, `&Message`,
+or omitted. `message_event` also accepts `sender = "..."` for common sender
+filtering without hand-written closure plumbing. For local bus events, the
+callback parameter must be exactly one payload parameter of type `&Payload` or
+`&mut Payload`; `bus_event` infers the payload type from that signature, and
+its `bus = ...` expression must evaluate to a stable `&Bus<Payload>`.
+
+All event attributes support ordinary free functions only. They do not support
+methods, generics, `async`, `const`, `extern`, or variadics.
+
+If the callback returns `EventFlow`, that flow is used directly. If it returns
+`()`, the SDK treats it as `EventFlow::Continue`.
+
+### Planned Domain Examples
+
+The intended authoring style is:
+
+```rust
+let _hit = sdk::events::game::subscribe::<RE::TESHitEvent>(|event| {
+    let _ = event;
+    sdk::events::EventFlow::Continue
+})?;
+
+let _menu = sdk::events::ui::subscribe::<RE::MenuOpenCloseEvent>(|event| {
+    let _ = event;
+    sdk::events::EventFlow::Continue
+})?;
+
+let _action = sdk::events::skse::dispatchers::subscribe::<skse::events::ActionEvent>(|event| {
+    let _ = event;
+    sdk::events::EventFlow::Continue
+})?;
+
+sdk::events::skse::messages::on(
+    sdk::events::skse::messages::MessageKind::DataLoaded,
+    |message| {
+        let _ = message.sender();
+    },
+);
+
+sdk::events::skse::messages::on_sender_str(
+    sdk::events::skse::messages::MessageKind::DataLoaded,
+    "SKSE",
+    |message| {
+        let _ = message.typed::<u32>();
+    },
+);
+
+sdk::plugin::on_data_loaded(|message| {
+    let _ = message.lifecycle_phase();
+});
+
+sdk::plugin::on_game_lifecycle(
+    sdk::core::GameLifecyclePhase::PostLoadGame,
+    |message| {
+        let _ = message.kind();
+    },
+);
+
+let _input = sdk::events::input::subscribe(|mut events| {
+    if events.contains_device(RE::INPUT_DEVICE::kKeyboard) {
+        for button in events.buttons_mut() {
+            let _ = button;
+        }
+    }
+
+    sdk::events::EventFlow::Continue
+})?;
+
+let local_bus = sdk::events::Bus::<u32>::new();
+let _sub = local_bus.subscribe_early(|value| {
+    *value += 1;
+});
+let published = local_bus.publish_owned(10);
+assert_eq!(published.flow(), sdk::events::EventFlow::Continue);
+
+let built = local_bus.publish_with(|value| {
+    *value = 41;
+});
+assert_eq!(built.into_event(), 42);
+
+fn local_bus() -> &'static sdk::events::Bus<u32> {
+    # use alloc::boxed::Box;
+    # use spin::Once;
+    static PTR: Once<usize> = Once::new();
+    let ptr =
+        *PTR.call_once(|| Box::into_raw(Box::new(sdk::events::Bus::new())) as usize);
+    unsafe { &*(ptr as *const sdk::events::Bus<u32>) }
+}
+
+#[sdk::events::bus_event(bus = local_bus(), early)]
+fn on_local_bus(value: &mut u32) -> sdk::events::EventFlow {
+    *value += 1;
+    sdk::events::EventFlow::Continue
+}
+
+#[sdk::events::input_event(prepend)]
+fn on_input(mut events: sdk::events::InputEvents<'_>) {
+    for keyboard_event in events.keyboard_mut() {
+        let _ = keyboard_event;
+    }
+}
+
+#[sdk::events::message_event(
+    kind = sdk::events::skse::messages::MessageKind::DataLoaded
+)]
+fn on_data_loaded(message: sdk::events::skse::messages::MessageRef<'_>) {
+    let _ = message.data_len();
+}
+
+#[sdk::events::message_event(
+    plugin_phase = sdk::core::PluginLifecyclePhase::DataLoaded,
+    sender = "SKSE"
+)]
+fn on_skse_data_loaded(message: sdk::events::skse::messages::MessageRef<'_>) {
+    let _ = message.sender();
+}
+
+let mut batch = sdk::events::EventBatch::new();
+sdk::events::install_all!(
+    &mut batch,
+    on_data_loaded_event,
+    on_skse_data_loaded_event,
+    on_input_event,
+    on_local_bus_event
+)?;
+```
+
+This keeps one recognizable SDK style while preserving the real ownership and
+lifetime differences underneath.
+
+### Rust-Local Event Bus
+
+`sdk::events::bus` is intentionally plugin-local. It is not a replacement for
+SKSE messaging or engine-backed event sources. Its job is to let one Rust
+plugin subsystem publish typed events to other Rust subsystems without forcing
+those subsystems to know about the original hook or engine callback site.
+
+The motivating case is a hook that wants to publish a mutable gameplay payload,
+for example an `on_weapon_hit` event whose subscribers can inspect and mutate
+hit data before later systems observe it.
+
+The currently implemented bus already supports:
+
+- mutable event payload delivery through `FnMut(&mut T) -> EventFlow`
+- explicit stop/continue flow control
+- deterministic `SubscriberPriority` ordering
+- `subscribe_first/early/late/last` convenience helpers
+- `publish_owned(...)` / `publish_default(...)` for hook-owned mutable payloads
+- `publish_with(...)` for default-constructible payloads that want one
+  initialization pass before dispatch
+- RAII unsubscription through `BusSubscription`
+- deferred add/remove semantics so dispatch can stay stable while callbacks
+  subscribe or unsubscribe
+
+That priority model is especially attractive for gameplay mutation chains:
+
+- early subscribers can normalize or clamp engine data
+- mid-priority subscribers can apply gameplay rules
+- late subscribers can observe the final value after previous edits
+
+This bus should still stay synchronous and explicit by default. The first goal
+is deterministic intra-plugin orchestration, not a general async framework.
+The current implementation also intentionally does not re-enter the same
+subscriber during a nested publish; if one callback republishes while it is
+already active, that callback is skipped for the nested pass instead of being
+invoked recursively.
+
+For owner-bound dynamic sources, the SDK now also exposes
+`EventSourceExt<T>` on `BSTEventSource<T>` itself, so the common case does not
+need to spell `EventSourceRef::new(...)` manually:
+
+```rust
+let mut source = RE::BSTEventSource::<RE::TESHitEvent>::new();
+let _subscription = source.subscribe_sdk(|event| {
+    let _ = event;
+})?;
+```
+
+## Serialization Design
+
+The serialization stack is intentionally split in two:
+
+- `sdk::plugin::serialization`
+  owns SKSE callback registration and the high-level persistent-model API
+- `sdk::persistence::cosave`
+  owns typed record IDs, bounded record IO, and reusable codecs
+
+The intended high-level path is model-driven:
+
+```rust
+#[derive(Default, Cosave)]
+struct SaveState {
+    count: u32,
+    cache: BTreeMap<String, BoundedVec<u32, 64>>,
+}
+
+impl sdk::plugin::serialization::Model for SaveState {
+    const UNIQUE_ID: sdk::plugin::serialization::UniqueId =
+        sdk::plugin::serialization::unique_id!("TFNG");
+
+    fn schema(schema: &mut sdk::plugin::serialization::Schema<Self>) {
+        sdk::plugin::serialization::schema_fields!(schema, {
+            sdk::plugin::serialization::record_id!("CNT1") => 1 => count,
+            sdk::plugin::serialization::record_id!("CACH") => 1 => cache,
+        });
+    }
+}
+```
+
+The `u32` after `record_id!(...)` is the version of that specific top-level
+record format, not the whole plugin.
+
+For payload structs, `#[derive(Cosave)]` generates both `CosaveEncode` and
+`CosaveDecode` in field order for ordinary structs and tuple structs. That is
+the intended default path for primitive fields and nested containers such as
+`Option<T>`, `[T; N]`, `Vec<T>`, `BoundedVec<T, N>`, and `BTreeMap<K, V>`.
+
+The derive also supports field-level sugar for common serialization cases:
+
+- `#[cosave(skip)]`
+  keeps a field out of the serialized payload and restores it with
+  `Default::default()` during load
+- `#[cosave(default)]`
+  decodes the field normally when bytes are present, but falls back to
+  `Default::default()` when older payloads end before that field
+- `#[cosave(with = path::to::codec)]`
+  routes one field through custom `encode(&T, &mut RecordWriter)` /
+  `decode(&mut RecordReader<'_>) -> Result<T, LoadError>` helpers
+
+`#[cosave(default)]` is primarily intended for newly added trailing fields in a
+record payload. It is not a replacement for full record-version migrations when
+the wire layout itself changes incompatibly.
+
+For unusual binary layouts, `Schema::record(...)` exposes a custom hook that
+receives the full loaded record and a `LoadContext`, so version dispatch and
+manual decoding can stay local to that record.
+
+When one record ID needs multiple load paths across save versions, the schema
+can use migration sugar instead of a hand-written `match`:
+
+```rust
+schema
+    .migrating_record(
+        sdk::plugin::serialization::record_id!("CDAD"),
+        2,
+        save_v2,
+    )
+    .load(1, load_v1)
+    .load(2, load_v2);
+```
+
+This keeps the current save format explicit while still preserving older
+versioned records that the active schema does not yet understand.
+
+### Serialization Safety Goals
+
+The SDK serialization layer tries to be safer than the usual hand-written
+`OpenRecord` / `GetNextRecordInfo` loop:
+
+- all top-level records are encoded into memory first, then written to SKSE
+- record readers are length-bounded and detect trailing bytes
+- `BoundedVec<T, N>` can reject oversized payloads during load
+- field-derived payloads report which field failed to encode/decode
+- sequence and map codecs report the failing element or entry index
+- unknown records in the plugin's own co-save segment are preserved and written
+  back untouched, so partially upgraded plugins do not accidentally discard
+  unrelated future records
+- unknown records whose IDs are now explicitly owned by the active schema are
+  not re-emitted, so one logical record ID does not get written twice with two
+  conflicting payloads
+
+### SKSE-Aware Codecs
+
+The cosave layer keeps raw numeric codecs available, but also exposes SKSE-aware
+resolved wrappers:
+
+- `ResolvedFormId`
+- `ResolvedVmHandle`
+
+These write the stored raw value and resolve it through the active
+`SerializationInterface` during decode, so model code can opt into correct
+save/load remapping without open-coding `ResolveFormID` or `ResolveHandle`.
 
 ## Hooking Design
 
@@ -702,18 +1166,36 @@ Implemented foundation:
 - `sdk::plugin::task`
   facade over the current SKSE task helpers
 - `sdk::plugin::messaging`
-  facade over the current message-listener registration layer
+  high-level façade over SKSE plugin messaging with typed `MessageKind`,
+  `MessageRef<'_>`, sender-filtered listeners, and lifecycle-aware helpers
+- `sdk::plugin::lifecycle`
+  structured plugin/game lifecycle registration built on typed SKSE messaging
 - `sdk::plugin::entry`
   light SDK wrappers for common `LoadInterface` initialization paths
 - `sdk::plugin::config`
   early INI-focused helpers built on the existing `Ini` surface
+- `sdk::persistence::cosave`
+  typed `RecordId` / `UniqueId`, bounded record readers/writers, and first-class
+  codecs for fixed-width primitives, `String`, `Option<T>`, `[T; N]`, `Vec<T>`,
+  `BoundedVec<T, N>`, `BTreeMap<K, V>`, and SKSE-aware resolved `FormID` /
+  `VMHandle` wrappers
+- `sdk::plugin::serialization`
+  high-level `Model` / `Schema` registration layer over the typed cosave
+  foundation, including save/load/revert/form-delete callback registration,
+  typed state access, runtime error capture, passthrough preservation of
+  unknown records in the plugin's own co-save segment, `#[derive(Cosave)]`,
+  `schema_fields!(...)` sugar for top-level value records, and migrating-record
+  sugar for versioned load handlers
+- `sdk::events`
+  raw `BSTEventSource<T>` subscriptions, singleton gameplay/UI/SKSE dispatcher
+  helpers, typed SKSE messaging registration, ergonomic input-chain wrappers,
+  `IntoEventFlow` callback sugar, `EventBatch` / `EventInstaller` batching,
+  attribute-driven event authoring, and a first synchronous plugin-local
+  mutable event bus
 
 Still intentionally placeholder-heavy:
 
-- `sdk::lifecycle`
-- `sdk::serialization`
 - `sdk::forms`
-- `sdk::events`
 - `sdk::gameplay`
 - `sdk::ui`
 - `sdk::interop`

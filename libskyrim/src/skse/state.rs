@@ -1,3 +1,4 @@
+use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::ffi::c_char;
 
@@ -5,10 +6,15 @@ use core_util::{Later, RacyCell};
 
 use super::{InterfaceId, LoadInterface, Message, MessagingInterface, PluginHandle};
 
-const EMPTY_HANDLERS: Vec<fn(&Message)> = Vec::new();
+type DynMessageHandler = dyn FnMut(&Message) + 'static;
 
-static MESSAGE_HANDLERS: RacyCell<[Vec<fn(&Message)>; Message::SKSE_MAX]> =
-    RacyCell::new([EMPTY_HANDLERS; Message::SKSE_MAX]);
+enum MessageHandler {
+    Function(fn(&Message)),
+    Closure(Box<DynMessageHandler>),
+}
+
+static MESSAGE_HANDLERS: RacyCell<[Vec<MessageHandler>; Message::SKSE_MAX]> =
+    RacyCell::new([const { Vec::new() }; Message::SKSE_MAX]);
 static PLUGIN_HANDLE: Later<PluginHandle> = Later::new();
 
 #[inline(always)]
@@ -26,7 +32,18 @@ pub fn plugin_handle() -> PluginHandle {
 pub fn register_listener(message_type: u32, callback: fn(&Message)) {
     assert!(message_type < Message::SKSE_MAX as u32);
     unsafe {
-        (*MESSAGE_HANDLERS.get())[message_type as usize].push(callback);
+        (*MESSAGE_HANDLERS.get())[message_type as usize].push(MessageHandler::Function(callback));
+    }
+}
+
+pub fn register_listener_dyn<F>(message_type: u32, callback: F)
+where
+    F: FnMut(&Message) + 'static,
+{
+    assert!(message_type < Message::SKSE_MAX as u32);
+    unsafe {
+        (*MESSAGE_HANDLERS.get())[message_type as usize]
+            .push(MessageHandler::Closure(Box::new(callback)));
     }
 }
 
@@ -62,7 +79,10 @@ unsafe extern "system" fn message_listener(message: *mut Message) {
         return;
     }
 
-    for callback in unsafe { (*MESSAGE_HANDLERS.get())[message.msg_type as usize].iter() } {
-        callback(message);
+    for callback in unsafe { (*MESSAGE_HANDLERS.get())[message.msg_type as usize].iter_mut() } {
+        match callback {
+            MessageHandler::Function(function) => function(message),
+            MessageHandler::Closure(closure) => closure(message),
+        }
     }
 }

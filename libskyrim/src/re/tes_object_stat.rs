@@ -7,6 +7,7 @@ use crate::re::bgs_material_object::BGSMaterialObject;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
 use crate::re::tes_bound_object::TESBoundObject;
+use crate::re::tes_file::TESFile;
 use crate::re::tes_model_texture_swap::TESModelTextureSwap;
 use crate::relocation::{RttiType, VariantID};
 
@@ -30,8 +31,10 @@ pub struct TESObjectSTATData {
 
 const _: () = assert!(core::mem::size_of::<TESObjectSTATData>() == 0x18);
 const _: () = assert!(core::mem::offset_of!(TESObjectSTATData, material_threshold_angle) == 0x00);
+const _: () = assert!(core::mem::offset_of!(TESObjectSTATData, pad04) == 0x04);
 const _: () = assert!(core::mem::offset_of!(TESObjectSTATData, material_obj) == 0x08);
 const _: () = assert!(core::mem::offset_of!(TESObjectSTATData, flags) == 0x10);
+const _: () = assert!(core::mem::offset_of!(TESObjectSTATData, pad14) == 0x14);
 
 bitflags! {
     #[repr(transparent)]
@@ -88,14 +91,29 @@ impl TESObjectSTAT {
         pub fn dtor()
     }
 
-    #[inline(always)]
-    pub const fn get_playable(&self) -> bool {
-        true
+    crate::virtual_method! {
+        pub const VFUNC_CLEAR_DATA: usize = 0x05;
+        pub fn clear_data(&mut self)
     }
 
-    #[inline(always)]
-    pub fn is_heading_marker(&self) -> bool {
-        (self.base.base.base.form_flags.bits() & TESObjectSTATRecordFlags::NEVER_FADES.bits()) != 0
+    crate::virtual_method! {
+        pub const VFUNC_LOAD: usize = 0x06;
+        pub fn load(&mut self, mod_: *mut TESFile) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
+        pub fn init_item_impl(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_PLAYABLE: usize = 0x19;
+        pub fn get_playable() -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_IS_HEADING_MARKER: usize = 0x1A;
+        pub fn is_heading_marker() -> bool
     }
 
     #[inline(always)]
@@ -123,6 +141,9 @@ impl TESObjectSTAT {
 
 pub trait TESObjectSTATExt {
     fn dtor(&mut self);
+    fn clear_data(&mut self);
+    fn load(&mut self, mod_: *mut TESFile) -> bool;
+    fn init_item_impl(&mut self);
     fn get_playable(&self) -> bool;
     fn is_heading_marker(&self) -> bool;
     fn has_tree_lod(&self) -> bool;
@@ -133,6 +154,18 @@ pub trait TESObjectSTATExt {
 impl<T: AsRef<TESObjectSTAT> + AsMut<TESObjectSTAT>> TESObjectSTATExt for T {
     fn dtor(&mut self) {
         self.as_mut().dtor()
+    }
+
+    fn clear_data(&mut self) {
+        self.as_mut().clear_data()
+    }
+
+    fn load(&mut self, mod_: *mut TESFile) -> bool {
+        self.as_mut().load(mod_)
+    }
+
+    fn init_item_impl(&mut self) {
+        self.as_mut().init_item_impl()
     }
 
     fn get_playable(&self) -> bool {

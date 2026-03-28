@@ -5,14 +5,19 @@ use crate::offsets::offsets_rtti::RTTI_TESObjectBOOK;
 use crate::offsets::offsets_vtable::VTABLE_TESObjectBOOK;
 use crate::re::actor_values::ActorValue;
 use crate::re::bgs_destructible_object_form::BGSDestructibleObjectForm;
+use crate::re::bgs_keyword::BGSKeyword;
 use crate::re::bgs_keyword_form::BGSKeywordForm;
+use crate::re::bgs_load_form_buffer::BGSLoadFormBuffer;
 use crate::re::bgs_message_icon::BGSMessageIcon;
 use crate::re::bgs_pickup_putdown_sounds::BGSPickupPutdownSounds;
+use crate::re::bgs_save_form_buffer::BGSSaveFormBuffer;
+use crate::re::bs_string::BSString;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
 use crate::re::spell_item::SpellItem;
 use crate::re::tes_bound_object::TESBoundObject;
 use crate::re::tes_description::TESDescription;
+use crate::re::tes_file::TESFile;
 use crate::re::tes_full_name::TESFullName;
 use crate::re::tes_icon::TESIcon;
 use crate::re::tes_model_texture_swap::TESModelTextureSwap;
@@ -164,7 +169,37 @@ impl TESObjectBOOK {
     // override (TESBoundObject)
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INITIALIZE_DATA: usize = 0x04;
+        pub fn initialize_data(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CLEAR_DATA: usize = 0x05;
+        pub fn clear_data(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_LOAD: usize = 0x06;
+        pub fn load(&mut self, mod_: *mut TESFile) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_SAVE_GAME: usize = 0x0E;
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_LOAD_GAME: usize = 0x0F;
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
+        pub fn init_item_impl(&mut self)
     }
 
     #[inline(always)]
@@ -219,15 +254,19 @@ impl TESObjectBOOK {
         pub fn read(this: &mut TESObjectBOOK, reader: *mut TESObjectREFR) -> bool => RelocationID::new(17439, 17842)
     }
 
-    // void InitializeData() override;                                                                // 04
-    // void ClearData() override;                                                                     // 05
-    // bool Load(TESFile* a_mod) override;                                                            // 06
-    // void SaveGame(BGSSaveFormBuffer* a_buf) override;                                              // 0E
-    // void LoadGame(BGSLoadFormBuffer* a_buf) override;                                              // 0F
-    // void InitItemImpl() override;                                                                  // 13
-    // bool Activate(...) override;                                                                   // 37
-    // bool GetActivateText(TESObjectREFR* a_activator, BSString& a_dst) override;                   // 4C
+    crate::virtual_method! {
+        pub const VFUNC_ACTIVATE: usize = 0x37;
+        pub fn activate(&mut self, target_ref: *mut TESObjectREFR, activator_ref: *mut TESObjectREFR, arg3: u8, object: *mut TESBoundObject, target_count: i32) -> bool
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_GET_ACTIVATE_TEXT: usize = 0x4C;
+        pub fn get_activate_text(&mut self, activator: *mut TESObjectREFR, dst: *mut BSString) -> bool
+    }
 
     // override (BGSKeywordForm)
-    // BGSKeyword* GetDefaultKeyword() const override;                                                // 05
+    #[inline(always)]
+    pub fn get_default_keyword(&self) -> *mut BGSKeyword {
+        self.keyword_form.get_default_keyword()
+    }
 }

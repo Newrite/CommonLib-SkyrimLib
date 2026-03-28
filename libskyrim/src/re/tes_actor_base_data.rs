@@ -285,7 +285,9 @@ impl TESActorBaseData {
 }
 
 pub trait TESActorBaseDataExt {
+    fn copy_from_template_forms(&mut self, template_forms: *mut *mut TESActorBase);
     fn get_level(&self) -> u16;
+    fn get_voice_type(&self) -> *mut BGSVoiceType;
     fn affects_stealth_meter(&self) -> bool;
     fn bleeds(&self) -> bool;
     fn has_auto_calc_stats(&self) -> bool;
@@ -305,9 +307,17 @@ pub trait TESActorBaseDataExt {
     fn uses_template(&self) -> bool;
 }
 
-impl<T: AsRef<TESActorBaseData>> TESActorBaseDataExt for T {
+impl<T: AsRef<TESActorBaseData> + AsMut<TESActorBaseData>> TESActorBaseDataExt for T {
+    fn copy_from_template_forms(&mut self, template_forms: *mut *mut TESActorBase) {
+        TESActorBaseData::copy_from_template_forms(self.as_mut(), template_forms)
+    }
+
     fn get_level(&self) -> u16 {
         TESActorBaseData::get_level(self.as_ref())
+    }
+
+    fn get_voice_type(&self) -> *mut BGSVoiceType {
+        TESActorBaseData::get_voice_type(self.as_ref())
     }
 
     fn affects_stealth_meter(&self) -> bool {

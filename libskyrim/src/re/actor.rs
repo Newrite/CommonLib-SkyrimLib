@@ -9,16 +9,17 @@ use crate::re::{
     ACTOR_LOS_LOCATION, AIProcess, AITimeStamp, ActorHandle, ActorMagicCaster,
     ActorMotionFeedbackData, ActorMotionFeedbackOutput, ActorMover, ActorState, ActorValue,
     ActorValueModifier, ActorValueOwner, BGSAttackData, BGSDefaultObjectManager, BGSDialogueBranch,
-    BGSKeyword, BGSPerk, BSAnimationGraphEvent, BSAnimationGraphManager, BSContainerForEachResult,
-    BSExtraData, BSFaceGenAnimationData, BSFixedString, BSTEventSink, BSTSmartPointer,
-    BSTransformDeltaEvent, BipedAnim, CFilter, CombatController, CombatGroup, DETECTION_PRIORITY,
-    EmotionType, ExtraCanTalkToPlayer, ExtraDataList, ExtraDataType, ExtraLeveledCreature,
-    FIGHT_REACTION, FormCastable, FormType, HighProcessData, IAnimationGraphManagerHolder,
-    IAnimationGraphManagerHolderExt, IPostAnimationChannelUpdateFunctor, MagicCaster, MagicItem,
-    MagicTarget, MiddleHighProcessData, MovementControllerNPC, NiPoint3, NiPointer, NiRef,
-    ObjectRefHandle, PROCESS_TYPE, PackageLocation, PerkEntryVisitor, ProcessLists, SpellItem,
-    TESBoundObject, TESFaction, TESForm, TESIdleForm, TESNPC, TESObjectCELL, TESObjectMISC,
-    TESObjectREFR, TESPackage, TESRace, TESShout, TESTopicInfo, TESWordOfPower, TrespassPackage,
+    BGSEquipSlot, BGSKeyword, BGSPerk, BSAnimationGraphEvent, BSAnimationGraphManager,
+    BSContainerForEachResult, BSExtraData, BSFaceGenAnimationData, BSFixedString, BSTEventSink,
+    BSTSmartPointer, BSTransformDeltaEvent, BipedAnim, CFilter, CombatController, CombatGroup,
+    DETECTION_PRIORITY, EmotionType, ExtraCanTalkToPlayer, ExtraDataList, ExtraDataType,
+    ExtraLeveledCreature, FIGHT_REACTION, FormCastable, FormType, HighProcessData,
+    IAnimationGraphManagerHolder, IAnimationGraphManagerHolderExt,
+    IPostAnimationChannelUpdateFunctor, InventoryEntryData, MagicCaster, MagicItem, MagicTarget,
+    MiddleHighProcessData, MovementControllerNPC, NiPoint3, NiPointer, NiRef, ObjectRefHandle,
+    PROCESS_TYPE, PackageLocation, PerkEntryVisitor, ProcessLists, SpellItem, TESBoundObject,
+    TESFaction, TESForm, TESIdleForm, TESNPC, TESObjectCELL, TESObjectMISC, TESObjectREFR,
+    TESPackage, TESRace, TESShout, TESTopicInfo, TESWordOfPower, TrespassPackage,
     bhkCharacterController, bhkCharacterMoveFinishEvent,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset, skyrim_cast};
@@ -599,12 +600,44 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_equipped_entry_data(&self, left_hand: bool) -> *mut InventoryEntryData {
+        let Some(process) = self.current_process() else {
+            return core::ptr::null_mut();
+        };
+
+        let Some(middle_high) = (unsafe { process.middle_high.as_ref() }) else {
+            return core::ptr::null_mut();
+        };
+
+        if left_hand {
+            middle_high.left_hand
+        } else {
+            middle_high.right_hand
+        }
+    }
+
+    #[inline(always)]
     pub fn get_equipped_object(&self, left_hand: bool) -> *mut TESForm {
         match self.current_process() {
             Some(process) if left_hand => process.get_equipped_left_hand(),
             Some(process) => process.get_equipped_right_hand(),
             None => core::ptr::null_mut(),
         }
+    }
+
+    #[inline(always)]
+    pub fn get_equipped_object_in_slot(&self, slot: *const BGSEquipSlot) -> *mut TESForm {
+        let Some(process) = self.current_process() else {
+            return core::ptr::null_mut();
+        };
+
+        for equipped_object in unsafe { process.equipped_forms.as_slice() } {
+            if core::ptr::eq(equipped_object.slot as *const BGSEquipSlot, slot) {
+                return equipped_object.object;
+            }
+        }
+
+        core::ptr::null_mut()
     }
 
     #[inline(always)]
@@ -1481,8 +1514,41 @@ impl Actor {
     }
 
     crate::relocated_virtual_method! {
+        pub const VFUNC_IS_IN_FACTION: VariantOffset = VariantOffset::new_se_ae(0x0F9, 0x0FB);
+        pub fn is_in_faction(&self, faction: *const TESFaction) -> bool
+    }
+
+    crate::relocated_virtual_method! {
         pub const VFUNC_FOR_EACH_PERK: VariantOffset = VariantOffset::new_se_ae(0x0FA, 0x0FC);
         pub fn for_each_perk(&self, visitor: &mut PerkEntryVisitor)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_ADD_PERK: VariantOffset = VariantOffset::new_se_ae(0x0FB, 0x0FD);
+        pub fn add_perk(&mut self, perk: *mut BGSPerk, rank: u32)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_REMOVE_PERK: VariantOffset = VariantOffset::new_se_ae(0x0FC, 0x0FE);
+        pub fn remove_perk(&mut self, perk: *mut BGSPerk)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_APPLY_TEMPORARY_PERK: VariantOffset =
+            VariantOffset::new_se_ae(0x0FD, 0x0FF);
+        pub fn apply_temporary_perk(&mut self, perk: *mut BGSPerk)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_REMOVE_TEMPORARY_PERK: VariantOffset =
+            VariantOffset::new_se_ae(0x0FE, 0x100);
+        pub fn remove_temporary_perk(&mut self, perk: *mut BGSPerk)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_HAS_PERK_ENTRIES: VariantOffset =
+            VariantOffset::new_se_ae(0x0FF, 0x101);
+        pub fn has_perk_entries(&self, entry_type: EntryPoint) -> bool
     }
 
     crate::relocated_virtual_method! {
@@ -1493,6 +1559,29 @@ impl Actor {
             entry_type: EntryPoint,
             visitor: &mut PerkEntryVisitor
         )
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_APPLY_PERKS_FROM_BASE: VariantOffset =
+            VariantOffset::new_se_ae(0x101, 0x103);
+        pub fn apply_perks_from_base(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_Q_SPEAKING_DONE: VariantOffset = VariantOffset::new_se_ae(0x107, 0x109);
+        pub fn q_speaking_done(&self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_SPEAKING_DONE: VariantOffset =
+            VariantOffset::new_se_ae(0x108, 0x10A);
+        pub fn set_speaking_done(&mut self, set: bool)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CREATE_MOVEMENT_CONTROLLER: VariantOffset =
+            VariantOffset::new_se_ae(0x109, 0x10B);
+        pub fn create_movement_controller(&mut self)
     }
 
     crate::relocated_virtual_method! {
@@ -1781,12 +1870,15 @@ pub trait ActorExt {
     fn get_handle(&self) -> ActorHandle;
     fn get_actor_base(&self) -> *mut TESNPC;
     fn get_actor_value_max(&self, value: ActorValue) -> f32;
+    fn get_actor_value_modifier(&self, modifier: ACTOR_VALUE_MODIFIER, value: ActorValue) -> f32;
     fn get_aim_angle(&self) -> f32;
     fn get_aim_heading(&self) -> f32;
     fn get_commanding_actor(&self) -> NiPointer<Actor>;
     fn get_current_package(&self) -> *mut TESPackage;
     fn get_current_shout(&self) -> *mut TESShout;
+    fn get_equipped_entry_data(&self, left_hand: bool) -> *mut InventoryEntryData;
     fn get_equipped_object(&self, left_hand: bool) -> *mut TESForm;
+    fn get_equipped_object_in_slot(&self, slot: *const BGSEquipSlot) -> *mut TESForm;
     fn get_equipped_weight(&self) -> f32;
     fn get_killer(&self) -> *mut Actor;
     fn get_high_process(&self) -> *mut HighProcessData;
@@ -1810,6 +1902,7 @@ pub trait ActorExt {
     fn get_template_base(&self) -> *mut TESNPC;
     fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
     fn has_keyword_string(&self, form_editor_id: &str) -> bool;
+    fn is_in_faction(&self, faction: *const TESFaction) -> bool;
     fn can_talk_to_player(&self) -> bool;
     fn is_ai_enabled(&self) -> bool;
     fn is_a_mount(&self) -> bool;
@@ -1852,6 +1945,7 @@ pub trait ActorExt {
     fn get_total_carry_weight(&self) -> f32;
     fn get_warmth_rating(&self) -> f32;
     fn has_perk(&self, perk: *mut BGSPerk) -> bool;
+    fn has_perk_entries(&self, entry_type: EntryPoint) -> bool;
     fn has_shout(&self, shout: *mut TESShout) -> bool;
     fn has_spell(&self, spell: *mut SpellItem) -> bool;
     fn process_vats_attack(
@@ -1868,9 +1962,19 @@ pub trait ActorExt {
         is_left: bool,
     );
     fn remove_from_faction(&mut self, faction: *mut TESFaction);
+    fn add_perk(&mut self, perk: *mut BGSPerk, rank: u32);
+    fn remove_perk(&mut self, perk: *mut BGSPerk);
+    fn apply_temporary_perk(&mut self, perk: *mut BGSPerk);
+    fn remove_temporary_perk(&mut self, perk: *mut BGSPerk);
     fn remove_spell(&mut self, spell: *mut SpellItem) -> bool;
     fn request_detection_level(&mut self, target: *mut Actor, priority: DETECTION_PRIORITY) -> i32;
     fn request_los(&mut self, target: *mut Actor, view_cone: f32) -> i32;
+    fn for_each_perk(&self, visitor: &mut PerkEntryVisitor);
+    fn for_each_perk_entry(&self, entry_type: EntryPoint, visitor: &mut PerkEntryVisitor);
+    fn apply_perks_from_base(&mut self);
+    fn q_speaking_done(&self) -> bool;
+    fn set_speaking_done(&mut self, set: bool);
+    fn create_movement_controller(&mut self);
     fn update_nav_pos(&self, pos: &NiPoint3, new_pos: &NiPoint3, speed: f32, distance: f32)
     -> bool;
     fn visit_spells(&mut self, visitor: &mut ActorForEachSpellVisitor);
@@ -1973,6 +2077,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_actor_value_modifier(&self, modifier: ACTOR_VALUE_MODIFIER, value: ActorValue) -> f32 {
+        Actor::get_actor_value_modifier(self.as_ref(), modifier, value)
+    }
+
+    #[inline(always)]
     fn get_aim_angle(&self) -> f32 {
         Actor::get_aim_angle(self.as_ref())
     }
@@ -1998,8 +2107,18 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_equipped_entry_data(&self, left_hand: bool) -> *mut InventoryEntryData {
+        Actor::get_equipped_entry_data(self.as_ref(), left_hand)
+    }
+
+    #[inline(always)]
     fn get_equipped_object(&self, left_hand: bool) -> *mut TESForm {
         Actor::get_equipped_object(self.as_ref(), left_hand)
+    }
+
+    #[inline(always)]
+    fn get_equipped_object_in_slot(&self, slot: *const BGSEquipSlot) -> *mut TESForm {
+        Actor::get_equipped_object_in_slot(self.as_ref(), slot)
     }
 
     #[inline(always)]
@@ -2115,6 +2234,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn has_keyword_string(&self, form_editor_id: &str) -> bool {
         Actor::has_keyword_string(self.as_ref(), form_editor_id)
+    }
+
+    #[inline(always)]
+    fn is_in_faction(&self, faction: *const TESFaction) -> bool {
+        Actor::is_in_faction(self.as_ref(), faction)
     }
 
     #[inline(always)]
@@ -2328,6 +2452,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn has_perk_entries(&self, entry_type: EntryPoint) -> bool {
+        Actor::has_perk_entries(self.as_ref(), entry_type)
+    }
+
+    #[inline(always)]
     fn has_shout(&self, shout: *mut TESShout) -> bool {
         Actor::has_shout(self.as_ref(), shout)
     }
@@ -2364,6 +2493,26 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn add_perk(&mut self, perk: *mut BGSPerk, rank: u32) {
+        Actor::add_perk(self.as_mut(), perk, rank)
+    }
+
+    #[inline(always)]
+    fn remove_perk(&mut self, perk: *mut BGSPerk) {
+        Actor::remove_perk(self.as_mut(), perk)
+    }
+
+    #[inline(always)]
+    fn apply_temporary_perk(&mut self, perk: *mut BGSPerk) {
+        Actor::apply_temporary_perk(self.as_mut(), perk)
+    }
+
+    #[inline(always)]
+    fn remove_temporary_perk(&mut self, perk: *mut BGSPerk) {
+        Actor::remove_temporary_perk(self.as_mut(), perk)
+    }
+
+    #[inline(always)]
     fn remove_spell(&mut self, spell: *mut SpellItem) -> bool {
         Actor::remove_spell(self.as_mut(), spell)
     }
@@ -2376,6 +2525,36 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn request_los(&mut self, target: *mut Actor, view_cone: f32) -> i32 {
         Actor::request_los(self.as_mut(), target, view_cone)
+    }
+
+    #[inline(always)]
+    fn for_each_perk(&self, visitor: &mut PerkEntryVisitor) {
+        Actor::for_each_perk(self.as_ref(), visitor)
+    }
+
+    #[inline(always)]
+    fn for_each_perk_entry(&self, entry_type: EntryPoint, visitor: &mut PerkEntryVisitor) {
+        Actor::for_each_perk_entry(self.as_ref(), entry_type, visitor)
+    }
+
+    #[inline(always)]
+    fn apply_perks_from_base(&mut self) {
+        Actor::apply_perks_from_base(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn q_speaking_done(&self) -> bool {
+        Actor::q_speaking_done(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn set_speaking_done(&mut self, set: bool) {
+        Actor::set_speaking_done(self.as_mut(), set)
+    }
+
+    #[inline(always)]
+    fn create_movement_controller(&mut self) {
+        Actor::create_movement_controller(self.as_mut())
     }
 
     #[inline(always)]

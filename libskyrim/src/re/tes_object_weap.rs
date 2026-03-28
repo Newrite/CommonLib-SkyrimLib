@@ -465,7 +465,14 @@ inherit!(TESObjectWEAP => TESDescription, tes_description);
 impl TESObjectWEAP {
     pub const RTTI: VariantID = RTTI_TESObjectWEAP;
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESObjectWEAP;
+    pub const FORMTYPE: FormType = FormType::Weapon;
 
+    crate::virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor()
+    }
+
+    // ~TESObjectWEAP() override;                     // 00
     // override (TESBoundObject)
     // void InitializeData() override;                    // 04
     // void ClearData() override;                         // 05

@@ -4,6 +4,7 @@ use alloc::vec;
 use core::ffi::c_void;
 use core::marker::PhantomData;
 
+use crate::re::tes_form::FormID as TesFormID;
 use crate::re::{
     ActiveEffect, BGSBaseAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm, VMHandle,
     VMTypeID,
@@ -11,6 +12,7 @@ use crate::re::{
 use crate::sdk::core::GameRef;
 
 use super::SerializationInterface;
+use super::registration_arguments::{RegistrationEventArgs, with_vm};
 
 fn get_handle_policy() -> *mut IObjectHandlePolicy {
     let skyrim_vm = SkyrimVM::get_singleton();
@@ -41,9 +43,51 @@ fn release_handle_map<Filter>(regs: &BTreeMap<Filter, BTreeSet<VMHandle>>) {
     }
 }
 
-pub trait RegistrationFilter: Clone + Ord {
+pub trait RegistrationFilter: Clone + Ord + Default {
     fn save_filter(&self, serialization: &SerializationInterface) -> bool;
-    fn load_filter(serialization: &SerializationInterface) -> Option<Self>;
+    fn load_filter(&mut self, serialization: &SerializationInterface) -> bool;
+}
+
+/// Form-ID filter wrapper that preserves CommonLib save/load semantics by
+/// resolving the stored value through `SerializationInterface::ResolveFormID`
+/// during `RegistrationMap::load(...)`.
+///
+/// Use this when a `RegistrationMap`/`RegistrationMapUnique` filter logically
+/// represents a Skyrim `FormID`. Plain `u32` filters intentionally remain raw
+/// POD values and are not remapped across save/load boundaries.
+#[repr(transparent)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ResolvedFormID(TesFormID);
+
+impl ResolvedFormID {
+    #[inline(always)]
+    pub const fn new(form_id: TesFormID) -> Self {
+        Self(form_id)
+    }
+
+    #[inline(always)]
+    pub const fn get(self) -> TesFormID {
+        self.0
+    }
+
+    #[inline(always)]
+    pub const fn into_inner(self) -> TesFormID {
+        self.0
+    }
+}
+
+impl From<TesFormID> for ResolvedFormID {
+    #[inline(always)]
+    fn from(value: TesFormID) -> Self {
+        Self::new(value)
+    }
+}
+
+impl From<ResolvedFormID> for TesFormID {
+    #[inline(always)]
+    fn from(value: ResolvedFormID) -> Self {
+        value.into_inner()
+    }
 }
 
 macro_rules! impl_registration_filter_pod {
@@ -59,13 +103,18 @@ macro_rules! impl_registration_filter_pod {
                 }
 
                 #[inline(always)]
-                fn load_filter(serialization: &SerializationInterface) -> Option<Self> {
+                fn load_filter(&mut self, serialization: &SerializationInterface) -> bool {
                     let mut value = core::mem::MaybeUninit::<$ty>::uninit();
-                    serialization.read_record_data(
+                    let read = serialization.read_record_data(
                         value.as_mut_ptr().cast(),
                         core::mem::size_of::<$ty>() as u32,
                     );
-                    Some(unsafe { value.assume_init() })
+                    if read != core::mem::size_of::<$ty>() as u32 {
+                        return false;
+                    }
+
+                    *self = unsafe { value.assume_init() };
+                    true
                 }
             }
         )*
@@ -89,21 +138,63 @@ impl RegistrationFilter for String {
         serialization.write_record_data(bytes.as_ptr().cast(), bytes.len() as u32)
     }
 
-    fn load_filter(serialization: &SerializationInterface) -> Option<Self> {
+    fn load_filter(&mut self, serialization: &SerializationInterface) -> bool {
         let mut length = 0_usize;
-        serialization.read_record_data(
+        let read = serialization.read_record_data(
             (&mut length as *mut usize).cast(),
             core::mem::size_of::<usize>() as u32,
         );
+        if read != core::mem::size_of::<usize>() as u32 {
+            return false;
+        }
 
         let mut bytes = vec![0_u8; length];
-        serialization.read_record_data(bytes.as_mut_ptr().cast(), bytes.len() as u32);
+        let read = serialization.read_record_data(bytes.as_mut_ptr().cast(), bytes.len() as u32);
+        if read != bytes.len() as u32 {
+            return false;
+        }
 
         if bytes.last().copied() == Some(0) {
             bytes.pop();
         }
 
-        String::from_utf8(bytes).ok()
+        match String::from_utf8(bytes) {
+            Ok(value) => {
+                *self = value;
+                true
+            }
+            Err(_) => false,
+        }
+    }
+}
+
+impl RegistrationFilter for ResolvedFormID {
+    #[inline(always)]
+    fn save_filter(&self, serialization: &SerializationInterface) -> bool {
+        serialization.write_record_data(
+            (&self.0 as *const TesFormID).cast(),
+            core::mem::size_of::<TesFormID>() as u32,
+        )
+    }
+
+    #[inline(always)]
+    fn load_filter(&mut self, serialization: &SerializationInterface) -> bool {
+        let mut stored = 0 as TesFormID;
+        let read = serialization.read_record_data(
+            (&mut stored as *mut TesFormID).cast(),
+            core::mem::size_of::<TesFormID>() as u32,
+        );
+        if read != core::mem::size_of::<TesFormID>() as u32 {
+            return false;
+        }
+
+        let mut resolved = stored;
+        if !serialization.resolve_form_id(stored, &mut resolved) {
+            return false;
+        }
+
+        self.0 = resolved;
+        true
     }
 }
 
@@ -374,9 +465,8 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
         self.regs.clear();
 
         for _ in 0..num_regs {
-            let Some(filter) = Filter::load_filter(serialization) else {
-                return false;
-            };
+            let mut filter = Filter::default();
+            let loaded_filter = filter.load_filter(serialization);
 
             let mut num_handles = 0_usize;
             serialization.read_record_data(
@@ -384,7 +474,6 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
                 core::mem::size_of::<usize>() as u32,
             );
 
-            let handles = self.regs.entry(filter).or_default();
             for _ in 0..num_handles {
                 let mut handle = 0 as VMHandle;
                 serialization.read_record_data(
@@ -393,8 +482,11 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
                 );
 
                 let mut resolved = handle;
-                if serialization.resolve_handle(handle, &mut resolved) {
-                    handles.insert(resolved);
+                if serialization.resolve_handle(handle, &mut resolved) && loaded_filter {
+                    self.regs
+                        .entry(filter.clone())
+                        .or_default()
+                        .insert(resolved);
                 }
             }
         }
@@ -486,11 +578,6 @@ impl<Filter: RegistrationFilter> RegistrationMapBase<Filter> {
 }
 
 /// Rust-side port of `SKSE::RegistrationMap<Filter, Args...>`.
-///
-/// TODO: Add typed `send_event(...)` / `queue_event(...)` parity once libskyrim
-/// exposes source-backed `MakeFunctionArguments` / `VMArg` construction for
-/// arbitrary Papyrus-convertible argument packs. CommonLib creates a fresh
-/// argument object per handle, so a shared raw-pointer helper would be dishonest.
 pub struct RegistrationMap<Filter: RegistrationFilter, Args = ()> {
     base: RegistrationMapBase<Filter>,
     _marker: PhantomData<fn() -> Args>,
@@ -648,5 +735,46 @@ impl<Filter: RegistrationFilter, Args> RegistrationMap<Filter, Args> {
                 f(handle);
             }
         }
+    }
+
+    /// Sends a Papyrus event to all handles currently registered under
+    /// `filter`.
+    ///
+    /// `Args` is modeled as a Rust tuple pack. For example:
+    /// `RegistrationMap<MyFilter, (i32, bool)>` expects
+    /// `send_event(filter, (42, true))`.
+    #[inline(always)]
+    pub fn send_event(&self, filter: Filter, args: Args)
+    where
+        Args: RegistrationEventArgs,
+    {
+        let event_name = self.base.event_name_fixed();
+        let Some(handles) = self.base.regs().get(&filter) else {
+            return;
+        };
+
+        let _ = with_vm(|vm| {
+            for &handle in handles {
+                let Some(arguments) = args.to_function_arguments(vm) else {
+                    continue;
+                };
+                vm.base.send_event(handle, &event_name, arguments.as_ptr());
+            }
+        });
+    }
+
+    /// Queues a Papyrus event dispatch on the SKSE task interface.
+    ///
+    /// The task queue may outlive the current stack frame, so this requires a
+    /// long-lived registration container reference.
+    #[inline(always)]
+    pub fn queue_event(&'static self, filter: Filter, args: Args)
+    where
+        Filter: Send + Sync + 'static,
+        Args: RegistrationEventArgs + Send + 'static,
+    {
+        super::task::add_task(move || {
+            self.send_event(filter, args);
+        });
     }
 }

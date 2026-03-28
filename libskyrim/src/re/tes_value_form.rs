@@ -15,6 +15,8 @@ pub struct TESValueForm {
 }
 
 const _: () = assert!(core::mem::size_of::<TESValueForm>() == 0x10);
+const _: () = assert!(core::mem::offset_of!(TESValueForm, value) == 0x08);
+const _: () = assert!(core::mem::offset_of!(TESValueForm, pad0c) == 0x0C);
 
 impl RttiType for TESValueForm {
     const RTTI: VariantID = RTTI_TESValueForm;
@@ -23,6 +25,26 @@ impl RttiType for TESValueForm {
 impl TESValueForm {
     pub const RTTI: VariantID = RTTI_TESValueForm;
     pub const VTABLE: &'static [VariantID] = &VTABLE_TESValueForm;
+
+    crate::virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_INITIALIZE_DATA_COMPONENT: usize = 0x01;
+        pub fn initialize_data_component(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_CLEAR_DATA_COMPONENT: usize = 0x02;
+        pub fn clear_data_component(&mut self)
+    }
+
+    crate::virtual_method! {
+        pub const VFUNC_COPY_COMPONENT: usize = 0x03;
+        pub fn copy_component(&mut self, rhs: *mut BaseFormComponent)
+    }
 
     #[inline(always)]
     pub const fn get_value(&self) -> i32 {
@@ -50,10 +72,30 @@ impl TESValueForm {
 }
 
 pub trait TESValueFormExt {
+    fn dtor(&mut self);
+    fn initialize_data_component(&mut self);
+    fn clear_data_component(&mut self);
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_value(&self) -> i32;
 }
 
-impl<T: AsRef<TESValueForm>> TESValueFormExt for T {
+impl<T: AsRef<TESValueForm> + AsMut<TESValueForm>> TESValueFormExt for T {
+    fn dtor(&mut self) {
+        TESValueForm::dtor(self.as_mut())
+    }
+
+    fn initialize_data_component(&mut self) {
+        TESValueForm::initialize_data_component(self.as_mut())
+    }
+
+    fn clear_data_component(&mut self) {
+        TESValueForm::clear_data_component(self.as_mut())
+    }
+
+    fn copy_component(&mut self, rhs: *mut BaseFormComponent) {
+        TESValueForm::copy_component(self.as_mut(), rhs)
+    }
+
     fn get_value(&self) -> i32 {
         self.as_ref().get_value()
     }

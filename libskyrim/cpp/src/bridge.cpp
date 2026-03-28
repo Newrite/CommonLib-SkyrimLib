@@ -69,6 +69,22 @@ namespace
         }
     }
 
+    template <class T>
+    void bridge_gptr_add_ref(void* ptr) noexcept
+    {
+        if (ptr) {
+            static_cast<T*>(ptr)->AddRef();
+        }
+    }
+
+    template <class T>
+    void bridge_gptr_release(void* ptr) noexcept
+    {
+        if (ptr) {
+            static_cast<T*>(ptr)->Release();
+        }
+    }
+
     [[nodiscard]] RE::BSEventNotifyControl bridge_notify_control_from_i32(std::int32_t value) noexcept
     {
         return value == static_cast<std::int32_t>(RE::BSEventNotifyControl::kStop) ?
@@ -391,6 +407,38 @@ extern "C" {
             []() {
                 return RE::make_nismart<RE::NiRefObject>();
             });
+    }
+
+    void commonlib_gfx_movie_view_add_ref(void* movie_view) noexcept {
+        bridge_gptr_add_ref<RE::GFxMovieView>(movie_view);
+    }
+
+    void commonlib_gfx_movie_view_release(void* movie_view) noexcept {
+        bridge_gptr_release<RE::GFxMovieView>(movie_view);
+    }
+
+    void commonlib_fx_delegate_add_ref(void* delegate) noexcept {
+        bridge_gptr_add_ref<RE::FxDelegate>(delegate);
+    }
+
+    void commonlib_fx_delegate_release(void* delegate) noexcept {
+        bridge_gptr_release<RE::FxDelegate>(delegate);
+    }
+
+    void commonlib_fx_delegate_handler_add_ref(void* handler) noexcept {
+        bridge_gptr_add_ref<RE::FxDelegateHandler>(handler);
+    }
+
+    void commonlib_fx_delegate_handler_release(void* handler) noexcept {
+        bridge_gptr_release<RE::FxDelegateHandler>(handler);
+    }
+
+    void commonlib_imenu_add_ref(void* menu) noexcept {
+        bridge_gptr_add_ref<RE::IMenu>(menu);
+    }
+
+    void commonlib_imenu_release(void* menu) noexcept {
+        bridge_gptr_release<RE::IMenu>(menu);
     }
 
     void* commonlib_bgs_attack_data_create() noexcept {

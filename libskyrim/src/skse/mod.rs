@@ -6,6 +6,7 @@ pub mod interfaces;
 pub mod loader;
 pub mod log;
 pub mod papyrus;
+mod registration_arguments;
 pub mod registration_map;
 pub mod registration_map_unique;
 pub mod registration_set;
