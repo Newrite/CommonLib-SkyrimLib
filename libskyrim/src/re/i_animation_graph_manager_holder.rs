@@ -1,3 +1,6 @@
+use alloc::ffi::CString;
+use core::ffi::c_void;
+
 use crate::offsets::offsets_rtti::RTTI_IAnimationGraphManagerHolder;
 use crate::offsets::offsets_vtable::VTABLE_IAnimationGraphManagerHolder;
 use crate::re::{
@@ -45,6 +48,20 @@ impl IAnimationGraphManagerHolder {
     crate::virtual_method! {
         pub const VFUNC_NOTIFY_ANIMATION_GRAPH: usize = 0x01;
         pub fn notify_animation_graph(event_name: &BSFixedString) -> bool
+    }
+
+    #[inline(always)]
+    pub fn notify_animation_graph_str(&mut self, event_name: &str) -> bool {
+        let Ok(event_name) = CString::new(event_name) else {
+            return false;
+        };
+
+        unsafe {
+            crate::ffi::commonlib_notify_animation_graph(
+                (self as *mut Self).cast::<c_void>(),
+                event_name.as_ptr(),
+            )
+        }
     }
 
     crate::virtual_method! {
@@ -224,6 +241,7 @@ impl IAnimationGraphManagerHolder {
 
 pub trait IAnimationGraphManagerHolderExt {
     fn notify_animation_graph(&mut self, event_name: &BSFixedString) -> bool;
+    fn notify_animation_graph_str(&mut self, event_name: &str) -> bool;
     fn get_animation_graph_manager(
         &self,
         out: &mut BSTSmartPointer<BSAnimationGraphManager>,
@@ -256,6 +274,10 @@ impl<T: AsRef<IAnimationGraphManagerHolder> + AsMut<IAnimationGraphManagerHolder
 {
     fn notify_animation_graph(&mut self, event_name: &BSFixedString) -> bool {
         IAnimationGraphManagerHolder::notify_animation_graph(self.as_mut(), event_name)
+    }
+
+    fn notify_animation_graph_str(&mut self, event_name: &str) -> bool {
+        IAnimationGraphManagerHolder::notify_animation_graph_str(self.as_mut(), event_name)
     }
 
     fn get_animation_graph_manager(

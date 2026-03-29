@@ -1,6 +1,7 @@
 //! Menu-oriented high-level helpers.
 
 use alloc::borrow::ToOwned;
+use alloc::ffi::CString;
 use core::ffi::c_void;
 use core::ptr::NonNull;
 
@@ -23,8 +24,8 @@ pub trait NamedMenu {
     const MENU_NAME: &'static str;
 }
 
-/// Marker trait for menu message-data types constructible through
-/// `UIMessageQueue::create_ui_message_data`.
+/// Marker trait for menu message-data types constructible through the engine's
+/// `UIMessageDataFactory`.
 pub trait TypedMenuMessageData {
     const CLASS_NAME: &'static str;
 }
@@ -332,12 +333,14 @@ pub unsafe fn queue_message_data_unchecked(
 }
 
 #[inline(always)]
-fn create_message_data<T>(queue: &mut UIMessageQueue) -> Option<NonNull<T>>
+fn create_message_data<T>() -> Option<NonNull<T>>
 where
     T: TypedMenuMessageData,
 {
-    let class_name = BSFixedString::from_str(T::CLASS_NAME);
-    NonNull::new(queue.create_ui_message_data(&class_name).cast())
+    let class_name = CString::new(T::CLASS_NAME).ok()?;
+    NonNull::new(unsafe {
+        crate::ffi::commonlib_create_ui_message_data(class_name.as_ptr()).cast()
+    })
 }
 
 pub fn queue_message_with<T>(
@@ -350,7 +353,7 @@ where
 {
     unsafe {
         message_queue().with_mut_unchecked(|queue| {
-            let Some(mut data) = create_message_data::<T>(queue) else {
+            let Some(mut data) = create_message_data::<T>() else {
                 return false;
             };
 

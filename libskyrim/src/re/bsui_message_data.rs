@@ -1,3 +1,4 @@
+use alloc::ffi::CString;
 use core::ffi::c_void;
 
 use core_util::inherit;
@@ -55,9 +56,12 @@ impl BSUIMessageData {
     pub const CLASS_NAME: &'static str = "BSUIMessageData";
 
     #[inline(always)]
-    fn create_message_data(ui_message_queue: &mut UIMessageQueue) -> *mut Self {
-        let class_name = BSFixedString::from_str(Self::CLASS_NAME);
-        ui_message_queue.create_ui_message_data(&class_name).cast()
+    fn create_message_data() -> *mut Self {
+        let Ok(class_name) = CString::new(Self::CLASS_NAME) else {
+            return core::ptr::null_mut();
+        };
+
+        unsafe { crate::ffi::commonlib_create_ui_message_data(class_name.as_ptr()).cast() }
     }
 
     #[inline(always)]
@@ -69,7 +73,7 @@ impl BSUIMessageData {
             return;
         };
 
-        let msg_data_ptr = Self::create_message_data(ui_message_queue);
+        let msg_data_ptr = Self::create_message_data();
         let data_ptr = {
             let Some(msg_data) = (unsafe { msg_data_ptr.as_mut() }) else {
                 return;

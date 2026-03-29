@@ -123,4 +123,9 @@ unsafe extern "C" {
         is_latent: bool,
     ) -> *mut c_void;
     pub fn commonlib_native_function_destroy(function: *mut c_void);
+
+    // UI and animation helper bridges.
+    pub fn commonlib_create_ui_message_data(class_name: *const c_char) -> *mut c_void;
+    pub fn commonlib_notify_animation_graph(holder: *mut c_void, event_name: *const c_char)
+    -> bool;
 }

@@ -1,5 +1,9 @@
 #include "PCH.h"
 
+#include "RE/I/IAnimationGraphManagerHolder.h"
+#include "RE/U/UIMessageDataFactory.h"
+#include "RE/U/UIMessageQueue.h"
+
 #include <MinHook.h>
 #include <memory>
 #include <new>
@@ -616,6 +620,34 @@ extern "C" {
 
     void* commonlib_skse_get_ni_node_update_event_source() noexcept {
         return SKSE::GetNiNodeUpdateEventSource();
+    }
+
+    void* commonlib_create_ui_message_data(const char* class_name) noexcept {
+        if (!class_name) {
+            return nullptr;
+        }
+
+        const auto manager = RE::MessageDataFactoryManager::GetSingleton();
+        if (!manager) {
+            return nullptr;
+        }
+
+        const auto fixed_class_name = RE::BSFixedString(class_name);
+        const auto creator = manager->GetCreator(fixed_class_name);
+        if (!creator) {
+            return nullptr;
+        }
+
+        return creator->Create();
+    }
+
+    bool commonlib_notify_animation_graph(void* holder, const char* event_name) noexcept {
+        if (!holder || !event_name) {
+            return false;
+        }
+
+        const auto fixed_event_name = RE::BSFixedString(event_name);
+        return static_cast<RE::IAnimationGraphManagerHolder*>(holder)->NotifyAnimationGraph(fixed_event_name);
     }
 
     void commonlib_skse_translation_parse_translation(const char* name) {
