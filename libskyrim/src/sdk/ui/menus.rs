@@ -324,12 +324,17 @@ pub unsafe fn queue_message_data_unchecked(
     message_type: UI_MESSAGE_TYPE,
     data: *mut IUIMessageData,
 ) {
-    unsafe {
-        message_queue().with_mut_unchecked(|queue| {
-            let menu_name = BSFixedString::from_str(menu_name);
-            queue.add_message(&menu_name, message_type, data);
-        })
+    let Ok(menu_name) = CString::new(menu_name) else {
+        return;
     };
+
+    unsafe {
+        crate::ffi::commonlib_ui_message_queue_add_message(
+            menu_name.as_ptr(),
+            message_type as i32,
+            data.cast(),
+        );
+    }
 }
 
 #[inline(always)]
@@ -351,18 +356,22 @@ pub fn queue_message_with<T>(
 where
     T: TypedMenuMessageData,
 {
+    let Some(mut data) = create_message_data::<T>() else {
+        return false;
+    };
+
+    unsafe { init(data.as_mut()) };
+
+    let Ok(menu_name) = CString::new(menu_name) else {
+        return false;
+    };
+
     unsafe {
-        message_queue().with_mut_unchecked(|queue| {
-            let Some(mut data) = create_message_data::<T>() else {
-                return false;
-            };
-
-            init(data.as_mut());
-
-            let menu_name = BSFixedString::from_str(menu_name);
-            queue.add_message(&menu_name, message_type, data.as_ptr().cast());
-            true
-        })
+        crate::ffi::commonlib_ui_message_queue_add_message(
+            menu_name.as_ptr(),
+            message_type as i32,
+            data.as_ptr().cast(),
+        )
     }
 }
 

@@ -126,6 +126,11 @@ unsafe extern "C" {
 
     // UI and animation helper bridges.
     pub fn commonlib_create_ui_message_data(class_name: *const c_char) -> *mut c_void;
+    pub fn commonlib_ui_message_queue_add_message(
+        menu_name: *const c_char,
+        message_type: i32,
+        data: *mut c_void,
+    ) -> bool;
     pub fn commonlib_notify_animation_graph(holder: *mut c_void, event_name: *const c_char)
     -> bool;
 }

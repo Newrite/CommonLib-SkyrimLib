@@ -641,6 +641,28 @@ extern "C" {
         return creator->Create();
     }
 
+    bool commonlib_ui_message_queue_add_message(
+        const char* menu_name,
+        std::int32_t message_type,
+        void* data) noexcept
+    {
+        if (!menu_name) {
+            return false;
+        }
+
+        const auto queue = RE::UIMessageQueue::GetSingleton();
+        if (!queue) {
+            return false;
+        }
+
+        const auto fixed_menu_name = RE::BSFixedString(menu_name);
+        queue->AddMessage(
+            fixed_menu_name,
+            static_cast<RE::UI_MESSAGE_TYPE>(message_type),
+            static_cast<RE::IUIMessageData*>(data));
+        return true;
+    }
+
     bool commonlib_notify_animation_graph(void* holder, const char* event_name) noexcept {
         if (!holder || !event_name) {
             return false;
