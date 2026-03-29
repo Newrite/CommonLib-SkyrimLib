@@ -89,8 +89,18 @@ impl ActorHandle {
         Self::get_handle(ptr)
     }
 
+    #[inline(always)]
+    pub fn get_handle(ptr: *mut Actor) -> ActorHandle {
+        let mut out = Self::new();
+        unsafe { Self::get_handle_impl(&mut out, ptr) };
+        out
+    }
+
+    // NOTE: `BSPointerHandleManagerInterface<T>::GetHandle` returns a C++ handle type by value.
+    // On MSVC that goes through a hidden out-parameter because `BSPointerHandle` is a non-trivial
+    // C++ class, even though it is only 4 bytes wide. Model the ABI honestly here.
     crate::relocation_func! {
-        pub fn get_handle(ptr: *mut Actor) -> ActorHandle => RelocationID::new(15967, 16212)
+        fn get_handle_impl(out: &mut ActorHandle, ptr: *mut Actor) => RelocationID::new(15967, 16212)
     }
 
     crate::relocation_func! {
@@ -131,8 +141,15 @@ impl ProjectileHandle {
         Self::get_handle(ptr)
     }
 
+    #[inline(always)]
+    pub fn get_handle(ptr: *mut Projectile) -> ProjectileHandle {
+        let mut out = Self::new();
+        unsafe { Self::get_handle_impl(&mut out, ptr) };
+        out
+    }
+
     crate::relocation_func! {
-        pub fn get_handle(ptr: *mut Projectile) -> ProjectileHandle => RelocationID::new(15967, 16212)
+        fn get_handle_impl(out: &mut ProjectileHandle, ptr: *mut Projectile) => RelocationID::new(15967, 16212)
     }
 
     crate::relocation_func! {
@@ -177,8 +194,15 @@ impl ObjectRefHandle {
         Self::get_handle(ptr)
     }
 
+    #[inline(always)]
+    pub fn get_handle(ptr: *mut TESObjectREFR) -> ObjectRefHandle {
+        let mut out = Self::new();
+        unsafe { Self::get_handle_impl(&mut out, ptr) };
+        out
+    }
+
     crate::relocation_func! {
-        pub fn get_handle(ptr: *mut TESObjectREFR) -> ObjectRefHandle => RelocationID::new(15967, 16212)
+        fn get_handle_impl(out: &mut ObjectRefHandle, ptr: *mut TESObjectREFR) => RelocationID::new(15967, 16212)
     }
 
     crate::relocation_func! {
