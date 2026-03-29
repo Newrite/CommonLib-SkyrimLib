@@ -93,6 +93,8 @@ pub unsafe fn load(skse: *const LoadInterface) -> bool {
         return false;
     }
 
+    crate::skse::crash::install_panic_hook();
+
     let skse = unsafe { &*skse };
     let game_version = Version::from_packed(skse.runtime_version);
     let skse_version = Version::from_packed(skse.skse_version);
@@ -105,5 +107,8 @@ pub unsafe fn load(skse: *const LoadInterface) -> bool {
         skse_version
     );
 
-    unsafe { skse_plugin_rust_entry(skse) }.is_ok()
+    crate::skse::crash::guard("SKSEPlugin_Load -> skse_plugin_rust_entry", || unsafe {
+        skse_plugin_rust_entry(skse)
+    })
+    .is_ok()
 }

@@ -187,8 +187,10 @@ unsafe extern "C" fn bridge_event_sink_process<T, H>(
 where
     H: BSTEventHandler<T>,
 {
-    let handler = unsafe { &mut *ctx.cast::<H>() };
-    handler.process_event(event.cast::<T>(), event_source.cast::<BSTEventSource<T>>()) as i32
+    crate::skse::crash::guard("BSTEventSink::ProcessEvent bridge", || {
+        let handler = unsafe { &mut *ctx.cast::<H>() };
+        handler.process_event(event.cast::<T>(), event_source.cast::<BSTEventSource<T>>()) as i32
+    })
 }
 
 unsafe extern "C" fn bridge_event_sink_destroy<H>(ctx: *mut c_void) {

@@ -1,4 +1,5 @@
 pub mod api;
+pub mod crash;
 pub mod events;
 pub mod iat;
 pub mod input_map;
@@ -18,6 +19,7 @@ pub mod translation;
 pub mod version;
 
 pub use api::*;
+pub use crash::*;
 pub use events::*;
 pub use iat::*;
 pub use input_map::*;

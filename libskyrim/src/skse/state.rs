@@ -79,10 +79,13 @@ unsafe extern "system" fn message_listener(message: *mut Message) {
         return;
     }
 
-    for callback in unsafe { (*MESSAGE_HANDLERS.get())[message.msg_type as usize].iter_mut() } {
-        match callback {
-            MessageHandler::Function(function) => function(message),
-            MessageHandler::Closure(closure) => closure(message),
+    let context = alloc::format!("SKSE messaging listener (msg_type={})", message.msg_type);
+    crate::skse::crash::guard(context.as_str(), || {
+        for callback in unsafe { (*MESSAGE_HANDLERS.get())[message.msg_type as usize].iter_mut() } {
+            match callback {
+                MessageHandler::Function(function) => function(message),
+                MessageHandler::Closure(closure) => closure(message),
+            }
         }
-    }
+    });
 }

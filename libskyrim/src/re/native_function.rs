@@ -165,12 +165,14 @@ unsafe extern "C" fn bridge_native_function_marshall<H>(
 where
     H: NativeFunctionHandler,
 {
-    let handler = unsafe { &*ctx.cast::<H>() };
-    let base_value = unsafe { &mut *base_value.cast::<Variable>() };
-    let vm = unsafe { &mut *vm.cast::<VirtualMachine>() };
-    let result_value = unsafe { &mut *result_value.cast::<Variable>() };
-    let frame = unsafe { &*frame.cast::<StackFrame>() };
-    unsafe { handler.marshall_and_dispatch(base_value, vm, stack_id, result_value, frame) }
+    crate::skse::crash::guard("Papyrus native-function marshall bridge", || {
+        let handler = unsafe { &*ctx.cast::<H>() };
+        let base_value = unsafe { &mut *base_value.cast::<Variable>() };
+        let vm = unsafe { &mut *vm.cast::<VirtualMachine>() };
+        let result_value = unsafe { &mut *result_value.cast::<Variable>() };
+        let frame = unsafe { &*frame.cast::<StackFrame>() };
+        unsafe { handler.marshall_and_dispatch(base_value, vm, stack_id, result_value, frame) }
+    })
 }
 
 unsafe extern "C" fn bridge_native_function_destroy<H>(ctx: *mut c_void) {

@@ -113,9 +113,11 @@ unsafe extern "C" fn bridge_function_arguments_collect<S>(
 where
     S: FunctionArgumentsSource,
 {
-    let source = unsafe { &*ctx.cast::<S>() };
-    let dst = unsafe { &mut *dst.cast::<BSScrapArray<Variable>>() };
-    source.collect_args(dst)
+    crate::skse::crash::guard("Papyrus function-arguments bridge", || {
+        let source = unsafe { &*ctx.cast::<S>() };
+        let dst = unsafe { &mut *dst.cast::<BSScrapArray<Variable>>() };
+        source.collect_args(dst)
+    })
 }
 
 unsafe extern "C" fn bridge_function_arguments_destroy<S>(ctx: *mut c_void) {

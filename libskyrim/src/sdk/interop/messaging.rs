@@ -1175,16 +1175,18 @@ fn ensure_listener_installed() -> Result<(), ListenerInstallError> {
 }
 
 unsafe extern "system" fn interop_message_listener(message: *mut Message) {
-    let Some(message) = (unsafe { message.as_ref() }) else {
-        return;
-    };
+    crate::skse::crash::guard("sdk::interop message listener", || {
+        let Some(message) = (unsafe { message.as_ref() }) else {
+            return;
+        };
 
-    let message_ref = MessageRef::new(message);
-    for listener in unsafe { (*INTEROP_LISTENERS.get()).iter_mut() } {
-        if listener.filter.matches(message_ref) {
-            (listener.callback)(message);
+        let message_ref = MessageRef::new(message);
+        for listener in unsafe { (*INTEROP_LISTENERS.get()).iter_mut() } {
+            if listener.filter.matches(message_ref) {
+                (listener.callback)(message);
+            }
         }
-    }
+    });
 }
 
 struct ArrayResponseContext<F, T> {
@@ -1200,24 +1202,27 @@ unsafe extern "system" fn array_response_bridge<F, T>(
 ) where
     F: FnMut(&[T]),
 {
-    let Some(context) = (unsafe { (user_ptr as *mut ArrayResponseContext<F, T>).as_mut() }) else {
-        return;
-    };
-
-    let payload = if count == 0 {
-        &[]
-    } else {
-        let Some(data) = NonNullExt::new_const(data.cast::<T>()) else {
+    crate::skse::crash::guard("sdk::interop array response bridge", || {
+        let Some(context) = (unsafe { (user_ptr as *mut ArrayResponseContext<F, T>).as_mut() })
+        else {
             return;
         };
-        if !(data.as_ptr() as usize).is_multiple_of(align_of::<T>()) {
-            return;
-        }
-        unsafe { slice::from_raw_parts(data.as_ptr(), count) }
-    };
 
-    (context.callback)(payload);
-    context.was_invoked = true;
+        let payload = if count == 0 {
+            &[]
+        } else {
+            let Some(data) = NonNullExt::new_const(data.cast::<T>()) else {
+                return;
+            };
+            if !(data.as_ptr() as usize).is_multiple_of(align_of::<T>()) {
+                return;
+            }
+            unsafe { slice::from_raw_parts(data.as_ptr(), count) }
+        };
+
+        (context.callback)(payload);
+        context.was_invoked = true;
+    });
 }
 
 #[inline(always)]

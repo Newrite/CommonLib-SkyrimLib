@@ -343,6 +343,11 @@ extern "C" {
         });
     }
 
+    void commonlib_raise_seh_exception(std::uint32_t code) noexcept {
+        ::RaiseException(code, EXCEPTION_NONCONTINUABLE, 0, nullptr);
+        ::TerminateProcess(::GetCurrentProcess(), code);
+    }
+
     // Выделение памяти через движок Скайрима
     void* commonlib_malloc(size_t size) {
         return RE::malloc(size);

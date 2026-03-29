@@ -14,8 +14,6 @@ use core_util::{Later, RacyCell, StringBuffer, WideStr, WideStringBuffer};
 use cstd::io::File;
 use windows_sys::Win32::Foundation::{MAX_PATH, S_OK};
 use windows_sys::Win32::System::Com::CoTaskMemFree;
-use windows_sys::Win32::System::Diagnostics::Debug::RaiseException;
-use windows_sys::Win32::System::Threading::{GetCurrentProcess, TerminateProcess};
 use windows_sys::Win32::UI::Shell::{FOLDERID_Documents, SHGetKnownFolderPath};
 use windows_sys::Win32::UI::WindowsAndMessaging::MessageBoxA;
 
@@ -289,22 +287,7 @@ pub fn fatal(log_type: LogType, file: &str, line: u32, args: Arguments<'_>) {
 
 #[track_caller]
 pub fn fatal_runtime(args: Arguments<'_>) -> ! {
-    let location = core::panic::Location::caller();
-    fatal(
-        LogType::Both(MB_ICONERROR),
-        location.file(),
-        location.line(),
-        args,
-    );
-
-    unsafe {
-        RaiseException(0xE000_0001u32, 0x1, 0, core::ptr::null());
-        TerminateProcess(GetCurrentProcess(), 0xE000_0001u32);
-    }
-
-    loop {
-        core::hint::spin_loop();
-    }
+    crate::skse::crash::raise_logged_runtime_error(args)
 }
 
 #[macro_export]
@@ -339,7 +322,7 @@ macro_rules! skse_warning {
     };
     ( $($arg:tt)* ) => {
         $crate::skse::log::warning(
-            $crate::skse::log::LogType::Both($crate::skse::log::MB_ICONWARNING),
+            $crate::skse::log::LogType::File,
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)
@@ -379,7 +362,7 @@ macro_rules! skse_error {
     };
     ( $($arg:tt)* ) => {
         $crate::skse::log::error(
-            $crate::skse::log::LogType::Both($crate::skse::log::MB_ICONERROR),
+            $crate::skse::log::LogType::File,
             $crate::core::file!(),
             $crate::core::line!(),
             $crate::core::format_args!($($arg)*)

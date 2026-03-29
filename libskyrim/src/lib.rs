@@ -8,6 +8,11 @@
 
 extern crate alloc;
 extern crate self as libskyrim;
+#[cfg(feature = "std")]
+extern crate std;
+
+#[cfg(all(feature = "std", feature = "panic-handler"))]
+compile_error!("`libskyrim` features `std` and `panic-handler` are mutually exclusive.");
 
 pub mod ffi;
 pub mod ini;

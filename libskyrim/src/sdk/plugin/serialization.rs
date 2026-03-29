@@ -849,54 +849,62 @@ pub fn write_value_record<T: CosaveEncode>(
 }
 
 unsafe extern "system" fn save_callback(serialization: *mut SerializationInterface) {
-    let Some(serialization) = (unsafe { serialization.as_ref() }) else {
-        return;
-    };
+    crate::skse::crash::guard("SKSE serialization save callback", || {
+        let Some(serialization) = (unsafe { serialization.as_ref() }) else {
+            return;
+        };
 
-    let state = &mut *SERIALIZATION_STATE.lock();
-    let Some(state) = state.as_mut() else {
-        return;
-    };
+        let state = &mut *SERIALIZATION_STATE.lock();
+        let Some(state) = state.as_mut() else {
+            return;
+        };
 
-    state.clear_last_error();
-    if let Err(error) = state.driver.save(serialization) {
-        state.set_last_error(error);
-    }
+        state.clear_last_error();
+        if let Err(error) = state.driver.save(serialization) {
+            state.set_last_error(error);
+        }
+    });
 }
 
 unsafe extern "system" fn load_callback(serialization: *mut SerializationInterface) {
-    let Some(serialization) = (unsafe { serialization.as_ref() }) else {
-        return;
-    };
+    crate::skse::crash::guard("SKSE serialization load callback", || {
+        let Some(serialization) = (unsafe { serialization.as_ref() }) else {
+            return;
+        };
 
-    let state = &mut *SERIALIZATION_STATE.lock();
-    let Some(state) = state.as_mut() else {
-        return;
-    };
+        let state = &mut *SERIALIZATION_STATE.lock();
+        let Some(state) = state.as_mut() else {
+            return;
+        };
 
-    state.clear_last_error();
-    if let Err(error) = state.driver.load(serialization) {
-        state.set_last_error(error);
-    }
+        state.clear_last_error();
+        if let Err(error) = state.driver.load(serialization) {
+            state.set_last_error(error);
+        }
+    });
 }
 
 unsafe extern "system" fn revert_callback(_serialization: *mut SerializationInterface) {
-    let state = &mut *SERIALIZATION_STATE.lock();
-    let Some(state) = state.as_mut() else {
-        return;
-    };
+    crate::skse::crash::guard("SKSE serialization revert callback", || {
+        let state = &mut *SERIALIZATION_STATE.lock();
+        let Some(state) = state.as_mut() else {
+            return;
+        };
 
-    state.clear_last_error();
-    state.driver.revert();
+        state.clear_last_error();
+        state.driver.revert();
+    });
 }
 
 unsafe extern "system" fn form_delete_callback(handle: VMHandle) {
-    let state = &mut *SERIALIZATION_STATE.lock();
-    let Some(state) = state.as_mut() else {
-        return;
-    };
+    crate::skse::crash::guard("SKSE serialization form-delete callback", || {
+        let state = &mut *SERIALIZATION_STATE.lock();
+        let Some(state) = state.as_mut() else {
+            return;
+        };
 
-    state.driver.form_delete(handle);
+        state.driver.form_delete(handle);
+    });
 }
 
 #[cfg(test)]

@@ -606,14 +606,16 @@ where
     where
         M: PapyrusModule,
     {
-        let Some(vm) = (unsafe { vm.as_ref() }) else {
-            return false;
-        };
+        crate::skse::crash::guard("SKSE Papyrus register callback", || {
+            let Some(vm) = (unsafe { vm.as_ref() }) else {
+                return false;
+            };
 
-        let mut module = ModuleRegistry::new(vm);
-        let ok = M::register(&mut module);
-        module.note(ok);
-        module.finish()
+            let mut module = ModuleRegistry::new(vm);
+            let ok = M::register(&mut module);
+            module.note(ok);
+            module.finish()
+        })
     }
 
     register(register_impl::<M>)

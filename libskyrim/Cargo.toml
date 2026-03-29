@@ -16,6 +16,10 @@ spin = "0.9.8"
 # Build the default cross-runtime plugin surface for SE and AE.
 default = ["se", "ae"]
 
+# Opt-in std-backed runtime guards for plugin crates that want panic capture,
+# panic-hook diagnostics, and SEH rethrow for crash loggers.
+std = []
+
 # Runtime selection flags.
 se = []
 ae = []

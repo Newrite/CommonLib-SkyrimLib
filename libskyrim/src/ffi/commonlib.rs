@@ -43,6 +43,7 @@ unsafe extern "C" {
     // Task interface helpers.
     pub fn commonlib_add_task(cb: extern "C" fn(*mut c_void), data: *mut c_void);
     pub fn commonlib_add_ui_task(cb: extern "C" fn(*mut c_void), data: *mut c_void);
+    pub fn commonlib_raise_seh_exception(code: u32);
 
     // Engine memory wrappers.
     pub fn commonlib_malloc(size: usize) -> *mut c_void;
