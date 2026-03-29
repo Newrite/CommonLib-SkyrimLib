@@ -110,6 +110,39 @@ pub fn require_offset(offset: usize, accessor: &str) -> usize {
 
 #[inline(always)]
 #[track_caller]
+pub fn require_se(accessor: &str) {
+    if !is_se() {
+        crate::skse::log::fatal_runtime(format_args!(
+            "{accessor} is SE-only, current runtime is {}",
+            current_runtime_name()
+        ));
+    }
+}
+
+#[inline(always)]
+#[track_caller]
+pub fn require_ae(accessor: &str) {
+    if !is_ae() {
+        crate::skse::log::fatal_runtime(format_args!(
+            "{accessor} is AE-only, current runtime is {}",
+            current_runtime_name()
+        ));
+    }
+}
+
+#[inline(always)]
+#[track_caller]
+pub fn require_flat(accessor: &str) {
+    if is_vr() {
+        crate::skse::log::fatal_runtime(format_args!(
+            "{accessor} is only available in SE/AE, current runtime is {}",
+            current_runtime_name()
+        ));
+    }
+}
+
+#[inline(always)]
+#[track_caller]
 pub fn require_vr(accessor: &str) {
     if !is_vr() {
         crate::skse::log::fatal_runtime(format_args!(
@@ -122,12 +155,7 @@ pub fn require_vr(accessor: &str) {
 #[inline(always)]
 #[track_caller]
 pub fn require_non_vr(accessor: &str) {
-    if is_vr() {
-        crate::skse::log::fatal_runtime(format_args!(
-            "{accessor} is only available in SE/AE, current runtime is {}",
-            current_runtime_name()
-        ));
-    }
+    require_flat(accessor);
 }
 
 #[inline(always)]

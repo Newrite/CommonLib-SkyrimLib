@@ -1,6 +1,8 @@
 //! Dynamic cast helpers shared across SDK domains.
 
-use crate::re::{BSTSmartPointer, BSTSmartPointerManager, HkRef, NiPointer, NiRef, hkRefPtr};
+use crate::re::{
+    BSTSmartPointer, BSTSmartPointerManager, GPtr, GPtrTarget, HkRef, NiPointer, NiRef, hkRefPtr,
+};
 use crate::relocation::{RttiType, skyrim_cast, skyrim_cast_const};
 
 use super::handles::{HandleFamilyTarget, Resolved, ResolvedHandle};
@@ -126,6 +128,18 @@ where
 impl<T> ConstRttiCastSource for NiPointer<T>
 where
     T: NiRef + RttiType,
+{
+    type Source = T;
+
+    #[inline(always)]
+    fn raw_const_source_ptr(&self) -> *const Self::Source {
+        self.get().cast_const()
+    }
+}
+
+impl<T> ConstRttiCastSource for GPtr<T>
+where
+    T: GPtrTarget + RttiType,
 {
     type Source = T;
 

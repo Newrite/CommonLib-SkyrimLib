@@ -1,6 +1,8 @@
+use core_util::inherit;
+
 use crate::offsets::offsets_rtti::RTTI_BSShaderMaterial;
 use crate::offsets::offsets_vtable::VTABLE_BSShaderMaterial;
-use crate::re::{BSGraphicsVertexDesc, BSIntrusiveRefCounted, NiPoint2};
+use crate::re::{BSIntrusiveRefCounted, NiPoint2};
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::BSShaderMaterial::Feature`
@@ -59,13 +61,20 @@ impl RttiType for BSShaderMaterial {
     const RTTI: VariantID = RTTI_BSShaderMaterial;
 }
 
+inherit!(BSShaderMaterial : BSIntrusiveRefCounted, base);
+
 impl BSShaderMaterial {
     pub const RTTI: VariantID = RTTI_BSShaderMaterial;
     pub const VTABLE: &'static [VariantID] = &VTABLE_BSShaderMaterial;
 
     crate::virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x00;
+        pub fn dtor(&mut self)
+    }
+
+    crate::virtual_method! {
         pub const VFUNC_CREATE: usize = 0x01;
-        pub fn create() -> *mut BSShaderMaterial
+        pub fn create(&self) -> *mut BSShaderMaterial
     }
 
     crate::virtual_method! {
@@ -75,7 +84,7 @@ impl BSShaderMaterial {
 
     crate::virtual_method! {
         pub const VFUNC_DO_IS_COPY: usize = 0x03;
-        pub fn do_is_copy(&mut self, that: *mut BSShaderMaterial) -> bool
+        pub fn do_is_copy(&self, that: *mut BSShaderMaterial) -> bool
     }
 
     crate::virtual_method! {
@@ -85,16 +94,69 @@ impl BSShaderMaterial {
 
     crate::virtual_method! {
         pub const VFUNC_GET_DEFAULT: usize = 0x05;
-        pub fn get_default() -> *mut BSShaderMaterial
+        pub fn get_default(&self) -> *mut BSShaderMaterial
     }
 
     crate::virtual_method! {
         pub const VFUNC_GET_FEATURE: usize = 0x06;
-        pub fn get_feature() -> BSShaderMaterialFeature
+        pub fn get_feature(&self) -> BSShaderMaterialFeature
     }
 
     crate::virtual_method! {
         pub const VFUNC_GET_TYPE: usize = 0x07;
-        pub fn get_type() -> BSShaderMaterialType
+        pub fn get_type(&self) -> BSShaderMaterialType
+    }
+}
+
+pub trait BSShaderMaterialExt {
+    fn dtor(&mut self);
+    fn create(&self) -> *mut BSShaderMaterial;
+    fn copy_members(&mut self, that: *mut BSShaderMaterial);
+    fn do_is_copy(&self, that: *mut BSShaderMaterial) -> bool;
+    fn compute_crc32(&mut self, src_hash: u32) -> u32;
+    fn get_default(&self) -> *mut BSShaderMaterial;
+    fn get_feature(&self) -> BSShaderMaterialFeature;
+    fn get_type(&self) -> BSShaderMaterialType;
+}
+
+impl<T: AsRef<BSShaderMaterial> + AsMut<BSShaderMaterial>> BSShaderMaterialExt for T {
+    #[inline(always)]
+    fn dtor(&mut self) {
+        self.as_mut().dtor()
+    }
+
+    #[inline(always)]
+    fn create(&self) -> *mut BSShaderMaterial {
+        self.as_ref().create()
+    }
+
+    #[inline(always)]
+    fn copy_members(&mut self, that: *mut BSShaderMaterial) {
+        self.as_mut().copy_members(that)
+    }
+
+    #[inline(always)]
+    fn do_is_copy(&self, that: *mut BSShaderMaterial) -> bool {
+        self.as_ref().do_is_copy(that)
+    }
+
+    #[inline(always)]
+    fn compute_crc32(&mut self, src_hash: u32) -> u32 {
+        self.as_mut().compute_crc32(src_hash)
+    }
+
+    #[inline(always)]
+    fn get_default(&self) -> *mut BSShaderMaterial {
+        self.as_ref().get_default()
+    }
+
+    #[inline(always)]
+    fn get_feature(&self) -> BSShaderMaterialFeature {
+        self.as_ref().get_feature()
+    }
+
+    #[inline(always)]
+    fn get_type(&self) -> BSShaderMaterialType {
+        self.as_ref().get_type()
     }
 }

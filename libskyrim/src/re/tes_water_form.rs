@@ -1,11 +1,11 @@
 use bitflags::bitflags;
-use core::ffi::c_void;
 use core_util::{EnumSet, inherit};
 
 use crate::offsets::offsets_rtti::RTTI_TESWaterForm;
 use crate::offsets::offsets_vtable::VTABLE_TESWaterForm;
 use crate::re::bgs_material_type::BGSMaterialType;
 use crate::re::bgs_sound_descriptor_form::BGSSoundDescriptorForm;
+use crate::re::bs_water_shader_material::BSWaterShaderMaterial;
 use crate::re::color::Color;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
@@ -114,44 +114,44 @@ const _: () = assert!(core::mem::size_of::<WaterShaderData>() == 0xE8);
 /// C++ `RE::TESWaterForm`
 #[repr(C)]
 pub struct TESWaterForm {
-    pub base: TESForm,                                 // 000
-    pub full_name: TESFullName,                        // 020
-    pub attack_damage_form: TESAttackDamageForm,       // 030
-    pub need_update: bool,                             // 040
-    pub pad41: u8,                                     // 041
-    pub pad42: u16,                                    // 042
-    pub tex_scroll: [NiColorA; 3],                     // 044
-    pub pad074: u32,                                   // 074
-    pub noise_textures: [TESTexture; 4],               // 078
-    pub alpha: i8,                                     // 0B8
-    pub flags: EnumSet<TESWaterFormFlag, u8>,          // 0B9
-    pub pad0ba: u16,                                   // 0BA
-    pub pad0bc: u32,                                   // 0BC
-    pub material_type: *mut BGSMaterialType,           // 0C0
-    pub water_sound: *mut BGSSoundDescriptorForm,      // 0C8
-    pub data: WaterShaderData,                         // 0D0
-    pub water_weather_control: [*mut TESWaterForm; 3], // 1B8
-    pub current_texture_select: [i32; 2],              // 1D0
-    pub frequency_x: u32,                              // 1D8
-    pub frequency_y: u32,                              // 1DC
-    pub octaves: i32,                                  // 1E0
-    pub amplitude: f32,                                // 1E4
-    pub lacunarity: f32,                               // 1E8
-    pub bias: f32,                                     // 1EC
-    pub gain: f32,                                     // 1F0
-    pub pad1f4: u32,                                   // 1F4
-    pub contact_spell: *mut SpellItem,                 // 1F8
-    pub noise_texture_data: [NiPointer<NiTexture>; 4], // 200
-    pub placeable_auto_water: *mut TESObjectACTI,      // 220
-    pub placeable_lod_water: *mut TESObjectACTI,       // 228
-    pub water_shader_material: *mut c_void,            // 230 - BSWaterShaderMaterial*
-    pub reset_noise_textures: bool,                    // 238
-    pub pad239: u8,                                    // 239
-    pub pad23a: u16,                                   // 23A
-    pub pad23c: u32,                                   // 23C
-    pub image_space: *mut TESImageSpace,               // 240 - INAM
-    pub linear_velocity: NiPoint3,                     // 248
-    pub angular_velocity: NiPoint3,                    // 254
+    pub base: TESForm,                                     // 000
+    pub full_name: TESFullName,                            // 020
+    pub attack_damage_form: TESAttackDamageForm,           // 030
+    pub need_update: bool,                                 // 040
+    pub pad41: u8,                                         // 041
+    pub pad42: u16,                                        // 042
+    pub tex_scroll: [NiColorA; 3],                         // 044
+    pub pad074: u32,                                       // 074
+    pub noise_textures: [TESTexture; 4],                   // 078
+    pub alpha: i8,                                         // 0B8
+    pub flags: EnumSet<TESWaterFormFlag, u8>,              // 0B9
+    pub pad0ba: u16,                                       // 0BA
+    pub pad0bc: u32,                                       // 0BC
+    pub material_type: *mut BGSMaterialType,               // 0C0
+    pub water_sound: *mut BGSSoundDescriptorForm,          // 0C8
+    pub data: WaterShaderData,                             // 0D0
+    pub water_weather_control: [*mut TESWaterForm; 3],     // 1B8
+    pub current_texture_select: [i32; 2],                  // 1D0
+    pub frequency_x: u32,                                  // 1D8
+    pub frequency_y: u32,                                  // 1DC
+    pub octaves: i32,                                      // 1E0
+    pub amplitude: f32,                                    // 1E4
+    pub lacunarity: f32,                                   // 1E8
+    pub bias: f32,                                         // 1EC
+    pub gain: f32,                                         // 1F0
+    pub pad1f4: u32,                                       // 1F4
+    pub contact_spell: *mut SpellItem,                     // 1F8
+    pub noise_texture_data: [NiPointer<NiTexture>; 4],     // 200
+    pub placeable_auto_water: *mut TESObjectACTI,          // 220
+    pub placeable_lod_water: *mut TESObjectACTI,           // 228
+    pub water_shader_material: *mut BSWaterShaderMaterial, // 230
+    pub reset_noise_textures: bool,                        // 238
+    pub pad239: u8,                                        // 239
+    pub pad23a: u16,                                       // 23A
+    pub pad23c: u32,                                       // 23C
+    pub image_space: *mut TESImageSpace,                   // 240 - INAM
+    pub linear_velocity: NiPoint3,                         // 248
+    pub angular_velocity: NiPoint3,                        // 254
 }
 
 const _: () = assert!(core::mem::size_of::<TESWaterForm>() == 0x260);

@@ -140,6 +140,25 @@ pub struct VR_PLAYER_TARGET_LOC {
 
 const _: () = assert!(core::mem::size_of::<VR_PLAYER_TARGET_LOC>() == 0x50);
 
+/// Cross-runtime raw head block shared by flat and VR queued target locations.
+#[repr(C)]
+pub struct PLAYER_RUNTIME_TARGET_LOC_DATA {
+    pub world: *mut TESWorldSpace,     // 00
+    pub interior: *mut TESObjectCELL,  // 08
+    pub location: NiPoint3,            // 10
+    pub angle: NiPoint3,               // 1C
+    pub arrival_func: *mut c_void,     // 28
+    pub arrival_func_data: i64,        // 30
+    pub furniture_ref: RefHandle,      // 38
+    pub fast_travel_marker: RefHandle, // 3C
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_TARGET_LOC_DATA>() == 0x40);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_TARGET_LOC_DATA, arrival_func_data) == 0x30);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_TARGET_LOC_DATA, fast_travel_marker) == 0x3C);
+
 /// C++ `RE::PlayerActionObject`
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -456,6 +475,74 @@ const _: () = assert!(core::mem::size_of::<VR_INFO_RUNTIME_DATA>() == 0x140);
 const _: () = assert!(core::mem::offset_of!(VR_INFO_RUNTIME_DATA, sleep_seconds) == 0x00);
 const _: () = assert!(core::mem::offset_of!(VR_INFO_RUNTIME_DATA, skills) == 0xD0);
 
+/// Cross-runtime raw head block shared by flat and VR info runtime data.
+#[repr(C)]
+pub struct PLAYER_INFO_RUNTIME_HEAD_DATA {
+    pub large_biped: BSTSmartPointer<BipedAnim>, // 00
+    pub first_person_3d: NiPointer<NiNode>,      // 08
+    pub eye_height: f32,                         // 10
+    pub greet_timer: f32,                        // 14
+    pub encumbered_timer: f32,                   // 18
+    pub power_attack_timer: f32,                 // 1C
+    pub hours_to_sleep: i32,                     // 20
+    pub amount_stolen_sold: i32,                 // 24
+    pub value_stolen: u32,                       // 28
+    pub last_ridden_mount: ActorHandle,          // 2C
+    pub light_target: ActorHandle,               // 30
+    pub sort_actor_distance_timer: f32,          // 34
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_INFO_RUNTIME_HEAD_DATA>() == 0x38);
+const _: () = assert!(core::mem::offset_of!(PLAYER_INFO_RUNTIME_HEAD_DATA, large_biped) == 0x00);
+const _: () = assert!(
+    core::mem::offset_of!(PLAYER_INFO_RUNTIME_HEAD_DATA, sort_actor_distance_timer) == 0x34
+);
+
+/// Cross-runtime raw tail block shared by flat and VR info runtime data.
+#[repr(C)]
+pub struct PLAYER_INFO_RUNTIME_TAIL_DATA {
+    pub player_marker_path: *mut TeleportPath,  // 000
+    pub skill_trainings_this_level: u32,        // 008
+    pub unk0c: u32,                             // 00C
+    pub default_class: *mut TESClass,           // 010
+    pub unk18: u64,                             // 018
+    pub crime_counts: [u32; CrimeType::TOTAL],  // 020
+    pub unk3c: u32,                             // 03C
+    pub pending_poison: *mut AlchemyItem,       // 040
+    pub last_playing_time_update: i64,          // 048
+    pub total_playing_time: i64,                // 050
+    pub character_seed: i32,                    // 058
+    pub unk5c: u32,                             // 05C
+    pub last_known_good_location: *mut TESForm, // 060
+    pub unk68: u32,                             // 068
+    pub unk6c: u32,                             // 06C
+    pub first_person_light: NiPointer<BSLight>, // 070
+    pub third_person_light: NiPointer<BSLight>, // 078
+    pub drop_angle_mod: f32,                    // 080
+    pub last_drop_angle_mod: f32,               // 084
+    pub skills: *mut PlayerSkills,              // 088
+    pub auto_aim_actor: ActorHandle,            // 090
+    pub unk94: RefHandle,                       // 094
+    pub unk98: u64,                             // 098
+    pub targeted_3d: NiPointer<NiAVObject>,     // 0A0
+    pub combat_group: *mut CombatGroup,         // 0A8
+    pub actors_to_display_on_the_hud_array: BSTArray<ActorHandle>, // 0B0
+    pub advance_object: *mut TESForm,           // 0C8
+    pub last_one_hand_items: [*mut TESBoundObject; 2], // 0D0
+    pub teammate_count: u32,                    // 0E0
+    pub combat_timer: f32,                      // 0E4
+    pub yield_timer: f32,                       // 0E8
+    pub chase_timer: f32,                       // 0EC
+    pub draw_sheathe_safety_timer: f32,         // 0F0
+    pub unk_f4: u32,                            // 0F4
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_INFO_RUNTIME_TAIL_DATA>() == 0xF8);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_INFO_RUNTIME_TAIL_DATA, player_marker_path) == 0x00);
+const _: () = assert!(core::mem::offset_of!(PLAYER_INFO_RUNTIME_TAIL_DATA, skills) == 0x88);
+const _: () = assert!(core::mem::offset_of!(PLAYER_INFO_RUNTIME_TAIL_DATA, combat_timer) == 0xE4);
+
 /// C++ `RE::VR_NODE_DATA`
 #[repr(C)]
 pub struct VR_NODE_DATA {
@@ -554,13 +641,12 @@ const _: () =
     assert!(core::mem::offset_of!(VR_NODE_DATA, quest_marker_billboards_node_array) == 0x248);
 const _: () = assert!(core::mem::offset_of!(VR_NODE_DATA, teleport_node_array3) == 0x288);
 
-/// SE-shaped flat-runtime layout from C++ `RE::PlayerCharacter::PLAYER_RUNTIME_DATA`.
+/// Flat-runtime layout from C++ `RE::PlayerCharacter::PLAYER_RUNTIME_DATA`.
 ///
-/// TODO: `PlayerCharacter.h` still asserts `PlayerCharacter` is `0xBE0` in SE but `0xA08` in AE.
-/// The named flat tail content below matches the SE surface exactly, but the vendored source does
-/// not yet prove an honest full AE `PLAYER_RUNTIME_DATA` layout. Keep cross-runtime access
-/// narrowed to the member-specific accessors in `impl PlayerCharacter` instead of treating this as
-/// a universal flat-runtime tail.
+/// CommonLib exposes `GetPlayerRuntimeData()` as a versioned SE/AE accessor and the non-VR source
+/// uses that whole-tail accessor directly. Keep this as the raw `_flat` runtime-data struct for
+/// now. If future source-backed work proves an AE-only divergence inside this tail, split the
+/// shared prefix from the version-specific overlays instead of pushing that complexity to callers.
 #[repr(C)]
 pub struct PLAYER_RUNTIME_DATA {
     pub quest_targets_lock: BSSpinLock,       // 000
@@ -664,6 +750,148 @@ pub struct PLAYER_RUNTIME_DATA {
     pub pre_transformation_data: *mut PreTransformationData, // 7F8
     pub player_flags: PlayerFlags, // 800
 }
+
+/// Flat runtime-data surface shared by the non-VR runtimes.
+pub type PLAYER_RUNTIME_DATA_FLAT = PLAYER_RUNTIME_DATA;
+/// SE-specific raw accessor surface. This is currently identical to `_flat`.
+pub type PLAYER_RUNTIME_DATA_SE = PLAYER_RUNTIME_DATA_FLAT;
+/// AE-specific raw accessor surface. This is currently identical to `_flat`.
+pub type PLAYER_RUNTIME_DATA_AE = PLAYER_RUNTIME_DATA_FLAT;
+
+/// Cross-runtime raw sub-structure covering the shared location/timer block.
+#[repr(C)]
+pub struct PLAYER_RUNTIME_LOCATION_STATE_DATA {
+    pub current_location: *mut BGSLocation,     // 00
+    pub cached_velocity_timestamp: AITimeStamp, // 08
+    pub telekinesis_distance: f32,              // 0C
+    pub command_timer: f32,                     // 10
+    pub sun_gaze_timer: f32,                    // 14
+    pub sun_gaze_image_space_modifier: *mut TESImageSpaceModifier, // 18
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_LOCATION_STATE_DATA>() == 0x20);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_LOCATION_STATE_DATA, current_location) == 0x00);
+const _: () = assert!(
+    core::mem::offset_of!(
+        PLAYER_RUNTIME_LOCATION_STATE_DATA,
+        sun_gaze_image_space_modifier
+    ) == 0x18
+);
+
+/// Cross-runtime raw sub-structure covering the shared skill/object advancement block.
+#[repr(C)]
+pub struct PLAYER_RUNTIME_ADVANCE_DATA {
+    pub advance_skill: ActorValue,               // 00
+    pub advance_action: u32,                     // 04
+    pub animation_object_action: DEFAULT_OBJECT, // 08
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_ADVANCE_DATA>() == 0x0C);
+const _: () = assert!(core::mem::offset_of!(PLAYER_RUNTIME_ADVANCE_DATA, advance_skill) == 0x00);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_ADVANCE_DATA, animation_object_action) == 0x08);
+
+/// Cross-runtime raw sub-structure covering the shared arrest/tint/race block.
+#[repr(C)]
+pub struct PLAYER_RUNTIME_TINT_RACE_DATA {
+    pub resist_arrest_crime: *mut Crime,                  // 00
+    pub tint_masks: BSTArray<*mut TintMask>,              // 08
+    pub overlay_tint_masks: *mut BSTArray<*mut TintMask>, // 20
+    pub race_data: RaceData,                              // 28
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_TINT_RACE_DATA>() == 0x40);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_TINT_RACE_DATA, resist_arrest_crime) == 0x00);
+const _: () = assert!(core::mem::offset_of!(PLAYER_RUNTIME_TINT_RACE_DATA, race_data) == 0x28);
+
+/// Cross-runtime raw sub-structure covering the shared non-VR/VR world-state block before
+/// `queued_target_loc`.
+#[repr(C)]
+pub struct PLAYER_RUNTIME_WORLD_DATA {
+    pub quest_targets_lock: BSSpinLock,       // 000
+    pub crime_value: CrimeValue,              // 008
+    pub command_wait_marker: ObjectRefHandle, // 068
+    pub unk6c: u32,                           // 06C
+    pub faction_owner_friends_map: BSTHashMap<*const TESFaction, FriendshipFactionsStruct>, // 070
+    pub last_known_good_position: NiPoint3,   // 0A0
+    pub bullet_auto_aim: NiPoint3,            // 0AC
+    pub cached_velocity: NiPoint3,            // 0B8
+    pub unk_c4: u32,                          // 0C4
+    pub unused_note: *mut BGSNote,            // 0C8
+    pub unused_note2: *mut BGSNote,           // 0D0
+    pub added_perks: BSTArray<*mut PerkRankData>, // 0D8
+    pub perks: BSTArray<*mut BGSPerk>,        // 0F0
+    pub standing_stone_perks: BSTArray<*mut BGSPerk>, // 108
+    pub current_map_markers: BSTArray<ObjectRefHandle>, // 120
+    pub velocity_array: BSTArray<BSTTuple<NiPoint3, AITimeStamp>>, // 138
+    pub runes_cast: BSTArray<ProjectileHandle>, // 150
+    pub image_space_modifier_anims1: BSTArray<*mut c_void>, // 168
+    pub image_space_modifier_anims2: BSTArray<*mut c_void>, // 180
+    pub quest_log: BSSimpleList<*mut TESQuestStageItem>, // 198
+    pub objectives: BSTArray<BGSInstancedQuestObjective>, // 1A8
+    pub quest_targets: BSTHashMap<*mut TESQuest, *mut BSTArray<*mut TESQuestTarget>>, // 1C0
+    pub current_say_once_infos_map: BSTHashMap<UnkKey, UnkValue>, // 1F0
+    pub dropped_ref_list: BSSimpleList<ObjectRefHandle>, // 220
+    pub random_door_space_map: crate::re::NiTMap<u32, u8>, // 230
+    pub cached_world_space: *mut TESWorldSpace, // 250
+    pub exterior_position: NiPoint3,          // 258
+    pub unk264: u32,                          // 264
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_WORLD_DATA>() == 0x268);
+const _: () = assert!(core::mem::offset_of!(PLAYER_RUNTIME_WORLD_DATA, crime_value) == 0x08);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_WORLD_DATA, random_door_space_map) == 0x230);
+const _: () = assert!(core::mem::offset_of!(PLAYER_RUNTIME_WORLD_DATA, exterior_position) == 0x258);
+
+/// Cross-runtime raw sub-structure covering the shared non-VR/VR interaction/action block after
+/// `queued_target_loc`.
+#[repr(C)]
+pub struct PLAYER_RUNTIME_INTERACTION_DATA {
+    pub unused_sound: BSSoundHandle,                   // 000
+    pub magic_failure_sound: BSSoundHandle,            // 00C
+    pub shout_failure_sound: BSSoundHandle,            // 018
+    pub unk24: u32,                                    // 024
+    pub closest_conversation: *mut DialoguePackage,    // 028
+    pub unk30: u64,                                    // 030
+    pub ai_conversation_running: *mut DialoguePackage, // 038
+    pub number_of_steal_warnings: i32,                 // 040
+    pub steal_warning_timer: f32,                      // 044
+    pub number_of_pickpocket_warnings: u32,            // 048
+    pub pick_pocket_warning_timer: f32,                // 04C
+    pub warn_to_leave_timestamp: AITimeStamp,          // 050
+    pub unk54: u32,                                    // 054
+    pub ironsights_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 058
+    pub vats_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 060
+    pub dynamic_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 068
+    pub dynamic_dof_focus_time: f32,                   // 070
+    pub dynamic_dof_focused: bool,                     // 074
+    pub pad75_77: [u8; 3],                             // 075
+    pub dynamic_dof_last_angle: NiPoint3,              // 078
+    pub dynamic_dof_last_position: NiPoint3,           // 084
+    pub current_prison_faction: *mut TESFaction,       // 090
+    pub jail_sentence: i32,                            // 098
+    pub unk9c: u32,                                    // 09C
+    pub unk_a0: u64,                                   // 0A0
+    pub queued_weapon_attachs: [QueuedWeapon; WeaponType::Total as usize], // 0A8
+    pub vampire_feed_detection: u32,                   // 148
+    pub map_marker_iterator: u32,                      // 14C
+    pub force_activate_ref: RefHandle,                 // 150
+    pub player_action_objects: [PlayerActionObject; 15], // 154
+    pub most_recent_action: PLAYER_ACTION,             // 208
+    pub actor_doing_player_command: ActorHandle,       // 20C
+}
+
+const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_INTERACTION_DATA>() == 0x210);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_INTERACTION_DATA, current_prison_faction) == 0x90);
+const _: () =
+    assert!(core::mem::offset_of!(PLAYER_RUNTIME_INTERACTION_DATA, queued_weapon_attachs) == 0xA8);
+const _: () = assert!(
+    core::mem::offset_of!(PLAYER_RUNTIME_INTERACTION_DATA, actor_doing_player_command) == 0x20C
+);
 
 const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_DATA>() == 0x808);
 const _: () = assert!(core::mem::offset_of!(PLAYER_RUNTIME_DATA, crime_value) == 0x08);
@@ -855,6 +1083,26 @@ impl PlayerCharacter {
     pub const VR_RESET_HMD_HEIGHT_EVENT_SINK_OFFSET: VariantOffset =
         VariantOffset::new(0x0, 0x0, 0x2E0);
 
+    pub const PLAYER_RUNTIME_DATA_FLAT_OFFSET: VariantOffset =
+        VariantOffset::new(0x3D8, 0x3E0, 0x0);
+    pub const PLAYER_INFO_RUNTIME_HEAD_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0x8E8, 0x8F0, 0xFE8);
+    pub const PLAYER_INFO_RUNTIME_TAIL_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0x928, 0x930, 0x1028);
+    pub const PLAYER_RUNTIME_TARGET_LOC_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0x640, 0x648, 0xC30);
+    pub const QUEUED_TARGET_LOC_FLAT_OFFSET: VariantOffset = VariantOffset::new(0x640, 0x648, 0x0);
+    pub const PLAYER_RUNTIME_LOCATION_STATE_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0xAC8, 0xAD0, 0x11C8);
+    pub const PLAYER_RUNTIME_ADVANCE_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0xAE8, 0xAF0, 0x11E8);
+    pub const PLAYER_RUNTIME_TINT_RACE_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0xB08, 0xB10, 0x1200);
+    pub const PLAYER_RUNTIME_WORLD_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0x3D8, 0x3E0, 0x9C8);
+    pub const PLAYER_RUNTIME_INTERACTION_DATA_OFFSET: VariantOffset =
+        VariantOffset::new(0x688, 0x690, 0xA80);
+    pub const GRAB_DATA_FLAT_OFFSET: VariantOffset = VariantOffset::new(0x898, 0x8A0, 0x0);
     pub const CRIME_VALUE_OFFSET: VariantOffset = VariantOffset::new(0x3E0, 0x3E8, 0x9D0);
     pub const RACE_DATA_OFFSET: VariantOffset = VariantOffset::new(0xB30, 0xB38, 0x1228);
     pub const GAME_STATE_DATA_OFFSET: VariantOffset = VariantOffset::new(0xAF8, 0xB00, 0x11F4);
@@ -1147,6 +1395,138 @@ impl PlayerCharacter {
         }
     }
 
+    crate::runtime_data_accessor! {
+        fn player_runtime_data_flat_impl() -> PLAYER_RUNTIME_DATA {
+            offset: Self::PLAYER_RUNTIME_DATA_FLAT_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_runtime_data_flat_impl_mut() -> PLAYER_RUNTIME_DATA {
+            offset: Self::PLAYER_RUNTIME_DATA_FLAT_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_runtime_target_loc_data_impl() -> PLAYER_RUNTIME_TARGET_LOC_DATA {
+            offset: Self::PLAYER_RUNTIME_TARGET_LOC_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_runtime_target_loc_data_impl_mut() -> PLAYER_RUNTIME_TARGET_LOC_DATA {
+            offset: Self::PLAYER_RUNTIME_TARGET_LOC_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn queued_target_loc_flat_impl() -> PLAYER_TARGET_LOC {
+            offset: Self::QUEUED_TARGET_LOC_FLAT_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn queued_target_loc_flat_impl_mut() -> PLAYER_TARGET_LOC {
+            offset: Self::QUEUED_TARGET_LOC_FLAT_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_runtime_location_state_data_impl() -> PLAYER_RUNTIME_LOCATION_STATE_DATA {
+            offset: Self::PLAYER_RUNTIME_LOCATION_STATE_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_runtime_location_state_data_impl_mut() -> PLAYER_RUNTIME_LOCATION_STATE_DATA {
+            offset: Self::PLAYER_RUNTIME_LOCATION_STATE_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_runtime_advance_data_impl() -> PLAYER_RUNTIME_ADVANCE_DATA {
+            offset: Self::PLAYER_RUNTIME_ADVANCE_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_runtime_advance_data_impl_mut() -> PLAYER_RUNTIME_ADVANCE_DATA {
+            offset: Self::PLAYER_RUNTIME_ADVANCE_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_runtime_tint_race_data_impl() -> PLAYER_RUNTIME_TINT_RACE_DATA {
+            offset: Self::PLAYER_RUNTIME_TINT_RACE_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_runtime_tint_race_data_impl_mut() -> PLAYER_RUNTIME_TINT_RACE_DATA {
+            offset: Self::PLAYER_RUNTIME_TINT_RACE_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_runtime_world_data_impl() -> PLAYER_RUNTIME_WORLD_DATA {
+            offset: Self::PLAYER_RUNTIME_WORLD_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_runtime_world_data_impl_mut() -> PLAYER_RUNTIME_WORLD_DATA {
+            offset: Self::PLAYER_RUNTIME_WORLD_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_runtime_interaction_data_impl() -> PLAYER_RUNTIME_INTERACTION_DATA {
+            offset: Self::PLAYER_RUNTIME_INTERACTION_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_runtime_interaction_data_impl_mut() -> PLAYER_RUNTIME_INTERACTION_DATA {
+            offset: Self::PLAYER_RUNTIME_INTERACTION_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn grab_data_flat_impl() -> GrabData {
+            offset: Self::GRAB_DATA_FLAT_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn grab_data_flat_impl_mut() -> GrabData {
+            offset: Self::GRAB_DATA_FLAT_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_info_runtime_head_data_impl() -> PLAYER_INFO_RUNTIME_HEAD_DATA {
+            offset: Self::PLAYER_INFO_RUNTIME_HEAD_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_info_runtime_head_data_impl_mut() -> PLAYER_INFO_RUNTIME_HEAD_DATA {
+            offset: Self::PLAYER_INFO_RUNTIME_HEAD_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_accessor! {
+        fn player_info_runtime_tail_data_impl() -> PLAYER_INFO_RUNTIME_TAIL_DATA {
+            offset: Self::PLAYER_INFO_RUNTIME_TAIL_DATA_OFFSET
+        }
+    }
+
+    crate::runtime_data_mut_accessor! {
+        fn player_info_runtime_tail_data_impl_mut() -> PLAYER_INFO_RUNTIME_TAIL_DATA {
+            offset: Self::PLAYER_INFO_RUNTIME_TAIL_DATA_OFFSET
+        }
+    }
+
     crate::runtime_data_mut_accessor! {
         fn crime_value_impl_mut() -> CrimeValue {
             offset: Self::CRIME_VALUE_OFFSET
@@ -1177,74 +1557,452 @@ impl PlayerCharacter {
         }
     }
 
-    crate::runtime_optional_data_accessor! {
-        fn info_runtime_data_flat() -> INFO_RUNTIME_DATA {
-            offset: Self::INFO_RUNTIME_DATA_OFFSET
-        }
-    }
-
-    crate::runtime_optional_data_mut_accessor! {
-        fn info_runtime_data_flat_mut() -> INFO_RUNTIME_DATA {
-            offset: Self::INFO_RUNTIME_DATA_OFFSET
-        }
-    }
-
     crate::vr_runtime_data_accessor! {
-        fn vr_player_runtime_data_impl() -> VR_PLAYER_RUNTIME_DATA {
+        fn player_runtime_data_vr_impl() -> VR_PLAYER_RUNTIME_DATA {
             vr: 0x3D8
         }
     }
 
     crate::vr_runtime_data_mut_accessor! {
-        fn vr_player_runtime_data_impl_mut() -> VR_PLAYER_RUNTIME_DATA {
+        fn player_runtime_data_vr_impl_mut() -> VR_PLAYER_RUNTIME_DATA {
             vr: 0x3D8
         }
     }
 
     crate::vr_only_pointer_accessor! {
-        fn vr_info_runtime_data_ptr() -> VR_INFO_RUNTIME_DATA {
+        fn info_runtime_data_vr_ptr() -> VR_INFO_RUNTIME_DATA {
             vr: 0xFE0
         }
     }
 
     crate::vr_only_pointer_accessor! {
-        fn vr_node_data_ptr() -> VR_NODE_DATA {
+        fn node_data_vr_ptr() -> VR_NODE_DATA {
             vr: 0x3F0
         }
     }
+}
 
-    crate::runtime_pointer_accessor! {
-        fn actor_doing_player_command_handle() -> ActorHandle {
-            offset: Self::ACTOR_DOING_PLAYER_COMMAND_HANDLE_OFFSET
+/// Ergonomic runtime-aware view over `PlayerCharacter` tail data.
+///
+/// This centralizes SE/AE/VR branching for consumers while keeping the low-level
+/// layout contract honest: flat raw `PLAYER_RUNTIME_DATA` stays `_flat`,
+/// flat-only substructures stay `_flat`, and VR-only data stays `_vr`.
+#[derive(Clone, Copy)]
+pub struct PlayerCharacterRuntimeDataView<'a> {
+    player: &'a PlayerCharacter,
+}
+
+impl<'a> PlayerCharacterRuntimeDataView<'a> {
+    #[inline(always)]
+    pub fn player_runtime_data_flat(&self) -> Option<&PLAYER_RUNTIME_DATA_FLAT> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_player_runtime_data_flat())
         }
     }
 
-    crate::runtime_optional_pointer_accessor! {
-        fn flat_grabbed_object_handle() -> ObjectRefHandle {
-            offset: Self::FLAT_GRABBED_OBJECT_HANDLE_OFFSET
+    #[inline(always)]
+    pub fn player_runtime_data_se(&self) -> Option<&PLAYER_RUNTIME_DATA_SE> {
+        if crate::runtime::is_se() {
+            Some(self.player.get_player_runtime_data_se())
+        } else {
+            None
         }
     }
 
-    // TODO: `EndGrabObject()` in `PlayerCharacter.cpp` still reads flat `grabType`, but the
-    // vendored header only proves this member directly in the SE-shaped flat tail. The AE offset
-    // below is inferred from the adjacent source-backed flat members plus `GetGameStatsData()`.
-    // Keep this as a narrow member accessor instead of pretending the whole flat tail is universal.
-    crate::runtime_optional_pointer_accessor! {
-        fn flat_grab_type() -> EnumSet<GrabbingType, u32> {
-            offset: Self::FLAT_GRAB_TYPE_OFFSET
+    #[inline(always)]
+    pub fn player_runtime_data_ae(&self) -> Option<&PLAYER_RUNTIME_DATA_AE> {
+        if crate::runtime::is_ae() {
+            Some(self.player.get_player_runtime_data_ae())
+        } else {
+            None
         }
     }
 
-    crate::runtime_optional_data_accessor! {
-        fn tint_masks_impl() -> BSTArray<*mut TintMask> {
-            offset: Self::TINT_MASKS_OFFSET
+    #[inline(always)]
+    pub fn player_runtime_data_vr(&self) -> Option<&VR_PLAYER_RUNTIME_DATA> {
+        if crate::runtime::is_vr() {
+            Some(self.player.get_player_runtime_data_vr())
+        } else {
+            None
         }
     }
 
-    crate::runtime_optional_pointer_accessor! {
-        fn overlay_tint_masks_impl() -> *mut BSTArray<*mut TintMask> {
-            offset: Self::OVERLAY_TINT_MASKS_OFFSET
+    #[inline(always)]
+    pub fn crime_value(&self) -> &CrimeValue {
+        self.player.get_crime_value()
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_head_data(&self) -> &PLAYER_INFO_RUNTIME_HEAD_DATA {
+        self.player.get_player_info_runtime_head_data()
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_tail_data(&self) -> &PLAYER_INFO_RUNTIME_TAIL_DATA {
+        self.player.get_player_info_runtime_tail_data()
+    }
+
+    #[inline(always)]
+    pub fn location_state_data(&self) -> &PLAYER_RUNTIME_LOCATION_STATE_DATA {
+        self.player.get_player_runtime_location_state_data()
+    }
+
+    #[inline(always)]
+    pub fn target_loc_data(&self) -> &PLAYER_RUNTIME_TARGET_LOC_DATA {
+        self.player.get_player_runtime_target_loc_data()
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_flat(&self) -> Option<&PLAYER_TARGET_LOC> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_queued_target_loc_flat())
         }
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_vr(&self) -> Option<&VR_PLAYER_TARGET_LOC> {
+        if crate::runtime::is_vr() {
+            Some(self.player.get_queued_target_loc_vr())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn advance_data(&self) -> &PLAYER_RUNTIME_ADVANCE_DATA {
+        self.player.get_player_runtime_advance_data()
+    }
+
+    #[inline(always)]
+    pub fn tint_race_data(&self) -> &PLAYER_RUNTIME_TINT_RACE_DATA {
+        self.player.get_player_runtime_tint_race_data()
+    }
+
+    #[inline(always)]
+    pub fn world_data(&self) -> &PLAYER_RUNTIME_WORLD_DATA {
+        self.player.get_player_runtime_world_data()
+    }
+
+    #[inline(always)]
+    pub fn interaction_data(&self) -> &PLAYER_RUNTIME_INTERACTION_DATA {
+        self.player.get_player_runtime_interaction_data()
+    }
+
+    #[inline(always)]
+    pub fn game_state_data(&self) -> &GameStateData {
+        self.player.get_game_stats_data()
+    }
+
+    #[inline(always)]
+    pub fn race_data(&self) -> &RaceData {
+        self.player.get_race_data()
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_data_flat(&self) -> Option<&INFO_RUNTIME_DATA> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_info_runtime_data_flat())
+        }
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_data_vr(&self) -> Option<&VR_INFO_RUNTIME_DATA> {
+        self.player.get_info_runtime_data_vr()
+    }
+
+    #[inline(always)]
+    pub fn actor_doing_player_command(&self) -> NiPointer<Actor> {
+        self.player.get_actor_doing_player_command()
+    }
+
+    #[inline(always)]
+    pub fn grab_data_flat(&self) -> Option<&GrabData> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_grab_data_flat())
+        }
+    }
+
+    #[inline(always)]
+    pub fn grab_data_vr(&self, device: VR_DEVICE) -> Option<&VRGrabData> {
+        self.player.get_grab_data_vr(device)
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_reset_weather(&self) -> bool {
+        self.player.queued_target_loc_reset_weather()
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_allow_auto_save(&self) -> bool {
+        self.player.queued_target_loc_allow_auto_save()
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_is_valid(&self) -> bool {
+        self.player.queued_target_loc_is_valid()
+    }
+
+    #[inline(always)]
+    pub fn has_actor_doing_command(&self) -> bool {
+        self.player.has_actor_doing_command()
+    }
+
+    #[inline(always)]
+    pub fn grabbed_ref(&self, device: VR_DEVICE) -> NiPointer<TESObjectREFR> {
+        self.player.get_grabbed_ref(device)
+    }
+
+    #[inline(always)]
+    pub fn grab_object_weight(&self, device: VR_DEVICE) -> f32 {
+        self.player.grab_object_weight(device)
+    }
+
+    #[inline(always)]
+    pub fn grab_distance(&self, device: VR_DEVICE) -> f32 {
+        self.player.grab_distance(device)
+    }
+
+    #[inline(always)]
+    pub fn is_grabbing(&self) -> bool {
+        self.player.is_grabbing()
+    }
+
+    #[inline(always)]
+    pub fn is_grabbing_with_device(&self, device: VR_DEVICE) -> bool {
+        self.player.is_grabbing_with_device(device)
+    }
+}
+
+pub struct PlayerCharacterRuntimeDataViewMut<'a> {
+    player: &'a mut PlayerCharacter,
+}
+
+impl<'a> PlayerCharacterRuntimeDataViewMut<'a> {
+    #[inline(always)]
+    pub fn as_ref(&self) -> PlayerCharacterRuntimeDataView<'_> {
+        PlayerCharacterRuntimeDataView {
+            player: &*self.player,
+        }
+    }
+
+    #[inline(always)]
+    pub fn player_runtime_data_flat(&mut self) -> Option<&mut PLAYER_RUNTIME_DATA_FLAT> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_player_runtime_data_flat_mut())
+        }
+    }
+
+    #[inline(always)]
+    pub fn player_runtime_data_se(&mut self) -> Option<&mut PLAYER_RUNTIME_DATA_SE> {
+        if crate::runtime::is_se() {
+            Some(self.player.get_player_runtime_data_se_mut())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn player_runtime_data_ae(&mut self) -> Option<&mut PLAYER_RUNTIME_DATA_AE> {
+        if crate::runtime::is_ae() {
+            Some(self.player.get_player_runtime_data_ae_mut())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn player_runtime_data_vr(&mut self) -> Option<&mut VR_PLAYER_RUNTIME_DATA> {
+        if crate::runtime::is_vr() {
+            Some(self.player.get_player_runtime_data_vr_mut())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn crime_value(&mut self) -> &mut CrimeValue {
+        self.player.get_crime_value_mut()
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_head_data(&mut self) -> &mut PLAYER_INFO_RUNTIME_HEAD_DATA {
+        self.player.get_player_info_runtime_head_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_tail_data(&mut self) -> &mut PLAYER_INFO_RUNTIME_TAIL_DATA {
+        self.player.get_player_info_runtime_tail_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn location_state_data(&mut self) -> &mut PLAYER_RUNTIME_LOCATION_STATE_DATA {
+        self.player.get_player_runtime_location_state_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn target_loc_data(&mut self) -> &mut PLAYER_RUNTIME_TARGET_LOC_DATA {
+        self.player.get_player_runtime_target_loc_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_flat(&mut self) -> Option<&mut PLAYER_TARGET_LOC> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_queued_target_loc_flat_mut())
+        }
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_vr(&mut self) -> Option<&mut VR_PLAYER_TARGET_LOC> {
+        if crate::runtime::is_vr() {
+            Some(self.player.get_queued_target_loc_vr_mut())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn advance_data(&mut self) -> &mut PLAYER_RUNTIME_ADVANCE_DATA {
+        self.player.get_player_runtime_advance_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn tint_race_data(&mut self) -> &mut PLAYER_RUNTIME_TINT_RACE_DATA {
+        self.player.get_player_runtime_tint_race_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn world_data(&mut self) -> &mut PLAYER_RUNTIME_WORLD_DATA {
+        self.player.get_player_runtime_world_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn interaction_data(&mut self) -> &mut PLAYER_RUNTIME_INTERACTION_DATA {
+        self.player.get_player_runtime_interaction_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn game_state_data(&mut self) -> &mut GameStateData {
+        self.player.get_game_stats_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn race_data(&mut self) -> &mut RaceData {
+        self.player.get_race_data_mut()
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_data_flat(&mut self) -> Option<&mut INFO_RUNTIME_DATA> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_info_runtime_data_flat_mut())
+        }
+    }
+
+    #[inline(always)]
+    pub fn info_runtime_data_vr(&mut self) -> Option<&mut VR_INFO_RUNTIME_DATA> {
+        self.player.get_info_runtime_data_vr_mut()
+    }
+
+    #[inline(always)]
+    pub fn actor_doing_player_command(&self) -> NiPointer<Actor> {
+        self.player.get_actor_doing_player_command()
+    }
+
+    #[inline(always)]
+    pub fn grab_data_flat(&mut self) -> Option<&mut GrabData> {
+        if crate::runtime::is_vr() {
+            None
+        } else {
+            Some(self.player.get_grab_data_flat_mut())
+        }
+    }
+
+    #[inline(always)]
+    pub fn grab_data_vr(&mut self, device: VR_DEVICE) -> Option<&mut VRGrabData> {
+        self.player.get_grab_data_vr_mut(device)
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_reset_weather(&self) -> bool {
+        self.player.queued_target_loc_reset_weather()
+    }
+
+    #[inline(always)]
+    pub fn set_queued_target_loc_reset_weather(&mut self, value: bool) {
+        self.player.set_queued_target_loc_reset_weather(value);
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_allow_auto_save(&self) -> bool {
+        self.player.queued_target_loc_allow_auto_save()
+    }
+
+    #[inline(always)]
+    pub fn set_queued_target_loc_allow_auto_save(&mut self, value: bool) {
+        self.player.set_queued_target_loc_allow_auto_save(value);
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_is_valid(&self) -> bool {
+        self.player.queued_target_loc_is_valid()
+    }
+
+    #[inline(always)]
+    pub fn set_queued_target_loc_is_valid(&mut self, value: bool) {
+        self.player.set_queued_target_loc_is_valid(value);
+    }
+
+    #[inline(always)]
+    pub fn has_actor_doing_command(&self) -> bool {
+        self.player.has_actor_doing_command()
+    }
+
+    #[inline(always)]
+    pub fn grabbed_ref(&self, device: VR_DEVICE) -> NiPointer<TESObjectREFR> {
+        self.player.get_grabbed_ref(device)
+    }
+
+    #[inline(always)]
+    pub fn grab_object_weight(&self, device: VR_DEVICE) -> f32 {
+        self.player.grab_object_weight(device)
+    }
+
+    #[inline(always)]
+    pub fn set_grab_object_weight(&mut self, device: VR_DEVICE, value: f32) {
+        self.player.set_grab_object_weight(device, value);
+    }
+
+    #[inline(always)]
+    pub fn grab_distance(&self, device: VR_DEVICE) -> f32 {
+        self.player.grab_distance(device)
+    }
+
+    #[inline(always)]
+    pub fn set_grab_distance(&mut self, device: VR_DEVICE, value: f32) {
+        self.player.set_grab_distance(device, value);
+    }
+
+    #[inline(always)]
+    pub fn is_grabbing(&self) -> bool {
+        self.player.is_grabbing()
+    }
+
+    #[inline(always)]
+    pub fn is_grabbing_with_device(&self, device: VR_DEVICE) -> bool {
+        self.player.is_grabbing_with_device(device)
     }
 }
 
@@ -1263,6 +2021,16 @@ impl PlayerCharacter {
     pub fn is_god_mode() -> bool {
         let flag = Self::god_mode_flag_storage();
         !flag.is_null() && unsafe { *flag }
+    }
+
+    #[inline(always)]
+    pub fn runtime_view(&self) -> PlayerCharacterRuntimeDataView<'_> {
+        PlayerCharacterRuntimeDataView { player: self }
+    }
+
+    #[inline(always)]
+    pub fn runtime_view_mut(&mut self) -> PlayerCharacterRuntimeDataViewMut<'_> {
+        PlayerCharacterRuntimeDataViewMut { player: self }
     }
 
     #[inline(always)]
@@ -1301,8 +2069,9 @@ impl PlayerCharacter {
         }
 
         if self
-            .flat_grab_type()
-            .is_some_and(|grab_type| grab_type.all(GrabbingType::Normal))
+            .get_player_runtime_data_flat()
+            .grab_type
+            .all(GrabbingType::Normal)
         {
             self.destroy_mouse_springs();
         }
@@ -1310,25 +2079,21 @@ impl PlayerCharacter {
 
     #[inline(always)]
     pub fn get_actor_doing_player_command(&self) -> NiPointer<Actor> {
-        if crate::runtime::is_vr() {
-            self.get_vr_player_runtime_data()
-                .actor_doing_player_command
-                .get()
-        } else {
-            self.actor_doing_player_command_handle().get()
-        }
+        self.get_player_runtime_interaction_data()
+            .actor_doing_player_command
+            .get()
     }
 
     #[inline(always)]
     pub fn get_crime_value(&self) -> &CrimeValue {
         crate::runtime_assert_size!(CrimeValue, se_ae: 0x60, vr: 0x60);
-        self.crime_value_impl()
+        &self.get_player_runtime_world_data().crime_value
     }
 
     #[inline(always)]
     pub fn get_crime_value_mut(&mut self) -> &mut CrimeValue {
         crate::runtime_assert_size!(CrimeValue, se_ae: 0x60, vr: 0x60);
-        self.crime_value_impl_mut()
+        &mut self.get_player_runtime_world_data_mut().crime_value
     }
 
     #[inline(always)]
@@ -1356,30 +2121,103 @@ impl PlayerCharacter {
     }
 
     #[inline(always)]
-    pub fn get_grabbed_ref(&self, device: VR_DEVICE) -> NiPointer<TESObjectREFR> {
+    pub fn get_player_runtime_target_loc_data(&self) -> &PLAYER_RUNTIME_TARGET_LOC_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_TARGET_LOC_DATA, se_ae: 0x40, vr: 0x40);
+        self.player_runtime_target_loc_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_target_loc_data_mut(
+        &mut self,
+    ) -> &mut PLAYER_RUNTIME_TARGET_LOC_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_TARGET_LOC_DATA, se_ae: 0x40, vr: 0x40);
+        self.player_runtime_target_loc_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_queued_target_loc_flat(&self) -> &PLAYER_TARGET_LOC {
+        crate::runtime::require_flat("PlayerCharacter::get_queued_target_loc_flat");
+        crate::runtime_assert_size!(PLAYER_TARGET_LOC, se_ae: 0x48, vr: 0x0);
+        self.queued_target_loc_flat_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_queued_target_loc_flat_mut(&mut self) -> &mut PLAYER_TARGET_LOC {
+        crate::runtime::require_flat("PlayerCharacter::get_queued_target_loc_flat_mut");
+        crate::runtime_assert_size!(PLAYER_TARGET_LOC, se_ae: 0x48, vr: 0x0);
+        self.queued_target_loc_flat_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_queued_target_loc_vr(&self) -> &VR_PLAYER_TARGET_LOC {
+        crate::runtime::require_vr("PlayerCharacter::get_queued_target_loc_vr");
+        crate::runtime_assert_size!(VR_PLAYER_TARGET_LOC, se: 0x0, ae: 0x0, vr: 0x50);
+        &self.get_player_runtime_data_vr().queued_target_loc
+    }
+
+    #[inline(always)]
+    pub fn get_queued_target_loc_vr_mut(&mut self) -> &mut VR_PLAYER_TARGET_LOC {
+        crate::runtime::require_vr("PlayerCharacter::get_queued_target_loc_vr_mut");
+        crate::runtime_assert_size!(VR_PLAYER_TARGET_LOC, se: 0x0, ae: 0x0, vr: 0x50);
+        &mut self.get_player_runtime_data_vr_mut().queued_target_loc
+    }
+
+    #[inline(always)]
+    pub fn get_grab_data_flat(&self) -> &GrabData {
+        crate::runtime::require_flat("PlayerCharacter::get_grab_data_flat");
+        crate::runtime_assert_size!(GrabData, se_ae: 0x48, vr: 0x0);
+        self.grab_data_flat_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_grab_data_flat_mut(&mut self) -> &mut GrabData {
+        crate::runtime::require_flat("PlayerCharacter::get_grab_data_flat_mut");
+        crate::runtime_assert_size!(GrabData, se_ae: 0x48, vr: 0x0);
+        self.grab_data_flat_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_grab_data_vr(&self, device: VR_DEVICE) -> Option<&VRGrabData> {
         if crate::runtime::is_vr() {
-            self.get_vr_player_runtime_data().grabbed_object_data[device as usize]
-                .grabbed_object
-                .get()
+            Some(&self.get_player_runtime_data_vr().grabbed_object_data[device as usize])
         } else {
-            self.flat_grabbed_object_handle().unwrap_or_default().get()
+            None
         }
     }
 
     #[inline(always)]
-    pub fn get_info_runtime_data(&self) -> &INFO_RUNTIME_DATA {
-        crate::runtime::require_non_vr("PlayerCharacter::get_info_runtime_data");
-        crate::runtime_assert_size!(INFO_RUNTIME_DATA, se: 0x13C, ae: 0x13C, vr: 0x0);
-        self.info_runtime_data_flat()
-            .expect("flat INFO_RUNTIME_DATA should exist outside VR")
+    pub fn get_grab_data_vr_mut(&mut self, device: VR_DEVICE) -> Option<&mut VRGrabData> {
+        if crate::runtime::is_vr() {
+            Some(&mut self.get_player_runtime_data_vr_mut().grabbed_object_data[device as usize])
+        } else {
+            None
+        }
     }
 
     #[inline(always)]
-    pub fn get_info_runtime_data_mut(&mut self) -> &mut INFO_RUNTIME_DATA {
-        crate::runtime::require_non_vr("PlayerCharacter::get_info_runtime_data_mut");
+    pub fn get_grabbed_ref(&self, device: VR_DEVICE) -> NiPointer<TESObjectREFR> {
+        if crate::runtime::is_vr() {
+            self.get_grab_data_vr(device)
+                .expect("PlayerCharacter::get_grabbed_ref requires VR grab data in VR")
+                .grabbed_object
+                .get()
+        } else {
+            self.get_grab_data_flat().grabbed_object.get()
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_info_runtime_data_flat(&self) -> &INFO_RUNTIME_DATA {
+        crate::runtime::require_flat("PlayerCharacter::get_info_runtime_data_flat");
         crate::runtime_assert_size!(INFO_RUNTIME_DATA, se: 0x13C, ae: 0x13C, vr: 0x0);
-        self.info_runtime_data_flat_mut()
-            .expect("flat INFO_RUNTIME_DATA should exist outside VR")
+        &self.get_player_runtime_data_flat().info_runtime_data
+    }
+
+    #[inline(always)]
+    pub fn get_info_runtime_data_flat_mut(&mut self) -> &mut INFO_RUNTIME_DATA {
+        crate::runtime::require_flat("PlayerCharacter::get_info_runtime_data_flat_mut");
+        crate::runtime_assert_size!(INFO_RUNTIME_DATA, se: 0x13C, ae: 0x13C, vr: 0x0);
+        &mut self.get_player_runtime_data_flat_mut().info_runtime_data
     }
 
     #[inline(always)]
@@ -1391,12 +2229,9 @@ impl PlayerCharacter {
             return core::ptr::null_mut();
         }
 
-        let Some(tint_masks) = self.tint_masks_impl() else {
-            return core::ptr::null_mut();
-        };
-        let Some(overlay_tint_masks) = self.overlay_tint_masks_impl() else {
-            return core::ptr::null_mut();
-        };
+        let flat = self.get_player_runtime_data_flat();
+        let tint_masks = &flat.tint_masks;
+        let overlay_tint_masks = flat.overlay_tint_masks;
         if overlay_tint_masks.is_null() {
             return core::ptr::null_mut();
         }
@@ -1435,15 +2270,12 @@ impl PlayerCharacter {
             return core::ptr::null_mut();
         }
 
-        if let Some(overlay_tint_masks) = self.overlay_tint_masks_impl() {
-            if !overlay_tint_masks.is_null() {
-                return overlay_tint_masks;
-            }
+        let flat = self.get_player_runtime_data_flat();
+        if !flat.overlay_tint_masks.is_null() {
+            return flat.overlay_tint_masks;
         }
 
-        self.tint_masks_impl()
-            .map(|tint_masks| tint_masks as *const _ as *mut _)
-            .unwrap_or(core::ptr::null_mut())
+        &flat.tint_masks as *const _ as *mut _
     }
 
     #[inline(always)]
@@ -1458,71 +2290,295 @@ impl PlayerCharacter {
     }
 
     #[inline(always)]
-    pub fn get_vr_info_runtime_data(&self) -> Option<&VR_INFO_RUNTIME_DATA> {
+    pub fn get_info_runtime_data_vr(&self) -> Option<&VR_INFO_RUNTIME_DATA> {
         crate::runtime_assert_size!(VR_INFO_RUNTIME_DATA, se: 0x0, ae: 0x0, vr: 0x140);
-        unsafe { self.vr_info_runtime_data_ptr().as_ref() }
+        unsafe { self.info_runtime_data_vr_ptr().as_ref() }
     }
 
     #[inline(always)]
-    pub fn get_vr_info_runtime_data_mut(&mut self) -> Option<&mut VR_INFO_RUNTIME_DATA> {
+    pub fn get_info_runtime_data_vr_mut(&mut self) -> Option<&mut VR_INFO_RUNTIME_DATA> {
         crate::runtime_assert_size!(VR_INFO_RUNTIME_DATA, se: 0x0, ae: 0x0, vr: 0x140);
-        unsafe { self.vr_info_runtime_data_ptr().as_mut() }
+        unsafe { self.info_runtime_data_vr_ptr().as_mut() }
     }
 
     #[inline(always)]
-    pub fn get_vr_node_data(&self) -> Option<&VR_NODE_DATA> {
+    pub fn get_player_info_runtime_head_data(&self) -> &PLAYER_INFO_RUNTIME_HEAD_DATA {
+        crate::runtime_assert_size!(PLAYER_INFO_RUNTIME_HEAD_DATA, se_ae: 0x38, vr: 0x38);
+        self.player_info_runtime_head_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_info_runtime_head_data_mut(&mut self) -> &mut PLAYER_INFO_RUNTIME_HEAD_DATA {
+        crate::runtime_assert_size!(PLAYER_INFO_RUNTIME_HEAD_DATA, se_ae: 0x38, vr: 0x38);
+        self.player_info_runtime_head_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_info_runtime_tail_data(&self) -> &PLAYER_INFO_RUNTIME_TAIL_DATA {
+        crate::runtime_assert_size!(PLAYER_INFO_RUNTIME_TAIL_DATA, se_ae: 0xF8, vr: 0xF8);
+        self.player_info_runtime_tail_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_info_runtime_tail_data_mut(&mut self) -> &mut PLAYER_INFO_RUNTIME_TAIL_DATA {
+        crate::runtime_assert_size!(PLAYER_INFO_RUNTIME_TAIL_DATA, se_ae: 0xF8, vr: 0xF8);
+        self.player_info_runtime_tail_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_node_data_vr(&self) -> Option<&VR_NODE_DATA> {
         crate::runtime_assert_size!(VR_NODE_DATA, se: 0x0, ae: 0x0, vr: 0x290);
-        unsafe { self.vr_node_data_ptr().as_ref() }
+        unsafe { self.node_data_vr_ptr().as_ref() }
     }
 
     #[inline(always)]
-    pub fn get_vr_node_data_mut(&mut self) -> Option<&mut VR_NODE_DATA> {
+    pub fn get_node_data_vr_mut(&mut self) -> Option<&mut VR_NODE_DATA> {
         crate::runtime_assert_size!(VR_NODE_DATA, se: 0x0, ae: 0x0, vr: 0x290);
-        unsafe { self.vr_node_data_ptr().as_mut() }
+        unsafe { self.node_data_vr_ptr().as_mut() }
     }
 
     #[inline(always)]
-    pub fn get_vr_player_runtime_data(&self) -> &VR_PLAYER_RUNTIME_DATA {
-        crate::runtime::require_vr("PlayerCharacter::get_vr_player_runtime_data");
+    pub fn get_player_runtime_data_vr(&self) -> &VR_PLAYER_RUNTIME_DATA {
+        crate::runtime::require_vr("PlayerCharacter::get_player_runtime_data_vr");
         crate::runtime_assert_size!(VR_PLAYER_RUNTIME_DATA, se: 0x0, ae: 0x0, vr: 0xF18);
-        self.vr_player_runtime_data_impl()
+        self.player_runtime_data_vr_impl()
     }
 
     #[inline(always)]
-    pub fn get_vr_player_runtime_data_mut(&mut self) -> &mut VR_PLAYER_RUNTIME_DATA {
-        crate::runtime::require_vr("PlayerCharacter::get_vr_player_runtime_data_mut");
+    pub fn get_player_runtime_data_vr_mut(&mut self) -> &mut VR_PLAYER_RUNTIME_DATA {
+        crate::runtime::require_vr("PlayerCharacter::get_player_runtime_data_vr_mut");
         crate::runtime_assert_size!(VR_PLAYER_RUNTIME_DATA, se: 0x0, ae: 0x0, vr: 0xF18);
-        self.vr_player_runtime_data_impl_mut()
+        self.player_runtime_data_vr_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_data_flat(&self) -> &PLAYER_RUNTIME_DATA_FLAT {
+        crate::runtime::require_flat("PlayerCharacter::get_player_runtime_data_flat");
+        crate::runtime_assert_size!(PLAYER_RUNTIME_DATA_FLAT, se_ae: 0x808, vr: 0x0);
+        self.player_runtime_data_flat_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_data_flat_mut(&mut self) -> &mut PLAYER_RUNTIME_DATA_FLAT {
+        crate::runtime::require_flat("PlayerCharacter::get_player_runtime_data_flat_mut");
+        crate::runtime_assert_size!(PLAYER_RUNTIME_DATA_FLAT, se_ae: 0x808, vr: 0x0);
+        self.player_runtime_data_flat_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_data_se(&self) -> &PLAYER_RUNTIME_DATA_SE {
+        crate::runtime::require_se("PlayerCharacter::get_player_runtime_data_se");
+        crate::runtime_assert_size!(PLAYER_RUNTIME_DATA_SE, se: 0x808, ae: 0x0, vr: 0x0);
+        self.get_player_runtime_data_flat()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_data_se_mut(&mut self) -> &mut PLAYER_RUNTIME_DATA_SE {
+        crate::runtime::require_se("PlayerCharacter::get_player_runtime_data_se_mut");
+        crate::runtime_assert_size!(PLAYER_RUNTIME_DATA_SE, se: 0x808, ae: 0x0, vr: 0x0);
+        self.get_player_runtime_data_flat_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_data_ae(&self) -> &PLAYER_RUNTIME_DATA_AE {
+        crate::runtime::require_ae("PlayerCharacter::get_player_runtime_data_ae");
+        crate::runtime_assert_size!(PLAYER_RUNTIME_DATA_AE, se: 0x0, ae: 0x808, vr: 0x0);
+        self.get_player_runtime_data_flat()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_data_ae_mut(&mut self) -> &mut PLAYER_RUNTIME_DATA_AE {
+        crate::runtime::require_ae("PlayerCharacter::get_player_runtime_data_ae_mut");
+        crate::runtime_assert_size!(PLAYER_RUNTIME_DATA_AE, se: 0x0, ae: 0x808, vr: 0x0);
+        self.get_player_runtime_data_flat_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_location_state_data(&self) -> &PLAYER_RUNTIME_LOCATION_STATE_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_LOCATION_STATE_DATA, se_ae: 0x20, vr: 0x20);
+        self.player_runtime_location_state_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_location_state_data_mut(
+        &mut self,
+    ) -> &mut PLAYER_RUNTIME_LOCATION_STATE_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_LOCATION_STATE_DATA, se_ae: 0x20, vr: 0x20);
+        self.player_runtime_location_state_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_advance_data(&self) -> &PLAYER_RUNTIME_ADVANCE_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_ADVANCE_DATA, se_ae: 0x0C, vr: 0x0C);
+        self.player_runtime_advance_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_advance_data_mut(&mut self) -> &mut PLAYER_RUNTIME_ADVANCE_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_ADVANCE_DATA, se_ae: 0x0C, vr: 0x0C);
+        self.player_runtime_advance_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_tint_race_data(&self) -> &PLAYER_RUNTIME_TINT_RACE_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_TINT_RACE_DATA, se_ae: 0x40, vr: 0x40);
+        self.player_runtime_tint_race_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_tint_race_data_mut(&mut self) -> &mut PLAYER_RUNTIME_TINT_RACE_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_TINT_RACE_DATA, se_ae: 0x40, vr: 0x40);
+        self.player_runtime_tint_race_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_world_data(&self) -> &PLAYER_RUNTIME_WORLD_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_WORLD_DATA, se_ae: 0x268, vr: 0x268);
+        self.player_runtime_world_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_world_data_mut(&mut self) -> &mut PLAYER_RUNTIME_WORLD_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_WORLD_DATA, se_ae: 0x268, vr: 0x268);
+        self.player_runtime_world_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_interaction_data(&self) -> &PLAYER_RUNTIME_INTERACTION_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_INTERACTION_DATA, se_ae: 0x210, vr: 0x210);
+        self.player_runtime_interaction_data_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_player_runtime_interaction_data_mut(
+        &mut self,
+    ) -> &mut PLAYER_RUNTIME_INTERACTION_DATA {
+        crate::runtime_assert_size!(PLAYER_RUNTIME_INTERACTION_DATA, se_ae: 0x210, vr: 0x210);
+        self.player_runtime_interaction_data_impl_mut()
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_reset_weather(&self) -> bool {
+        if crate::runtime::is_vr() {
+            self.get_queued_target_loc_vr().reset_weather
+        } else {
+            self.get_queued_target_loc_flat().reset_weather
+        }
+    }
+
+    #[inline(always)]
+    pub fn set_queued_target_loc_reset_weather(&mut self, value: bool) {
+        if crate::runtime::is_vr() {
+            self.get_queued_target_loc_vr_mut().reset_weather = value;
+        } else {
+            self.get_queued_target_loc_flat_mut().reset_weather = value;
+        }
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_allow_auto_save(&self) -> bool {
+        if crate::runtime::is_vr() {
+            self.get_queued_target_loc_vr().allow_auto_save != 0
+        } else {
+            self.get_queued_target_loc_flat().allow_auto_save
+        }
+    }
+
+    #[inline(always)]
+    pub fn set_queued_target_loc_allow_auto_save(&mut self, value: bool) {
+        if crate::runtime::is_vr() {
+            self.get_queued_target_loc_vr_mut().allow_auto_save = value.into();
+        } else {
+            self.get_queued_target_loc_flat_mut().allow_auto_save = value;
+        }
+    }
+
+    #[inline(always)]
+    pub fn queued_target_loc_is_valid(&self) -> bool {
+        if crate::runtime::is_vr() {
+            self.get_queued_target_loc_vr().is_valid
+        } else {
+            self.get_queued_target_loc_flat().is_valid
+        }
+    }
+
+    #[inline(always)]
+    pub fn set_queued_target_loc_is_valid(&mut self, value: bool) {
+        if crate::runtime::is_vr() {
+            self.get_queued_target_loc_vr_mut().is_valid = value;
+        } else {
+            self.get_queued_target_loc_flat_mut().is_valid = value;
+        }
+    }
+
+    #[inline(always)]
+    pub fn grab_object_weight(&self, device: VR_DEVICE) -> f32 {
+        if crate::runtime::is_vr() {
+            self.get_grab_data_vr(device)
+                .expect("PlayerCharacter::grab_object_weight requires VR grab data in VR")
+                .grab_object_weight
+        } else {
+            self.get_grab_data_flat().grab_object_weight
+        }
+    }
+
+    #[inline(always)]
+    pub fn set_grab_object_weight(&mut self, device: VR_DEVICE, value: f32) {
+        if crate::runtime::is_vr() {
+            self.get_grab_data_vr_mut(device)
+                .expect("PlayerCharacter::set_grab_object_weight requires VR grab data in VR")
+                .grab_object_weight = value;
+        } else {
+            self.get_grab_data_flat_mut().grab_object_weight = value;
+        }
+    }
+
+    #[inline(always)]
+    pub fn grab_distance(&self, device: VR_DEVICE) -> f32 {
+        if crate::runtime::is_vr() {
+            self.get_grab_data_vr(device)
+                .expect("PlayerCharacter::grab_distance requires VR grab data in VR")
+                .grab_distance
+        } else {
+            self.get_grab_data_flat().grab_distance
+        }
+    }
+
+    #[inline(always)]
+    pub fn set_grab_distance(&mut self, device: VR_DEVICE, value: f32) {
+        if crate::runtime::is_vr() {
+            self.get_grab_data_vr_mut(device)
+                .expect("PlayerCharacter::set_grab_distance requires VR grab data in VR")
+                .grab_distance = value;
+        } else {
+            self.get_grab_data_flat_mut().grab_distance = value;
+        }
     }
 
     #[inline(always)]
     pub fn has_actor_doing_command(&self) -> bool {
-        self.actor_doing_player_command_handle().has_value()
+        self.get_player_runtime_interaction_data()
+            .actor_doing_player_command
+            .has_value()
     }
 
     #[inline(always)]
     pub fn is_grabbing(&self) -> bool {
         if crate::runtime::is_vr() {
-            self.get_vr_player_runtime_data()
+            self.get_player_runtime_data_vr()
                 .grabbed_object_data
                 .iter()
                 .any(|grab_data| grab_data.grabbed_object.has_value())
         } else {
-            self.flat_grabbed_object_handle()
-                .is_some_and(|handle| handle.has_value())
+            self.get_grab_data_flat().grabbed_object.has_value()
         }
     }
 
     #[inline(always)]
     pub fn is_grabbing_with_device(&self, device: VR_DEVICE) -> bool {
         crate::runtime::is_vr()
-            && self.get_vr_player_runtime_data().grabbed_object_data[device as usize]
+            && self.get_player_runtime_data_vr().grabbed_object_data[device as usize]
                 .grabbed_object
                 .has_value()
     }
-
-    // TODO: CommonLib still exposes `GetPlayerRuntimeData()` in the header, but the vendored
-    // source only proves an SE-shaped flat `PLAYER_RUNTIME_DATA` while asserting a much smaller AE
-    // `PlayerCharacter` size. Keep whole-tail access decomposed into the source-backed member
-    // accessors above instead of inventing a fake universal flat runtime-data view here.
 }

@@ -4,10 +4,12 @@ use crate::core_util::inherit;
 use crate::offsets::offsets_nirtti::NiRTTI_NiAVObject;
 use crate::offsets::offsets_rtti::RTTI_NiAVObject;
 use crate::offsets::offsets_vtable::VTABLE_NiAVObject;
+use crate::re::bs_visit::{BSVisitControl, traverse_scenegraph_geometries};
 use crate::re::{
-    BSFixedString, ColLayer, NiAlphaProperty, NiBound, NiCullingProcess, NiNode, NiObject,
-    NiObjectNET, NiPointer, NiRTTI, NiTransform, TESObjectREFR, bhkCollisionObject, bhkWorldObject,
-    hkpMotionMotionType, hkpRigidBody,
+    BSFixedString, BSLightingShaderMaterialFacegenTint, BSLightingShaderMaterialHairTint,
+    BSShaderMaterialFeature, ColLayer, NiAlphaProperty, NiBound, NiColor, NiCullingProcess, NiNode,
+    NiObject, NiObjectNET, NiPointer, NiRTTI, NiTransform, TESObjectREFR, bhkCollisionObject,
+    bhkWorldObject, hkpMotionMotionType, hkpRigidBody,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset};
 
@@ -437,6 +439,50 @@ impl NiAVObject {
         }
     }
 
+    #[inline(always)]
+    pub fn update_body_tint(&mut self, color: NiColor) {
+        let _ = traverse_scenegraph_geometries(self, &mut |geometry| {
+            let Some(lighting_shader) =
+                (unsafe { (*geometry).lighting_shader_prop_cast().as_mut() })
+            else {
+                return BSVisitControl::Continue;
+            };
+
+            let material = lighting_shader.base.material;
+            if !material.is_null()
+                && unsafe { (*material).get_feature() == BSShaderMaterialFeature::FaceGenRGBTint }
+            {
+                unsafe {
+                    (*material.cast::<BSLightingShaderMaterialFacegenTint>()).tint_color = color;
+                }
+            }
+
+            BSVisitControl::Continue
+        });
+    }
+
+    #[inline(always)]
+    pub fn update_hair_color(&mut self, color: NiColor) {
+        let _ = traverse_scenegraph_geometries(self, &mut |geometry| {
+            let Some(lighting_shader) =
+                (unsafe { (*geometry).lighting_shader_prop_cast().as_mut() })
+            else {
+                return BSVisitControl::Continue;
+            };
+
+            let material = lighting_shader.base.material;
+            if !material.is_null()
+                && unsafe { (*material).get_feature() == BSShaderMaterialFeature::HairTint }
+            {
+                unsafe {
+                    (*material.cast::<BSLightingShaderMaterialHairTint>()).tint_color = color;
+                }
+            }
+
+            BSVisitControl::Continue
+        });
+    }
+
     // TODO: `CullGeometry`, `CullNode`, and `GetMass` can now reuse translated
     // `BSVisit`, but they still need a follow-up audit against the newly added
     // `NiNode` / `BSGeometry` / collision surfaces before porting the exact
@@ -445,8 +491,7 @@ impl NiAVObject {
     // `NiObjectNET::GetExtraData(...)` helper surface; `BSXFlags` itself is
     // translated.
     // TODO: `GetFirstGeometryOfShaderType`, `HasShaderType`, `SetProjectedUVData`,
-    // `TintScenegraph`, `UpdateBodyTint`, `UpdateHairColor`, and
-    // `UpdateMaterialAlpha` still need the remaining source-backed shader
+    // `TintScenegraph`, and `UpdateMaterialAlpha` still need the remaining source-backed shader
     // material subtype and graphics-state helpers from `NiAVObject.cpp`.
 }
 
@@ -512,6 +557,8 @@ pub trait NiAVObjectExt {
         allow_activate: bool,
     ) -> bool;
     fn update(&mut self, data: &mut NiUpdateData);
+    fn update_body_tint(&mut self, color: NiColor);
+    fn update_hair_color(&mut self, color: NiColor);
     fn update_rigid_constraints(&mut self, enable: bool, arg2: u8, arg3: u32);
     fn get_flags(&self) -> NiAVObjectFlags;
     fn is_visual_object_i(&self) -> i32;
@@ -689,6 +736,16 @@ impl<T: AsRef<NiAVObject> + AsMut<NiAVObject>> NiAVObjectExt for T {
     #[inline(always)]
     fn update(&mut self, data: &mut NiUpdateData) {
         NiAVObject::update(self.as_mut(), data)
+    }
+
+    #[inline(always)]
+    fn update_body_tint(&mut self, color: NiColor) {
+        NiAVObject::update_body_tint(self.as_mut(), color)
+    }
+
+    #[inline(always)]
+    fn update_hair_color(&mut self, color: NiColor) {
+        NiAVObject::update_hair_color(self.as_mut(), color)
     }
 
     #[inline(always)]

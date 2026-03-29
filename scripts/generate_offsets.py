@@ -51,8 +51,13 @@ def convert_vtable(h_file, rs_file):
                 se, ae, vr = item_match.groups()
                 items.append(f'VariantID::new({se.strip()}, {ae.strip()}, {vr.strip()})')
 
-            items_rust = ",\n    ".join(items)
-            f.write(f'pub const {name}: [VariantID; {arr_size}] = [\n    {items_rust}\n];\n\n')
+            if items:
+                f.write(f'pub const {name}: [VariantID; {arr_size}] = [\n')
+                for item in items:
+                    f.write(f'    {item},\n')
+                f.write('];\n\n')
+            else:
+                f.write(f'pub const {name}: [VariantID; {arr_size}] = [\n];\n\n')
             count += 1
 
         print(f"Сгенерировано {count} VTABLE массивов в {os.path.basename(rs_file)}")

@@ -172,6 +172,30 @@ differences into one `repr(C)` struct by hand. Use:
 - runtime-data accessors from `libskyrim::runtime`
 - runtime layout asserts for fields that differ by runtime
 
+When the type already exists and the problem is not "translate the missing tail"
+but "turn a large, already-usable runtime object into a maintainable API",
+treat that as a runtime-layout refactor, not a plain translation pass. In that
+mode:
+
+- keep the low-level raw runtime surface honest
+- extract shared raw sub-structures for meaningful common blocks, not only for
+  the initial common prefix
+- prefer one owner-side `runtime_view()` / `runtime_view_mut()` facade to hide
+  repeated `is_se() / is_ae() / is_vr()` branching from consumers
+- if the remaining common overlap is only a few fields, add direct runtime-aware
+  getter/setter helpers instead of inventing tiny one-off structs just to avoid
+  branches
+- keep runtime-specific raw entrypoints available when the underlying layout is
+  genuinely runtime-specific
+
+For runtime accessor naming:
+
+- bare `*_runtime_data()` is reserved for a truly common raw layout
+- use `*_flat` for `SE + AE` raw layouts that intentionally exclude `VR`
+- use `*_se`, `*_ae`, and `*_vr` for runtime-specific raw layouts
+- use `*_view()` / `*_view_mut()` for the ergonomic facade that centralizes
+  runtime branching without pretending the raw layout is universal
+
 ## Inheritance Model
 
 - Primary base at offset `0x00`: field `base`, then `inherit!(Child : Parent)`
@@ -406,6 +430,9 @@ Use these `.codex` skills for repository work:
   Add or repair a mixin extension trait.
 - `translate-runtime-layout`
   Runtime-split layout work for SE/AE/VR-divergent structs and accessors.
+- `refactor-runtime-layout`
+  Refactor an existing runtime-divergent type into shared raw blocks, honest
+  runtime-specific accessors, and an ergonomic `runtime_view` surface.
 - `port-hooking`
   Port plugin-side hooks from CommonLib C++ to Rust using the current
   relocation/hook macro layer.
@@ -449,6 +476,18 @@ Use these `.codex` skills for repository work:
 4. `verify-translation`
 5. `python scripts/check_generated_staleness.py`
 6. standard validation commands
+
+### Existing runtime-layout refactor
+
+Use this when the type is already translated enough to be usable, but its
+runtime-tail API has grown awkward, overly local, or too dependent on repeated
+manual branching.
+
+1. `python scripts/audit_translation.py <TypeName>`
+2. `refactor-runtime-layout`
+3. `verify-translation`
+4. `python scripts/check_generated_staleness.py`
+5. standard validation commands
 
 ### Hook porting from CommonLib-style C++
 

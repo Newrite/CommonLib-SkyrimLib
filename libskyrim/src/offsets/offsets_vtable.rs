@@ -167,7 +167,7 @@ pub const VTABLE___PreloadModelsVisitor: [VariantID; 1] =
     [VariantID::new(228656, 186471, 0x159a5a0)];
 
 pub const VTABLE_BSAutoQueuedResourceCollection_AnimationSystemUtils__TESModelAndAnimationHandles_: [VariantID; 1] = [
-    VariantID::new(228657, 186473, 0x159a5b8)
+    VariantID::new(228657, 186473, 0x159a5b8),
 ];
 
 pub const VTABLE_FindEqualsFunctor: [VariantID; 1] = [VariantID::new(228658, 186475, 0x159a5c8)];
@@ -776,7 +776,7 @@ pub const VTABLE_BGSDestructibleObjectForm: [VariantID; 1] =
     [VariantID::new(231132, 187665, 0x15b1880)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___uint___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___uint_: [VariantID; 1] = [
-    VariantID::new(231133, 187667, 0x15b18a8)
+    VariantID::new(231133, 187667, 0x15b18a8),
 ];
 
 pub const VTABLE_NiTMap_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___uint_:
@@ -1020,7 +1020,7 @@ pub const VTABLE_BGSSceneInfo__TextureUse: [VariantID; 1] =
 pub const VTABLE_BGSSceneInfo: [VariantID; 1] = [VariantID::new(232260, 188320, 0x15bb770)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_NiTexture___TEX_USER_DATA_____NiTexture___TEX_USER_DATA___: [VariantID; 1] = [
-    VariantID::new(232261, 188322, 0x15bb780)
+    VariantID::new(232261, 188322, 0x15bb780),
 ];
 
 pub const VTABLE_NiTMap_NiTexture___TEX_USER_DATA___: [VariantID; 1] =
@@ -1046,7 +1046,7 @@ pub const VTABLE_BSAnimGroupSequence: [VariantID; 1] = [VariantID::new(232423, 1
 pub const VTABLE_IBSAnimNoteReceiver: [VariantID; 1] = [VariantID::new(232432, 188384, 0x15bd178)];
 
 pub const VTABLE_NiTArray_BSAnimNoteReceiver__BSAnimNoteReceiverType___NiTMallocInterface_BSAnimNoteReceiver__BSAnimNoteReceiverType____: [VariantID; 1] = [
-    VariantID::new(232433, 188386, 0x15bd190)
+    VariantID::new(232433, 188386, 0x15bd190),
 ];
 
 pub const VTABLE_BSAnimNoteReceiver: [VariantID; 1] = [VariantID::new(232434, 188388, 0x15bd1a0)];
@@ -1878,33 +1878,33 @@ pub const VTABLE_TESObjectCELL: [VariantID; 2] = [
 ];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_TESForm___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6_____TESForm___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___: [VariantID; 1] = [
-    VariantID::new(235199, 190147, 0x15ddef8)
+    VariantID::new(235199, 190147, 0x15ddef8),
 ];
 
 pub const VTABLE_NiTMap_TESForm___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___:
     [VariantID; 1] = [VariantID::new(235200, 190149, 0x15ddf38)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___NiNode_____BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___NiNode___: [VariantID; 1] = [
-    VariantID::new(235201, 190151, 0x15ddf78)
+    VariantID::new(235201, 190151, 0x15ddf78),
 ];
 
 pub const VTABLE_NiTMap_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___NiNode___:
     [VariantID; 1] = [VariantID::new(235202, 190153, 0x15ddfb8)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___NiPointer_BSMultiBoundNode____BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___NiPointer_BSMultiBoundNode__: [VariantID; 1] = [
-    VariantID::new(235203, 190155, 0x15ddff8)
+    VariantID::new(235203, 190155, 0x15ddff8),
 ];
 
 pub const VTABLE_NiTMap_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___NiPointer_BSMultiBoundNode__: [VariantID; 1] = [
-    VariantID::new(235204, 190157, 0x15de038)
+    VariantID::new(235204, 190157, 0x15de038),
 ];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_BSMultiBoundNode___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6_____BSMultiBoundNode___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___: [VariantID; 1] = [
-    VariantID::new(235205, 190159, 0x15de078)
+    VariantID::new(235205, 190159, 0x15de078),
 ];
 
 pub const VTABLE_NiTMap_BSMultiBoundNode___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___: [VariantID; 1] = [
-    VariantID::new(235206, 190161, 0x15de0b8)
+    VariantID::new(235206, 190161, 0x15de0b8),
 ];
 
 pub const VTABLE_TESWindListener: [VariantID; 1] = [VariantID::new(235207, 190163, 0x15de0f8)];
@@ -1922,7 +1922,7 @@ pub const VTABLE___ApplyAllDecalsRefFunctor: [VariantID; 1] =
     [VariantID::new(235310, 190199, 0x15defd8)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_NiAVObject_____QUEUED_ATTACH___NiAVObject_____QUEUED_ATTACH_: [VariantID; 1] = [
-    VariantID::new(235311, 190201, 0x15deff0)
+    VariantID::new(235311, 190201, 0x15deff0),
 ];
 
 pub const VTABLE_NiTMap_NiAVObject_____QUEUED_ATTACH_: [VariantID; 1] =
@@ -2010,11 +2010,11 @@ pub const VTABLE_bhkSphereShape: [VariantID; 1] = [VariantID::new(235528, 190293
 pub const VTABLE___HavokLink: [VariantID; 1] = [VariantID::new(235529, 190295, 0x15e30f8)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6_____BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___: [VariantID; 1] = [
-    VariantID::new(235550, 190308, 0x15e34a0)
+    VariantID::new(235550, 190308, 0x15e34a0),
 ];
 
 pub const VTABLE_NiTMap_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6___: [VariantID; 1] = [
-    VariantID::new(235551, 190310, 0x15e34e0)
+    VariantID::new(235551, 190310, 0x15e34e0),
 ];
 
 pub const VTABLE___AddExtraMissingRefIDFunctor: [VariantID; 1] =
@@ -2087,7 +2087,7 @@ pub const VTABLE_TESWorldSpace: [VariantID; 3] = [
 ];
 
 pub const VTABLE_NiTMapBase_NiTPointerAllocator_unsigned___int64__uint_BSSimpleList_TESObjectREFR______: [VariantID; 1] = [
-    VariantID::new(235826, 190433, 0x15e6468)
+    VariantID::new(235826, 190433, 0x15e6468),
 ];
 
 pub const VTABLE_NiTPointerMap_uint_BSSimpleList_TESObjectREFR______: [VariantID; 1] =
@@ -2267,11 +2267,11 @@ pub const VTABLE_BSTDerivedCreator_BGSMusicPaletteTrack_BSIMusicTrack_: [Variant
     [VariantID::new(543690, 190986, 0x15ed7a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSMusicPaletteTrack_BSIMusicTrack__BSTCreateFactoryManager_uint_BSIMusicTrack_8__: [VariantID; 1] = [
-    VariantID::new(236503, 190990, 0x15ed7c8)
+    VariantID::new(236503, 190990, 0x15ed7c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSMusicPaletteTrack_BSTCreateFactoryManager_uint_BSIMusicTrack_8__: [VariantID; 1] = [
-    VariantID::new(236504, 190992, 0x15ed7e8)
+    VariantID::new(236504, 190992, 0x15ed7e8),
 ];
 
 pub const VTABLE_BGSMusicPaletteTrack: [VariantID; 1] = [VariantID::new(236501, 190995, 0x15ed718)];
@@ -2282,22 +2282,22 @@ pub const VTABLE_BSTDerivedCreator_BGSMusicSilenceTrack_BSIMusicTrack_: [Variant
     [VariantID::new(543697, 191000, 0x15ed8e0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSMusicSilenceTrack_BSIMusicTrack__BSTCreateFactoryManager_uint_BSIMusicTrack_8__: [VariantID; 1] = [
-    VariantID::new(236509, 191004, 0x15ed900)
+    VariantID::new(236509, 191004, 0x15ed900),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSMusicSilenceTrack_BSTCreateFactoryManager_uint_BSIMusicTrack_8__: [VariantID; 1] = [
-    VariantID::new(236510, 191006, 0x15ed920)
+    VariantID::new(236510, 191006, 0x15ed920),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSMusicSingleTrack_BSIMusicTrack_: [VariantID; 1] =
     [VariantID::new(543704, 191009, 0x15edbb0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSMusicSingleTrack_BSIMusicTrack__BSTCreateFactoryManager_uint_BSIMusicTrack_8__: [VariantID; 1] = [
-    VariantID::new(236526, 191013, 0x15edbd0)
+    VariantID::new(236526, 191013, 0x15edbd0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSMusicSingleTrack_BSTCreateFactoryManager_uint_BSIMusicTrack_8__: [VariantID; 1] = [
-    VariantID::new(236527, 191015, 0x15edbf0)
+    VariantID::new(236527, 191015, 0x15edbf0),
 ];
 
 pub const VTABLE_BGSMusicSingleTrack: [VariantID; 1] = [VariantID::new(236524, 191021, 0x15edb38)];
@@ -2396,11 +2396,11 @@ pub const VTABLE_BSTDerivedCreator_BGSStandardSoundDef_BGSSoundDescriptor_: [Var
     [VariantID::new(543767, 191133, 0x15efcf0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSStandardSoundDef_BGSSoundDescriptor__BSTCreateFactoryManager_uint_BGSSoundDescriptor_8__: [VariantID; 1] = [
-    VariantID::new(236661, 191137, 0x15efd10)
+    VariantID::new(236661, 191137, 0x15efd10),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSStandardSoundDef_BSTCreateFactoryManager_uint_BGSSoundDescriptor_8__: [VariantID; 1] = [
-    VariantID::new(236662, 191139, 0x15efd30)
+    VariantID::new(236662, 191139, 0x15efd30),
 ];
 
 pub const VTABLE_BSISoundDescriptor__BSIPlaybackCharacteristics: [VariantID; 1] =
@@ -2511,7 +2511,7 @@ pub const VTABLE_std__basic_stringstream_char_std__char_traits_char__std__alloca
     [VariantID; 1] = [VariantID::new(237775, 192105, 0x15fa568)];
 
 pub const VTABLE__Script__ResetDialogueFlags_SCRIPT_PARAMETER_const___char_const___TESObjectREFR___TESObjectREFR___Script___ScriptLocals___double___uint_______2___MobDialogueFlagResetter: [VariantID; 1] = [
-    VariantID::new(237958, 192289, 0x15fb888)
+    VariantID::new(237958, 192289, 0x15fb888),
 ];
 
 pub const VTABLE_ConcreteFormFactory_TESShout_119_: [VariantID; 1] =
@@ -3149,11 +3149,11 @@ pub const VTABLE_BSTDerivedCreator_BGShkPhonemeController_BShkNonTransformContro
     1] = [VariantID::new(544786, 200158, 0x1674948)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGShkPhonemeController_BShkNonTransformController__BSTCreateFactoryManager_BSFixedString_BShkNonTransformController_32__: [VariantID; 1] = [
-    VariantID::new(252033, 200162, 0x1674968)
+    VariantID::new(252033, 200162, 0x1674968),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGShkPhonemeController_BSTCreateFactoryManager_BSFixedString_BShkNonTransformController_32__: [VariantID; 1] = [
-    VariantID::new(252034, 200164, 0x1674988)
+    VariantID::new(252034, 200164, 0x1674988),
 ];
 
 pub const VTABLE_BSFaceGenAnimationData: [VariantID; 1] =
@@ -3264,21 +3264,21 @@ pub const VTABLE_BGSNamedPackageData_IPackageData_: [VariantID; 1] =
 pub const VTABLE_BGSPackageDataBool: [VariantID; 1] = [VariantID::new(252944, 200804, 0x167cb80)];
 
 pub const VTABLE_BGSPackageDataBasicTemplate_IPackageData_float__BSFixedString_const_kPackageDataFloatTypeName__float_const_fPackageDataFloatDefault_: [VariantID; 1] = [
-    VariantID::new(545004, 200806, 0x167cbf0)
+    VariantID::new(545004, 200806, 0x167cbf0),
 ];
 
 pub const VTABLE_BGSPackageDataSaveableTemplate_IPackageData_float__BSFixedString_const_kPackageDataFloatTypeName__float_const_fPackageDataFloatDefault_: [VariantID; 1] = [
-    VariantID::new(545019, 200821, 0x167cc68)
+    VariantID::new(545019, 200821, 0x167cc68),
 ];
 
 pub const VTABLE_BGSPackageDataFloat: [VariantID; 1] = [VariantID::new(252945, 200836, 0x167cce0)];
 
 pub const VTABLE_BGSPackageDataBasicTemplate_IPackageData_int__BSFixedString_const_kPackageDataIntTypeName__int_const_iPackageDataIntDefault_: [VariantID; 1] = [
-    VariantID::new(545035, 200838, 0x167cd58)
+    VariantID::new(545035, 200838, 0x167cd58),
 ];
 
 pub const VTABLE_BGSPackageDataSaveableTemplate_IPackageData_int__BSFixedString_const_kPackageDataIntTypeName__int_const_iPackageDataIntDefault_: [VariantID; 1] = [
-    VariantID::new(545050, 200853, 0x167cdd0)
+    VariantID::new(545050, 200853, 0x167cdd0),
 ];
 
 pub const VTABLE_BGSPackageDataInt: [VariantID; 1] = [VariantID::new(252946, 200868, 0x167ce48)];
@@ -3290,7 +3290,7 @@ pub const VTABLE_BGSNamedPackageData_IAITarget_: [VariantID; 2] = [
 
 pub const VTABLE_BGSPackageDataBasicTemplate_IAITarget_BSPointerHandle_TESObjectREFR_BSUntypedPointerHandle_20_6____BSFixedString_const_kPackageDataRefTypeName_0_: [VariantID; 2] = [
     VariantID::new(545068, 200874, 0x167cf98),
-    VariantID::new(545082, 200888, 0x167d008)
+    VariantID::new(545082, 200888, 0x167d008),
 ];
 
 pub const VTABLE_BGSPackageDataRefOLD: [VariantID; 2] = [
@@ -3305,7 +3305,7 @@ pub const VTABLE_BGSNamedPackageData_IPackageDataAIWorldLocationHandle_: [Varian
 
 pub const VTABLE_BGSPackageDataPointerTemplate_IPackageDataAIWorldLocationHandle_PackageLocation__BSFixedString_const_kPackageDataLocationTypeName_: [VariantID; 2] = [
     VariantID::new(252953, 200910, 0x167d1f0),
-    VariantID::new(252954, 200912, 0x167d220)
+    VariantID::new(252954, 200912, 0x167d220),
 ];
 
 pub const VTABLE_BGSPackageDataLocation: [VariantID; 2] = [
@@ -3314,7 +3314,7 @@ pub const VTABLE_BGSPackageDataLocation: [VariantID; 2] = [
 ];
 
 pub const VTABLE_BGSPackageDataPointerTemplate_IPackageData_PackageTarget__BSFixedString_const_kPackageDataTargetSelectorTypeName_: [VariantID; 1] = [
-    VariantID::new(252959, 200918, 0x167d3c8)
+    VariantID::new(252959, 200918, 0x167d3c8),
 ];
 
 pub const VTABLE_BGSPackageDataTargetSelector: [VariantID; 1] =
@@ -3327,77 +3327,77 @@ pub const VTABLE_BSTDerivedCreator_BGSPackageDataLocation_IPackageData_: [Varian
     [VariantID::new(545109, 200927, 0x167d518)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataLocation_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252966, 200931, 0x167d538)
+    VariantID::new(252966, 200931, 0x167d538),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataLocation_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252967, 200933, 0x167d558)
+    VariantID::new(252967, 200933, 0x167d558),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSPackageDataTargetSelector_IPackageData_: [VariantID; 1] =
     [VariantID::new(545115, 200935, 0x167d578)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataTargetSelector_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252968, 200939, 0x167d598)
+    VariantID::new(252968, 200939, 0x167d598),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataTargetSelector_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252969, 200943, 0x167d5b8)
+    VariantID::new(252969, 200943, 0x167d5b8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSPackageDataRefOLD_IPackageData_: [VariantID; 1] =
     [VariantID::new(545121, 200945, 0x167d5d8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataRefOLD_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252970, 200949, 0x167d5f8)
+    VariantID::new(252970, 200949, 0x167d5f8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataRefOLD_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252971, 200953, 0x167d618)
+    VariantID::new(252971, 200953, 0x167d618),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSPackageDataFloat_IPackageData_: [VariantID; 1] =
     [VariantID::new(545127, 200955, 0x167d638)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataFloat_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252972, 200959, 0x167d658)
+    VariantID::new(252972, 200959, 0x167d658),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataFloat_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252973, 200963, 0x167d678)
+    VariantID::new(252973, 200963, 0x167d678),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSPackageDataInt_IPackageData_: [VariantID; 1] =
     [VariantID::new(545133, 200965, 0x167d698)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataInt_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252974, 200969, 0x167d6b8)
+    VariantID::new(252974, 200969, 0x167d6b8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataInt_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252975, 200973, 0x167d6d8)
+    VariantID::new(252975, 200973, 0x167d6d8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSPackageDataBool_IPackageData_: [VariantID; 1] =
     [VariantID::new(545139, 200975, 0x167d6f8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataBool_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252976, 200979, 0x167d718)
+    VariantID::new(252976, 200979, 0x167d718),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataBool_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252977, 200983, 0x167d738)
+    VariantID::new(252977, 200983, 0x167d738),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSPackageDataLocationWrapper_IPackageData_: [VariantID; 1] =
     [VariantID::new(545145, 200985, 0x167d758)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataLocationWrapper_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252978, 200989, 0x167d778)
+    VariantID::new(252978, 200989, 0x167d778),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataLocationWrapper_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(252979, 200993, 0x167d798)
+    VariantID::new(252979, 200993, 0x167d798),
 ];
 
 pub const VTABLE_IPackageData: [VariantID; 1] = [VariantID::new(252941, 200997, 0x167c908)];
@@ -3424,11 +3424,11 @@ pub const VTABLE_BSTDerivedCreator_BGSPackageDataObjectList_IPackageData_: [Vari
     [VariantID::new(545155, 201033, 0x167dd00)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataObjectList_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(253009, 201037, 0x167dd20)
+    VariantID::new(253009, 201037, 0x167dd20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataObjectList_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(253010, 201041, 0x167dd40)
+    VariantID::new(253010, 201041, 0x167dd40),
 ];
 
 pub const VTABLE_ObjectListItem: [VariantID; 2] = [
@@ -3438,7 +3438,7 @@ pub const VTABLE_ObjectListItem: [VariantID; 2] = [
 
 pub const VTABLE_BGSPackageDataPointerTemplate_IAITarget_PackageTarget__BSFixedString_const_kPackageDataRef2TypeName_: [VariantID; 2] = [
     VariantID::new(253023, 201051, 0x167def0),
-    VariantID::new(253024, 201053, 0x167df60)
+    VariantID::new(253024, 201053, 0x167df60),
 ];
 
 pub const VTABLE_BGSPackageDataRef: [VariantID; 2] = [
@@ -3450,11 +3450,11 @@ pub const VTABLE_BSTDerivedCreator_BGSPackageDataRef_IPackageData_: [VariantID; 
     [VariantID::new(545165, 201060, 0x167e0c0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataRef_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(253028, 201064, 0x167e0e0)
+    VariantID::new(253028, 201064, 0x167e0e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataRef_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(253029, 201068, 0x167e100)
+    VariantID::new(253029, 201068, 0x167e100),
 ];
 
 pub const VTABLE_BGSPackageDataTopic: [VariantID; 1] = [VariantID::new(253033, 201070, 0x167e198)];
@@ -3463,11 +3463,11 @@ pub const VTABLE_BSTDerivedCreator_BGSPackageDataTopic_IPackageData_: [VariantID
     [VariantID::new(545172, 201072, 0x167e208)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSPackageDataTopic_IPackageData__BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(253034, 201076, 0x167e228)
+    VariantID::new(253034, 201076, 0x167e228),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSPackageDataTopic_BSTCreateFactoryManager_BSFixedString_IPackageData_256__: [VariantID; 1] = [
-    VariantID::new(253035, 201080, 0x167e248)
+    VariantID::new(253035, 201080, 0x167e248),
 ];
 
 pub const VTABLE_IProcedureTreeExecState: [VariantID; 1] =
@@ -3497,7 +3497,7 @@ pub const VTABLE_BGSProcedureTreeSequence: [VariantID; 1] =
     [VariantID::new(253088, 201125, 0x167ed30)];
 
 pub const VTABLE_BGSTypedItem_BGSProcedureTreeSequenceExecState_BGSProcedureTreeOneChildExecState_: [VariantID; 1] = [
-    VariantID::new(545214, 201127, 0x167edc8)
+    VariantID::new(545214, 201127, 0x167edc8),
 ];
 
 pub const VTABLE_BGSProcedureTreeSequenceExecState: [VariantID; 1] =
@@ -3510,7 +3510,7 @@ pub const VTABLE_BGSProcedureTreeStacked: [VariantID; 1] =
     [VariantID::new(253090, 201159, 0x167ef10)];
 
 pub const VTABLE_BGSTypedItem_BGSProcedureTreeStackedExecState_BGSProcedureTreeOneChildExecState_: [VariantID; 1] = [
-    VariantID::new(545246, 201161, 0x167efa8)
+    VariantID::new(545246, 201161, 0x167efa8),
 ];
 
 pub const VTABLE_BGSProcedureTreeStackedExecState: [VariantID; 1] =
@@ -3595,7 +3595,7 @@ pub const VTABLE_BSTDerivedCreator_BGSAIWorldLocationRefRadius_IAIWorldLocation_
     [VariantID::new(545410, 201339, 0x167f928)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSAIWorldLocationRefRadius_IAIWorldLocation__BGSAIWorldLocationFactory_: [VariantID; 1] = [
-    VariantID::new(253105, 201343, 0x167f948)
+    VariantID::new(253105, 201343, 0x167f948),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSAIWorldLocationRefRadius_BGSAIWorldLocationFactory_:
@@ -3605,7 +3605,7 @@ pub const VTABLE_BSTDerivedCreator_BGSAIWorldLocationPointRadius_IAIWorldLocatio
     [VariantID::new(545416, 201349, 0x167f988)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSAIWorldLocationPointRadius_IAIWorldLocation__BGSAIWorldLocationFactory_: [VariantID; 1] = [
-    VariantID::new(253107, 201353, 0x167f9a8)
+    VariantID::new(253107, 201353, 0x167f9a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSAIWorldLocationPointRadius_BGSAIWorldLocationFactory_:
@@ -3615,7 +3615,7 @@ pub const VTABLE_BSTDerivedCreator_BGSAIWorldLocationInteriorCell_IAIWorldLocati
     1] = [VariantID::new(545422, 201359, 0x167f9e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSAIWorldLocationInteriorCell_IAIWorldLocation__BGSAIWorldLocationFactory_: [VariantID; 1] = [
-    VariantID::new(253109, 201363, 0x167fa08)
+    VariantID::new(253109, 201363, 0x167fa08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSAIWorldLocationInteriorCell_BGSAIWorldLocationFactory_:
@@ -3628,55 +3628,55 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeProcedure_IProcedureTreeItem_
     [VariantID::new(545429, 201371, 0x167fa68)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeProcedure_IProcedureTreeItem__BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253112, 201375, 0x167fa88)
+    VariantID::new(253112, 201375, 0x167fa88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeProcedure_BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253113, 201379, 0x167faa8)
+    VariantID::new(253113, 201379, 0x167faa8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeSequence_IProcedureTreeItem_: [VariantID; 1] =
     [VariantID::new(545435, 201381, 0x167fac8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeSequence_IProcedureTreeItem__BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253114, 201385, 0x167fae8)
+    VariantID::new(253114, 201385, 0x167fae8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeSequence_BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253115, 201389, 0x167fb08)
+    VariantID::new(253115, 201389, 0x167fb08),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeStacked_IProcedureTreeItem_: [VariantID; 1] =
     [VariantID::new(545441, 201391, 0x167fb28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeStacked_IProcedureTreeItem__BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253116, 201395, 0x167fb48)
+    VariantID::new(253116, 201395, 0x167fb48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeStacked_BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253117, 201399, 0x167fb68)
+    VariantID::new(253117, 201399, 0x167fb68),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeSimultaneous_IProcedureTreeItem_: [VariantID;
     1] = [VariantID::new(545447, 201401, 0x167fb88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeSimultaneous_IProcedureTreeItem__BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253118, 201405, 0x167fba8)
+    VariantID::new(253118, 201405, 0x167fba8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeSimultaneous_BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253119, 201409, 0x167fbc8)
+    VariantID::new(253119, 201409, 0x167fbc8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeRandom_IProcedureTreeItem_: [VariantID; 1] =
     [VariantID::new(545453, 201411, 0x167fbe8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeRandom_IProcedureTreeItem__BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253120, 201415, 0x167fc08)
+    VariantID::new(253120, 201415, 0x167fc08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeRandom_BSTCreateFactoryManager_BSFixedString_IProcedureTreeItem_32__: [VariantID; 1] = [
-    VariantID::new(253121, 201419, 0x167fc28)
+    VariantID::new(253121, 201419, 0x167fc28),
 ];
 
 pub const VTABLE_IBSTCreator_IProcedureTreeExecState_: [VariantID; 1] =
@@ -3686,97 +3686,97 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeSequenceExecState_IProcedureT
     [VariantID; 1] = [VariantID::new(545460, 201423, 0x167fc68)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeSequenceExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253123, 201427, 0x167fc88)
+    VariantID::new(253123, 201427, 0x167fc88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeSequenceExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253124, 201431, 0x167fca8)
+    VariantID::new(253124, 201431, 0x167fca8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeStackedExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545466, 201433, 0x167fcc8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeStackedExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253125, 201437, 0x167fce8)
+    VariantID::new(253125, 201437, 0x167fce8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeStackedExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253126, 201441, 0x167fd08)
+    VariantID::new(253126, 201441, 0x167fd08),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeSimultaneousExecState_IProcedureTreeExecState_: [VariantID; 1] = [
-    VariantID::new(545472, 201443, 0x167fd28)
+    VariantID::new(545472, 201443, 0x167fd28),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeSimultaneousExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253127, 201447, 0x167fd48)
+    VariantID::new(253127, 201447, 0x167fd48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeSimultaneousExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253128, 201451, 0x167fd68)
+    VariantID::new(253128, 201451, 0x167fd68),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTreeRandomExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545478, 201453, 0x167fd88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTreeRandomExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253129, 201457, 0x167fda8)
+    VariantID::new(253129, 201457, 0x167fda8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTreeRandomExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253130, 201461, 0x167fdc8)
+    VariantID::new(253130, 201461, 0x167fdc8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureAcquireExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545484, 201463, 0x167fde8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureAcquireExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253131, 201467, 0x167fe08)
+    VariantID::new(253131, 201467, 0x167fe08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureAcquireExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253132, 201471, 0x167fe28)
+    VariantID::new(253132, 201471, 0x167fe28),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureActivateExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545490, 201473, 0x167fe48)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureActivateExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253133, 201477, 0x167fe68)
+    VariantID::new(253133, 201477, 0x167fe68),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureActivateExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253134, 201481, 0x167fe88)
+    VariantID::new(253134, 201481, 0x167fe88),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureDialogueActivateExecState_IProcedureTreeExecState_: [VariantID; 1] = [
-    VariantID::new(545496, 201483, 0x167fea8)
+    VariantID::new(545496, 201483, 0x167fea8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureDialogueActivateExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253135, 201487, 0x167fec8)
+    VariantID::new(253135, 201487, 0x167fec8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureDialogueActivateExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253136, 201491, 0x167fee8)
+    VariantID::new(253136, 201491, 0x167fee8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureDialogueExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545502, 201493, 0x167ff08)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureDialogueExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253137, 201497, 0x167ff28)
+    VariantID::new(253137, 201497, 0x167ff28),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureDialogueExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253138, 201501, 0x167ff48)
+    VariantID::new(253138, 201501, 0x167ff48),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureDoneExecState_IProcedureTreeExecState_: [VariantID;
     1] = [VariantID::new(545508, 201503, 0x167ff68)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureDoneExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253139, 201507, 0x167ff88)
+    VariantID::new(253139, 201507, 0x167ff88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureDoneExecState_BGSProcedureTreeExecStateFactory_:
@@ -3786,7 +3786,7 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureEatExecState_IProcedureTreeExecSt
     1] = [VariantID::new(545514, 201513, 0x167ffc8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureEatExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253141, 201517, 0x167ffe8)
+    VariantID::new(253141, 201517, 0x167ffe8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureEatExecState_BGSProcedureTreeExecStateFactory_:
@@ -3796,18 +3796,18 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureEscortExecState_IProcedureTreeExe
     [VariantID; 1] = [VariantID::new(545520, 201523, 0x1680028)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureEscortExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253143, 201527, 0x1680048)
+    VariantID::new(253143, 201527, 0x1680048),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureEscortExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253144, 201531, 0x1680068)
+    VariantID::new(253144, 201531, 0x1680068),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureFindExecState_IProcedureTreeExecState_: [VariantID;
     1] = [VariantID::new(545526, 201533, 0x1680088)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFindExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253145, 201537, 0x16800a8)
+    VariantID::new(253145, 201537, 0x16800a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFindExecState_BGSProcedureTreeExecStateFactory_:
@@ -3817,7 +3817,7 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureFleeExecState_IProcedureTreeExecS
     1] = [VariantID::new(545532, 201543, 0x16800e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFleeExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253147, 201547, 0x1680108)
+    VariantID::new(253147, 201547, 0x1680108),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFleeExecState_BGSProcedureTreeExecStateFactory_:
@@ -3827,117 +3827,117 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureFlightGrabExecState_IProcedureTre
     [VariantID; 1] = [VariantID::new(545538, 201553, 0x1680148)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFlightGrabExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253149, 201557, 0x1680168)
+    VariantID::new(253149, 201557, 0x1680168),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFlightGrabExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253150, 201561, 0x1680188)
+    VariantID::new(253150, 201561, 0x1680188),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureFollowExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545544, 201563, 0x16801a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFollowExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253151, 201567, 0x16801c8)
+    VariantID::new(253151, 201567, 0x16801c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFollowExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253152, 201571, 0x16801e8)
+    VariantID::new(253152, 201571, 0x16801e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureGuardExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545550, 201573, 0x1680208)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureGuardExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253153, 201577, 0x1680228)
+    VariantID::new(253153, 201577, 0x1680228),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureGuardExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253154, 201581, 0x1680248)
+    VariantID::new(253154, 201581, 0x1680248),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureHoldPositionExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545556, 201583, 0x1680268)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureHoldPositionExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253155, 201587, 0x1680288)
+    VariantID::new(253155, 201587, 0x1680288),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureHoldPositionExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253156, 201591, 0x16802a8)
+    VariantID::new(253156, 201591, 0x16802a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureHoverExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545562, 201593, 0x16802c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureHoverExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253157, 201597, 0x16802e8)
+    VariantID::new(253157, 201597, 0x16802e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureHoverExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253158, 201601, 0x1680308)
+    VariantID::new(253158, 201601, 0x1680308),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureKeepAnEyeOnExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545568, 201603, 0x1680328)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureKeepAnEyeOnExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253159, 201607, 0x1680348)
+    VariantID::new(253159, 201607, 0x1680348),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureKeepAnEyeOnExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253160, 201611, 0x1680368)
+    VariantID::new(253160, 201611, 0x1680368),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureLockUnlockExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545574, 201613, 0x1680388)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureLockUnlockExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253161, 201617, 0x16803a8)
+    VariantID::new(253161, 201617, 0x16803a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureLockUnlockExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253162, 201621, 0x16803c8)
+    VariantID::new(253162, 201621, 0x16803c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureOrbitExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545580, 201623, 0x16803e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureOrbitExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253163, 201627, 0x1680408)
+    VariantID::new(253163, 201627, 0x1680408),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureOrbitExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253164, 201631, 0x1680428)
+    VariantID::new(253164, 201631, 0x1680428),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedurePatrolExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545586, 201633, 0x1680448)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedurePatrolExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253165, 201637, 0x1680468)
+    VariantID::new(253165, 201637, 0x1680468),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedurePatrolExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253166, 201641, 0x1680488)
+    VariantID::new(253166, 201641, 0x1680488),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureSandboxExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545592, 201643, 0x16804a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureSandboxExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253167, 201647, 0x16804c8)
+    VariantID::new(253167, 201647, 0x16804c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureSandboxExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253168, 201651, 0x16804e8)
+    VariantID::new(253168, 201651, 0x16804e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureSayExecState_IProcedureTreeExecState_: [VariantID;
     1] = [VariantID::new(545598, 201653, 0x1680508)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureSayExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253169, 201657, 0x1680528)
+    VariantID::new(253169, 201657, 0x1680528),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureSayExecState_BGSProcedureTreeExecStateFactory_:
@@ -3947,73 +3947,73 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureShoutExecState_IProcedureTreeExec
     [VariantID; 1] = [VariantID::new(545604, 201663, 0x1680568)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureShoutExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253171, 201667, 0x1680588)
+    VariantID::new(253171, 201667, 0x1680588),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureShoutExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253172, 201671, 0x16805a8)
+    VariantID::new(253172, 201671, 0x16805a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureSitSleepExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545610, 201673, 0x16805c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureSitSleepExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253173, 201677, 0x16805e8)
+    VariantID::new(253173, 201677, 0x16805e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureSitSleepExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253174, 201681, 0x1680608)
+    VariantID::new(253174, 201681, 0x1680608),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureTravelExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545616, 201683, 0x1680628)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTravelExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253175, 201687, 0x1680648)
+    VariantID::new(253175, 201687, 0x1680648),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTravelExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253176, 201691, 0x1680668)
+    VariantID::new(253176, 201691, 0x1680668),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureUseIdleMarkerExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545622, 201693, 0x1680688)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureUseIdleMarkerExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253177, 201697, 0x16806a8)
+    VariantID::new(253177, 201697, 0x16806a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureUseIdleMarkerExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253178, 201701, 0x16806c8)
+    VariantID::new(253178, 201701, 0x16806c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureUseMagicExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545628, 201703, 0x16806e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureUseMagicExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253179, 201707, 0x1680708)
+    VariantID::new(253179, 201707, 0x1680708),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureUseMagicExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253180, 201711, 0x1680728)
+    VariantID::new(253180, 201711, 0x1680728),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureUseWeaponExecState_IProcedureTreeExecState_:
     [VariantID; 1] = [VariantID::new(545634, 201713, 0x1680748)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureUseWeaponExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253181, 201717, 0x1680768)
+    VariantID::new(253181, 201717, 0x1680768),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureUseWeaponExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253182, 201721, 0x1680788)
+    VariantID::new(253182, 201721, 0x1680788),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureWaitExecState_IProcedureTreeExecState_: [VariantID;
     1] = [VariantID::new(545640, 201723, 0x16807a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureWaitExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253183, 201727, 0x16807c8)
+    VariantID::new(253183, 201727, 0x16807c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureWaitExecState_BGSProcedureTreeExecStateFactory_:
@@ -4023,11 +4023,11 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureWanderExecState_IProcedureTreeExe
     [VariantID; 1] = [VariantID::new(545646, 201733, 0x1680808)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureWanderExecState_IProcedureTreeExecState__BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253185, 201737, 0x1680828)
+    VariantID::new(253185, 201737, 0x1680828),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureWanderExecState_BGSProcedureTreeExecStateFactory_: [VariantID; 1] = [
-    VariantID::new(253186, 201741, 0x1680848)
+    VariantID::new(253186, 201741, 0x1680848),
 ];
 
 pub const VTABLE_IProcedure: [VariantID; 1] = [VariantID::new(253225, 201773, 0x1680af8)];
@@ -4035,7 +4035,7 @@ pub const VTABLE_IProcedure: [VariantID; 1] = [VariantID::new(253225, 201773, 0x
 pub const VTABLE_BGSProcedureBase: [VariantID; 1] = [VariantID::new(253226, 201775, 0x1680bf8)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureDoneParamTypes_: [VariantID; 1] = [
-    VariantID::new(253227, 201777, 0x1680d10)
+    VariantID::new(253227, 201777, 0x1680d10),
 ];
 
 pub const VTABLE_BGSProcedureDone: [VariantID; 1] = [VariantID::new(253228, 201813, 0x1680e30)];
@@ -4047,11 +4047,11 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureDone_IProcedure_: [VariantID; 1] 
     [VariantID::new(545657, 201817, 0x1680f70)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureDone_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253230, 201821, 0x1680f90)
+    VariantID::new(253230, 201821, 0x1680f90),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureDone_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253231, 201825, 0x1680fb0)
+    VariantID::new(253231, 201825, 0x1680fb0),
 ];
 
 pub const VTABLE_BGSPackageDataTypeCheck_IAITarget_BGSPackageDataRef_: [VariantID; 1] =
@@ -4067,7 +4067,7 @@ pub const VTABLE_IPackageDataTypeCheck: [VariantID; 1] =
     [VariantID::new(253244, 201838, 0x16811b8)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureAcquireParamTypes_: [VariantID; 1] = [
-    VariantID::new(253245, 201840, 0x16811d8)
+    VariantID::new(253245, 201840, 0x16811d8),
 ];
 
 pub const VTABLE_BGSProcedureAcquire: [VariantID; 1] = [VariantID::new(253246, 201876, 0x16812f8)];
@@ -4082,15 +4082,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureAcquire_IProcedure_: [VariantID; 
     [VariantID::new(545680, 201890, 0x1681560)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureAcquire_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253255, 201894, 0x1681580)
+    VariantID::new(253255, 201894, 0x1681580),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureAcquire_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253256, 201898, 0x16815a0)
+    VariantID::new(253256, 201898, 0x16815a0),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureActivateParamTypes_: [VariantID; 1] = [
-    VariantID::new(253268, 201903, 0x1681778)
+    VariantID::new(253268, 201903, 0x1681778),
 ];
 
 pub const VTABLE_BGSProcedureActivate: [VariantID; 1] = [VariantID::new(253269, 201939, 0x1681898)];
@@ -4105,18 +4105,18 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureActivate_IProcedure_: [VariantID;
     [VariantID::new(545699, 201953, 0x1681a68)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureActivate_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253272, 201957, 0x1681a88)
+    VariantID::new(253272, 201957, 0x1681a88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureActivate_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253273, 201961, 0x1681aa8)
+    VariantID::new(253273, 201961, 0x1681aa8),
 ];
 
 pub const VTABLE_BGSPackageDataTypeCheck_BGSPackageDataTopic_BGSPackageDataTopic_: [VariantID; 1] =
     [VariantID::new(253282, 201963, 0x1681df8)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureDialogueParamTypes_: [VariantID; 1] = [
-    VariantID::new(253280, 201968, 0x1681bb8)
+    VariantID::new(253280, 201968, 0x1681bb8),
 ];
 
 pub const VTABLE_BGSProcedureDialogue: [VariantID; 1] = [VariantID::new(253281, 202004, 0x1681cd8)];
@@ -4125,19 +4125,19 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureDialogue_IProcedure_: [VariantID;
     [VariantID::new(545708, 202006, 0x1681e48)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureDialogue_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253286, 202010, 0x1681e68)
+    VariantID::new(253286, 202010, 0x1681e68),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureDialogue_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253287, 202014, 0x1681e88)
+    VariantID::new(253287, 202014, 0x1681e88),
 ];
 
 pub const VTABLE_BGSPackageDataTypeCheck_IPackageDataAIWorldLocationHandle_BGSPackageDataLocation_: [VariantID; 1] = [
-    VariantID::new(253306, 202016, 0x16823e0)
+    VariantID::new(253306, 202016, 0x16823e0),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureDialogueActivateParamTypes_: [VariantID; 1] = [
-    VariantID::new(253303, 202019, 0x1682100)
+    VariantID::new(253303, 202019, 0x1682100),
 ];
 
 pub const VTABLE_BGSProcedureDialogueActivate: [VariantID; 1] =
@@ -4153,19 +4153,19 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureDialogueActivate_IProcedure_: [Va
     [VariantID::new(545728, 202069, 0x1682400)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureDialogueActivate_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253307, 202073, 0x1682420)
+    VariantID::new(253307, 202073, 0x1682420),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureDialogueActivate_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253308, 202077, 0x1682440)
+    VariantID::new(253308, 202077, 0x1682440),
 ];
 
 pub const VTABLE_BGSPackageDataTypeCheck_BGSPackageDataTargetSelector_BGSPackageDataTargetSelector_: [VariantID; 1] = [
-    VariantID::new(253317, 202079, 0x1682778)
+    VariantID::new(253317, 202079, 0x1682778),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureEatParamTypes_: [VariantID; 1] = [
-    VariantID::new(253315, 202083, 0x1682538)
+    VariantID::new(253315, 202083, 0x1682538),
 ];
 
 pub const VTABLE_BGSProcedureEat: [VariantID; 1] = [VariantID::new(253316, 202119, 0x1682658)];
@@ -4174,11 +4174,11 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureEat_IProcedure_: [VariantID; 1] =
     [VariantID::new(545737, 202121, 0x16827a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureEat_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253319, 202125, 0x16827c8)
+    VariantID::new(253319, 202125, 0x16827c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureEat_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253320, 202129, 0x16827e8)
+    VariantID::new(253320, 202129, 0x16827e8),
 ];
 
 pub const VTABLE_BGSPackageDataTypeCheck_IAITarget_BGSPackageDataObjectList_: [VariantID; 1] =
@@ -4188,7 +4188,7 @@ pub const VTABLE_BGSPackageDataTypeCheck_BGSPackageDataFloat_BGSPackageDataFloat
     [VariantID::new(253339, 202133, 0x1682d28)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureEscortParamTypes_: [VariantID; 1] = [
-    VariantID::new(253335, 202144, 0x1682a28)
+    VariantID::new(253335, 202144, 0x1682a28),
 ];
 
 pub const VTABLE_BGSProcedureEscort: [VariantID; 1] = [VariantID::new(253336, 202180, 0x1682b48)];
@@ -4203,18 +4203,18 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureEscort_IProcedure_: [VariantID; 1
     [VariantID::new(545758, 202194, 0x1682dd8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureEscort_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253348, 202198, 0x1682df8)
+    VariantID::new(253348, 202198, 0x1682df8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureEscort_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253349, 202202, 0x1682e18)
+    VariantID::new(253349, 202202, 0x1682e18),
 ];
 
 pub const VTABLE_BGSPackageDataTypeCheck_BGSPackageDataObjectList_BGSPackageDataObjectList_:
     [VariantID; 1] = [VariantID::new(253362, 202205, 0x16831d0)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureFindParamTypes_: [VariantID; 1] = [
-    VariantID::new(253360, 202211, 0x1682f90)
+    VariantID::new(253360, 202211, 0x1682f90),
 ];
 
 pub const VTABLE_BGSProcedureFind: [VariantID; 1] = [VariantID::new(253361, 202247, 0x16830b0)];
@@ -4223,15 +4223,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureFind_IProcedure_: [VariantID; 1] 
     [VariantID::new(545767, 202249, 0x1683218)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFind_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253365, 202253, 0x1683238)
+    VariantID::new(253365, 202253, 0x1683238),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFind_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253366, 202257, 0x1683258)
+    VariantID::new(253366, 202257, 0x1683258),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureFleeParamTypes_: [VariantID; 1] = [
-    VariantID::new(253386, 202268, 0x1683560)
+    VariantID::new(253386, 202268, 0x1683560),
 ];
 
 pub const VTABLE_BGSProcedureFlee: [VariantID; 1] = [VariantID::new(253387, 202304, 0x1683680)];
@@ -4246,15 +4246,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureFlee_IProcedure_: [VariantID; 1] 
     [VariantID::new(545786, 202318, 0x16838c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFlee_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253397, 202322, 0x16838e8)
+    VariantID::new(253397, 202322, 0x16838e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFlee_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253398, 202326, 0x1683908)
+    VariantID::new(253398, 202326, 0x1683908),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureFlightGrabParamTypes_: [VariantID; 1] = [
-    VariantID::new(253411, 202332, 0x1683aa0)
+    VariantID::new(253411, 202332, 0x1683aa0),
 ];
 
 pub const VTABLE_BGSProcedureFlightGrab: [VariantID; 1] =
@@ -4270,24 +4270,24 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureFlightGrab_IProcedure_: [VariantI
     [VariantID::new(545805, 202382, 0x1683d98)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFlightGrab_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253415, 202386, 0x1683db8)
+    VariantID::new(253415, 202386, 0x1683db8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFlightGrab_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253416, 202390, 0x1683dd8)
+    VariantID::new(253416, 202390, 0x1683dd8),
 ];
 
 pub const VTABLE_BGSPackageDataTypeCheck_IPackageDataAIWorldLocationHandle_BGSPackageDataRef_:
     [VariantID; 1] = [VariantID::new(253448, 202396, 0x1684710)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureFollowParamTypes_: [VariantID; 1] = [
-    VariantID::new(253434, 202401, 0x16840a0)
+    VariantID::new(253434, 202401, 0x16840a0),
 ];
 
 pub const VTABLE_BGSProcedureFollow: [VariantID; 1] = [VariantID::new(253435, 202437, 0x16841c0)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureFollowToParamTypes_: [VariantID; 1] = [
-    VariantID::new(253436, 202439, 0x16842e0)
+    VariantID::new(253436, 202439, 0x16842e0),
 ];
 
 pub const VTABLE_BGSProcedureFollowTo: [VariantID; 1] = [VariantID::new(253437, 202475, 0x1684400)];
@@ -4306,26 +4306,26 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureFollow_IProcedure_: [VariantID; 1
     [VariantID::new(545828, 202494, 0x16846b0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFollow_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253446, 202498, 0x16846d0)
+    VariantID::new(253446, 202498, 0x16846d0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFollow_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253447, 202502, 0x16846f0)
+    VariantID::new(253447, 202502, 0x16846f0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureFollowTo_IProcedure_: [VariantID; 1] =
     [VariantID::new(545835, 202504, 0x1684740)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureFollowTo_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253450, 202508, 0x1684760)
+    VariantID::new(253450, 202508, 0x1684760),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureFollowTo_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253451, 202512, 0x1684780)
+    VariantID::new(253451, 202512, 0x1684780),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureForceGreetParamTypes_: [VariantID; 1] = [
-    VariantID::new(253457, 202517, 0x1684850)
+    VariantID::new(253457, 202517, 0x1684850),
 ];
 
 pub const VTABLE_BGSProcedureForceGreet: [VariantID; 1] =
@@ -4335,15 +4335,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureForceGreet_IProcedure_: [VariantI
     [VariantID::new(545843, 202555, 0x1684ab8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureForceGreet_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253461, 202559, 0x1684ad8)
+    VariantID::new(253461, 202559, 0x1684ad8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureForceGreet_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253462, 202563, 0x1684af8)
+    VariantID::new(253462, 202563, 0x1684af8),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureGuardParamTypes_: [VariantID; 1] = [
-    VariantID::new(253472, 202570, 0x1684c68)
+    VariantID::new(253472, 202570, 0x1684c68),
 ];
 
 pub const VTABLE_BGSProcedureGuard: [VariantID; 1] = [VariantID::new(253473, 202606, 0x1684d88)];
@@ -4352,15 +4352,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureGuard_IProcedure_: [VariantID; 1]
     [VariantID::new(545851, 202608, 0x1684ee0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureGuard_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253477, 202612, 0x1684f00)
+    VariantID::new(253477, 202612, 0x1684f00),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureGuard_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253478, 202616, 0x1684f20)
+    VariantID::new(253478, 202616, 0x1684f20),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureHoldPositionParamTypes_: [VariantID; 1] = [
-    VariantID::new(253484, 202619, 0x1685008)
+    VariantID::new(253484, 202619, 0x1685008),
 ];
 
 pub const VTABLE_BGSProcedureHoldPosition: [VariantID; 1] =
@@ -4370,15 +4370,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureHoldPosition_IProcedure_: [Varian
     [VariantID::new(545859, 202657, 0x1685248)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureHoldPosition_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253486, 202661, 0x1685268)
+    VariantID::new(253486, 202661, 0x1685268),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureHoldPosition_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253487, 202665, 0x1685288)
+    VariantID::new(253487, 202665, 0x1685288),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureHoverParamTypes_: [VariantID; 1] = [
-    VariantID::new(253497, 202669, 0x1685410)
+    VariantID::new(253497, 202669, 0x1685410),
 ];
 
 pub const VTABLE_BGSProcedureHover: [VariantID; 1] = [VariantID::new(253498, 202705, 0x1685530)];
@@ -4393,15 +4393,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureHover_IProcedure_: [VariantID; 1]
     [VariantID::new(545878, 202719, 0x16856f8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureHover_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253501, 202723, 0x1685718)
+    VariantID::new(253501, 202723, 0x1685718),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureHover_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253502, 202727, 0x1685738)
+    VariantID::new(253502, 202727, 0x1685738),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureKeepAnEyeOnParamTypes_: [VariantID; 1] = [
-    VariantID::new(253510, 202733, 0x1685858)
+    VariantID::new(253510, 202733, 0x1685858),
 ];
 
 pub const VTABLE_BGSProcedureKeepAnEyeOn: [VariantID; 1] =
@@ -4411,21 +4411,21 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureKeepAnEyeOn_IProcedure_: [Variant
     [VariantID::new(545886, 202771, 0x1685ab8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureKeepAnEyeOn_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253514, 202775, 0x1685ad8)
+    VariantID::new(253514, 202775, 0x1685ad8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureKeepAnEyeOn_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253515, 202779, 0x1685af8)
+    VariantID::new(253515, 202779, 0x1685af8),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureLockParamTypes_: [VariantID; 1] = [
-    VariantID::new(253528, 202783, 0x1685cf8)
+    VariantID::new(253528, 202783, 0x1685cf8),
 ];
 
 pub const VTABLE_BGSProcedureLock: [VariantID; 1] = [VariantID::new(253529, 202819, 0x1685e18)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureUnlockParamTypes_: [VariantID; 1] = [
-    VariantID::new(253530, 202821, 0x1685f38)
+    VariantID::new(253530, 202821, 0x1685f38),
 ];
 
 pub const VTABLE_BGSProcedureUnlock: [VariantID; 1] = [VariantID::new(253531, 202857, 0x1686058)];
@@ -4440,26 +4440,26 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureLock_IProcedure_: [VariantID; 1] 
     [VariantID::new(545907, 202871, 0x1686230)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureLock_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253534, 202875, 0x1686250)
+    VariantID::new(253534, 202875, 0x1686250),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureLock_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253535, 202879, 0x1686270)
+    VariantID::new(253535, 202879, 0x1686270),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureUnlock_IProcedure_: [VariantID; 1] =
     [VariantID::new(545913, 202882, 0x16862a0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureUnlock_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253537, 202886, 0x16862c0)
+    VariantID::new(253537, 202886, 0x16862c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureUnlock_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253538, 202890, 0x16862e0)
+    VariantID::new(253538, 202890, 0x16862e0),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureOrbitParamTypes_: [VariantID; 1] = [
-    VariantID::new(253553, 202898, 0x1686518)
+    VariantID::new(253553, 202898, 0x1686518),
 ];
 
 pub const VTABLE_BGSProcedureOrbit: [VariantID; 1] = [VariantID::new(253554, 202934, 0x1686638)];
@@ -4474,15 +4474,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureOrbit_IProcedure_: [VariantID; 1]
     [VariantID::new(545932, 202948, 0x1686878)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureOrbit_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253560, 202952, 0x1686898)
+    VariantID::new(253560, 202952, 0x1686898),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureOrbit_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253561, 202956, 0x16868b8)
+    VariantID::new(253561, 202956, 0x16868b8),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedurePatrolParamTypes_: [VariantID; 1] = [
-    VariantID::new(253597, 202972, 0x1686da8)
+    VariantID::new(253597, 202972, 0x1686da8),
 ];
 
 pub const VTABLE_BGSProcedurePatrol: [VariantID; 1] = [VariantID::new(253598, 203008, 0x1686ec8)];
@@ -4497,15 +4497,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedurePatrol_IProcedure_: [VariantID; 1
     [VariantID::new(545951, 203022, 0x16870d0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedurePatrol_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253604, 203026, 0x16870f0)
+    VariantID::new(253604, 203026, 0x16870f0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedurePatrol_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253605, 203030, 0x1687110)
+    VariantID::new(253605, 203030, 0x1687110),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedurePursueParamTypes_: [VariantID; 1] = [
-    VariantID::new(253611, 203035, 0x16871f8)
+    VariantID::new(253611, 203035, 0x16871f8),
 ];
 
 pub const VTABLE_BGSProcedurePursue: [VariantID; 1] = [VariantID::new(253612, 203071, 0x1687318)];
@@ -4514,15 +4514,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedurePursue_IProcedure_: [VariantID; 1
     [VariantID::new(545959, 203073, 0x1687478)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedurePursue_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253616, 203077, 0x1687498)
+    VariantID::new(253616, 203077, 0x1687498),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedurePursue_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253617, 203081, 0x16874b8)
+    VariantID::new(253617, 203081, 0x16874b8),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureSandboxParamTypes_: [VariantID; 1] = [
-    VariantID::new(253648, 203095, 0x1687968)
+    VariantID::new(253648, 203095, 0x1687968),
 ];
 
 pub const VTABLE_BGSProcedureSandbox: [VariantID; 1] = [VariantID::new(253649, 203131, 0x1687a88)];
@@ -4537,15 +4537,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureSandbox_IProcedure_: [VariantID; 
     [VariantID::new(545978, 203145, 0x1687d00)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureSandbox_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253660, 203149, 0x1687d20)
+    VariantID::new(253660, 203149, 0x1687d20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureSandbox_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253661, 203153, 0x1687d40)
+    VariantID::new(253661, 203153, 0x1687d40),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureSayParamTypes_: [VariantID; 1] = [
-    VariantID::new(253667, 203156, 0x1687e08)
+    VariantID::new(253667, 203156, 0x1687e08),
 ];
 
 pub const VTABLE_BGSProcedureSay: [VariantID; 1] = [VariantID::new(253668, 203192, 0x1687f28)];
@@ -4554,15 +4554,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureSay_IProcedure_: [VariantID; 1] =
     [VariantID::new(545986, 203194, 0x1688048)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureSay_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253669, 203198, 0x1688068)
+    VariantID::new(253669, 203198, 0x1688068),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureSay_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253670, 203202, 0x1688088)
+    VariantID::new(253670, 203202, 0x1688088),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureShoutParamTypes_: [VariantID; 1] = [
-    VariantID::new(253695, 203218, 0x1688378)
+    VariantID::new(253695, 203218, 0x1688378),
 ];
 
 pub const VTABLE_BGSProcedureShout: [VariantID; 1] = [VariantID::new(253696, 203254, 0x1688498)];
@@ -4582,21 +4582,21 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureShout_IProcedure_: [VariantID; 1]
     [VariantID::new(546007, 203272, 0x16886a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureShout_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253702, 203276, 0x16886c8)
+    VariantID::new(253702, 203276, 0x16886c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureShout_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253703, 203280, 0x16886e8)
+    VariantID::new(253703, 203280, 0x16886e8),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureSitParamTypes_: [VariantID; 1] = [
-    VariantID::new(253718, 203283, 0x1688940)
+    VariantID::new(253718, 203283, 0x1688940),
 ];
 
 pub const VTABLE_BGSProcedureSit: [VariantID; 1] = [VariantID::new(253719, 203319, 0x1688a60)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureSleepParamTypes_: [VariantID; 1] = [
-    VariantID::new(253720, 203321, 0x1688b80)
+    VariantID::new(253720, 203321, 0x1688b80),
 ];
 
 pub const VTABLE_BGSProcedureSleep: [VariantID; 1] = [VariantID::new(253721, 203357, 0x1688ca0)];
@@ -4611,26 +4611,26 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureSit_IProcedure_: [VariantID; 1] =
     [VariantID::new(546028, 203371, 0x1688e60)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureSit_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253723, 203375, 0x1688e80)
+    VariantID::new(253723, 203375, 0x1688e80),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureSit_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253724, 203379, 0x1688ea0)
+    VariantID::new(253724, 203379, 0x1688ea0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BGSProcedureSleep_IProcedure_: [VariantID; 1] =
     [VariantID::new(546034, 203381, 0x1688ec0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureSleep_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253725, 203385, 0x1688ee0)
+    VariantID::new(253725, 203385, 0x1688ee0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureSleep_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253726, 203389, 0x1688f00)
+    VariantID::new(253726, 203389, 0x1688f00),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureTravelParamTypes_: [VariantID; 1] = [
-    VariantID::new(253737, 203392, 0x16890b0)
+    VariantID::new(253737, 203392, 0x16890b0),
 ];
 
 pub const VTABLE_BGSProcedureTravel: [VariantID; 1] = [VariantID::new(253738, 203428, 0x16891d0)];
@@ -4645,11 +4645,11 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureTravel_IProcedure_: [VariantID; 1
     [VariantID::new(546053, 203442, 0x1689390)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureTravel_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253740, 203446, 0x16893b0)
+    VariantID::new(253740, 203446, 0x16893b0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureTravel_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253741, 203450, 0x16893d0)
+    VariantID::new(253741, 203450, 0x16893d0),
 ];
 
 pub const VTABLE_BGSTypedItem_BGSProcedureTreeProcedure_BGSProcedureTreeConditionalItem_:
@@ -4659,7 +4659,7 @@ pub const VTABLE_BGSProcedureTreeProcedure: [VariantID; 1] =
     [VariantID::new(253756, 203470, 0x16896b8)];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureUseIdleMarkerParamTypes_: [VariantID; 1] = [
-    VariantID::new(253768, 203472, 0x1689900)
+    VariantID::new(253768, 203472, 0x1689900),
 ];
 
 pub const VTABLE_BGSProcedureUseIdleMarker: [VariantID; 1] =
@@ -4675,15 +4675,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureUseIdleMarker_IProcedure_: [Varia
     [VariantID::new(546091, 203522, 0x1689be0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureUseIdleMarker_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253771, 203526, 0x1689c00)
+    VariantID::new(253771, 203526, 0x1689c00),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureUseIdleMarker_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253772, 203530, 0x1689c20)
+    VariantID::new(253772, 203530, 0x1689c20),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureUseMagicParamTypes_: [VariantID; 1] = [
-    VariantID::new(253795, 203553, 0x1689e68)
+    VariantID::new(253795, 203553, 0x1689e68),
 ];
 
 pub const VTABLE_BGSProcedureUseMagic: [VariantID; 1] = [VariantID::new(253796, 203589, 0x1689f88)];
@@ -4700,15 +4700,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureUseMagic_IProcedure_: [VariantID;
     [VariantID::new(546111, 203605, 0x168a1c0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureUseMagic_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253805, 203609, 0x168a1e0)
+    VariantID::new(253805, 203609, 0x168a1e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureUseMagic_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253806, 203613, 0x168a200)
+    VariantID::new(253806, 203613, 0x168a200),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureUseWeaponParamTypes_: [VariantID; 1] = [
-    VariantID::new(253850, 203660, 0x168a688)
+    VariantID::new(253850, 203660, 0x168a688),
 ];
 
 pub const VTABLE_BGSProcedureUseWeapon: [VariantID; 1] =
@@ -4724,15 +4724,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureUseWeapon_IProcedure_: [VariantID
     [VariantID::new(546130, 203710, 0x168aa50)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureUseWeapon_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253866, 203714, 0x168aa70)
+    VariantID::new(253866, 203714, 0x168aa70),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureUseWeapon_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253867, 203718, 0x168aa90)
+    VariantID::new(253867, 203718, 0x168aa90),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureWaitParamTypes_: [VariantID; 1] = [
-    VariantID::new(253872, 203723, 0x168ab38)
+    VariantID::new(253872, 203723, 0x168ab38),
 ];
 
 pub const VTABLE_BGSProcedureWait: [VariantID; 1] = [VariantID::new(253873, 203759, 0x168ac58)];
@@ -4741,15 +4741,15 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureWait_IProcedure_: [VariantID; 1] 
     [VariantID::new(546138, 203761, 0x168ad88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureWait_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253875, 203765, 0x168ada8)
+    VariantID::new(253875, 203765, 0x168ada8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureWait_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253876, 203769, 0x168adc8)
+    VariantID::new(253876, 203769, 0x168adc8),
 ];
 
 pub const VTABLE_BGSProcedureTyped_BGSProcedureBase__BGSProcedureParamInfo_const_near___const_kProcedureWanderParamTypes_: [VariantID; 1] = [
-    VariantID::new(253887, 203774, 0x168af78)
+    VariantID::new(253887, 203774, 0x168af78),
 ];
 
 pub const VTABLE_BGSProcedureWander: [VariantID; 1] = [VariantID::new(253888, 203810, 0x168b098)];
@@ -4764,11 +4764,11 @@ pub const VTABLE_BSTDerivedCreator_BGSProcedureWander_IProcedure_: [VariantID; 1
     [VariantID::new(546157, 203824, 0x168b280)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGSProcedureWander_IProcedure__BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253892, 203828, 0x168b2a0)
+    VariantID::new(253892, 203828, 0x168b2a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGSProcedureWander_BSTCreateFactoryManager_BSFixedString_IProcedure_256__: [VariantID; 1] = [
-    VariantID::new(253893, 203832, 0x168b2c0)
+    VariantID::new(253893, 203832, 0x168b2c0),
 ];
 
 pub const VTABLE_BGSVisitProceduresInitActorLocation: [VariantID; 1] =
@@ -4968,11 +4968,11 @@ pub const VTABLE_BSTDerivedCreator_PathingCell_BSPathingCell_: [VariantID; 1] =
     [VariantID::new(546245, 204295, 0x1695658)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingCell_BSPathingCell__BSTSmartPointerPathingFactoryManager_BSPathingCell_64__: [VariantID; 1] = [
-    VariantID::new(254901, 204299, 0x1695678)
+    VariantID::new(254901, 204299, 0x1695678),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingCell_BSTSmartPointerPathingFactoryManager_BSPathingCell_64__: [VariantID; 1] = [
-    VariantID::new(254902, 204301, 0x1695698)
+    VariantID::new(254902, 204301, 0x1695698),
 ];
 
 pub const VTABLE_BSPathingCell: [VariantID; 1] = [VariantID::new(254897, 204303, 0x1695558)];
@@ -4986,11 +4986,11 @@ pub const VTABLE_BSTDerivedCreator_PathingDoor_BSPathingDoor_: [VariantID; 1] =
     [VariantID::new(546254, 204311, 0x1695a98)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingDoor_BSPathingDoor__BSTSmartPointerPathingFactoryManager_BSPathingDoor_64__: [VariantID; 1] = [
-    VariantID::new(254923, 204315, 0x1695ab8)
+    VariantID::new(254923, 204315, 0x1695ab8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingDoor_BSTSmartPointerPathingFactoryManager_BSPathingDoor_64__: [VariantID; 1] = [
-    VariantID::new(254924, 204317, 0x1695ad8)
+    VariantID::new(254924, 204317, 0x1695ad8),
 ];
 
 pub const VTABLE_BSPathingDoor: [VariantID; 1] = [VariantID::new(254920, 204319, 0x1695948)];
@@ -5004,11 +5004,11 @@ pub const VTABLE_BSTDerivedCreator_PathingLockData_BSPathingLockData_: [VariantI
     [VariantID::new(546263, 204328, 0x1695d28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingLockData_BSPathingLockData__BSTSmartPointerPathingFactoryManager_BSPathingLockData_64__: [VariantID; 1] = [
-    VariantID::new(254940, 204332, 0x1695d48)
+    VariantID::new(254940, 204332, 0x1695d48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingLockData_BSTSmartPointerPathingFactoryManager_BSPathingLockData_64__: [VariantID; 1] = [
-    VariantID::new(254941, 204334, 0x1695d68)
+    VariantID::new(254941, 204334, 0x1695d68),
 ];
 
 pub const VTABLE_BSPathingLockData: [VariantID; 1] = [VariantID::new(254937, 204336, 0x1695c90)];
@@ -5028,11 +5028,11 @@ pub const VTABLE_BSTDerivedCreator_PathingRequest_BSPathingRequest_: [VariantID;
     [VariantID::new(546273, 204347, 0x1695ec8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequest_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(254951, 204351, 0x1695ee8)
+    VariantID::new(254951, 204351, 0x1695ee8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequest_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546278, 204353, 0x1695f08)
+    VariantID::new(546278, 204353, 0x1695f08),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequest_BSPathingRequest_64_:
@@ -5093,15 +5093,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestClosePoint_BSPathingRequest_: [
     [VariantID::new(546303, 204419, 0x1697090)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestClosePoint_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255067, 204423, 0x16970b0)
+    VariantID::new(255067, 204423, 0x16970b0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestClosePoint_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546308, 204425, 0x16970d0)
+    VariantID::new(546308, 204425, 0x16970d0),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestClosePoint_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255068, 204429, 0x16970f0)
+    VariantID::new(255068, 204429, 0x16970f0),
 ];
 
 pub const VTABLE_PathingRequestClosePoint: [VariantID; 1] =
@@ -5111,19 +5111,19 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestClosestGoal_BSPathingRequest_: 
     [VariantID::new(546315, 204434, 0x1697430)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestClosestGoal_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255089, 204438, 0x1697450)
+    VariantID::new(255089, 204438, 0x1697450),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestClosestGoal_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546320, 204440, 0x1697470)
+    VariantID::new(546320, 204440, 0x1697470),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestClosestGoal_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255090, 204444, 0x1697490)
+    VariantID::new(255090, 204444, 0x1697490),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestClosestGoal_PathingRequestClosestGoal__PathBuilder_: [VariantID; 1] = [
-    VariantID::new(255091, 204446, 0x16974b0)
+    VariantID::new(255091, 204446, 0x16974b0),
 ];
 
 pub const VTABLE_IPathBuilderFactoryBase: [VariantID; 1] =
@@ -5139,11 +5139,11 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestCover_BSPathingRequest_: [Varia
     [VariantID::new(546328, 204457, 0x1697690)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestCover_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255103, 204461, 0x16976b0)
+    VariantID::new(255103, 204461, 0x16976b0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestCover_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546333, 204463, 0x16976d0)
+    VariantID::new(546333, 204463, 0x16976d0),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestCover_BSPathingRequest_64_:
@@ -5155,11 +5155,11 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestFlee_BSPathingRequest_: [Varian
     [VariantID::new(546339, 204472, 0x16977b8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestFlee_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255109, 204476, 0x16977d8)
+    VariantID::new(255109, 204476, 0x16977d8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestFlee_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546344, 204478, 0x16977f8)
+    VariantID::new(546344, 204478, 0x16977f8),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestFlee_BSPathingRequest_64_:
@@ -5171,11 +5171,11 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestFly_BSPathingRequest_: [Variant
     [VariantID::new(546350, 204487, 0x1697908)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestFly_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255116, 204491, 0x1697928)
+    VariantID::new(255116, 204491, 0x1697928),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestFly_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546355, 204493, 0x1697948)
+    VariantID::new(546355, 204493, 0x1697948),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestFly_BSPathingRequest_64_:
@@ -5187,15 +5187,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestFlyAction_BSPathingRequest_: [V
     [VariantID::new(546361, 204502, 0x1697a58)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestFlyAction_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255123, 204506, 0x1697a78)
+    VariantID::new(255123, 204506, 0x1697a78),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestFlyAction_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546366, 204508, 0x1697a98)
+    VariantID::new(546366, 204508, 0x1697a98),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestFlyAction_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255124, 204512, 0x1697ab8)
+    VariantID::new(255124, 204512, 0x1697ab8),
 ];
 
 pub const VTABLE_PathingRequestFlyAction: [VariantID; 1] =
@@ -5205,15 +5205,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestFlyHover_BSPathingRequest_: [Va
     [VariantID::new(546372, 204517, 0x1697cc0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestFlyHover_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255137, 204521, 0x1697ce0)
+    VariantID::new(255137, 204521, 0x1697ce0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestFlyHover_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546377, 204523, 0x1697d00)
+    VariantID::new(546377, 204523, 0x1697d00),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestFlyHover_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255138, 204527, 0x1697d20)
+    VariantID::new(255138, 204527, 0x1697d20),
 ];
 
 pub const VTABLE_PathingRequestFlyHover: [VariantID; 1] =
@@ -5223,15 +5223,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestFlyLand_BSPathingRequest_: [Var
     [VariantID::new(546383, 204533, 0x1697e10)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestFlyLand_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255144, 204537, 0x1697e30)
+    VariantID::new(255144, 204537, 0x1697e30),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestFlyLand_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546388, 204539, 0x1697e50)
+    VariantID::new(546388, 204539, 0x1697e50),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestFlyLand_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255145, 204543, 0x1697e70)
+    VariantID::new(255145, 204543, 0x1697e70),
 ];
 
 pub const VTABLE_PathingRequestFlyLand: [VariantID; 1] =
@@ -5241,15 +5241,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestFlyOrbit_BSPathingRequest_: [Va
     [VariantID::new(546394, 204548, 0x1697f38)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestFlyOrbit_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255150, 204552, 0x1697f58)
+    VariantID::new(255150, 204552, 0x1697f58),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestFlyOrbit_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546399, 204554, 0x1697f78)
+    VariantID::new(546399, 204554, 0x1697f78),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestFlyOrbit_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255151, 204558, 0x1697f98)
+    VariantID::new(255151, 204558, 0x1697f98),
 ];
 
 pub const VTABLE_PathingRequestFlyOrbit: [VariantID; 1] =
@@ -5259,15 +5259,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestFlyTakeOff_BSPathingRequest_: [
     [VariantID::new(546405, 204563, 0x1698060)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestFlyTakeOff_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255156, 204567, 0x1698080)
+    VariantID::new(255156, 204567, 0x1698080),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestFlyTakeOff_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546410, 204569, 0x16980a0)
+    VariantID::new(546410, 204569, 0x16980a0),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestFlyTakeOff_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255157, 204573, 0x16980c0)
+    VariantID::new(255157, 204573, 0x16980c0),
 ];
 
 pub const VTABLE_PathingRequestFlyTakeOff: [VariantID; 1] =
@@ -5277,11 +5277,11 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestHide_BSPathingRequest_: [Varian
     [VariantID::new(546416, 204578, 0x16981e0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestHide_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255164, 204582, 0x1698200)
+    VariantID::new(255164, 204582, 0x1698200),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestHide_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546421, 204584, 0x1698220)
+    VariantID::new(546421, 204584, 0x1698220),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestHide_BSPathingRequest_64_:
@@ -5293,11 +5293,11 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestLOS_BSPathingRequest_: [Variant
     [VariantID::new(546427, 204593, 0x1698420)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestLOS_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255177, 204597, 0x1698440)
+    VariantID::new(255177, 204597, 0x1698440),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestLOS_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546432, 204599, 0x1698460)
+    VariantID::new(546432, 204599, 0x1698460),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestLOS_BSPathingRequest_64_:
@@ -5309,15 +5309,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestOptimalLocation_BSPathingReques
     [VariantID::new(546438, 204609, 0x1698548)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestOptimalLocation_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255183, 204613, 0x1698568)
+    VariantID::new(255183, 204613, 0x1698568),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestOptimalLocation_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546443, 204615, 0x1698588)
+    VariantID::new(546443, 204615, 0x1698588),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestOptimalLocation_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255184, 204619, 0x16985a8)
+    VariantID::new(255184, 204619, 0x16985a8),
 ];
 
 pub const VTABLE_PathingRequestOptimalLocation: [VariantID; 1] =
@@ -5327,15 +5327,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestRotate_BSPathingRequest_: [Vari
     [VariantID::new(546449, 204624, 0x16986a0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestRotate_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255190, 204628, 0x16986c0)
+    VariantID::new(255190, 204628, 0x16986c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestRotate_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546454, 204630, 0x16986e0)
+    VariantID::new(546454, 204630, 0x16986e0),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestRotate_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255191, 204634, 0x1698700)
+    VariantID::new(255191, 204634, 0x1698700),
 ];
 
 pub const VTABLE_PathingRequestRotate: [VariantID; 1] = [VariantID::new(255189, 204636, 0x1698660)];
@@ -5344,15 +5344,15 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestSafeStraightLine_BSPathingReque
     1] = [VariantID::new(546460, 204639, 0x16987c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestSafeStraightLine_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255196, 204643, 0x16987e8)
+    VariantID::new(255196, 204643, 0x16987e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestSafeStraightLine_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546465, 204645, 0x1698808)
+    VariantID::new(546465, 204645, 0x1698808),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestSafeStraightLine_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255197, 204649, 0x1698828)
+    VariantID::new(255197, 204649, 0x1698828),
 ];
 
 pub const VTABLE_PathingRequestSafeStraightLine: [VariantID; 1] =
@@ -5362,76 +5362,76 @@ pub const VTABLE_BSTDerivedCreator_PathingRequestStopMoving_BSPathingRequest_: [
     [VariantID::new(546471, 204654, 0x16988f8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PathingRequestStopMoving_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(255202, 204658, 0x1698918)
+    VariantID::new(255202, 204658, 0x1698918),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PathingRequestStopMoving_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(546476, 204660, 0x1698938)
+    VariantID::new(546476, 204660, 0x1698938),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_PathingRequestStopMoving_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(255203, 204664, 0x1698958)
+    VariantID::new(255203, 204664, 0x1698958),
 ];
 
 pub const VTABLE_PathingRequestStopMoving: [VariantID; 1] =
     [VariantID::new(255201, 204666, 0x16988b8)];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestClosePoint___PathBuilderClosePointPath_: [VariantID; 1] = [
-    VariantID::new(255210, 204669, 0x1698a60)
+    VariantID::new(255210, 204669, 0x1698a60),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequest___PathBuilderPathingRequest_:
     [VariantID; 1] = [VariantID::new(255217, 204671, 0x1698b68)];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestStopMoving___PathBuilderStopMovingPath_: [VariantID; 1] = [
-    VariantID::new(255218, 204673, 0x1698b80)
+    VariantID::new(255218, 204673, 0x1698b80),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestRotate___PathBuilderRotatePath_:
     [VariantID; 1] = [VariantID::new(255219, 204675, 0x1698b98)];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestFlee_PathBuilderFlee__PathBuilderFleePath_: [VariantID; 1] = [
-    VariantID::new(255225, 204677, 0x1698c78)
+    VariantID::new(255225, 204677, 0x1698c78),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestFly_PathBuilderFlight__PathBuilderFlyPath_: [VariantID; 1] = [
-    VariantID::new(255256, 204683, 0x1699148)
+    VariantID::new(255256, 204683, 0x1699148),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestFlyAction_PathBuilderFlight__PathBuilderFlyActionPath_: [VariantID; 1] = [
-    VariantID::new(255257, 204685, 0x1699160)
+    VariantID::new(255257, 204685, 0x1699160),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestFlyHover_PathBuilderFlight__PathBuilderFlyHoverPath_: [VariantID; 1] = [
-    VariantID::new(255258, 204687, 0x1699178)
+    VariantID::new(255258, 204687, 0x1699178),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestFlyOrbit_PathBuilderFlight__PathBuilderFlyOrbitPath_: [VariantID; 1] = [
-    VariantID::new(255259, 204689, 0x1699190)
+    VariantID::new(255259, 204689, 0x1699190),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestFlyLand_PathBuilderFlight__PathBuilderFlyLandPath_: [VariantID; 1] = [
-    VariantID::new(255260, 204691, 0x16991a8)
+    VariantID::new(255260, 204691, 0x16991a8),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestFlyTakeOff_PathBuilderFlight__PathBuilderFlyTakeOffPath_: [VariantID; 1] = [
-    VariantID::new(255261, 204693, 0x16991c0)
+    VariantID::new(255261, 204693, 0x16991c0),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestHide_PathBuilderHide__PathBuilderHidePath_: [VariantID; 1] = [
-    VariantID::new(255265, 204700, 0x1699250)
+    VariantID::new(255265, 204700, 0x1699250),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestLOS_PathBuilderLOS__PathBuilderLOSPath_: [VariantID; 1] = [
-    VariantID::new(255269, 204702, 0x16992e0)
+    VariantID::new(255269, 204702, 0x16992e0),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestOptimalLocation_PathBuilderOptimalLocation__PathBuilderOptimalLocationPath_: [VariantID; 1] = [
-    VariantID::new(255273, 204704, 0x1699370)
+    VariantID::new(255273, 204704, 0x1699370),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_PathingRequestSafeStraightLine_PathBuilderSafeStraightLine__PathBuilderSafeStraightLinePath_: [VariantID; 1] = [
-    VariantID::new(255277, 204706, 0x1699400)
+    VariantID::new(255277, 204706, 0x1699400),
 ];
 
 pub const VTABLE_BSResource__EntryDB_BGSBtoDB__DBTraits_: [VariantID; 1] =
@@ -5493,11 +5493,11 @@ pub const VTABLE_TESWaterDisplacement: [VariantID; 1] = [VariantID::new(255785, 
 pub const VTABLE_TESWaterNormals: [VariantID; 1] = [VariantID::new(255786, 204894, 0x169db80)];
 
 pub const VTABLE_NiTMapBase_NiTPointerAllocator_unsigned___int64__BSPointerHandle_Actor_BSUntypedPointerHandle_20_6___WadingWaterData___: [VariantID; 1] = [
-    VariantID::new(255787, 204896, 0x169db98)
+    VariantID::new(255787, 204896, 0x169db98),
 ];
 
 pub const VTABLE_NiTPointerMap_BSPointerHandle_Actor_BSUntypedPointerHandle_20_6___WadingWaterData___: [VariantID; 1] = [
-    VariantID::new(255788, 204898, 0x169dbd8)
+    VariantID::new(255788, 204898, 0x169dbd8),
 ];
 
 pub const VTABLE_BGSStoryManagerTreeVisitor: [VariantID; 1] =
@@ -5624,7 +5624,7 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextRa
     1] = [VariantID::new(546575, 205254, 0x16a5fd8)];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode1_CombatBehaviorContextRanged_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_NiPointer_CombatInventoryItem__const____CombatBehaviorEquipContext_____void____: [VariantID; 1] = [
-    VariantID::new(256696, 205265, 0x16a6030)
+    VariantID::new(256696, 205265, 0x16a6030),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorRepeat_: [VariantID; 1] =
@@ -5634,7 +5634,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorRepeat_: [VariantID;
     [VariantID::new(256697, 205278, 0x16a60e0)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorFallbackSelector_NextChildSelector__: [VariantID; 1] = [
-    VariantID::new(546599, 205280, 0x16a6138)
+    VariantID::new(546599, 205280, 0x16a6138),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorFallbackSelector_NextChildSelector__:
@@ -5653,7 +5653,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorIdle_float_: [Varia
     [VariantID::new(256701, 205318, 0x16a6300)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorFunc1_bool_____float__CombatBehaviorExpression_CombatBehaviorFunc1_float_____Actor____CombatBehaviorTree__CombatBehaviorAttacker_____: [VariantID; 1] = [
-    VariantID::new(256704, 205322, 0x16a63a0)
+    VariantID::new(256704, 205322, 0x16a63a0),
 ];
 
 pub const VTABLE_GRefCountImplCore: [VariantID; 1] = [VariantID::new(256962, 205361, 0x16a8ad8)];
@@ -5717,51 +5717,51 @@ pub const VTABLE_CreationClub__CreationChanged_ConfirmResetCallback: [VariantID;
     [VariantID::new(257027, 205444, 0x0)];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____DownloadAll__DownloadAllResult_BSPlatform__BNetResult_uint__void_DownloadAll__DownloadAllResult_BSPlatform__BNetResult_uint_: [VariantID; 1] = [
-    VariantID::new(0, 417088, 0x0)
+    VariantID::new(0, 417088, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____DownloadableContent__DownloadableContentResult_char_const____void_DownloadableContent__DownloadableContentResult_char_const___: [VariantID; 1] = [
-    VariantID::new(0, 205582, 0x0)
+    VariantID::new(0, 205582, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult__void_BSPlatform__BNetResult_: [VariantID; 1] = [
-    VariantID::new(0, 205584, 0x0)
+    VariantID::new(0, 205584, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_uint__void_BSPlatform__BNetResult_uint_: [VariantID; 1] = [
-    VariantID::new(0, 205578, 0x0)
+    VariantID::new(0, 205578, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 205586, 0x0)
+    VariantID::new(0, 205586, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_int__void_BSPlatform__BNetResult_unsigned___int64_int_: [VariantID; 1] = [
-    VariantID::new(0, 205588, 0x0)
+    VariantID::new(0, 205588, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 205590, 0x0)
+    VariantID::new(0, 205590, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 205592, 0x0)
+    VariantID::new(0, 205592, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const____void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const___: [VariantID; 1] = [
-    VariantID::new(0, 205594, 0x0)
+    VariantID::new(0, 205594, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 205596, 0x0)
+    VariantID::new(0, 205596, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____bool_char_const___GFxValue____void_bool_char_const___GFxValue___: [VariantID; 1] = [
-    VariantID::new(0, 417090, 0x0)
+    VariantID::new(0, 417090, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_char_const____void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(0, 205598, 0x0)
+    VariantID::new(0, 205598, 0x0),
 ];
 
 pub const VTABLE_ModManagerMenu: [VariantID; 3] = [
@@ -5818,11 +5818,11 @@ pub const VTABLE_ModManager__ModsChanged_ConfirmResetCallback: [VariantID; 1] =
     [VariantID::new(257454, 205728, 0x16a9720)];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const____void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const___: [VariantID; 1] = [
-    VariantID::new(0, 205752, 0x0)
+    VariantID::new(0, 205752, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 205754, 0x0)
+    VariantID::new(0, 205754, 0x0),
 ];
 
 pub const VTABLE_KinectMenu: [VariantID; 2] = [
@@ -6176,17 +6176,17 @@ pub const VTABLE_BNETSystem__ModsChanged_ConfirmResetCallback: [VariantID; 1] =
     [VariantID::new(0, 206224, 0x0)];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const____void_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 206226, 0x0)
+    VariantID::new(0, 206226, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const____void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const___: [VariantID; 1] = [
-    VariantID::new(0, 206228, 0x0)
+    VariantID::new(0, 206228, 0x0),
 ];
 
 pub const VTABLE_DownloadAll__uiCallback: [VariantID; 1] = [VariantID::new(0, 417106, 0x0)];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____DownloadableContent__DownloadableContentResult_BSPlatform__BNetResult__void_DownloadableContent__DownloadableContentResult_BSPlatform__BNetResult_: [VariantID; 1] = [
-    VariantID::new(0, 205580, 0x0)
+    VariantID::new(0, 205580, 0x0),
 ];
 
 pub const VTABLE_JobListManager__ServingThread: [VariantID; 1] =
@@ -6214,15 +6214,15 @@ pub const VTABLE_BSTEventSink_RaceSexMenuEvent__NameChangedEvent_: [VariantID; 1
     [VariantID::new(258752, 206606, 0x16bcd50)];
 
 pub const VTABLE_BSTMessageQueue_BSTSmartPointer_bgs__saveload__Request_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(258753, 206608, 0x16bcd68)
+    VariantID::new(258753, 206608, 0x16bcd68),
 ];
 
 pub const VTABLE_BSTCommonMessageQueue_BSTSmartPointer_bgs__saveload__Request_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(546963, 206610, 0x16bcd98)
+    VariantID::new(546963, 206610, 0x16bcd98),
 ];
 
 pub const VTABLE_BSTCommonStaticMessageQueue_BSTSmartPointer_bgs__saveload__Request_BSTSmartPointerIntrusiveRefCount__8_: [VariantID; 1] = [
-    VariantID::new(258754, 206618, 0x16bcdd8)
+    VariantID::new(258754, 206618, 0x16bcdd8),
 ];
 
 pub const VTABLE_BGSSaveLoadManager__Thread: [VariantID; 1] =
@@ -6241,7 +6241,7 @@ pub const VTABLE_bgs__saveload__Request: [VariantID; 1] =
     [VariantID::new(258818, 206668, 0x16bd670)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_ENUM_FORM_ID_BSSimpleList_SavedFormData________ENUM_FORM_ID_BSSimpleList_SavedFormData______: [VariantID; 1] = [
-    VariantID::new(258840, 206675, 0x16bd9c8)
+    VariantID::new(258840, 206675, 0x16bd9c8),
 ];
 
 pub const VTABLE_NiTMap_ENUM_FORM_ID_BSSimpleList_SavedFormData______: [VariantID; 1] =
@@ -6794,7 +6794,7 @@ pub const VTABLE_BSTStaticFreeList_ActorMovementMessageMap_16___RawMessageHandle
     [VariantID; 1] = [VariantID::new(260646, 207604, 0x16d0040)];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageWarpToLocation_: [VariantID; 1] = [
-    VariantID::new(260653, 207609, 0x16d00e8)
+    VariantID::new(260653, 207609, 0x16d00e8),
 ];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageActivateDoor_:
@@ -6807,7 +6807,7 @@ pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMess
     [VariantID; 1] = [VariantID::new(260656, 207615, 0x16d0130)];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageActorCollision_: [VariantID; 1] = [
-    VariantID::new(260657, 207617, 0x16d0148)
+    VariantID::new(260657, 207617, 0x16d0148),
 ];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageNewPath_:
@@ -6820,26 +6820,26 @@ pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMess
     [VariantID; 1] = [VariantID::new(260660, 207623, 0x16d0190)];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageFreezeDirection_: [VariantID; 1] = [
-    VariantID::new(260661, 207625, 0x16d01a8)
+    VariantID::new(260661, 207625, 0x16d01a8),
 ];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageSetStaticPath_: [VariantID; 1] = [
-    VariantID::new(260662, 207627, 0x16d01c0)
+    VariantID::new(260662, 207627, 0x16d01c0),
 ];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageMovementTypeChange_: [VariantID; 1] = [
-    VariantID::new(260663, 207629, 0x16d01d8)
+    VariantID::new(260663, 207629, 0x16d01d8),
 ];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageJump_:
     [VariantID; 1] = [VariantID::new(260664, 207631, 0x16d01f0)];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageApproachingDoor_: [VariantID; 1] = [
-    VariantID::new(260665, 207633, 0x16d0208)
+    VariantID::new(260665, 207633, 0x16d0208),
 ];
 
 pub const VTABLE_ActorMovementMessageMap_16___MessageHandlerWrapper_MovementMessageWarpToMultiple_: [VariantID; 1] = [
-    VariantID::new(260666, 207635, 0x16d0220)
+    VariantID::new(260666, 207635, 0x16d0220),
 ];
 
 pub const VTABLE_BSTArrayAllocatorFunctor_BSTSmallArrayHeapAllocator_240__: [VariantID; 1] =
@@ -6968,11 +6968,11 @@ pub const VTABLE_BSTDerivedCreator_MountInteraction_RefrInteraction_: [VariantID
     [VariantID::new(547291, 207919, 0x16d80f8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MountInteraction_RefrInteraction__BSTCreateFactoryManager_RefrInteraction__INTERACT_METHOD_RefrInteraction_1__: [VariantID; 1] = [
-    VariantID::new(261450, 207923, 0x16d8118)
+    VariantID::new(261450, 207923, 0x16d8118),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MountInteraction_BSTCreateFactoryManager_RefrInteraction__INTERACT_METHOD_RefrInteraction_1__: [VariantID; 1] = [
-    VariantID::new(261451, 207927, 0x16d8138)
+    VariantID::new(261451, 207927, 0x16d8138),
 ];
 
 pub const VTABLE_MountInteraction: [VariantID; 1] = [VariantID::new(261448, 207929, 0x16d8048)];
@@ -7055,30 +7055,30 @@ pub const VTABLE_BSTDerivedCreator_MovementParameters_IMovementParameters_: [Var
     [VariantID::new(547338, 208233, 0x16eaa78)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementParameters_IMovementParameters__BSTSmartPointerPathingFactoryManager_IMovementParameters_64__: [VariantID; 1] = [
-    VariantID::new(262423, 208237, 0x16eaa98)
+    VariantID::new(262423, 208237, 0x16eaa98),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementParameters_BSTSmartPointerPathingFactoryManager_IMovementParameters_64__: [VariantID; 1] = [
-    VariantID::new(547343, 208239, 0x16eaab8)
+    VariantID::new(547343, 208239, 0x16eaab8),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_MovementParameters_IMovementParameters_64_: [VariantID; 1] = [
-    VariantID::new(262424, 208243, 0x16eaad8)
+    VariantID::new(262424, 208243, 0x16eaad8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MovementParametersFixed_IMovementParameters_: [VariantID; 1] =
     [VariantID::new(547348, 208245, 0x16eaaf8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementParametersFixed_IMovementParameters__BSTSmartPointerPathingFactoryManager_IMovementParameters_64__: [VariantID; 1] = [
-    VariantID::new(262425, 208249, 0x16eab18)
+    VariantID::new(262425, 208249, 0x16eab18),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementParametersFixed_BSTSmartPointerPathingFactoryManager_IMovementParameters_64__: [VariantID; 1] = [
-    VariantID::new(547353, 208251, 0x16eab38)
+    VariantID::new(547353, 208251, 0x16eab38),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_MovementParametersFixed_IMovementParameters_64_: [VariantID; 1] = [
-    VariantID::new(262426, 208255, 0x16eab58)
+    VariantID::new(262426, 208255, 0x16eab58),
 ];
 
 pub const VTABLE_ActorMover: [VariantID; 1] = [VariantID::new(262415, 208257, 0x16ea948)];
@@ -7143,11 +7143,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentDirectControl_MovementAge
     1] = [VariantID::new(547383, 208337, 0x16ec778)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentDirectControl_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262594, 208341, 0x16ec798)
+    VariantID::new(262594, 208341, 0x16ec798),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentDirectControl_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547388, 208343, 0x16ec7b8)
+    VariantID::new(547388, 208343, 0x16ec7b8),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentDirectControl_: [VariantID;
@@ -7162,11 +7162,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentPlayerControls_MovementAg
     1] = [VariantID::new(547401, 208363, 0x16ecee0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentPlayerControls_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262636, 208367, 0x16ecf00)
+    VariantID::new(262636, 208367, 0x16ecf00),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentPlayerControls_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547406, 208369, 0x16ecf20)
+    VariantID::new(547406, 208369, 0x16ecf20),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentPlayerControls_: [VariantID;
@@ -7182,19 +7182,19 @@ pub const VTABLE_MovementHandlerAgentPlayerControls: [VariantID; 3] = [
 ];
 
 pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentPlayerControlsActionTrigger_MovementAgent_: [VariantID; 1] = [
-    VariantID::new(547413, 208388, 0x16ed080)
+    VariantID::new(547413, 208388, 0x16ed080),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentPlayerControlsActionTrigger_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262644, 208392, 0x16ed0a0)
+    VariantID::new(262644, 208392, 0x16ed0a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentPlayerControlsActionTrigger_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547418, 208394, 0x16ed0c0)
+    VariantID::new(547418, 208394, 0x16ed0c0),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentPlayerControlsActionTrigger_: [VariantID; 1] = [
-    VariantID::new(262645, 208398, 0x16ed0e0)
+    VariantID::new(262645, 208398, 0x16ed0e0),
 ];
 
 pub const VTABLE_MovementHandlerAgentPlayerControlsActionTrigger: [VariantID; 2] = [
@@ -7206,11 +7206,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentSprintActionTrigger_Movem
     [VariantID; 1] = [VariantID::new(547427, 208408, 0x16ed438)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentSprintActionTrigger_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262665, 208412, 0x16ed458)
+    VariantID::new(262665, 208412, 0x16ed458),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentSprintActionTrigger_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547432, 208414, 0x16ed478)
+    VariantID::new(547432, 208414, 0x16ed478),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentSprintActionTrigger_:
@@ -7229,11 +7229,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentStairsHelper_MovementAgen
     [VariantID::new(547439, 208430, 0x16ed650)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentStairsHelper_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262676, 208434, 0x16ed670)
+    VariantID::new(262676, 208434, 0x16ed670),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentStairsHelper_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547444, 208436, 0x16ed690)
+    VariantID::new(547444, 208436, 0x16ed690),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentStairsHelper_: [VariantID;
@@ -7251,15 +7251,15 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageActorCollision_MovementMessage
     [VariantID::new(547452, 208449, 0x16ed7c0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageActorCollision_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(262684, 208453, 0x16ed7e0)
+    VariantID::new(262684, 208453, 0x16ed7e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageActorCollision_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(547457, 208455, 0x16ed800)
+    VariantID::new(547457, 208455, 0x16ed800),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageActorCollision_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(262685, 208459, 0x16ed820)
+    VariantID::new(262685, 208459, 0x16ed820),
 ];
 
 pub const VTABLE_MovementMessage: [VariantID; 1] = [VariantID::new(262681, 208461, 0x16ed730)];
@@ -7271,15 +7271,15 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageMovementTypeChange_MovementMes
     1] = [VariantID::new(547463, 208466, 0x16ed910)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageMovementTypeChange_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(262691, 208470, 0x16ed930)
+    VariantID::new(262691, 208470, 0x16ed930),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageMovementTypeChange_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(547468, 208472, 0x16ed950)
+    VariantID::new(547468, 208472, 0x16ed950),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageMovementTypeChange_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(262692, 208476, 0x16ed970)
+    VariantID::new(262692, 208476, 0x16ed970),
 ];
 
 pub const VTABLE_MovementMessageMovementTypeChange: [VariantID; 1] =
@@ -7289,11 +7289,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPlannerAgentDirectControl_MovementAge
     1] = [VariantID::new(547475, 208481, 0x16edc30)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPlannerAgentDirectControl_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262708, 208485, 0x16edc50)
+    VariantID::new(262708, 208485, 0x16edc50),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPlannerAgentDirectControl_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547480, 208487, 0x16edc70)
+    VariantID::new(547480, 208487, 0x16edc70),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPlannerAgentDirectControl_: [VariantID;
@@ -7308,11 +7308,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPlannerAgentHorseControls_MovementAge
     1] = [VariantID::new(547487, 208498, 0x16eddd8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPlannerAgentHorseControls_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262716, 208502, 0x16eddf8)
+    VariantID::new(262716, 208502, 0x16eddf8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPlannerAgentHorseControls_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547492, 208504, 0x16ede18)
+    VariantID::new(547492, 208504, 0x16ede18),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPlannerAgentHorseControls_: [VariantID;
@@ -7327,11 +7327,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPlannerAgentKeepOffset_MovementAgent_
     [VariantID::new(547503, 208515, 0x16ee050)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPlannerAgentKeepOffset_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262729, 208519, 0x16ee070)
+    VariantID::new(262729, 208519, 0x16ee070),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPlannerAgentKeepOffset_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547508, 208521, 0x16ee090)
+    VariantID::new(547508, 208521, 0x16ee090),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPlannerAgentKeepOffset_: [VariantID; 1] =
@@ -7350,11 +7350,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPlannerAgentWarp_MovementAgent_: [Var
     [VariantID::new(547517, 208541, 0x16ee5c0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPlannerAgentWarp_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262762, 208545, 0x16ee5e0)
+    VariantID::new(262762, 208545, 0x16ee5e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPlannerAgentWarp_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547522, 208547, 0x16ee600)
+    VariantID::new(547522, 208547, 0x16ee600),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPlannerAgentWarp_: [VariantID; 1] =
@@ -7372,11 +7372,11 @@ pub const VTABLE_BSTDerivedCreator_MovementTweenerAgentAnimationDriven_MovementA
     1] = [VariantID::new(547529, 208569, 0x16ee928)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementTweenerAgentAnimationDriven_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262782, 208573, 0x16ee948)
+    VariantID::new(262782, 208573, 0x16ee948),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementTweenerAgentAnimationDriven_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547534, 208575, 0x16ee968)
+    VariantID::new(547534, 208575, 0x16ee968),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementTweenerAgentAnimationDriven_:
@@ -7391,11 +7391,11 @@ pub const VTABLE_BSTDerivedCreator_MovementTweenerAgentNodeFollower_MovementAgen
     [VariantID::new(547543, 208588, 0x16eec10)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementTweenerAgentNodeFollower_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(262799, 208592, 0x16eec30)
+    VariantID::new(262799, 208592, 0x16eec30),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementTweenerAgentNodeFollower_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(547548, 208594, 0x16eec50)
+    VariantID::new(547548, 208594, 0x16eec50),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementTweenerAgentNodeFollower_: [VariantID;
@@ -7748,1093 +7748,1093 @@ pub const VTABLE_IBSTCreator_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID
     [VariantID::new(263388, 208995, 0x16f5848)];
 
 pub const VTABLE_BSTDerivedCreator_WeaponRightSwingHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547701, 208997, 0x16f5868)
+    VariantID::new(547701, 208997, 0x16f5868),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_WeaponRightSwingHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263389, 209001, 0x16f5888)
+    VariantID::new(263389, 209001, 0x16f5888),
 ];
 
 pub const VTABLE_AutoRegisterCreator_WeaponRightSwingHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263390, 209003, 0x16f58a8)
+    VariantID::new(263390, 209003, 0x16f58a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_WeaponLeftSwingHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547707, 209005, 0x16f58c8)
+    VariantID::new(547707, 209005, 0x16f58c8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_WeaponLeftSwingHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263391, 209009, 0x16f58e8)
+    VariantID::new(263391, 209009, 0x16f58e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_WeaponLeftSwingHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263392, 209011, 0x16f5908)
+    VariantID::new(263392, 209011, 0x16f5908),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AttackWinStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547713, 209013, 0x16f5928)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AttackWinStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263393, 209017, 0x16f5948)
+    VariantID::new(263393, 209017, 0x16f5948),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AttackWinStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263394, 209019, 0x16f5968)
+    VariantID::new(263394, 209019, 0x16f5968),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AttackWinEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547719, 209021, 0x16f5988)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AttackWinEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263395, 209025, 0x16f59a8)
+    VariantID::new(263395, 209025, 0x16f59a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AttackWinEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263396, 209027, 0x16f59c8)
+    VariantID::new(263396, 209027, 0x16f59c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AttackStopHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547725, 209029, 0x16f59e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AttackStopHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263397, 209033, 0x16f5a08)
+    VariantID::new(263397, 209033, 0x16f5a08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AttackStopHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263398, 209035, 0x16f5a28)
+    VariantID::new(263398, 209035, 0x16f5a28),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RecoilStopHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547731, 209037, 0x16f5a48)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RecoilStopHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263399, 209041, 0x16f5a68)
+    VariantID::new(263399, 209041, 0x16f5a68),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RecoilStopHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263400, 209043, 0x16f5a88)
+    VariantID::new(263400, 209043, 0x16f5a88),
 ];
 
 pub const VTABLE_BSTDerivedCreator_LeftHandSpellFireHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547737, 209045, 0x16f5aa8)
+    VariantID::new(547737, 209045, 0x16f5aa8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_LeftHandSpellFireHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263401, 209049, 0x16f5ac8)
+    VariantID::new(263401, 209049, 0x16f5ac8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_LeftHandSpellFireHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263402, 209051, 0x16f5ae8)
+    VariantID::new(263402, 209051, 0x16f5ae8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RightHandSpellFireHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547743, 209053, 0x16f5b08)
+    VariantID::new(547743, 209053, 0x16f5b08),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RightHandSpellFireHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263403, 209057, 0x16f5b28)
+    VariantID::new(263403, 209057, 0x16f5b28),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RightHandSpellFireHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263404, 209059, 0x16f5b48)
+    VariantID::new(263404, 209059, 0x16f5b48),
 ];
 
 pub const VTABLE_BSTDerivedCreator_VoiceSpellFireHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547749, 209061, 0x16f5b68)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_VoiceSpellFireHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263405, 209065, 0x16f5b88)
+    VariantID::new(263405, 209065, 0x16f5b88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_VoiceSpellFireHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263406, 209067, 0x16f5ba8)
+    VariantID::new(263406, 209067, 0x16f5ba8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_LeftHandSpellCastHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547755, 209069, 0x16f5bc8)
+    VariantID::new(547755, 209069, 0x16f5bc8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_LeftHandSpellCastHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263407, 209073, 0x16f5be8)
+    VariantID::new(263407, 209073, 0x16f5be8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_LeftHandSpellCastHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263408, 209075, 0x16f5c08)
+    VariantID::new(263408, 209075, 0x16f5c08),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RightHandSpellCastHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547761, 209077, 0x16f5c28)
+    VariantID::new(547761, 209077, 0x16f5c28),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RightHandSpellCastHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263409, 209081, 0x16f5c48)
+    VariantID::new(263409, 209081, 0x16f5c48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RightHandSpellCastHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263410, 209083, 0x16f5c68)
+    VariantID::new(263410, 209083, 0x16f5c68),
 ];
 
 pub const VTABLE_BSTDerivedCreator_VoiceSpellCastHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547767, 209085, 0x16f5c88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_VoiceSpellCastHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263411, 209089, 0x16f5ca8)
+    VariantID::new(263411, 209089, 0x16f5ca8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_VoiceSpellCastHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263412, 209091, 0x16f5cc8)
+    VariantID::new(263412, 209091, 0x16f5cc8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_WeaponBeginDrawRightHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547773, 209093, 0x16f5ce8)
+    VariantID::new(547773, 209093, 0x16f5ce8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_WeaponBeginDrawRightHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263413, 209097, 0x16f5d08)
+    VariantID::new(263413, 209097, 0x16f5d08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_WeaponBeginDrawRightHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263414, 209099, 0x16f5d28)
+    VariantID::new(263414, 209099, 0x16f5d28),
 ];
 
 pub const VTABLE_BSTDerivedCreator_WeaponBeginSheatheRightHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547779, 209101, 0x16f5d48)
+    VariantID::new(547779, 209101, 0x16f5d48),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_WeaponBeginSheatheRightHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263415, 209105, 0x16f5d68)
+    VariantID::new(263415, 209105, 0x16f5d68),
 ];
 
 pub const VTABLE_AutoRegisterCreator_WeaponBeginSheatheRightHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263416, 209107, 0x16f5d88)
+    VariantID::new(263416, 209107, 0x16f5d88),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CameraOverrideStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547785, 209109, 0x16f5da8)
+    VariantID::new(547785, 209109, 0x16f5da8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CameraOverrideStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263417, 209113, 0x16f5dc8)
+    VariantID::new(263417, 209113, 0x16f5dc8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CameraOverrideStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263418, 209115, 0x16f5de8)
+    VariantID::new(263418, 209115, 0x16f5de8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CameraOverrideStopHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547791, 209117, 0x16f5e08)
+    VariantID::new(547791, 209117, 0x16f5e08),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CameraOverrideStopHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263419, 209121, 0x16f5e28)
+    VariantID::new(263419, 209121, 0x16f5e28),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CameraOverrideStopHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263420, 209123, 0x16f5e48)
+    VariantID::new(263420, 209123, 0x16f5e48),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RightHandWeaponDrawHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547797, 209125, 0x16f5e68)
+    VariantID::new(547797, 209125, 0x16f5e68),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RightHandWeaponDrawHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263421, 209129, 0x16f5e88)
+    VariantID::new(263421, 209129, 0x16f5e88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RightHandWeaponDrawHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263422, 209131, 0x16f5ea8)
+    VariantID::new(263422, 209131, 0x16f5ea8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RightHandWeaponSheatheHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547803, 209133, 0x16f5ec8)
+    VariantID::new(547803, 209133, 0x16f5ec8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RightHandWeaponSheatheHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263423, 209137, 0x16f5ee8)
+    VariantID::new(263423, 209137, 0x16f5ee8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RightHandWeaponSheatheHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263424, 209139, 0x16f5f08)
+    VariantID::new(263424, 209139, 0x16f5f08),
 ];
 
 pub const VTABLE_BSTDerivedCreator_HitFrameHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547809, 209141, 0x16f5f28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_HitFrameHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263425, 209145, 0x16f5f48)
+    VariantID::new(263425, 209145, 0x16f5f48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_HitFrameHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263426, 209147, 0x16f5f68)
+    VariantID::new(263426, 209147, 0x16f5f68),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AnticipateAttackHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547815, 209149, 0x16f5f88)
+    VariantID::new(547815, 209149, 0x16f5f88),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AnticipateAttackHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263427, 209153, 0x16f5fa8)
+    VariantID::new(263427, 209153, 0x16f5fa8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AnticipateAttackHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263428, 209155, 0x16f5fc8)
+    VariantID::new(263428, 209155, 0x16f5fc8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_StaggeredStopHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547821, 209157, 0x16f5fe8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_StaggeredStopHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263429, 209161, 0x16f6008)
+    VariantID::new(263429, 209161, 0x16f6008),
 ];
 
 pub const VTABLE_AutoRegisterCreator_StaggeredStopHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263430, 209163, 0x16f6028)
+    VariantID::new(263430, 209163, 0x16f6028),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ChairEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547827, 209165, 0x16f6048)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ChairEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263431, 209169, 0x16f6068)
+    VariantID::new(263431, 209169, 0x16f6068),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ChairEnterHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263432, 209171, 0x16f6088)
+    VariantID::new(263432, 209171, 0x16f6088),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BedEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547833, 209173, 0x16f60a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BedEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263433, 209177, 0x16f60c8)
+    VariantID::new(263433, 209177, 0x16f60c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BedEnterHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263434, 209179, 0x16f60e8)
+    VariantID::new(263434, 209179, 0x16f60e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ChairFurnitureExitHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547839, 209181, 0x16f6108)
+    VariantID::new(547839, 209181, 0x16f6108),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ChairFurnitureExitHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263435, 209185, 0x16f6128)
+    VariantID::new(263435, 209185, 0x16f6128),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ChairFurnitureExitHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263436, 209187, 0x16f6148)
+    VariantID::new(263436, 209187, 0x16f6148),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BedFurnitureExitHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547845, 209189, 0x16f6168)
+    VariantID::new(547845, 209189, 0x16f6168),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BedFurnitureExitHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263437, 209193, 0x16f6188)
+    VariantID::new(263437, 209193, 0x16f6188),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BedFurnitureExitHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263438, 209195, 0x16f61a8)
+    VariantID::new(263438, 209195, 0x16f61a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_PlayerChairEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547851, 209197, 0x16f61c8)
+    VariantID::new(547851, 209197, 0x16f61c8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PlayerChairEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263439, 209201, 0x16f61e8)
+    VariantID::new(263439, 209201, 0x16f61e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PlayerChairEnterHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263440, 209203, 0x16f6208)
+    VariantID::new(263440, 209203, 0x16f6208),
 ];
 
 pub const VTABLE_BSTDerivedCreator_PlayerBedEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547857, 209205, 0x16f6228)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PlayerBedEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263441, 209209, 0x16f6248)
+    VariantID::new(263441, 209209, 0x16f6248),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PlayerBedEnterHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263442, 209211, 0x16f6268)
+    VariantID::new(263442, 209211, 0x16f6268),
 ];
 
 pub const VTABLE_BSTDerivedCreator_PlayerFurnitureExitHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547863, 209213, 0x16f6288)
+    VariantID::new(547863, 209213, 0x16f6288),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PlayerFurnitureExitHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263443, 209217, 0x16f62a8)
+    VariantID::new(263443, 209217, 0x16f62a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PlayerFurnitureExitHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263444, 209219, 0x16f62c8)
+    VariantID::new(263444, 209219, 0x16f62c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_KillActorHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547869, 209221, 0x16f62e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_KillActorHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263445, 209225, 0x16f6308)
+    VariantID::new(263445, 209225, 0x16f6308),
 ];
 
 pub const VTABLE_AutoRegisterCreator_KillActorHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263446, 209227, 0x16f6328)
+    VariantID::new(263446, 209227, 0x16f6328),
 ];
 
 pub const VTABLE_BSTDerivedCreator_DecapitateHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547875, 209229, 0x16f6348)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_DecapitateHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263447, 209233, 0x16f6368)
+    VariantID::new(263447, 209233, 0x16f6368),
 ];
 
 pub const VTABLE_AutoRegisterCreator_DecapitateHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263448, 209235, 0x16f6388)
+    VariantID::new(263448, 209235, 0x16f6388),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightTakeOffHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547881, 209237, 0x16f63a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightTakeOffHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263449, 209241, 0x16f63c8)
+    VariantID::new(263449, 209241, 0x16f63c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightTakeOffHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263450, 209243, 0x16f63e8)
+    VariantID::new(263450, 209243, 0x16f63e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightCruisingHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547887, 209245, 0x16f6408)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightCruisingHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263451, 209249, 0x16f6428)
+    VariantID::new(263451, 209249, 0x16f6428),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightCruisingHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263452, 209251, 0x16f6448)
+    VariantID::new(263452, 209251, 0x16f6448),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightHoveringHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547893, 209253, 0x16f6468)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightHoveringHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263453, 209257, 0x16f6488)
+    VariantID::new(263453, 209257, 0x16f6488),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightHoveringHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263454, 209259, 0x16f64a8)
+    VariantID::new(263454, 209259, 0x16f64a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightLandingHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547899, 209261, 0x16f64c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightLandingHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263455, 209265, 0x16f64e8)
+    VariantID::new(263455, 209265, 0x16f64e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightLandingHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263456, 209267, 0x16f6508)
+    VariantID::new(263456, 209267, 0x16f6508),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightPerchingHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547905, 209269, 0x16f6528)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightPerchingHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263457, 209273, 0x16f6548)
+    VariantID::new(263457, 209273, 0x16f6548),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightPerchingHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263458, 209275, 0x16f6568)
+    VariantID::new(263458, 209275, 0x16f6568),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightLandHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547911, 209277, 0x16f6588)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightLandHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263459, 209281, 0x16f65a8)
+    VariantID::new(263459, 209281, 0x16f65a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightLandHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263460, 209283, 0x16f65c8)
+    VariantID::new(263460, 209283, 0x16f65c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightLandEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547917, 209285, 0x16f65e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightLandEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263461, 209289, 0x16f6608)
+    VariantID::new(263461, 209289, 0x16f6608),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightLandEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263462, 209291, 0x16f6628)
+    VariantID::new(263462, 209291, 0x16f6628),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightActionHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547923, 209293, 0x16f6648)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightActionHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263463, 209297, 0x16f6668)
+    VariantID::new(263463, 209297, 0x16f6668),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightActionHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263464, 209299, 0x16f6688)
+    VariantID::new(263464, 209299, 0x16f6688),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightActionEntryEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547929, 209301, 0x16f66a8)
+    VariantID::new(547929, 209301, 0x16f66a8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightActionEntryEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263465, 209305, 0x16f66c8)
+    VariantID::new(263465, 209305, 0x16f66c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightActionEntryEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263466, 209307, 0x16f66e8)
+    VariantID::new(263466, 209307, 0x16f66e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightActionEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547935, 209309, 0x16f6708)
+    VariantID::new(547935, 209309, 0x16f6708),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightActionEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263467, 209313, 0x16f6728)
+    VariantID::new(263467, 209313, 0x16f6728),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightActionEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263468, 209315, 0x16f6748)
+    VariantID::new(263468, 209315, 0x16f6748),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightActionGrabHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547941, 209317, 0x16f6768)
+    VariantID::new(547941, 209317, 0x16f6768),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightActionGrabHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263469, 209321, 0x16f6788)
+    VariantID::new(263469, 209321, 0x16f6788),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightActionGrabHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263470, 209323, 0x16f67a8)
+    VariantID::new(263470, 209323, 0x16f67a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightActionReleaseHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547947, 209325, 0x16f67c8)
+    VariantID::new(547947, 209325, 0x16f67c8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightActionReleaseHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263471, 209329, 0x16f67e8)
+    VariantID::new(263471, 209329, 0x16f67e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightActionReleaseHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263472, 209331, 0x16f6808)
+    VariantID::new(263472, 209331, 0x16f6808),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FlightCrashLandStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547953, 209333, 0x16f6828)
+    VariantID::new(547953, 209333, 0x16f6828),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FlightCrashLandStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263473, 209337, 0x16f6848)
+    VariantID::new(263473, 209337, 0x16f6848),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FlightCrashLandStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263474, 209339, 0x16f6868)
+    VariantID::new(263474, 209339, 0x16f6868),
 ];
 
 pub const VTABLE_BSTDerivedCreator_HeadTrackingOnHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547959, 209341, 0x16f6888)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_HeadTrackingOnHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263475, 209345, 0x16f68a8)
+    VariantID::new(263475, 209345, 0x16f68a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_HeadTrackingOnHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263476, 209347, 0x16f68c8)
+    VariantID::new(263476, 209347, 0x16f68c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_HeadTrackingOffHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(547965, 209349, 0x16f68e8)
+    VariantID::new(547965, 209349, 0x16f68e8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_HeadTrackingOffHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263477, 209353, 0x16f6908)
+    VariantID::new(263477, 209353, 0x16f6908),
 ];
 
 pub const VTABLE_AutoRegisterCreator_HeadTrackingOffHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263478, 209355, 0x16f6928)
+    VariantID::new(263478, 209355, 0x16f6928),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BowDrawnHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547971, 209357, 0x16f6948)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BowDrawnHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263479, 209361, 0x16f6968)
+    VariantID::new(263479, 209361, 0x16f6968),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BowDrawnHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263480, 209363, 0x16f6988)
+    VariantID::new(263480, 209363, 0x16f6988),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BowReleaseHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547977, 209365, 0x16f69a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BowReleaseHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263481, 209369, 0x16f69c8)
+    VariantID::new(263481, 209369, 0x16f69c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BowReleaseHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263482, 209371, 0x16f69e8)
+    VariantID::new(263482, 209371, 0x16f69e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ArrowAttachHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547983, 209373, 0x16f6a08)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ArrowAttachHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263483, 209377, 0x16f6a28)
+    VariantID::new(263483, 209377, 0x16f6a28),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ArrowAttachHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263484, 209379, 0x16f6a48)
+    VariantID::new(263484, 209379, 0x16f6a48),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ArrowDetachHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547989, 209381, 0x16f6a68)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ArrowDetachHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263485, 209385, 0x16f6a88)
+    VariantID::new(263485, 209385, 0x16f6a88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ArrowDetachHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263486, 209387, 0x16f6aa8)
+    VariantID::new(263486, 209387, 0x16f6aa8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ArrowReleaseHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(547995, 209389, 0x16f6ac8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ArrowReleaseHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263487, 209393, 0x16f6ae8)
+    VariantID::new(263487, 209393, 0x16f6ae8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ArrowReleaseHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263488, 209395, 0x16f6b08)
+    VariantID::new(263488, 209395, 0x16f6b08),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BowZoomStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548001, 209397, 0x16f6b28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BowZoomStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263489, 209401, 0x16f6b48)
+    VariantID::new(263489, 209401, 0x16f6b48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BowZoomStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263490, 209403, 0x16f6b68)
+    VariantID::new(263490, 209403, 0x16f6b68),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BowZoomStopHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548007, 209405, 0x16f6b88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BowZoomStopHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263491, 209409, 0x16f6ba8)
+    VariantID::new(263491, 209409, 0x16f6ba8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BowZoomStopHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263492, 209411, 0x16f6bc8)
+    VariantID::new(263492, 209411, 0x16f6bc8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_InterruptCastHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548013, 209413, 0x16f6be8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_InterruptCastHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263493, 209417, 0x16f6c08)
+    VariantID::new(263493, 209417, 0x16f6c08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_InterruptCastHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263494, 209419, 0x16f6c28)
+    VariantID::new(263494, 209419, 0x16f6c28),
 ];
 
 pub const VTABLE_BSTDerivedCreator_EndSummonAnimationHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548019, 209421, 0x16f6c48)
+    VariantID::new(548019, 209421, 0x16f6c48),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_EndSummonAnimationHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263495, 209425, 0x16f6c68)
+    VariantID::new(263495, 209425, 0x16f6c68),
 ];
 
 pub const VTABLE_AutoRegisterCreator_EndSummonAnimationHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263496, 209427, 0x16f6c88)
+    VariantID::new(263496, 209427, 0x16f6c88),
 ];
 
 pub const VTABLE_BSTDerivedCreator_PickNewIdleHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548025, 209429, 0x16f6ca8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PickNewIdleHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263497, 209433, 0x16f6cc8)
+    VariantID::new(263497, 209433, 0x16f6cc8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PickNewIdleHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263498, 209435, 0x16f6ce8)
+    VariantID::new(263498, 209435, 0x16f6ce8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_DeathStopHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548031, 209437, 0x16f6d08)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_DeathStopHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263499, 209441, 0x16f6d28)
+    VariantID::new(263499, 209441, 0x16f6d28),
 ];
 
 pub const VTABLE_AutoRegisterCreator_DeathStopHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263500, 209443, 0x16f6d48)
+    VariantID::new(263500, 209443, 0x16f6d48),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ActionActivateDoneHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548037, 209445, 0x16f6d68)
+    VariantID::new(548037, 209445, 0x16f6d68),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ActionActivateDoneHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263501, 209449, 0x16f6d88)
+    VariantID::new(263501, 209449, 0x16f6d88),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ActionActivateDoneHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263502, 209451, 0x16f6da8)
+    VariantID::new(263502, 209451, 0x16f6da8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_StopMountCameraHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548043, 209453, 0x16f6dc8)
+    VariantID::new(548043, 209453, 0x16f6dc8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_StopMountCameraHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263503, 209457, 0x16f6de8)
+    VariantID::new(263503, 209457, 0x16f6de8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_StopMountCameraHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263504, 209459, 0x16f6e08)
+    VariantID::new(263504, 209459, 0x16f6e08),
 ];
 
 pub const VTABLE_BSTDerivedCreator_KillMoveStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548049, 209461, 0x16f6e28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_KillMoveStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263505, 209465, 0x16f6e48)
+    VariantID::new(263505, 209465, 0x16f6e48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_KillMoveStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263506, 209467, 0x16f6e68)
+    VariantID::new(263506, 209467, 0x16f6e68),
 ];
 
 pub const VTABLE_BSTDerivedCreator_KillMoveEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548055, 209469, 0x16f6e88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_KillMoveEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263507, 209473, 0x16f6ea8)
+    VariantID::new(263507, 209473, 0x16f6ea8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_KillMoveEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263508, 209475, 0x16f6ec8)
+    VariantID::new(263508, 209475, 0x16f6ec8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_PairedStopHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548061, 209477, 0x16f6ee8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PairedStopHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263509, 209481, 0x16f6f08)
+    VariantID::new(263509, 209481, 0x16f6f08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PairedStopHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263510, 209483, 0x16f6f28)
+    VariantID::new(263510, 209483, 0x16f6f28),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CameraShakeHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548067, 209485, 0x16f6f48)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CameraShakeHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263511, 209489, 0x16f6f68)
+    VariantID::new(263511, 209489, 0x16f6f68),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CameraShakeHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263512, 209491, 0x16f6f88)
+    VariantID::new(263512, 209491, 0x16f6f88),
 ];
 
 pub const VTABLE_BSTDerivedCreator_DeathEmoteHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548073, 209493, 0x16f6fa8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_DeathEmoteHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263513, 209497, 0x16f6fc8)
+    VariantID::new(263513, 209497, 0x16f6fc8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_DeathEmoteHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263514, 209499, 0x16f6fe8)
+    VariantID::new(263514, 209499, 0x16f6fe8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MotionDrivenHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548079, 209501, 0x16f7008)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MotionDrivenHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263515, 209505, 0x16f7028)
+    VariantID::new(263515, 209505, 0x16f7028),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MotionDrivenHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263516, 209507, 0x16f7048)
+    VariantID::new(263516, 209507, 0x16f7048),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AnimationDrivenHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548085, 209509, 0x16f7068)
+    VariantID::new(548085, 209509, 0x16f7068),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AnimationDrivenHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263517, 209513, 0x16f7088)
+    VariantID::new(263517, 209513, 0x16f7088),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AnimationDrivenHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263518, 209515, 0x16f70a8)
+    VariantID::new(263518, 209515, 0x16f70a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AllowRotationHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548091, 209517, 0x16f70c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AllowRotationHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263519, 209521, 0x16f70e8)
+    VariantID::new(263519, 209521, 0x16f70e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AllowRotationHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263520, 209523, 0x16f7108)
+    VariantID::new(263520, 209523, 0x16f7108),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AddRagdollHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548097, 209525, 0x16f7128)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AddRagdollHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263521, 209529, 0x16f7148)
+    VariantID::new(263521, 209529, 0x16f7148),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AddRagdollHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263522, 209531, 0x16f7168)
+    VariantID::new(263522, 209531, 0x16f7168),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RemoveRagdollHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548103, 209533, 0x16f7188)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RemoveRagdollHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263523, 209537, 0x16f71a8)
+    VariantID::new(263523, 209537, 0x16f71a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RemoveRagdollHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263524, 209539, 0x16f71c8)
+    VariantID::new(263524, 209539, 0x16f71c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RagdollStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548109, 209541, 0x16f71e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RagdollStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263525, 209545, 0x16f7208)
+    VariantID::new(263525, 209545, 0x16f7208),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RagdollStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263526, 209547, 0x16f7228)
+    VariantID::new(263526, 209547, 0x16f7228),
 ];
 
 pub const VTABLE_BSTDerivedCreator_GetUpStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548115, 209549, 0x16f7248)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_GetUpStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263527, 209553, 0x16f7268)
+    VariantID::new(263527, 209553, 0x16f7268),
 ];
 
 pub const VTABLE_AutoRegisterCreator_GetUpStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263528, 209555, 0x16f7288)
+    VariantID::new(263528, 209555, 0x16f7288),
 ];
 
 pub const VTABLE_BSTDerivedCreator_GetUpEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548121, 209557, 0x16f72a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_GetUpEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263529, 209561, 0x16f72c8)
+    VariantID::new(263529, 209561, 0x16f72c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_GetUpEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263530, 209563, 0x16f72e8)
+    VariantID::new(263530, 209563, 0x16f72e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MountDismountEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548127, 209565, 0x16f7308)
+    VariantID::new(548127, 209565, 0x16f7308),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MountDismountEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263531, 209569, 0x16f7328)
+    VariantID::new(263531, 209569, 0x16f7328),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MountDismountEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263532, 209571, 0x16f7348)
+    VariantID::new(263532, 209571, 0x16f7348),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ExitCartBeginHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548133, 209573, 0x16f7368)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ExitCartBeginHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263533, 209577, 0x16f7388)
+    VariantID::new(263533, 209577, 0x16f7388),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ExitCartBeginHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263534, 209579, 0x16f73a8)
+    VariantID::new(263534, 209579, 0x16f73a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ExitCartEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548139, 209581, 0x16f73c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ExitCartEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263535, 209585, 0x16f73e8)
+    VariantID::new(263535, 209585, 0x16f73e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ExitCartEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263536, 209587, 0x16f7408)
+    VariantID::new(263536, 209587, 0x16f7408),
 ];
 
 pub const VTABLE_BSTDerivedCreator_EnableCharacterBumperHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548145, 209589, 0x16f7428)
+    VariantID::new(548145, 209589, 0x16f7428),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_EnableCharacterBumperHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263537, 209593, 0x16f7448)
+    VariantID::new(263537, 209593, 0x16f7448),
 ];
 
 pub const VTABLE_AutoRegisterCreator_EnableCharacterBumperHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263538, 209595, 0x16f7468)
+    VariantID::new(263538, 209595, 0x16f7468),
 ];
 
 pub const VTABLE_BSTDerivedCreator_DisableCharacterBumperHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548151, 209597, 0x16f7488)
+    VariantID::new(548151, 209597, 0x16f7488),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_DisableCharacterBumperHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263539, 209601, 0x16f74a8)
+    VariantID::new(263539, 209601, 0x16f74a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_DisableCharacterBumperHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263540, 209603, 0x16f74c8)
+    VariantID::new(263540, 209603, 0x16f74c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AnimationObjectLoadHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548157, 209605, 0x16f74e8)
+    VariantID::new(548157, 209605, 0x16f74e8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AnimationObjectLoadHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263541, 209609, 0x16f7508)
+    VariantID::new(263541, 209609, 0x16f7508),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AnimationObjectLoadHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263542, 209611, 0x16f7528)
+    VariantID::new(263542, 209611, 0x16f7528),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AnimationObjectDrawHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548163, 209613, 0x16f7548)
+    VariantID::new(548163, 209613, 0x16f7548),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AnimationObjectDrawHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263543, 209617, 0x16f7568)
+    VariantID::new(263543, 209617, 0x16f7568),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AnimationObjectDrawHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263544, 209619, 0x16f7588)
+    VariantID::new(263544, 209619, 0x16f7588),
 ];
 
 pub const VTABLE_BSTDerivedCreator_EnableCharacterPitchHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548169, 209621, 0x16f75a8)
+    VariantID::new(548169, 209621, 0x16f75a8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_EnableCharacterPitchHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263545, 209625, 0x16f75c8)
+    VariantID::new(263545, 209625, 0x16f75c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_EnableCharacterPitchHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263546, 209627, 0x16f75e8)
+    VariantID::new(263546, 209627, 0x16f75e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_DisableCharacterPitchHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548175, 209629, 0x16f7608)
+    VariantID::new(548175, 209629, 0x16f7608),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_DisableCharacterPitchHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263547, 209633, 0x16f7628)
+    VariantID::new(263547, 209633, 0x16f7628),
 ];
 
 pub const VTABLE_AutoRegisterCreator_DisableCharacterPitchHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263548, 209635, 0x16f7648)
+    VariantID::new(263548, 209635, 0x16f7648),
 ];
 
 pub const VTABLE_BSTDerivedCreator_JumpAnimEventHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548181, 209637, 0x16f7668)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_JumpAnimEventHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263549, 209641, 0x16f7688)
+    VariantID::new(263549, 209641, 0x16f7688),
 ];
 
 pub const VTABLE_AutoRegisterCreator_JumpAnimEventHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263550, 209643, 0x16f76a8)
+    VariantID::new(263550, 209643, 0x16f76a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_IdleDialogueEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548187, 209645, 0x16f76c8)
+    VariantID::new(548187, 209645, 0x16f76c8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_IdleDialogueEnterHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263551, 209649, 0x16f76e8)
+    VariantID::new(263551, 209649, 0x16f76e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_IdleDialogueEnterHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263552, 209651, 0x16f7708)
+    VariantID::new(263552, 209651, 0x16f7708),
 ];
 
 pub const VTABLE_BSTDerivedCreator_IdleDialogueExitHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548193, 209653, 0x16f7728)
+    VariantID::new(548193, 209653, 0x16f7728),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_IdleDialogueExitHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263553, 209657, 0x16f7748)
+    VariantID::new(263553, 209657, 0x16f7748),
 ];
 
 pub const VTABLE_AutoRegisterCreator_IdleDialogueExitHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263554, 209659, 0x16f7768)
+    VariantID::new(263554, 209659, 0x16f7768),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AnimatedCameraStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548199, 209661, 0x16f7788)
+    VariantID::new(548199, 209661, 0x16f7788),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AnimatedCameraStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263555, 209665, 0x16f77a8)
+    VariantID::new(263555, 209665, 0x16f77a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AnimatedCameraStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263556, 209667, 0x16f77c8)
+    VariantID::new(263556, 209667, 0x16f77c8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AnimatedCameraDeltaStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548205, 209669, 0x16f77e8)
+    VariantID::new(548205, 209669, 0x16f77e8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AnimatedCameraDeltaStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263557, 209673, 0x16f7808)
+    VariantID::new(263557, 209673, 0x16f7808),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AnimatedCameraDeltaStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263558, 209675, 0x16f7828)
+    VariantID::new(263558, 209675, 0x16f7828),
 ];
 
 pub const VTABLE_BSTDerivedCreator_AnimatedCameraEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548211, 209677, 0x16f7848)
+    VariantID::new(548211, 209677, 0x16f7848),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_AnimatedCameraEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263559, 209681, 0x16f7868)
+    VariantID::new(263559, 209681, 0x16f7868),
 ];
 
 pub const VTABLE_AutoRegisterCreator_AnimatedCameraEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263560, 209683, 0x16f7888)
+    VariantID::new(263560, 209683, 0x16f7888),
 ];
 
 pub const VTABLE_BSTDerivedCreator_NPCAttachHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548217, 209685, 0x16f78a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_NPCAttachHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263561, 209689, 0x16f78c8)
+    VariantID::new(263561, 209689, 0x16f78c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_NPCAttachHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263562, 209691, 0x16f78e8)
+    VariantID::new(263562, 209691, 0x16f78e8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_NPCDetachHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548223, 209693, 0x16f7908)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_NPCDetachHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263563, 209697, 0x16f7928)
+    VariantID::new(263563, 209697, 0x16f7928),
 ];
 
 pub const VTABLE_AutoRegisterCreator_NPCDetachHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263564, 209699, 0x16f7948)
+    VariantID::new(263564, 209699, 0x16f7948),
 ];
 
 pub const VTABLE_BSTDerivedCreator_PitchOverrideStartHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548229, 209701, 0x16f7968)
+    VariantID::new(548229, 209701, 0x16f7968),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PitchOverrideStartHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263565, 209705, 0x16f7988)
+    VariantID::new(263565, 209705, 0x16f7988),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PitchOverrideStartHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263566, 209707, 0x16f79a8)
+    VariantID::new(263566, 209707, 0x16f79a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_PitchOverrideEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__: [VariantID; 1] = [
-    VariantID::new(548235, 209709, 0x16f79c8)
+    VariantID::new(548235, 209709, 0x16f79c8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_PitchOverrideEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263567, 209713, 0x16f79e8)
+    VariantID::new(263567, 209713, 0x16f79e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_PitchOverrideEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263568, 209715, 0x16f7a08)
+    VariantID::new(263568, 209715, 0x16f7a08),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MTStateHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548241, 209717, 0x16f7a28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MTStateHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263569, 209721, 0x16f7a48)
+    VariantID::new(263569, 209721, 0x16f7a48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MTStateHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263570, 209723, 0x16f7a68)
+    VariantID::new(263570, 209723, 0x16f7a68),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ZeroPitchHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548247, 209725, 0x16f7a88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ZeroPitchHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263571, 209729, 0x16f7aa8)
+    VariantID::new(263571, 209729, 0x16f7aa8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ZeroPitchHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263572, 209731, 0x16f7ac8)
+    VariantID::new(263572, 209731, 0x16f7ac8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_VampireFeedEndHandler_IHandlerFunctor_Actor_BSFixedStringCI__:
     [VariantID; 1] = [VariantID::new(548253, 209733, 0x16f7ae8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_VampireFeedEndHandler_IHandlerFunctor_Actor_BSFixedStringCI___BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263573, 209737, 0x16f7b08)
+    VariantID::new(263573, 209737, 0x16f7b08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_VampireFeedEndHandler_BSTCreateFactoryManager_BSFixedStringCI_IHandlerFunctor_Actor_BSFixedStringCI__256__: [VariantID; 1] = [
-    VariantID::new(263574, 209739, 0x16f7b28)
+    VariantID::new(263574, 209739, 0x16f7b28),
 ];
 
 pub const VTABLE_HandlerCreationMissPolicy_BSTSmartPointer_IHandlerFunctor_Actor_BSFixedStringCI__BSTSmartPointerIntrusiveRefCount__BSFixedStringCI_: [VariantID; 1] = [
-    VariantID::new(263710, 209841, 0x16f8b10)
+    VariantID::new(263710, 209841, 0x16f8b10),
 ];
 
 pub const VTABLE_NoInitializationPolicy_BSTSmartPointer_IHandlerFunctor_Actor_BSFixedStringCI__BSTSmartPointerIntrusiveRefCount__BSFixedStringCI_: [VariantID; 1] = [
-    VariantID::new(263711, 209843, 0x16f8b20)
+    VariantID::new(263711, 209843, 0x16f8b20),
 ];
 
 pub const VTABLE_BSTObjectDictionary_BSTSmartPointer_IHandlerFunctor_Actor_BSFixedStringCI__BSTSmartPointerIntrusiveRefCount__BSFixedStringCI_HandlerCreationMissPolicy_NoInitializationPolicy_: [VariantID; 2] = [
     VariantID::new(263712, 209845, 0x16f8b30),
-    VariantID::new(263713, 209847, 0x16f8b40)
+    VariantID::new(263713, 209847, 0x16f8b40),
 ];
 
 pub const VTABLE_ResponseDefinitionMissPolicy_BSTSmartPointer_BSResponse_BSFixedStringCI_Actor_BSFixedStringCI_DoNothingUnhandledPolicy__BSTSmartPointerIntrusiveRefCount__BSFixedStringCI_: [VariantID; 1] = [
-    VariantID::new(263714, 209849, 0x16f8b50)
+    VariantID::new(263714, 209849, 0x16f8b50),
 ];
 
 pub const VTABLE_PreloadResponsesInitializationPolicy_BSTSmartPointer_BSResponse_BSFixedStringCI_Actor_BSFixedStringCI_DoNothingUnhandledPolicy__BSTSmartPointerIntrusiveRefCount__BSFixedStringCI_: [VariantID; 1] = [
-    VariantID::new(263715, 209851, 0x16f8b60)
+    VariantID::new(263715, 209851, 0x16f8b60),
 ];
 
 pub const VTABLE_BSTObjectDictionary_BSTSmartPointer_BSResponse_BSFixedStringCI_Actor_BSFixedStringCI_DoNothingUnhandledPolicy__BSTSmartPointerIntrusiveRefCount__BSFixedStringCI_ResponseDefinitionMissPolicy_PreloadResponsesInitializationPolicy_: [VariantID; 2] = [
     VariantID::new(263716, 209853, 0x16f8b70),
-    VariantID::new(263717, 209855, 0x16f8b80)
+    VariantID::new(263717, 209855, 0x16f8b80),
 ];
 
 pub const VTABLE_BGShkMatFadeController: [VariantID; 1] =
@@ -8844,11 +8844,11 @@ pub const VTABLE_BSTDerivedCreator_BGShkMatFadeController_BShkNonTransformContro
     1] = [VariantID::new(548268, 209859, 0x16f8c08)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BGShkMatFadeController_BShkNonTransformController__BSTCreateFactoryManager_BSFixedString_BShkNonTransformController_32__: [VariantID; 1] = [
-    VariantID::new(263721, 209863, 0x16f8c28)
+    VariantID::new(263721, 209863, 0x16f8c28),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BGShkMatFadeController_BSTCreateFactoryManager_BSFixedString_BShkNonTransformController_32__: [VariantID; 1] = [
-    VariantID::new(263722, 209865, 0x16f8c48)
+    VariantID::new(263722, 209865, 0x16f8c48),
 ];
 
 pub const VTABLE_BSDirectAtModifierInterface: [VariantID; 1] =
@@ -8967,11 +8967,11 @@ pub const VTABLE_BSTDerivedCreator_CombatMeleeAimController_CombatObject_: [Vari
     [VariantID::new(548363, 210039, 0x17015b8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMeleeAimController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264196, 210043, 0x17015d8)
+    VariantID::new(264196, 210043, 0x17015d8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMeleeAimController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548368, 210045, 0x17015f8)
+    VariantID::new(548368, 210045, 0x17015f8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMeleeAimController_: [VariantID; 1] =
@@ -8981,11 +8981,11 @@ pub const VTABLE_BSTDerivedCreator_CombatProjectileAimController_CombatObject_: 
     [VariantID::new(548373, 210051, 0x1701638)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatProjectileAimController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264198, 210055, 0x1701658)
+    VariantID::new(264198, 210055, 0x1701658),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatProjectileAimController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548378, 210057, 0x1701678)
+    VariantID::new(548378, 210057, 0x1701678),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatProjectileAimController_: [VariantID; 1] =
@@ -8995,11 +8995,11 @@ pub const VTABLE_BSTDerivedCreator_CombatDisableAimController_CombatObject_: [Va
     [VariantID::new(548383, 210063, 0x17016b8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatDisableAimController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264200, 210067, 0x17016d8)
+    VariantID::new(264200, 210067, 0x17016d8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatDisableAimController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548388, 210069, 0x17016f8)
+    VariantID::new(548388, 210069, 0x17016f8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatDisableAimController_: [VariantID; 1] =
@@ -9026,11 +9026,11 @@ pub const VTABLE_BSTDerivedCreator_CombatAimController_CombatObject_: [VariantID
     [VariantID::new(548343, 210087, 0x17014b8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatAimController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264192, 210091, 0x17014d8)
+    VariantID::new(264192, 210091, 0x17014d8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatAimController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548348, 210093, 0x17014f8)
+    VariantID::new(548348, 210093, 0x17014f8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatAimController_: [VariantID; 1] =
@@ -9040,11 +9040,11 @@ pub const VTABLE_BSTDerivedCreator_CombatTrackTargetAimController_CombatObject_:
     [VariantID::new(548353, 210099, 0x1701538)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatTrackTargetAimController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264194, 210103, 0x1701558)
+    VariantID::new(264194, 210103, 0x1701558),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatTrackTargetAimController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548358, 210105, 0x1701578)
+    VariantID::new(548358, 210105, 0x1701578),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatTrackTargetAimController_: [VariantID; 1] =
@@ -9070,11 +9070,11 @@ pub const VTABLE_BSTDerivedCreator_CombatAreaRadius_CombatObject_: [VariantID; 1
     [VariantID::new(548398, 210135, 0x1701c70)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatAreaRadius_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264229, 210139, 0x1701c90)
+    VariantID::new(264229, 210139, 0x1701c90),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatAreaRadius_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548403, 210141, 0x1701cb0)
+    VariantID::new(548403, 210141, 0x1701cb0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatAreaRadius_: [VariantID; 1] =
@@ -9084,11 +9084,11 @@ pub const VTABLE_BSTDerivedCreator_CombatAreaReference_CombatObject_: [VariantID
     [VariantID::new(548408, 210147, 0x1701cf0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatAreaReference_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264231, 210151, 0x1701d10)
+    VariantID::new(264231, 210151, 0x1701d10),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatAreaReference_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548413, 210153, 0x1701d30)
+    VariantID::new(548413, 210153, 0x1701d30),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatAreaReference_: [VariantID; 1] =
@@ -9098,11 +9098,11 @@ pub const VTABLE_BSTDerivedCreator_CombatAreaStandard_CombatObject_: [VariantID;
     [VariantID::new(548418, 210159, 0x1701d70)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatAreaStandard_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264233, 210163, 0x1701d90)
+    VariantID::new(264233, 210163, 0x1701d90),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatAreaStandard_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548423, 210165, 0x1701db0)
+    VariantID::new(548423, 210165, 0x1701db0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatAreaStandard_: [VariantID; 1] =
@@ -9112,11 +9112,11 @@ pub const VTABLE_BSTDerivedCreator_CombatAreaHoldPosition_CombatObject_: [Varian
     [VariantID::new(548428, 210171, 0x1701df0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatAreaHoldPosition_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264235, 210175, 0x1701e10)
+    VariantID::new(264235, 210175, 0x1701e10),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatAreaHoldPosition_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548433, 210177, 0x1701e30)
+    VariantID::new(548433, 210177, 0x1701e30),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatAreaHoldPosition_: [VariantID; 1] =
@@ -9139,11 +9139,11 @@ pub const VTABLE_BSTDerivedCreator_CombatCoverSearch_CombatObject_: [VariantID; 
     [VariantID::new(548443, 210203, 0x1702a28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatCoverSearch_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264312, 210207, 0x1702a48)
+    VariantID::new(264312, 210207, 0x1702a48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatCoverSearch_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548448, 210209, 0x1702a68)
+    VariantID::new(548448, 210209, 0x1702a68),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatCoverSearch_: [VariantID; 1] =
@@ -9153,11 +9153,11 @@ pub const VTABLE_BSTDerivedCreator_CombatCoverSearchResult_CombatObject_: [Varia
     [VariantID::new(548453, 210215, 0x1702aa8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatCoverSearchResult_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264314, 210219, 0x1702ac8)
+    VariantID::new(264314, 210219, 0x1702ac8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatCoverSearchResult_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548458, 210221, 0x1702ae8)
+    VariantID::new(548458, 210221, 0x1702ae8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatCoverSearchResult_: [VariantID; 1] =
@@ -9167,11 +9167,11 @@ pub const VTABLE_BSTDerivedCreator_CombatCoverLocation_CombatObject_: [VariantID
     [VariantID::new(548463, 210227, 0x1702b28)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatCoverLocation_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264316, 210231, 0x1702b48)
+    VariantID::new(264316, 210231, 0x1702b48),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatCoverLocation_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548468, 210233, 0x1702b68)
+    VariantID::new(548468, 210233, 0x1702b68),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatCoverLocation_: [VariantID; 1] =
@@ -9181,11 +9181,11 @@ pub const VTABLE_BSTDerivedCreator_CombatCoverSearchDebugData_CombatObject_: [Va
     [VariantID::new(548473, 210239, 0x1702ba8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatCoverSearchDebugData_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264318, 210243, 0x1702bc8)
+    VariantID::new(264318, 210243, 0x1702bc8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatCoverSearchDebugData_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548478, 210245, 0x1702be8)
+    VariantID::new(548478, 210245, 0x1702be8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatCoverSearchDebugData_: [VariantID; 1] =
@@ -9223,11 +9223,11 @@ pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMelee_CombatObject_: [Vari
     [VariantID::new(548494, 210307, 0x1705050)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMelee_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264534, 210311, 0x1705070)
+    VariantID::new(264534, 210311, 0x1705070),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMelee_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548499, 210313, 0x1705090)
+    VariantID::new(548499, 210313, 0x1705090),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMelee_: [VariantID; 1] =
@@ -9237,11 +9237,11 @@ pub const VTABLE_BSTDerivedCreator_CombatInventoryItemRanged_CombatObject_: [Var
     [VariantID::new(548504, 210319, 0x17050d0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemRanged_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264536, 210323, 0x17050f0)
+    VariantID::new(264536, 210323, 0x17050f0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemRanged_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548509, 210325, 0x1705110)
+    VariantID::new(548509, 210325, 0x1705110),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemRanged_: [VariantID; 1] =
@@ -9251,11 +9251,11 @@ pub const VTABLE_BSTDerivedCreator_CombatInventoryItemShield_CombatObject_: [Var
     [VariantID::new(548514, 210331, 0x1705150)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemShield_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264538, 210335, 0x1705170)
+    VariantID::new(264538, 210335, 0x1705170),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemShield_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548519, 210337, 0x1705190)
+    VariantID::new(548519, 210337, 0x1705190),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemShield_: [VariantID; 1] =
@@ -9265,11 +9265,11 @@ pub const VTABLE_BSTDerivedCreator_CombatInventoryItemOneHandedBlock_CombatObjec
     [VariantID::new(548524, 210343, 0x17051d0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemOneHandedBlock_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264540, 210347, 0x17051f0)
+    VariantID::new(264540, 210347, 0x17051f0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemOneHandedBlock_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548529, 210349, 0x1705210)
+    VariantID::new(548529, 210349, 0x1705210),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemOneHandedBlock_: [VariantID; 1] =
@@ -9279,11 +9279,11 @@ pub const VTABLE_BSTDerivedCreator_CombatInventoryItemTorch_CombatObject_: [Vari
     [VariantID::new(548534, 210355, 0x1705250)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemTorch_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(264542, 210359, 0x1705270)
+    VariantID::new(264542, 210359, 0x1705270),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemTorch_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548539, 210361, 0x1705290)
+    VariantID::new(548539, 210361, 0x1705290),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemTorch_: [VariantID; 1] =
@@ -9293,19 +9293,19 @@ pub const VTABLE_CombatInventoryItemMagic: [VariantID; 1] =
     [VariantID::new(264533, 210373, 0x1704f90)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterReanimate__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549500, 210375, 0x170d5c0)
+    VariantID::new(549500, 210375, 0x170d5c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterReanimate__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265259, 210379, 0x170d5e0)
+    VariantID::new(265259, 210379, 0x170d5e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterReanimate__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549505, 210381, 0x170d600)
+    VariantID::new(549505, 210381, 0x170d600),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterReanimate__: [VariantID; 1] = [
-    VariantID::new(265260, 210385, 0x170d620)
+    VariantID::new(265260, 210385, 0x170d620),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterReanimate_: [VariantID; 6] = [
@@ -9321,94 +9321,94 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterParalyze_CombatObject_: [Var
     [VariantID::new(549516, 210401, 0x170d700)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterParalyze_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265267, 210405, 0x170d720)
+    VariantID::new(265267, 210405, 0x170d720),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterParalyze_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549521, 210407, 0x170d740)
+    VariantID::new(549521, 210407, 0x170d740),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterParalyze_: [VariantID; 1] =
     [VariantID::new(265268, 210411, 0x170d760)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterParalyze__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549526, 210413, 0x170d780)
+    VariantID::new(549526, 210413, 0x170d780),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterParalyze__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265269, 210417, 0x170d7a0)
+    VariantID::new(265269, 210417, 0x170d7a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterParalyze__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549531, 210419, 0x170d7c0)
+    VariantID::new(549531, 210419, 0x170d7c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterParalyze__: [VariantID; 1] = [
-    VariantID::new(265270, 210423, 0x170d7e0)
+    VariantID::new(265270, 210423, 0x170d7e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterParalyze__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549536, 210425, 0x170d800)
+    VariantID::new(549536, 210425, 0x170d800),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterParalyze__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265271, 210429, 0x170d820)
+    VariantID::new(265271, 210429, 0x170d820),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterParalyze__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549541, 210431, 0x170d840)
+    VariantID::new(549541, 210431, 0x170d840),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterParalyze__: [VariantID; 1] = [
-    VariantID::new(265272, 210435, 0x170d860)
+    VariantID::new(265272, 210435, 0x170d860),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterParalyze__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549546, 210437, 0x170d880)
+    VariantID::new(549546, 210437, 0x170d880),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterParalyze__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265273, 210441, 0x170d8a0)
+    VariantID::new(265273, 210441, 0x170d8a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterParalyze__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549551, 210443, 0x170d8c0)
+    VariantID::new(549551, 210443, 0x170d8c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterParalyze__: [VariantID; 1] = [
-    VariantID::new(265274, 210447, 0x170d8e0)
+    VariantID::new(265274, 210447, 0x170d8e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterParalyze__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549556, 210449, 0x170d900)
+    VariantID::new(549556, 210449, 0x170d900),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterParalyze__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265275, 210453, 0x170d920)
+    VariantID::new(265275, 210453, 0x170d920),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterParalyze__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549561, 210455, 0x170d940)
+    VariantID::new(549561, 210455, 0x170d940),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterParalyze__: [VariantID; 1] = [
-    VariantID::new(265276, 210459, 0x170d960)
+    VariantID::new(265276, 210459, 0x170d960),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterParalyze__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549566, 210461, 0x170d980)
+    VariantID::new(549566, 210461, 0x170d980),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterParalyze__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265277, 210465, 0x170d9a0)
+    VariantID::new(265277, 210465, 0x170d9a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterParalyze__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549571, 210467, 0x170d9c0)
+    VariantID::new(549571, 210467, 0x170d9c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterParalyze__: [VariantID; 1] = [
-    VariantID::new(265278, 210471, 0x170d9e0)
+    VariantID::new(265278, 210471, 0x170d9e0),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterParalyze_: [VariantID; 6] = [
@@ -9424,11 +9424,11 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterOffensive_CombatObject_: [Va
     [VariantID::new(548658, 210487, 0x170a640)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterOffensive_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265033, 210491, 0x170a660)
+    VariantID::new(265033, 210491, 0x170a660),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterOffensive_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548663, 210493, 0x170a680)
+    VariantID::new(548663, 210493, 0x170a680),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatMagicCasterScript_CombatObject_: [VariantID; 1] =
@@ -9438,166 +9438,166 @@ pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterOffensive_: [VariantI
     [VariantID::new(265034, 210501, 0x170a6a0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterScript_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265285, 210503, 0x170dae0)
+    VariantID::new(265285, 210503, 0x170dae0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterScript_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549587, 210505, 0x170db00)
+    VariantID::new(549587, 210505, 0x170db00),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterOffensive__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548668, 210509, 0x170a6c0)
+    VariantID::new(548668, 210509, 0x170a6c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterScript_: [VariantID; 1] =
     [VariantID::new(265286, 210513, 0x170db20)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterOffensive__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265035, 210515, 0x170a6e0)
+    VariantID::new(265035, 210515, 0x170a6e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterOffensive__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548673, 210517, 0x170a700)
+    VariantID::new(548673, 210517, 0x170a700),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterScript__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549592, 210521, 0x170db40)
+    VariantID::new(549592, 210521, 0x170db40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterOffensive__: [VariantID; 1] = [
-    VariantID::new(265036, 210525, 0x170a720)
+    VariantID::new(265036, 210525, 0x170a720),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterScript__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265287, 210527, 0x170db60)
+    VariantID::new(265287, 210527, 0x170db60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterScript__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549597, 210529, 0x170db80)
+    VariantID::new(549597, 210529, 0x170db80),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterOffensive__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548678, 210533, 0x170a740)
+    VariantID::new(548678, 210533, 0x170a740),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterScript__: [VariantID; 1] = [
-    VariantID::new(265288, 210537, 0x170dba0)
+    VariantID::new(265288, 210537, 0x170dba0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterOffensive__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265037, 210539, 0x170a760)
+    VariantID::new(265037, 210539, 0x170a760),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterOffensive__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548683, 210541, 0x170a780)
+    VariantID::new(548683, 210541, 0x170a780),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterScript__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549602, 210545, 0x170dbc0)
+    VariantID::new(549602, 210545, 0x170dbc0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterOffensive__: [VariantID; 1] = [
-    VariantID::new(265038, 210549, 0x170a7a0)
+    VariantID::new(265038, 210549, 0x170a7a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterScript__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265289, 210551, 0x170dbe0)
+    VariantID::new(265289, 210551, 0x170dbe0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterScript__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549607, 210553, 0x170dc00)
+    VariantID::new(549607, 210553, 0x170dc00),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterOffensive__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548688, 210557, 0x170a7c0)
+    VariantID::new(548688, 210557, 0x170a7c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterScript__: [VariantID; 1] = [
-    VariantID::new(265290, 210561, 0x170dc20)
+    VariantID::new(265290, 210561, 0x170dc20),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterOffensive__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265039, 210563, 0x170a7e0)
+    VariantID::new(265039, 210563, 0x170a7e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterOffensive__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548693, 210565, 0x170a800)
+    VariantID::new(548693, 210565, 0x170a800),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterScript__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549612, 210569, 0x170dc40)
+    VariantID::new(549612, 210569, 0x170dc40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterOffensive__: [VariantID; 1] = [
-    VariantID::new(265040, 210573, 0x170a820)
+    VariantID::new(265040, 210573, 0x170a820),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterScript__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265291, 210575, 0x170dc60)
+    VariantID::new(265291, 210575, 0x170dc60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterScript__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549617, 210577, 0x170dc80)
+    VariantID::new(549617, 210577, 0x170dc80),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterOffensive__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548698, 210581, 0x170a840)
+    VariantID::new(548698, 210581, 0x170a840),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterScript__: [VariantID; 1] = [
-    VariantID::new(265292, 210585, 0x170dca0)
+    VariantID::new(265292, 210585, 0x170dca0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterOffensive__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265041, 210587, 0x170a860)
+    VariantID::new(265041, 210587, 0x170a860),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterOffensive__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548703, 210589, 0x170a880)
+    VariantID::new(548703, 210589, 0x170a880),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterScript__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549622, 210593, 0x170dcc0)
+    VariantID::new(549622, 210593, 0x170dcc0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterOffensive__: [VariantID; 1] = [
-    VariantID::new(265042, 210597, 0x170a8a0)
+    VariantID::new(265042, 210597, 0x170a8a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterScript__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265293, 210599, 0x170dce0)
+    VariantID::new(265293, 210599, 0x170dce0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterScript__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549627, 210601, 0x170dd00)
+    VariantID::new(549627, 210601, 0x170dd00),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterOffensive__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548708, 210605, 0x170a8c0)
+    VariantID::new(548708, 210605, 0x170a8c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterScript__: [VariantID; 1] = [
-    VariantID::new(265294, 210609, 0x170dd20)
+    VariantID::new(265294, 210609, 0x170dd20),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterOffensive__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265043, 210611, 0x170a8e0)
+    VariantID::new(265043, 210611, 0x170a8e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterOffensive__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548713, 210613, 0x170a900)
+    VariantID::new(548713, 210613, 0x170a900),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterScript__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549632, 210617, 0x170dd40)
+    VariantID::new(549632, 210617, 0x170dd40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterOffensive__: [VariantID; 1] = [
-    VariantID::new(265044, 210621, 0x170a920)
+    VariantID::new(265044, 210621, 0x170a920),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterScript__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265295, 210625, 0x170dd60)
+    VariantID::new(265295, 210625, 0x170dd60),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterOffensive_: [VariantID; 6] = [
@@ -9610,11 +9610,11 @@ pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterOffensive_: [V
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterScript__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549637, 210635, 0x170dd80)
+    VariantID::new(549637, 210635, 0x170dd80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterScript__: [VariantID; 1] = [
-    VariantID::new(265296, 210643, 0x170dda0)
+    VariantID::new(265296, 210643, 0x170dda0),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterScript_: [VariantID; 6] = [
@@ -9630,94 +9630,94 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterWard_CombatObject_: [Variant
     [VariantID::new(548724, 210659, 0x170aa00)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterWard_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265051, 210663, 0x170aa20)
+    VariantID::new(265051, 210663, 0x170aa20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterWard_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548729, 210665, 0x170aa40)
+    VariantID::new(548729, 210665, 0x170aa40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterWard_: [VariantID; 1] =
     [VariantID::new(265052, 210669, 0x170aa60)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterWard__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548734, 210671, 0x170aa80)
+    VariantID::new(548734, 210671, 0x170aa80),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterWard__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265053, 210675, 0x170aaa0)
+    VariantID::new(265053, 210675, 0x170aaa0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterWard__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548739, 210677, 0x170aac0)
+    VariantID::new(548739, 210677, 0x170aac0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterWard__: [VariantID; 1] = [
-    VariantID::new(265054, 210681, 0x170aae0)
+    VariantID::new(265054, 210681, 0x170aae0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterWard__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548744, 210683, 0x170ab00)
+    VariantID::new(548744, 210683, 0x170ab00),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterWard__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265055, 210687, 0x170ab20)
+    VariantID::new(265055, 210687, 0x170ab20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterWard__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548749, 210689, 0x170ab40)
+    VariantID::new(548749, 210689, 0x170ab40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterWard__: [VariantID; 1] = [
-    VariantID::new(265056, 210693, 0x170ab60)
+    VariantID::new(265056, 210693, 0x170ab60),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterWard__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548754, 210695, 0x170ab80)
+    VariantID::new(548754, 210695, 0x170ab80),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterWard__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265057, 210699, 0x170aba0)
+    VariantID::new(265057, 210699, 0x170aba0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterWard__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548759, 210701, 0x170abc0)
+    VariantID::new(548759, 210701, 0x170abc0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterWard__: [VariantID; 1] = [
-    VariantID::new(265058, 210705, 0x170abe0)
+    VariantID::new(265058, 210705, 0x170abe0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterWard__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548764, 210707, 0x170ac00)
+    VariantID::new(548764, 210707, 0x170ac00),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterWard__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265059, 210711, 0x170ac20)
+    VariantID::new(265059, 210711, 0x170ac20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterWard__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548769, 210713, 0x170ac40)
+    VariantID::new(548769, 210713, 0x170ac40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterWard__: [VariantID; 1] = [
-    VariantID::new(265060, 210717, 0x170ac60)
+    VariantID::new(265060, 210717, 0x170ac60),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterWard__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548774, 210719, 0x170ac80)
+    VariantID::new(548774, 210719, 0x170ac80),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterWard__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265061, 210723, 0x170aca0)
+    VariantID::new(265061, 210723, 0x170aca0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterWard__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548779, 210725, 0x170acc0)
+    VariantID::new(548779, 210725, 0x170acc0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterWard__: [VariantID; 1] = [
-    VariantID::new(265062, 210729, 0x170ace0)
+    VariantID::new(265062, 210729, 0x170ace0),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterWard_: [VariantID; 6] = [
@@ -9733,97 +9733,97 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterRestore_CombatObject_: [Vari
     [VariantID::new(548790, 210745, 0x170adc0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterRestore_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265069, 210749, 0x170ade0)
+    VariantID::new(265069, 210749, 0x170ade0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterRestore_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548795, 210751, 0x170ae00)
+    VariantID::new(548795, 210751, 0x170ae00),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterRestore_: [VariantID; 1] =
     [VariantID::new(265070, 210755, 0x170ae20)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterRestore__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548800, 210757, 0x170ae40)
+    VariantID::new(548800, 210757, 0x170ae40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterRestore__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265071, 210761, 0x170ae60)
+    VariantID::new(265071, 210761, 0x170ae60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterRestore__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548805, 210763, 0x170ae80)
+    VariantID::new(548805, 210763, 0x170ae80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterRestore__: [VariantID; 1] = [
-    VariantID::new(265072, 210767, 0x170aea0)
+    VariantID::new(265072, 210767, 0x170aea0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterRestore__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548810, 210769, 0x170aec0)
+    VariantID::new(548810, 210769, 0x170aec0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterRestore__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265073, 210773, 0x170aee0)
+    VariantID::new(265073, 210773, 0x170aee0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterRestore__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548815, 210775, 0x170af00)
+    VariantID::new(548815, 210775, 0x170af00),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterRestore__: [VariantID; 1] = [
-    VariantID::new(265074, 210779, 0x170af20)
+    VariantID::new(265074, 210779, 0x170af20),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterRestore__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548820, 210781, 0x170af40)
+    VariantID::new(548820, 210781, 0x170af40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterRestore__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265075, 210785, 0x170af60)
+    VariantID::new(265075, 210785, 0x170af60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterRestore__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548825, 210787, 0x170af80)
+    VariantID::new(548825, 210787, 0x170af80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterRestore__: [VariantID; 1] = [
-    VariantID::new(265076, 210791, 0x170afa0)
+    VariantID::new(265076, 210791, 0x170afa0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterRestore__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548830, 210793, 0x170afc0)
+    VariantID::new(548830, 210793, 0x170afc0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterRestore__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265077, 210797, 0x170afe0)
+    VariantID::new(265077, 210797, 0x170afe0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterRestore__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548835, 210799, 0x170b000)
+    VariantID::new(548835, 210799, 0x170b000),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterRestore__: [VariantID; 1] = [
-    VariantID::new(265078, 210803, 0x170b020)
+    VariantID::new(265078, 210803, 0x170b020),
 ];
 
 pub const VTABLE_CombatBlackboardKey_AITimer_: [VariantID; 1] =
     [VariantID::new(265304, 210805, 0x170de98)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterRestore__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548840, 210808, 0x170b040)
+    VariantID::new(548840, 210808, 0x170b040),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterRestore__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265079, 210812, 0x170b060)
+    VariantID::new(265079, 210812, 0x170b060),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterRestore__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548845, 210814, 0x170b080)
+    VariantID::new(548845, 210814, 0x170b080),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterRestore__: [VariantID; 1] = [
-    VariantID::new(265080, 210818, 0x170b0a0)
+    VariantID::new(265080, 210818, 0x170b0a0),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterRestore_: [VariantID; 6] = [
@@ -9842,14 +9842,14 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterSummon_CombatObject_: [Varia
     [VariantID::new(548856, 210860, 0x170b180)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterSummon_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265087, 210866, 0x170b1a0)
+    VariantID::new(265087, 210866, 0x170b1a0),
 ];
 
 pub const VTABLE_CombatInventoryItemStaff: [VariantID; 1] =
     [VariantID::new(548568, 210868, 0x1709a48)];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterSummon_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548861, 210892, 0x170b1c0)
+    VariantID::new(548861, 210892, 0x170b1c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterSummon_: [VariantID; 1] =
@@ -9859,86 +9859,86 @@ pub const VTABLE_CombatInventoryItemPotion: [VariantID; 1] =
     [VariantID::new(548592, 210899, 0x1709b28)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterSummon__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548866, 210923, 0x170b200)
+    VariantID::new(548866, 210923, 0x170b200),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterSummon__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265089, 210928, 0x170b220)
+    VariantID::new(265089, 210928, 0x170b220),
 ];
 
 pub const VTABLE_CombatInventoryItemScroll: [VariantID; 1] =
     [VariantID::new(548616, 210930, 0x1709c08)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterSummon__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548871, 210954, 0x170b240)
+    VariantID::new(548871, 210954, 0x170b240),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterSummon__: [VariantID; 1] = [
-    VariantID::new(265090, 210959, 0x170b260)
+    VariantID::new(265090, 210959, 0x170b260),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterSummon__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548876, 210961, 0x170b280)
+    VariantID::new(548876, 210961, 0x170b280),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterSummon__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265091, 210965, 0x170b2a0)
+    VariantID::new(265091, 210965, 0x170b2a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterSummon__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548881, 210967, 0x170b2c0)
+    VariantID::new(548881, 210967, 0x170b2c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterSummon__: [VariantID; 1] = [
-    VariantID::new(265092, 210971, 0x170b2e0)
+    VariantID::new(265092, 210971, 0x170b2e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterSummon__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548886, 210974, 0x170b300)
+    VariantID::new(548886, 210974, 0x170b300),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterSummon__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265093, 210978, 0x170b320)
+    VariantID::new(265093, 210978, 0x170b320),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterSummon__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548891, 210980, 0x170b340)
+    VariantID::new(548891, 210980, 0x170b340),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterSummon__: [VariantID; 1] = [
-    VariantID::new(265094, 210984, 0x170b360)
+    VariantID::new(265094, 210984, 0x170b360),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterSummon__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548896, 210986, 0x170b380)
+    VariantID::new(548896, 210986, 0x170b380),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterSummon__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265095, 210990, 0x170b3a0)
+    VariantID::new(265095, 210990, 0x170b3a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterSummon__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548901, 210992, 0x170b3c0)
+    VariantID::new(548901, 210992, 0x170b3c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterSummon__: [VariantID; 1] = [
-    VariantID::new(265096, 210997, 0x170b3e0)
+    VariantID::new(265096, 210997, 0x170b3e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterSummon__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548906, 210999, 0x170b400)
+    VariantID::new(548906, 210999, 0x170b400),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterSummon__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265097, 211004, 0x170b420)
+    VariantID::new(265097, 211004, 0x170b420),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterSummon__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548911, 211006, 0x170b440)
+    VariantID::new(548911, 211006, 0x170b440),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterSummon__: [VariantID; 1] = [
-    VariantID::new(265098, 211010, 0x170b460)
+    VariantID::new(265098, 211010, 0x170b460),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterSummon_: [VariantID; 6] = [
@@ -9963,11 +9963,11 @@ pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicC
     [VariantID; 1] = [VariantID::new(265313, 211034, 0x170e118)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterStagger_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265105, 211036, 0x170b560)
+    VariantID::new(265105, 211036, 0x170b560),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterStagger_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548927, 211038, 0x170b580)
+    VariantID::new(548927, 211038, 0x170b580),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterScript_:
@@ -9977,99 +9977,99 @@ pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterStagger_: [VariantID;
     [VariantID::new(265106, 211044, 0x170b5a0)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterStagger__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548932, 211046, 0x170b5c0)
+    VariantID::new(548932, 211046, 0x170b5c0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterScript_:
     [VariantID; 1] = [VariantID::new(265315, 211050, 0x170e298)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterStagger__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265107, 211052, 0x170b5e0)
+    VariantID::new(265107, 211052, 0x170b5e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterStagger__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548937, 211054, 0x170b600)
+    VariantID::new(548937, 211054, 0x170b600),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterStagger__: [VariantID; 1] = [
-    VariantID::new(265108, 211058, 0x170b620)
+    VariantID::new(265108, 211058, 0x170b620),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterParalyze_:
     [VariantID; 1] = [VariantID::new(265316, 211060, 0x170e358)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterStagger__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548942, 211062, 0x170b640)
+    VariantID::new(548942, 211062, 0x170b640),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterStagger__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265109, 211066, 0x170b660)
+    VariantID::new(265109, 211066, 0x170b660),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterParalyze_:
     [VariantID; 1] = [VariantID::new(265317, 211068, 0x170e418)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterStagger__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548947, 211070, 0x170b680)
+    VariantID::new(548947, 211070, 0x170b680),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterStagger__: [VariantID; 1] = [
-    VariantID::new(265110, 211074, 0x170b6a0)
+    VariantID::new(265110, 211074, 0x170b6a0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterParalyze_:
     [VariantID; 1] = [VariantID::new(265318, 211076, 0x170e4d8)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterStagger__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548952, 211078, 0x170b6c0)
+    VariantID::new(548952, 211078, 0x170b6c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterStagger__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265111, 211082, 0x170b6e0)
+    VariantID::new(265111, 211082, 0x170b6e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterStagger__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548957, 211084, 0x170b700)
+    VariantID::new(548957, 211084, 0x170b700),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterParalyze_:
     [VariantID; 1] = [VariantID::new(265319, 211088, 0x170e598)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterStagger__: [VariantID; 1] = [
-    VariantID::new(265112, 211090, 0x170b720)
+    VariantID::new(265112, 211090, 0x170b720),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterParalyze_:
     [VariantID; 1] = [VariantID::new(265320, 211092, 0x170e658)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterStagger__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548962, 211094, 0x170b740)
+    VariantID::new(548962, 211094, 0x170b740),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterStagger__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265113, 211098, 0x170b760)
+    VariantID::new(265113, 211098, 0x170b760),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterStagger__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548967, 211100, 0x170b780)
+    VariantID::new(548967, 211100, 0x170b780),
 ];
 
 pub const VTABLE_CombatMagicCasterOffensive: [VariantID; 1] =
     [VariantID::new(265003, 211104, 0x1709d90)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterStagger__: [VariantID; 1] = [
-    VariantID::new(265114, 211106, 0x170b7a0)
+    VariantID::new(265114, 211106, 0x170b7a0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterReanimate_:
     [VariantID; 1] = [VariantID::new(265321, 211108, 0x170e718)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterStagger__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548972, 211110, 0x170b7c0)
+    VariantID::new(548972, 211110, 0x170b7c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterStagger__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265115, 211114, 0x170b7e0)
+    VariantID::new(265115, 211114, 0x170b7e0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterReanimate_:
@@ -10079,11 +10079,11 @@ pub const VTABLE_CombatMagicCasterWard: [VariantID; 1] =
     [VariantID::new(265005, 211118, 0x1709e28)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterStagger__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548977, 211120, 0x170b800)
+    VariantID::new(548977, 211120, 0x170b800),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterStagger__: [VariantID; 1] = [
-    VariantID::new(265116, 211124, 0x170b820)
+    VariantID::new(265116, 211124, 0x170b820),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterReanimate_:
@@ -10117,15 +10117,15 @@ pub const VTABLE_CombatMagicCasterStagger: [VariantID; 1] =
     [VariantID::new(265011, 211154, 0x1709fe0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterDisarm_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265123, 211156, 0x170b920)
+    VariantID::new(265123, 211156, 0x170b920),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterDisarm_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(548993, 211158, 0x170b940)
+    VariantID::new(548993, 211158, 0x170b940),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterTargetEffect_: [VariantID; 1] = [
-    VariantID::new(265326, 211162, 0x170ead8)
+    VariantID::new(265326, 211162, 0x170ead8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterDisarm_: [VariantID; 1] =
@@ -10135,82 +10135,82 @@ pub const VTABLE_CombatMagicCasterDisarm: [VariantID; 1] =
     [VariantID::new(265013, 211166, 0x170a078)];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterTargetEffect_: [VariantID; 1] = [
-    VariantID::new(265327, 211168, 0x170eb98)
+    VariantID::new(265327, 211168, 0x170eb98),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterDisarm__CombatObject_: [VariantID; 1] = [
-    VariantID::new(548998, 211170, 0x170b980)
+    VariantID::new(548998, 211170, 0x170b980),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterDisarm__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265125, 211174, 0x170b9a0)
+    VariantID::new(265125, 211174, 0x170b9a0),
 ];
 
 pub const VTABLE_CombatMagicCasterCloak: [VariantID; 1] =
     [VariantID::new(265015, 211176, 0x170a108)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterDisarm__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549003, 211178, 0x170b9c0)
+    VariantID::new(549003, 211178, 0x170b9c0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterTargetEffect_: [VariantID; 1] = [
-    VariantID::new(265328, 211182, 0x170ec58)
+    VariantID::new(265328, 211182, 0x170ec58),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterDisarm__: [VariantID; 1] = [
-    VariantID::new(265126, 211184, 0x170b9e0)
+    VariantID::new(265126, 211184, 0x170b9e0),
 ];
 
 pub const VTABLE_CombatMagicCasterLight: [VariantID; 1] =
     [VariantID::new(265017, 211186, 0x170a198)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterDisarm__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549008, 211188, 0x170ba00)
+    VariantID::new(549008, 211188, 0x170ba00),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterTargetEffect_: [VariantID; 1] = [
-    VariantID::new(265329, 211192, 0x170ed18)
+    VariantID::new(265329, 211192, 0x170ed18),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterDisarm__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265127, 211194, 0x170ba20)
+    VariantID::new(265127, 211194, 0x170ba20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterDisarm__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549013, 211196, 0x170ba40)
+    VariantID::new(549013, 211196, 0x170ba40),
 ];
 
 pub const VTABLE_CombatMagicCasterInvisibility: [VariantID; 1] =
     [VariantID::new(265019, 211200, 0x170a228)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterDisarm__: [VariantID; 1] = [
-    VariantID::new(265128, 211202, 0x170ba60)
+    VariantID::new(265128, 211202, 0x170ba60),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterTargetEffect_: [VariantID; 1] = [
-    VariantID::new(265330, 211204, 0x170edd8)
+    VariantID::new(265330, 211204, 0x170edd8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterDisarm__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549018, 211206, 0x170ba80)
+    VariantID::new(549018, 211206, 0x170ba80),
 ];
 
 pub const VTABLE_CombatMagicCasterBoundItem: [VariantID; 1] =
     [VariantID::new(265021, 211210, 0x170a2c0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterDisarm__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265129, 211212, 0x170baa0)
+    VariantID::new(265129, 211212, 0x170baa0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterArmor_:
     [VariantID; 1] = [VariantID::new(265331, 211214, 0x170ee98)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterDisarm__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549023, 211216, 0x170bac0)
+    VariantID::new(549023, 211216, 0x170bac0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterDisarm__: [VariantID; 1] = [
-    VariantID::new(265130, 211220, 0x170bae0)
+    VariantID::new(265130, 211220, 0x170bae0),
 ];
 
 pub const VTABLE_CombatMagicCasterArmor: [VariantID; 1] =
@@ -10220,11 +10220,11 @@ pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagic
     [VariantID; 1] = [VariantID::new(265332, 211224, 0x170ef58)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterDisarm__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549028, 211226, 0x170bb00)
+    VariantID::new(549028, 211226, 0x170bb00),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterDisarm__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265131, 211230, 0x170bb20)
+    VariantID::new(265131, 211230, 0x170bb20),
 ];
 
 pub const VTABLE_CombatMagicCasterTargetEffect: [VariantID; 1] =
@@ -10234,33 +10234,33 @@ pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicC
     [VariantID; 1] = [VariantID::new(265333, 211234, 0x170f018)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterDisarm__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549033, 211236, 0x170bb40)
+    VariantID::new(549033, 211236, 0x170bb40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterDisarm__: [VariantID; 1] = [
-    VariantID::new(265132, 211240, 0x170bb60)
+    VariantID::new(265132, 211240, 0x170bb60),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterArmor_:
     [VariantID; 1] = [VariantID::new(265334, 211242, 0x170f0d8)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterDisarm__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549038, 211244, 0x170bb80)
+    VariantID::new(549038, 211244, 0x170bb80),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterDisarm__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265133, 211248, 0x170bba0)
+    VariantID::new(265133, 211248, 0x170bba0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterDisarm__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549043, 211250, 0x170bbc0)
+    VariantID::new(549043, 211250, 0x170bbc0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterArmor_:
     [VariantID; 1] = [VariantID::new(265335, 211254, 0x170f198)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterDisarm__: [VariantID; 1] = [
-    VariantID::new(265134, 211256, 0x170bbe0)
+    VariantID::new(265134, 211256, 0x170bbe0),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterDisarm_: [VariantID; 6] = [
@@ -10291,11 +10291,11 @@ pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicC
     [VariantID; 1] = [VariantID::new(265338, 211284, 0x170f3d8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterCloak_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265141, 211286, 0x170bce0)
+    VariantID::new(265141, 211286, 0x170bce0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterCloak_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549059, 211288, 0x170bd00)
+    VariantID::new(549059, 211288, 0x170bd00),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterCloak_: [VariantID; 1] =
@@ -10305,112 +10305,112 @@ pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicC
     [VariantID; 1] = [VariantID::new(265339, 211294, 0x170f498)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterCloak__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549064, 211296, 0x170bd40)
+    VariantID::new(549064, 211296, 0x170bd40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterCloak__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265143, 211300, 0x170bd60)
+    VariantID::new(265143, 211300, 0x170bd60),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterBoundItem_:
     [VariantID; 1] = [VariantID::new(265340, 211302, 0x170f558)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterCloak__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549069, 211304, 0x170bd80)
+    VariantID::new(549069, 211304, 0x170bd80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterCloak__: [VariantID; 1] = [
-    VariantID::new(265144, 211308, 0x170bda0)
+    VariantID::new(265144, 211308, 0x170bda0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterInvisibility_: [VariantID; 1] = [
-    VariantID::new(265341, 211310, 0x170f618)
+    VariantID::new(265341, 211310, 0x170f618),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterCloak__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549074, 211312, 0x170bdc0)
+    VariantID::new(549074, 211312, 0x170bdc0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterCloak__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265145, 211316, 0x170bde0)
+    VariantID::new(265145, 211316, 0x170bde0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterCloak__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549079, 211318, 0x170be00)
+    VariantID::new(549079, 211318, 0x170be00),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterInvisibility_: [VariantID; 1] = [
-    VariantID::new(265342, 211322, 0x170f6d8)
+    VariantID::new(265342, 211322, 0x170f6d8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterCloak__: [VariantID; 1] = [
-    VariantID::new(265146, 211324, 0x170be20)
+    VariantID::new(265146, 211324, 0x170be20),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterCloak__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549084, 211326, 0x170be40)
+    VariantID::new(549084, 211326, 0x170be40),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterInvisibility_: [VariantID; 1] = [
-    VariantID::new(265343, 211330, 0x170f798)
+    VariantID::new(265343, 211330, 0x170f798),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterCloak__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265147, 211332, 0x170be60)
+    VariantID::new(265147, 211332, 0x170be60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterCloak__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549089, 211334, 0x170be80)
+    VariantID::new(549089, 211334, 0x170be80),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterInvisibility_: [VariantID; 1] = [
-    VariantID::new(265344, 211338, 0x170f858)
+    VariantID::new(265344, 211338, 0x170f858),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterCloak__: [VariantID; 1] = [
-    VariantID::new(265148, 211340, 0x170bea0)
+    VariantID::new(265148, 211340, 0x170bea0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterCloak__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549094, 211342, 0x170bec0)
+    VariantID::new(549094, 211342, 0x170bec0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterInvisibility_: [VariantID; 1] = [
-    VariantID::new(265345, 211346, 0x170f918)
+    VariantID::new(265345, 211346, 0x170f918),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterCloak__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265149, 211348, 0x170bee0)
+    VariantID::new(265149, 211348, 0x170bee0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterCloak__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549099, 211350, 0x170bf00)
+    VariantID::new(549099, 211350, 0x170bf00),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterCloak__: [VariantID; 1] = [
-    VariantID::new(265150, 211354, 0x170bf20)
+    VariantID::new(265150, 211354, 0x170bf20),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterLight_:
     [VariantID; 1] = [VariantID::new(265346, 211356, 0x170f9d8)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterCloak__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549104, 211358, 0x170bf40)
+    VariantID::new(549104, 211358, 0x170bf40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterCloak__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265151, 211362, 0x170bf60)
+    VariantID::new(265151, 211362, 0x170bf60),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterLight_:
     [VariantID; 1] = [VariantID::new(265347, 211364, 0x170fa98)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterCloak__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549109, 211366, 0x170bf80)
+    VariantID::new(549109, 211366, 0x170bf80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterCloak__: [VariantID; 1] = [
-    VariantID::new(265152, 211370, 0x170bfa0)
+    VariantID::new(265152, 211370, 0x170bfa0),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterCloak_: [VariantID; 6] = [
@@ -10435,11 +10435,11 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterLight_CombatObject_: [Varian
     [VariantID::new(549120, 211392, 0x170c080)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterLight_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265159, 211396, 0x170c0a0)
+    VariantID::new(265159, 211396, 0x170c0a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterLight_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549125, 211398, 0x170c0c0)
+    VariantID::new(549125, 211398, 0x170c0c0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterCloak_:
@@ -10449,110 +10449,110 @@ pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterLight_: [VariantID; 1
     [VariantID::new(265160, 211404, 0x170c0e0)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterLight__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549130, 211406, 0x170c100)
+    VariantID::new(549130, 211406, 0x170c100),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterCloak_:
     [VariantID; 1] = [VariantID::new(265352, 211410, 0x170fe58)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterLight__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265161, 211412, 0x170c120)
+    VariantID::new(265161, 211412, 0x170c120),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterLight__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549135, 211414, 0x170c140)
+    VariantID::new(549135, 211414, 0x170c140),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterLight__: [VariantID; 1] = [
-    VariantID::new(265162, 211418, 0x170c160)
+    VariantID::new(265162, 211418, 0x170c160),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterCloak_:
     [VariantID; 1] = [VariantID::new(265353, 211420, 0x170ff18)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterLight__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549140, 211422, 0x170c180)
+    VariantID::new(549140, 211422, 0x170c180),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterCloak_:
     [VariantID; 1] = [VariantID::new(265354, 211426, 0x170ffd8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterLight__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265163, 211428, 0x170c1a0)
+    VariantID::new(265163, 211428, 0x170c1a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterLight__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549145, 211430, 0x170c1c0)
+    VariantID::new(549145, 211430, 0x170c1c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterLight__: [VariantID; 1] = [
-    VariantID::new(265164, 211434, 0x170c1e0)
+    VariantID::new(265164, 211434, 0x170c1e0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterCloak_:
     [VariantID; 1] = [VariantID::new(265355, 211436, 0x1710098)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterLight__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549150, 211438, 0x170c200)
+    VariantID::new(549150, 211438, 0x170c200),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterLight__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265165, 211442, 0x170c220)
+    VariantID::new(265165, 211442, 0x170c220),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterLight__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549155, 211444, 0x170c240)
+    VariantID::new(549155, 211444, 0x170c240),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterDisarm_:
     [VariantID; 1] = [VariantID::new(265356, 211448, 0x1710158)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterLight__: [VariantID; 1] = [
-    VariantID::new(265166, 211450, 0x170c260)
+    VariantID::new(265166, 211450, 0x170c260),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterDisarm_:
     [VariantID; 1] = [VariantID::new(265357, 211452, 0x1710218)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterLight__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549160, 211454, 0x170c280)
+    VariantID::new(549160, 211454, 0x170c280),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterLight__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265167, 211458, 0x170c2a0)
+    VariantID::new(265167, 211458, 0x170c2a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterLight__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549165, 211460, 0x170c2c0)
+    VariantID::new(549165, 211460, 0x170c2c0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterDisarm_:
     [VariantID; 1] = [VariantID::new(265358, 211464, 0x17102d8)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterLight__: [VariantID; 1] = [
-    VariantID::new(265168, 211466, 0x170c2e0)
+    VariantID::new(265168, 211466, 0x170c2e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterLight__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549170, 211468, 0x170c300)
+    VariantID::new(549170, 211468, 0x170c300),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterDisarm_:
     [VariantID; 1] = [VariantID::new(265359, 211472, 0x1710398)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterLight__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265169, 211474, 0x170c320)
+    VariantID::new(265169, 211474, 0x170c320),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterLight__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549175, 211476, 0x170c340)
+    VariantID::new(549175, 211476, 0x170c340),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterDisarm_:
     [VariantID; 1] = [VariantID::new(265360, 211480, 0x1710458)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterLight__: [VariantID; 1] = [
-    VariantID::new(265170, 211482, 0x170c360)
+    VariantID::new(265170, 211482, 0x170c360),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterLight_: [VariantID; 6] = [
@@ -10574,14 +10574,14 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterInvisibility_CombatObject_: 
     [VariantID::new(549186, 211502, 0x170c440)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterInvisibility_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265177, 211506, 0x170c460)
+    VariantID::new(265177, 211506, 0x170c460),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterStagger_:
     [VariantID; 1] = [VariantID::new(265363, 211508, 0x1710698)];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterInvisibility_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549191, 211510, 0x170c480)
+    VariantID::new(549191, 211510, 0x170c480),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterInvisibility_: [VariantID; 1] =
@@ -10591,107 +10591,107 @@ pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicC
     [VariantID; 1] = [VariantID::new(265364, 211516, 0x1710758)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterInvisibility__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549196, 211518, 0x170c4c0)
+    VariantID::new(549196, 211518, 0x170c4c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterInvisibility__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265179, 211522, 0x170c4e0)
+    VariantID::new(265179, 211522, 0x170c4e0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterStagger_:
     [VariantID; 1] = [VariantID::new(265365, 211524, 0x1710818)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterInvisibility__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549201, 211526, 0x170c500)
+    VariantID::new(549201, 211526, 0x170c500),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterInvisibility__: [VariantID; 1] = [
-    VariantID::new(265180, 211530, 0x170c520)
+    VariantID::new(265180, 211530, 0x170c520),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterInvisibility__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549206, 211532, 0x170c540)
+    VariantID::new(549206, 211532, 0x170c540),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterSummon_:
     [VariantID; 1] = [VariantID::new(265366, 211536, 0x17108d8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterInvisibility__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265181, 211538, 0x170c560)
+    VariantID::new(265181, 211538, 0x170c560),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterInvisibility__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549211, 211540, 0x170c580)
+    VariantID::new(549211, 211540, 0x170c580),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterSummon_:
     [VariantID; 1] = [VariantID::new(265367, 211544, 0x1710998)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterInvisibility__: [VariantID; 1] = [
-    VariantID::new(265182, 211546, 0x170c5a0)
+    VariantID::new(265182, 211546, 0x170c5a0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterInvisibility__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549216, 211548, 0x170c5c0)
+    VariantID::new(549216, 211548, 0x170c5c0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterSummon_:
     [VariantID; 1] = [VariantID::new(265368, 211552, 0x1710a58)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterInvisibility__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265183, 211554, 0x170c5e0)
+    VariantID::new(265183, 211554, 0x170c5e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterInvisibility__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549221, 211556, 0x170c600)
+    VariantID::new(549221, 211556, 0x170c600),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterInvisibility__: [VariantID; 1] = [
-    VariantID::new(265184, 211560, 0x170c620)
+    VariantID::new(265184, 211560, 0x170c620),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterSummon_:
     [VariantID; 1] = [VariantID::new(265369, 211562, 0x1710b18)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterInvisibility__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549226, 211564, 0x170c640)
+    VariantID::new(549226, 211564, 0x170c640),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterSummon_:
     [VariantID; 1] = [VariantID::new(265370, 211568, 0x1710bd8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterInvisibility__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265185, 211570, 0x170c660)
+    VariantID::new(265185, 211570, 0x170c660),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterInvisibility__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549231, 211572, 0x170c680)
+    VariantID::new(549231, 211572, 0x170c680),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterInvisibility__: [VariantID; 1] = [
-    VariantID::new(265186, 211576, 0x170c6a0)
+    VariantID::new(265186, 211576, 0x170c6a0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterRestore_:
     [VariantID; 1] = [VariantID::new(265371, 211578, 0x1710c98)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterInvisibility__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549236, 211580, 0x170c6c0)
+    VariantID::new(549236, 211580, 0x170c6c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterInvisibility__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265187, 211584, 0x170c6e0)
+    VariantID::new(265187, 211584, 0x170c6e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterInvisibility__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549241, 211586, 0x170c700)
+    VariantID::new(549241, 211586, 0x170c700),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterRestore_:
     [VariantID; 1] = [VariantID::new(265372, 211590, 0x1710d58)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterInvisibility__: [VariantID; 1] = [
-    VariantID::new(265188, 211592, 0x170c720)
+    VariantID::new(265188, 211592, 0x170c720),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterInvisibility_: [VariantID; 6] = [
@@ -10716,11 +10716,11 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterBoundItem_CombatObject_: [Va
     [VariantID::new(549252, 211614, 0x170c800)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterBoundItem_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265195, 211618, 0x170c820)
+    VariantID::new(265195, 211618, 0x170c820),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterBoundItem_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549257, 211620, 0x170c840)
+    VariantID::new(549257, 211620, 0x170c840),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterBoundItem_: [VariantID; 1] =
@@ -10730,107 +10730,107 @@ pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagic
     [VariantID; 1] = [VariantID::new(265376, 211626, 0x1711058)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterBoundItem__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549262, 211628, 0x170c880)
+    VariantID::new(549262, 211628, 0x170c880),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterWard_:
     [VariantID; 1] = [VariantID::new(265377, 211632, 0x1711118)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterBoundItem__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265197, 211634, 0x170c8a0)
+    VariantID::new(265197, 211634, 0x170c8a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterBoundItem__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549267, 211636, 0x170c8c0)
+    VariantID::new(549267, 211636, 0x170c8c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterBoundItem__: [VariantID; 1] = [
-    VariantID::new(265198, 211640, 0x170c8e0)
+    VariantID::new(265198, 211640, 0x170c8e0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterWard_:
     [VariantID; 1] = [VariantID::new(265378, 211642, 0x17111d8)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterBoundItem__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549272, 211644, 0x170c900)
+    VariantID::new(549272, 211644, 0x170c900),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterBoundItem__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265199, 211648, 0x170c920)
+    VariantID::new(265199, 211648, 0x170c920),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterWard_:
     [VariantID; 1] = [VariantID::new(265379, 211650, 0x1711298)];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterBoundItem__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549277, 211652, 0x170c940)
+    VariantID::new(549277, 211652, 0x170c940),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterBoundItem__: [VariantID; 1] = [
-    VariantID::new(265200, 211656, 0x170c960)
+    VariantID::new(265200, 211656, 0x170c960),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterWard_:
     [VariantID; 1] = [VariantID::new(265380, 211658, 0x1711358)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterBoundItem__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549282, 211660, 0x170c980)
+    VariantID::new(549282, 211660, 0x170c980),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterBoundItem__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265201, 211664, 0x170c9a0)
+    VariantID::new(265201, 211664, 0x170c9a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterBoundItem__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549287, 211666, 0x170c9c0)
+    VariantID::new(549287, 211666, 0x170c9c0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterOffensive_:
     [VariantID; 1] = [VariantID::new(265381, 211670, 0x1711418)];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterBoundItem__: [VariantID; 1] = [
-    VariantID::new(265202, 211672, 0x170c9e0)
+    VariantID::new(265202, 211672, 0x170c9e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterBoundItem__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549292, 211674, 0x170ca00)
+    VariantID::new(549292, 211674, 0x170ca00),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterOffensive_:
     [VariantID; 1] = [VariantID::new(265382, 211678, 0x17114d8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterBoundItem__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265203, 211680, 0x170ca20)
+    VariantID::new(265203, 211680, 0x170ca20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterBoundItem__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549297, 211682, 0x170ca40)
+    VariantID::new(549297, 211682, 0x170ca40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterBoundItem__: [VariantID; 1] = [
-    VariantID::new(265204, 211686, 0x170ca60)
+    VariantID::new(265204, 211686, 0x170ca60),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterOffensive_:
     [VariantID; 1] = [VariantID::new(265383, 211688, 0x1711598)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterBoundItem__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549302, 211690, 0x170ca80)
+    VariantID::new(549302, 211690, 0x170ca80),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterOffensive_:
     [VariantID; 1] = [VariantID::new(265384, 211694, 0x1711658)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterBoundItem__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265205, 211696, 0x170caa0)
+    VariantID::new(265205, 211696, 0x170caa0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterBoundItem__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549307, 211698, 0x170cac0)
+    VariantID::new(549307, 211698, 0x170cac0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterBoundItem__: [VariantID; 1] = [
-    VariantID::new(265206, 211702, 0x170cae0)
+    VariantID::new(265206, 211702, 0x170cae0),
 ];
 
 pub const VTABLE_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterOffensive_:
@@ -10849,94 +10849,94 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterArmor_CombatObject_: [Varian
     [VariantID::new(549318, 211720, 0x170cbc0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterArmor_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265213, 211724, 0x170cbe0)
+    VariantID::new(265213, 211724, 0x170cbe0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterArmor_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549323, 211726, 0x170cc00)
+    VariantID::new(549323, 211726, 0x170cc00),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterArmor_: [VariantID; 1] =
     [VariantID::new(265214, 211730, 0x170cc20)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterArmor__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549328, 211732, 0x170cc40)
+    VariantID::new(549328, 211732, 0x170cc40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterArmor__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265215, 211736, 0x170cc60)
+    VariantID::new(265215, 211736, 0x170cc60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterArmor__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549333, 211738, 0x170cc80)
+    VariantID::new(549333, 211738, 0x170cc80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterArmor__: [VariantID; 1] = [
-    VariantID::new(265216, 211742, 0x170cca0)
+    VariantID::new(265216, 211742, 0x170cca0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterArmor__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549338, 211744, 0x170ccc0)
+    VariantID::new(549338, 211744, 0x170ccc0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterArmor__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265217, 211748, 0x170cce0)
+    VariantID::new(265217, 211748, 0x170cce0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterArmor__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549343, 211750, 0x170cd00)
+    VariantID::new(549343, 211750, 0x170cd00),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterArmor__: [VariantID; 1] = [
-    VariantID::new(265218, 211754, 0x170cd20)
+    VariantID::new(265218, 211754, 0x170cd20),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterArmor__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549348, 211756, 0x170cd40)
+    VariantID::new(549348, 211756, 0x170cd40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterArmor__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265219, 211760, 0x170cd60)
+    VariantID::new(265219, 211760, 0x170cd60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterArmor__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549353, 211762, 0x170cd80)
+    VariantID::new(549353, 211762, 0x170cd80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterArmor__: [VariantID; 1] = [
-    VariantID::new(265220, 211766, 0x170cda0)
+    VariantID::new(265220, 211766, 0x170cda0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterArmor__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549358, 211768, 0x170cdc0)
+    VariantID::new(549358, 211768, 0x170cdc0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterArmor__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265221, 211772, 0x170cde0)
+    VariantID::new(265221, 211772, 0x170cde0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterArmor__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549363, 211774, 0x170ce00)
+    VariantID::new(549363, 211774, 0x170ce00),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterArmor__: [VariantID; 1] = [
-    VariantID::new(265222, 211778, 0x170ce20)
+    VariantID::new(265222, 211778, 0x170ce20),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterArmor__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549368, 211780, 0x170ce40)
+    VariantID::new(549368, 211780, 0x170ce40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterArmor__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265223, 211785, 0x170ce60)
+    VariantID::new(265223, 211785, 0x170ce60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterArmor__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549373, 211787, 0x170ce80)
+    VariantID::new(549373, 211787, 0x170ce80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterArmor__: [VariantID; 1] = [
-    VariantID::new(265224, 211791, 0x170cea0)
+    VariantID::new(265224, 211791, 0x170cea0),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterArmor_: [VariantID; 6] = [
@@ -10952,94 +10952,94 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterTargetEffect_CombatObject_: 
     [VariantID::new(549384, 211807, 0x170cf80)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterTargetEffect_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265231, 211811, 0x170cfa0)
+    VariantID::new(265231, 211811, 0x170cfa0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterTargetEffect_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549389, 211813, 0x170cfc0)
+    VariantID::new(549389, 211813, 0x170cfc0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterTargetEffect_: [VariantID; 1] =
     [VariantID::new(265232, 211817, 0x170cfe0)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterTargetEffect__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549394, 211819, 0x170d000)
+    VariantID::new(549394, 211819, 0x170d000),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterTargetEffect__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265233, 211823, 0x170d020)
+    VariantID::new(265233, 211823, 0x170d020),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterTargetEffect__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549399, 211825, 0x170d040)
+    VariantID::new(549399, 211825, 0x170d040),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterTargetEffect__: [VariantID; 1] = [
-    VariantID::new(265234, 211829, 0x170d060)
+    VariantID::new(265234, 211829, 0x170d060),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterTargetEffect__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549404, 211831, 0x170d080)
+    VariantID::new(549404, 211831, 0x170d080),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterTargetEffect__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265235, 211835, 0x170d0a0)
+    VariantID::new(265235, 211835, 0x170d0a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterTargetEffect__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549409, 211837, 0x170d0c0)
+    VariantID::new(549409, 211837, 0x170d0c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterTargetEffect__: [VariantID; 1] = [
-    VariantID::new(265236, 211841, 0x170d0e0)
+    VariantID::new(265236, 211841, 0x170d0e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterTargetEffect__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549414, 211843, 0x170d100)
+    VariantID::new(549414, 211843, 0x170d100),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterTargetEffect__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265237, 211847, 0x170d120)
+    VariantID::new(265237, 211847, 0x170d120),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterTargetEffect__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549419, 211849, 0x170d140)
+    VariantID::new(549419, 211849, 0x170d140),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterTargetEffect__: [VariantID; 1] = [
-    VariantID::new(265238, 211853, 0x170d160)
+    VariantID::new(265238, 211853, 0x170d160),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterTargetEffect__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549424, 211855, 0x170d180)
+    VariantID::new(549424, 211855, 0x170d180),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterTargetEffect__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265239, 211859, 0x170d1a0)
+    VariantID::new(265239, 211859, 0x170d1a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterTargetEffect__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549429, 211861, 0x170d1c0)
+    VariantID::new(549429, 211861, 0x170d1c0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterTargetEffect__: [VariantID; 1] = [
-    VariantID::new(265240, 211865, 0x170d1e0)
+    VariantID::new(265240, 211865, 0x170d1e0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterTargetEffect__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549434, 211867, 0x170d200)
+    VariantID::new(549434, 211867, 0x170d200),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterTargetEffect__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265241, 211871, 0x170d220)
+    VariantID::new(265241, 211871, 0x170d220),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterTargetEffect__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549439, 211873, 0x170d240)
+    VariantID::new(549439, 211873, 0x170d240),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemScroll_CombatMagicCasterTargetEffect__: [VariantID; 1] = [
-    VariantID::new(265242, 211877, 0x170d260)
+    VariantID::new(265242, 211877, 0x170d260),
 ];
 
 pub const VTABLE___AutoRegisterCombatMagicCaster_CombatMagicCasterTargetEffect_: [VariantID; 6] = [
@@ -11055,78 +11055,78 @@ pub const VTABLE_BSTDerivedCreator_CombatMagicCasterReanimate_CombatObject_: [Va
     [VariantID::new(549450, 211893, 0x170d340)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatMagicCasterReanimate_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265249, 211897, 0x170d360)
+    VariantID::new(265249, 211897, 0x170d360),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatMagicCasterReanimate_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549455, 211899, 0x170d380)
+    VariantID::new(549455, 211899, 0x170d380),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatMagicCasterReanimate_: [VariantID; 1] =
     [VariantID::new(265250, 211903, 0x170d3a0)];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterReanimate__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549460, 211905, 0x170d3c0)
+    VariantID::new(549460, 211905, 0x170d3c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterReanimate__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265251, 211909, 0x170d3e0)
+    VariantID::new(265251, 211909, 0x170d3e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterReanimate__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549465, 211911, 0x170d400)
+    VariantID::new(549465, 211911, 0x170d400),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemMagic_CombatMagicCasterReanimate__: [VariantID; 1] = [
-    VariantID::new(265252, 211915, 0x170d420)
+    VariantID::new(265252, 211915, 0x170d420),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterReanimate__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549470, 211917, 0x170d440)
+    VariantID::new(549470, 211917, 0x170d440),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterReanimate__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265253, 211921, 0x170d460)
+    VariantID::new(265253, 211921, 0x170d460),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterReanimate__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549475, 211923, 0x170d480)
+    VariantID::new(549475, 211923, 0x170d480),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemShout_CombatMagicCasterReanimate__: [VariantID; 1] = [
-    VariantID::new(265254, 211927, 0x170d4a0)
+    VariantID::new(265254, 211927, 0x170d4a0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterReanimate__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549480, 211929, 0x170d4c0)
+    VariantID::new(549480, 211929, 0x170d4c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterReanimate__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265255, 211933, 0x170d4e0)
+    VariantID::new(265255, 211933, 0x170d4e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterReanimate__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549485, 211935, 0x170d500)
+    VariantID::new(549485, 211935, 0x170d500),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemStaff_CombatMagicCasterReanimate__: [VariantID; 1] = [
-    VariantID::new(265256, 211939, 0x170d520)
+    VariantID::new(265256, 211939, 0x170d520),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterReanimate__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549490, 211941, 0x170d540)
+    VariantID::new(549490, 211941, 0x170d540),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterReanimate__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265257, 211945, 0x170d560)
+    VariantID::new(265257, 211945, 0x170d560),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterReanimate__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549495, 211947, 0x170d580)
+    VariantID::new(549495, 211947, 0x170d580),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatInventoryItemMagicT_CombatInventoryItemPotion_CombatMagicCasterReanimate__: [VariantID; 1] = [
-    VariantID::new(265258, 211951, 0x170d5a0)
+    VariantID::new(265258, 211951, 0x170d5a0),
 ];
 
 pub const VTABLE_CombatMagicItemData: [VariantID; 1] = [VariantID::new(265000, 211955, 0x1709ce8)];
@@ -11156,11 +11156,11 @@ pub const VTABLE_BSTDerivedCreator_CombatTargetLocation_CombatObject_: [VariantI
     [VariantID::new(549733, 211995, 0x17133a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatTargetLocation_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265562, 211999, 0x17133c8)
+    VariantID::new(265562, 211999, 0x17133c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatTargetLocation_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549738, 212001, 0x17133e8)
+    VariantID::new(549738, 212001, 0x17133e8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatTargetLocation_: [VariantID; 1] =
@@ -11170,11 +11170,11 @@ pub const VTABLE_BSTDerivedCreator_CombatTargetLocationSearch_CombatObject_: [Va
     [VariantID::new(549743, 212007, 0x1713428)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatTargetLocationSearch_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265564, 212011, 0x1713448)
+    VariantID::new(265564, 212011, 0x1713448),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatTargetLocationSearch_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549748, 212013, 0x1713468)
+    VariantID::new(549748, 212013, 0x1713468),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatTargetLocationSearch_: [VariantID; 1] =
@@ -11184,18 +11184,18 @@ pub const VTABLE_BSTDerivedCreator_CombatTargetLocationSearchResult_CombatObject
     [VariantID::new(549753, 212019, 0x17134a8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatTargetLocationSearchResult_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265566, 212023, 0x17134c8)
+    VariantID::new(265566, 212023, 0x17134c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatTargetLocationSearchResult_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549758, 212025, 0x17134e8)
+    VariantID::new(549758, 212025, 0x17134e8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatTargetLocationSearchResult_: [VariantID; 1] =
     [VariantID::new(265567, 212029, 0x1713508)];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderStandard_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(265580, 212031, 0x17137a8)
+    VariantID::new(265580, 212031, 0x17137a8),
 ];
 
 pub const VTABLE_CombatTargetLocation: [VariantID; 1] = [VariantID::new(265550, 212034, 0x1713148)];
@@ -11207,59 +11207,59 @@ pub const VTABLE_CombatTargetLocationSearchResult: [VariantID; 1] =
     [VariantID::new(265554, 212038, 0x17131e0)];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(265581, 212040, 0x17137d0)
+    VariantID::new(265581, 212040, 0x17137d0),
 ];
 
 pub const VTABLE_CombatPath: [VariantID; 1] = [VariantID::new(265558, 212042, 0x17132d8)];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(549763, 212044, 0x1713528)
+    VariantID::new(549763, 212044, 0x1713528),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(265568, 212048, 0x1713548)
+    VariantID::new(265568, 212048, 0x1713548),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(549768, 212050, 0x1713568)
+    VariantID::new(549768, 212050, 0x1713568),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(265569, 212054, 0x1713588)
+    VariantID::new(265569, 212054, 0x1713588),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(265570, 212056, 0x17135a8)
+    VariantID::new(265570, 212056, 0x17135a8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationRef__CombatObject_: [VariantID; 1] = [
-    VariantID::new(549774, 212058, 0x17135c0)
+    VariantID::new(549774, 212058, 0x17135c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationRef__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265571, 212062, 0x17135e0)
+    VariantID::new(265571, 212062, 0x17135e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationRef__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549779, 212064, 0x1713600)
+    VariantID::new(549779, 212064, 0x1713600),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationRef__: [VariantID; 1] = [
-    VariantID::new(265572, 212068, 0x1713620)
+    VariantID::new(265572, 212068, 0x1713620),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard_CombatPathDestinationRef_: [VariantID; 3] = [
     VariantID::new(265573, 212072, 0x1713640),
     VariantID::new(265574, 212074, 0x1713660),
-    VariantID::new(265575, 212076, 0x1713678)
+    VariantID::new(265575, 212076, 0x1713678),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationRef_: [VariantID; 1] = [
-    VariantID::new(265576, 212080, 0x1713698)
+    VariantID::new(265576, 212080, 0x1713698),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindTargetLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(265577, 212082, 0x1713708)
+    VariantID::new(265577, 212082, 0x1713708),
 ];
 
 pub const VTABLE_CombatTargetSelector: [VariantID; 1] = [VariantID::new(265603, 212094, 0x1713b40)];
@@ -11274,11 +11274,11 @@ pub const VTABLE_BSTDerivedCreator_CombatTargetSelectorStandard_CombatObject_: [
     [VariantID::new(549794, 212101, 0x1713c80)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatTargetSelectorStandard_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265610, 212105, 0x1713ca0)
+    VariantID::new(265610, 212105, 0x1713ca0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatTargetSelectorStandard_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549799, 212107, 0x1713cc0)
+    VariantID::new(549799, 212107, 0x1713cc0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatTargetSelectorStandard_: [VariantID; 1] =
@@ -11288,11 +11288,11 @@ pub const VTABLE_BSTDerivedCreator_CombatTargetSelectorFixed_CombatObject_: [Var
     [VariantID::new(549804, 212113, 0x1713d00)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatTargetSelectorFixed_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265612, 212117, 0x1713d20)
+    VariantID::new(265612, 212117, 0x1713d20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatTargetSelectorFixed_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549809, 212119, 0x1713d40)
+    VariantID::new(549809, 212119, 0x1713d40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatTargetSelectorFixed_: [VariantID; 1] =
@@ -11304,11 +11304,11 @@ pub const VTABLE_BSTDerivedCreator_CombatThreat_CombatObject_: [VariantID; 1] =
     [VariantID::new(549815, 212133, 0x1714240)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatThreat_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(265645, 212137, 0x1714260)
+    VariantID::new(265645, 212137, 0x1714260),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatThreat_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(549820, 212139, 0x1714280)
+    VariantID::new(549820, 212139, 0x1714280),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatThreat_: [VariantID; 1] =
@@ -11374,32 +11374,32 @@ pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorAcquireResource_
     [VariantID::new(549884, 212264, 0x17160b8)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject3_CombatBehaviorAcquireResource_BSFixedString_int_CombatBehaviorAcquireResource__FLAG_: [VariantID; 1] = [
-    VariantID::new(265839, 212275, 0x1716110)
+    VariantID::new(265839, 212275, 0x1716110),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorDisableAim_: [VariantID; 1] =
     [VariantID::new(549896, 212277, 0x1716168)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorDisableAim_CombatAimController__PRIORITY_: [VariantID; 1] = [
-    VariantID::new(265840, 212288, 0x17161c0)
+    VariantID::new(265840, 212288, 0x17161c0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorFollowPath_: [VariantID; 1] =
     [VariantID::new(549908, 212290, 0x1716218)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorFollowPath_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextAcquireWeapon_NiPointer_CombatPath___CombatBehaviorContextAcquireWeapon_____void____: [VariantID; 1] = [
-    VariantID::new(265841, 212301, 0x1716270)
+    VariantID::new(265841, 212301, 0x1716270),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorAcquireItem_: [VariantID; 1] =
     [VariantID::new(549920, 212303, 0x17162c8)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorAcquireItem_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextAcquireWeapon_CombatAcquireItem_const____CombatBehaviorContextAcquireWeapon_____void____: [VariantID; 1] = [
-    VariantID::new(265842, 212314, 0x1716320)
+    VariantID::new(265842, 212314, 0x1716320),
 ];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextAcquireWeapon_bool__CombatBehaviorContextAcquireWeapon_____void____: [VariantID; 1] = [
-    VariantID::new(265844, 212317, 0x1716390)
+    VariantID::new(265844, 212317, 0x1716390),
 ];
 
 pub const VTABLE_CombatBehaviorTreeAction: [VariantID; 1] =
@@ -11418,14 +11418,14 @@ pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorSpawnParallel_: 
     [VariantID::new(549947, 212374, 0x1716c48)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject2_CombatBehaviorSpawnParallel_uint_CombatBehaviorParallel__FLAGS_: [VariantID; 1] = [
-    VariantID::new(265916, 212385, 0x1716ca0)
+    VariantID::new(265916, 212385, 0x1716ca0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorEquipContext_: [VariantID;
     1] = [VariantID::new(549959, 212387, 0x1716cf8)];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode1_CombatBehaviorEquipContext_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorThread_uint__CombatBehaviorThread_____void____: [VariantID; 1] = [
-    VariantID::new(265917, 212398, 0x1716d50)
+    VariantID::new(265917, 212398, 0x1716d50),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorDynamicConditionalNode_:
@@ -11435,7 +11435,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorDynamicConditionalNo
     1] = [VariantID::new(265918, 212411, 0x1716e00)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorChildSelector_ValueChildSelector__: [VariantID; 1] = [
-    VariantID::new(549983, 212413, 0x1716e58)
+    VariantID::new(549983, 212413, 0x1716e58),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorChildSelector_ValueChildSelector__:
@@ -11460,7 +11460,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorEquipSpell_: [Varian
     [VariantID::new(265922, 212463, 0x17170c0)];
 
 pub const VTABLE_CombatBehaviorTreeNodeEvaluateFunction_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_bool__CombatBehaviorEquipContext_____void____: [VariantID; 1] = [
-    VariantID::new(265923, 212465, 0x1717118)
+    VariantID::new(265923, 212465, 0x1717118),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorEquipShout_: [VariantID; 1] =
@@ -11479,15 +11479,15 @@ pub const VTABLE_CombatBehaviorTreeValueNode_uint_: [VariantID; 1] =
     [VariantID::new(550056, 212494, 0x17172f8)];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorUnaryExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_bool__CombatBehaviorEquipContext_____void___OpNot___: [VariantID; 1] = [
-    VariantID::new(265927, 212506, 0x1717358)
+    VariantID::new(265927, 212506, 0x1717358),
 ];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_bool__CombatBehaviorEquipContext_____void____: [VariantID; 1] = [
-    VariantID::new(265929, 212509, 0x17173c8)
+    VariantID::new(265929, 212509, 0x17173c8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_CombatInventoryItem__TYPE__CombatBehaviorEquipContext_____void____: [VariantID; 1] = [
-    VariantID::new(265930, 212511, 0x1717420)
+    VariantID::new(265930, 212511, 0x1717420),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatInventoryItem__TYPE_: [VariantID; 1] =
@@ -11509,7 +11509,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorDodgeThreat_: [Varia
     [VariantID::new(265954, 212546, 0x17178b8)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextDodgeThreat_bool__CombatBehaviorContextDodgeThreat_____void____: [VariantID; 1] = [
-    VariantID::new(265955, 212548, 0x1717910)
+    VariantID::new(265955, 212548, 0x1717910),
 ];
 
 pub const VTABLE_CombatBehaviorTreeBlock: [VariantID; 1] =
@@ -11519,7 +11519,7 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextBl
     1] = [VariantID::new(550099, 212558, 0x1717d20)];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode2_CombatBehaviorContextBlock_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_NiPointer_CombatInventoryItem__const____CombatBehaviorEquipContext_____void____CombatBehaviorContextMelee__ATTACK_TYPE_: [VariantID; 1] = [
-    VariantID::new(265984, 212569, 0x1717d78)
+    VariantID::new(265984, 212569, 0x1717d78),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorBlockAttack_: [VariantID; 1] =
@@ -11541,7 +11541,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorBlock_: [VariantID; 
     [VariantID::new(265987, 212608, 0x1717f88)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorFunc1_bool_____float__CombatBehaviorExpression_CombatBehaviorFunc2_float_____Actor___Actor____CombatBehaviorTree__CombatBehaviorAttacker_CombatBehaviorTree__CombatBehaviorTarget_____: [VariantID; 1] = [
-    VariantID::new(265988, 212610, 0x1717fe0)
+    VariantID::new(265988, 212610, 0x1717fe0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCloseMovement: [VariantID; 1] =
@@ -11560,11 +11560,11 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNode_CombatBehaviorContextCloseM
     [VariantID; 1] = [VariantID::new(266093, 212655, 0x1718fa0)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorChildSelector_ConditionalChildSelector__: [VariantID; 1] = [
-    VariantID::new(550169, 212657, 0x1718ff8)
+    VariantID::new(550169, 212657, 0x1718ff8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorChildSelector_ConditionalChildSelector__: [VariantID; 1] = [
-    VariantID::new(266094, 212668, 0x1719050)
+    VariantID::new(266094, 212668, 0x1719050),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorFallbackToRanged_: [VariantID; 1] =
@@ -11598,11 +11598,11 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorReposition_: [Varian
     [VariantID::new(266099, 212733, 0x17193c0)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorChildSelector_RandomValueChildSelector__: [VariantID; 1] = [
-    VariantID::new(550241, 212735, 0x1719418)
+    VariantID::new(550241, 212735, 0x1719418),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorChildSelector_RandomValueChildSelector__: [VariantID; 1] = [
-    VariantID::new(266100, 212746, 0x1719470)
+    VariantID::new(266100, 212746, 0x1719470),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorFallback_: [VariantID; 1] =
@@ -11624,15 +11624,15 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorBackoff_: [VariantID
     [VariantID::new(266103, 212785, 0x1719680)];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderStandard_CombatPathingGoalPolicyStandard_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266104, 212787, 0x17196d8)
+    VariantID::new(266104, 212787, 0x17196d8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextCloseMovement_bool__CombatBehaviorContextCloseMovement_____void____: [VariantID; 1] = [
-    VariantID::new(266105, 212789, 0x1719700)
+    VariantID::new(266105, 212789, 0x1719700),
 ];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextCloseMovement_bool__CombatBehaviorContextCloseMovement_____void____: [VariantID; 1] = [
-    VariantID::new(266106, 212791, 0x1719760)
+    VariantID::new(266106, 212791, 0x1719760),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_int_: [VariantID; 1] =
@@ -11642,96 +11642,96 @@ pub const VTABLE_CombatBehaviorTreeValueNode_float_: [VariantID; 1] =
     [VariantID::new(550293, 212795, 0x1719818)];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_float_CombatBehaviorExpression_CombatBehaviorFunc1_float_____Actor____CombatBehaviorTree__CombatBehaviorAttacker___: [VariantID; 1] = [
-    VariantID::new(266108, 212807, 0x1719878)
+    VariantID::new(266108, 212807, 0x1719878),
 ];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorFunc1_bool_____float__CombatBehaviorExpression_CombatBehaviorFunc_float_____void______: [VariantID; 1] = [
-    VariantID::new(266109, 212809, 0x17198d8)
+    VariantID::new(266109, 212809, 0x17198d8),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyStandard_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266110, 212811, 0x1719930)
+    VariantID::new(266110, 212811, 0x1719930),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(266111, 212813, 0x1719978)
+    VariantID::new(266111, 212813, 0x1719978),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266112, 212815, 0x17199e8)
+    VariantID::new(266112, 212815, 0x17199e8),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266113, 212817, 0x1719a58)
+    VariantID::new(266113, 212817, 0x1719a58),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266114, 212819, 0x1719a80)
+    VariantID::new(266114, 212819, 0x1719a80),
 ];
 
 pub const VTABLE_CombatBehaviorTreeFindAttackLocation: [VariantID; 1] =
     [VariantID::new(266174, 212822, 0x171a400)];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266198, 212826, 0x171aac8)
+    VariantID::new(266198, 212826, 0x171aac8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(550313, 212828, 0x171a508)
+    VariantID::new(550313, 212828, 0x171a508),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(266183, 212832, 0x171a528)
+    VariantID::new(266183, 212832, 0x171a528),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(550318, 212834, 0x171a548)
+    VariantID::new(550318, 212834, 0x171a548),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(266184, 212838, 0x171a568)
+    VariantID::new(266184, 212838, 0x171a568),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(266185, 212840, 0x171a588)
+    VariantID::new(266185, 212840, 0x171a588),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(550324, 212842, 0x171a5a0)
+    VariantID::new(550324, 212842, 0x171a5a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266186, 212846, 0x171a5c0)
+    VariantID::new(266186, 212846, 0x171a5c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(550329, 212848, 0x171a5e0)
+    VariantID::new(550329, 212848, 0x171a5e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(266187, 212852, 0x171a600)
+    VariantID::new(266187, 212852, 0x171a600),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(266188, 212856, 0x171a620),
     VariantID::new(266189, 212858, 0x171a640),
-    VariantID::new(266190, 212860, 0x171a658)
+    VariantID::new(266190, 212860, 0x171a658),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266199, 212862, 0x171aaf0)
+    VariantID::new(266199, 212862, 0x171aaf0),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(266191, 212864, 0x171a678)
+    VariantID::new(266191, 212864, 0x171a678),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindAttackLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266192, 212866, 0x171a6e8)
+    VariantID::new(266192, 212866, 0x171a6e8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextFindAttackLocation_: [VariantID; 1] = [
-    VariantID::new(550339, 212875, 0x171a758)
+    VariantID::new(550339, 212875, 0x171a758),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode_CombatBehaviorContextFindAttackLocation_:
@@ -11759,123 +11759,123 @@ pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorSetBlackboardDat
     [VariantID::new(550387, 212927, 0x171aa18)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject2_CombatBehaviorSetBlackboardData_CombatBlackboardKey_AITimeStamp____CombatBehaviorExpression_CombatBehaviorFunc_float_____void____: [VariantID; 1] = [
-    VariantID::new(266197, 212938, 0x171aa70)
+    VariantID::new(266197, 212938, 0x171aa70),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(550413, 212940, 0x171bbc0)
+    VariantID::new(550413, 212940, 0x171bbc0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(266312, 212944, 0x171bbe0)
+    VariantID::new(266312, 212944, 0x171bbe0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(550418, 212946, 0x171bc00)
+    VariantID::new(550418, 212946, 0x171bc00),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(266313, 212950, 0x171bc20)
+    VariantID::new(266313, 212950, 0x171bc20),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(266314, 212952, 0x171bc40)
+    VariantID::new(266314, 212952, 0x171bc40),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__CombatPathDestinationRef__CombatObject_: [VariantID; 1] = [
-    VariantID::new(550424, 212954, 0x171bc58)
+    VariantID::new(550424, 212954, 0x171bc58),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__CombatPathDestinationRef__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266315, 212958, 0x171bc78)
+    VariantID::new(266315, 212958, 0x171bc78),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__CombatPathDestinationRef__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(550429, 212960, 0x171bc98)
+    VariantID::new(550429, 212960, 0x171bc98),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__CombatPathDestinationRef__: [VariantID; 1] = [
-    VariantID::new(266316, 212964, 0x171bcb8)
+    VariantID::new(266316, 212964, 0x171bcb8),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank_CombatPathDestinationRef_: [VariantID; 3] = [
     VariantID::new(266317, 212968, 0x171bcd8),
     VariantID::new(266318, 212970, 0x171bcf8),
-    VariantID::new(266319, 212972, 0x171bd10)
+    VariantID::new(266319, 212972, 0x171bd10),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(550437, 212975, 0x171bd58)
+    VariantID::new(550437, 212975, 0x171bd58),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(266321, 212979, 0x171bd78)
+    VariantID::new(266321, 212979, 0x171bd78),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(550442, 212981, 0x171bd98)
+    VariantID::new(550442, 212981, 0x171bd98),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(266322, 212985, 0x171bdb8)
+    VariantID::new(266322, 212985, 0x171bdb8),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(266323, 212987, 0x171bdd8)
+    VariantID::new(266323, 212987, 0x171bdd8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(550448, 212989, 0x171bdf0)
+    VariantID::new(550448, 212989, 0x171bdf0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266324, 212993, 0x171be10)
+    VariantID::new(266324, 212993, 0x171be10),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(550453, 212995, 0x171be30)
+    VariantID::new(550453, 212995, 0x171be30),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(266325, 212999, 0x171be50)
+    VariantID::new(266325, 212999, 0x171be50),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard_CombatPathDestinationLocation_: [VariantID; 3] = [
     VariantID::new(266326, 213003, 0x171be70),
     VariantID::new(266327, 213005, 0x171be90),
-    VariantID::new(266328, 213007, 0x171bea8)
+    VariantID::new(266328, 213007, 0x171bea8),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation_: [VariantID; 1] = [
-    VariantID::new(266329, 213009, 0x171bec8)
+    VariantID::new(266329, 213009, 0x171bec8),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266330, 213011, 0x171bf38)
+    VariantID::new(266330, 213011, 0x171bf38),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266340, 213013, 0x171c500)
+    VariantID::new(266340, 213013, 0x171c500),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderStandard_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank_: [VariantID; 1] = [
-    VariantID::new(266341, 213015, 0x171c528)
+    VariantID::new(266341, 213015, 0x171c528),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank__CombatPathDestinationRef_: [VariantID; 1] = [
-    VariantID::new(266331, 213017, 0x171bfa8)
+    VariantID::new(266331, 213017, 0x171bfa8),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank_: [VariantID; 1] = [
-    VariantID::new(266332, 213019, 0x171c018)
+    VariantID::new(266332, 213019, 0x171c018),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyFlankDistant_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266342, 213021, 0x171c550)
+    VariantID::new(266342, 213021, 0x171c550),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyFlank_CombatPathingSearchPolicyFlank_: [VariantID; 1] = [
-    VariantID::new(266343, 213023, 0x171c598)
+    VariantID::new(266343, 213023, 0x171c598),
 ];
 
 pub const VTABLE_CombatBehaviorTreeFlankingMovement: [VariantID; 1] =
@@ -11888,11 +11888,11 @@ pub const VTABLE_BSTDerivedCreator_CombatFlankingSearchData_CombatObject_: [Vari
     [VariantID::new(550403, 213031, 0x171bb00)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatFlankingSearchData_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266308, 213035, 0x171bb20)
+    VariantID::new(266308, 213035, 0x171bb20),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatFlankingSearchData_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(550408, 213037, 0x171bb40)
+    VariantID::new(550408, 213037, 0x171bb40),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatFlankingSearchData_: [VariantID; 1] =
@@ -11935,15 +11935,15 @@ pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorWatchTarget_float_:
     [VariantID::new(266338, 213135, 0x171c450)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextFlankingMovement_bool__CombatBehaviorContextFlankingMovement_____void____: [VariantID; 1] = [
-    VariantID::new(266339, 213137, 0x171c4a8)
+    VariantID::new(266339, 213137, 0x171c4a8),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266508, 213140, 0x171e590)
+    VariantID::new(266508, 213140, 0x171e590),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266509, 213142, 0x171e5b8)
+    VariantID::new(266509, 213142, 0x171e5b8),
 ];
 
 pub const VTABLE_CombatBlackboardKey_BSTTuple_TESObjectREFR___AITimeStamp__: [VariantID; 1] =
@@ -11953,114 +11953,114 @@ pub const VTABLE_CombatBehaviorTreeFlee: [VariantID; 1] =
     [VariantID::new(266446, 213148, 0x171d5b8)];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(550544, 213152, 0x171d6f0)
+    VariantID::new(550544, 213152, 0x171d6f0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(266463, 213156, 0x171d710)
+    VariantID::new(266463, 213156, 0x171d710),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(550549, 213158, 0x171d730)
+    VariantID::new(550549, 213158, 0x171d730),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(266464, 213162, 0x171d750)
+    VariantID::new(266464, 213162, 0x171d750),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(266465, 213164, 0x171d770)
+    VariantID::new(266465, 213164, 0x171d770),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(550555, 213166, 0x171d788)
+    VariantID::new(550555, 213166, 0x171d788),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266466, 213170, 0x171d7a8)
+    VariantID::new(266466, 213170, 0x171d7a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(550560, 213172, 0x171d7c8)
+    VariantID::new(550560, 213172, 0x171d7c8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(266467, 213176, 0x171d7e8)
+    VariantID::new(266467, 213176, 0x171d7e8),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(266468, 213180, 0x171d808),
     VariantID::new(266469, 213182, 0x171d828),
-    VariantID::new(266470, 213184, 0x171d840)
+    VariantID::new(266470, 213184, 0x171d840),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266510, 213186, 0x171e5e0)
+    VariantID::new(266510, 213186, 0x171e5e0),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266511, 213189, 0x171e628)
+    VariantID::new(266511, 213189, 0x171e628),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(550568, 213191, 0x171d880)
+    VariantID::new(550568, 213191, 0x171d880),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(266472, 213195, 0x171d8a0)
+    VariantID::new(266472, 213195, 0x171d8a0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(550573, 213197, 0x171d8c0)
+    VariantID::new(550573, 213197, 0x171d8c0),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(266473, 213201, 0x171d8e0)
+    VariantID::new(266473, 213201, 0x171d8e0),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(266474, 213203, 0x171d900)
+    VariantID::new(266474, 213203, 0x171d900),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(550579, 213205, 0x171d918)
+    VariantID::new(550579, 213205, 0x171d918),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266475, 213209, 0x171d938)
+    VariantID::new(266475, 213209, 0x171d938),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(550584, 213211, 0x171d958)
+    VariantID::new(550584, 213211, 0x171d958),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(266476, 213215, 0x171d978)
+    VariantID::new(266476, 213215, 0x171d978),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(266477, 213219, 0x171d998),
     VariantID::new(266478, 213221, 0x171d9b8),
-    VariantID::new(266479, 213223, 0x171d9d0)
+    VariantID::new(266479, 213223, 0x171d9d0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeHide: [VariantID; 1] =
     [VariantID::new(266480, 213225, 0x171d9f0)];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(266488, 213227, 0x171da88)
+    VariantID::new(266488, 213227, 0x171da88),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyFlee_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266489, 213229, 0x171daf8)
+    VariantID::new(266489, 213229, 0x171daf8),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(266490, 213231, 0x171db68)
+    VariantID::new(266490, 213231, 0x171db68),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindHideCover_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266491, 213233, 0x171dbd8)
+    VariantID::new(266491, 213233, 0x171dbd8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextFlee_: [VariantID;
@@ -12070,7 +12070,7 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNode_CombatBehaviorContextFlee_:
     [VariantID::new(266492, 213267, 0x171dca0)];
 
 pub const VTABLE_CombatBehaviorTreeNodeEvaluateFunction_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextFlee_bool__CombatBehaviorContextFlee_____void____: [VariantID; 1] = [
-    VariantID::new(266493, 213269, 0x171dcf8)
+    VariantID::new(266493, 213269, 0x171dcf8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorFleeToAlly_: [VariantID; 1] =
@@ -12101,7 +12101,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorFlee_float_: [Varia
     [VariantID::new(266498, 213323, 0x171e010)];
 
 pub const VTABLE_CombatBehaviorTreeNodeEvaluateFunction_CombatBehaviorExpression_CombatBehaviorUnaryExpression_CombatBehaviorMemberFunc_CombatState_bool__CombatState_____void___OpNot___: [VariantID; 1] = [
-    VariantID::new(266499, 213325, 0x171e068)
+    VariantID::new(266499, 213325, 0x171e068),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorTrackTarget_: [VariantID; 1] =
@@ -12123,7 +12123,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorHide_: [VariantID; 1
     [VariantID::new(266502, 213364, 0x171e278)];
 
 pub const VTABLE_CombatBehaviorTreeNodeEvaluateFunction_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatState_bool__CombatState_____void____: [VariantID; 1] = [
-    VariantID::new(266503, 213366, 0x171e2d0)
+    VariantID::new(266503, 213366, 0x171e2d0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextHide_: [VariantID;
@@ -12136,7 +12136,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorEnableBlackboard
     1] = [VariantID::new(550709, 213381, 0x171e3d8)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorEnableBlackboardFlag_CombatBlackboardFlag___: [VariantID; 1] = [
-    VariantID::new(266505, 213392, 0x171e430)
+    VariantID::new(266505, 213392, 0x171e430),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorForceSuccess_: [VariantID; 1] =
@@ -12146,7 +12146,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorForceSuccess_: [Vari
     [VariantID::new(266506, 213405, 0x171e4e0)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextFlee_bool__CombatBehaviorContextFlee_____void____: [VariantID; 1] = [
-    VariantID::new(266507, 213407, 0x171e538)
+    VariantID::new(266507, 213407, 0x171e538),
 ];
 
 pub const VTABLE_CombatBehaviorTreeFlight: [VariantID; 1] =
@@ -12159,11 +12159,11 @@ pub const VTABLE_BSTDerivedCreator_DiveBombSpeedController_CombatObject_: [Varia
     [VariantID::new(550740, 213415, 0x171f488)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_DiveBombSpeedController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266615, 213419, 0x171f4a8)
+    VariantID::new(266615, 213419, 0x171f4a8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_DiveBombSpeedController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(550745, 213421, 0x171f4c8)
+    VariantID::new(550745, 213421, 0x171f4c8),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_DiveBombSpeedController_: [VariantID; 1] =
@@ -12176,11 +12176,11 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorTakeoff_: [VariantID
     [VariantID::new(266617, 213460, 0x171f560)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorDynamicSelector_ConditionalChildSelector__: [VariantID; 1] = [
-    VariantID::new(550762, 213462, 0x171f5b8)
+    VariantID::new(550762, 213462, 0x171f5b8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorDynamicSelector_ConditionalChildSelector__float_: [VariantID; 1] = [
-    VariantID::new(266618, 213473, 0x171f610)
+    VariantID::new(266618, 213473, 0x171f610),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorOrbitDistant_: [VariantID; 1] =
@@ -12196,11 +12196,11 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorOrbit_: [VariantID; 
     [VariantID::new(266620, 213499, 0x171f770)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorFallbackSelector_WeightedRandomChildSelector__: [VariantID; 1] = [
-    VariantID::new(550798, 213501, 0x171f7c8)
+    VariantID::new(550798, 213501, 0x171f7c8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorFallbackSelector_WeightedRandomChildSelector__: [VariantID; 1] = [
-    VariantID::new(266621, 213512, 0x171f820)
+    VariantID::new(266621, 213512, 0x171f820),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorGroundAttack_: [VariantID; 1] =
@@ -12237,7 +12237,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorRepeat_CombatBehavi
     [VariantID; 1] = [VariantID::new(266627, 213579, 0x171fbe8)];
 
 pub const VTABLE_CombatBehaviorTreeNodeCondition_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_Actor_FLY_STATE__ActorState_____void___FLY_STATE_OpEquals___: [VariantID; 1] = [
-    VariantID::new(266628, 213581, 0x171fc40)
+    VariantID::new(266628, 213581, 0x171fc40),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorLand_: [VariantID; 1] =
@@ -12256,28 +12256,28 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorLand_: [VariantID; 1
     [VariantID::new(266631, 213609, 0x171fdf8)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorFunc1_bool_____Actor____CombatBehaviorTree__CombatBehaviorAttacker___: [VariantID; 1] = [
-    VariantID::new(266633, 213612, 0x171fe70)
+    VariantID::new(266633, 213612, 0x171fe70),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_Actor_bool__Actor_____void____: [VariantID; 2] = [
     VariantID::new(266634, 213614, 0x171fec8),
-    VariantID::new(266897, 213963, 0x1722ff0)
+    VariantID::new(266897, 213963, 0x1722ff0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorUnaryExpression_CombatBehaviorFunc2_bool_____Actor___Actor____CombatBehaviorTree__CombatBehaviorAttacker_CombatBehaviorTree__CombatBehaviorTarget__OpNot___: [VariantID; 1] = [
-    VariantID::new(266635, 213616, 0x171ff28)
+    VariantID::new(266635, 213616, 0x171ff28),
 ];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_Actor_FLY_STATE__ActorState_____void___FLY_STATE_OpEquals___: [VariantID; 1] = [
-    VariantID::new(266636, 213618, 0x171ff80)
+    VariantID::new(266636, 213618, 0x171ff80),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_Actor_FLY_STATE__ActorState_____void___FLY_STATE_OpEquals___: [VariantID; 1] = [
-    VariantID::new(266637, 213620, 0x171ffd8)
+    VariantID::new(266637, 213620, 0x171ffd8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_Actor_bool__ActorState_____void____: [VariantID; 1] = [
-    VariantID::new(266638, 213622, 0x1720038)
+    VariantID::new(266638, 213622, 0x1720038),
 ];
 
 pub const VTABLE_CombatBehaviorTreeLowCombat: [VariantID; 1] =
@@ -12296,19 +12296,19 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorPursueTarget_: [Vari
     [VariantID::new(266655, 213653, 0x17203c0)];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatState_bool__CombatState_____void____: [VariantID; 1] = [
-    VariantID::new(266656, 213655, 0x1720418)
+    VariantID::new(266656, 213655, 0x1720418),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorUnaryExpression_CombatBehaviorMemberFunc_CombatState_bool__CombatState_____void___OpNot__CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorFunc2_float_____TESObjectREFR___TESObjectREFR____CombatBehaviorTree__CombatBehaviorAttacker_CombatBehaviorTree__CombatBehaviorTarget__float_OpLessThan___OpAnd___: [VariantID; 1] = [
-    VariantID::new(266657, 213657, 0x1720478)
+    VariantID::new(266657, 213657, 0x1720478),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorUnaryExpression_CombatBehaviorMemberFunc_CombatState_bool__CombatState_____void___OpNot___: [VariantID; 1] = [
-    VariantID::new(266658, 213659, 0x17204d8)
+    VariantID::new(266658, 213659, 0x17204d8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatGroup_bool__CombatGroup_____void____: [VariantID; 1] = [
-    VariantID::new(266659, 213661, 0x1720538)
+    VariantID::new(266659, 213661, 0x1720538),
 ];
 
 pub const VTABLE_CombatBehaviorTreeMagic: [VariantID; 1] =
@@ -12318,7 +12318,7 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextMa
     1] = [VariantID::new(550933, 213681, 0x1720b80)];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode1_CombatBehaviorContextMagic_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_NiPointer_CombatInventoryItem__const____CombatBehaviorEquipContext_____void____: [VariantID; 1] = [
-    VariantID::new(266702, 213692, 0x1720bd8)
+    VariantID::new(266702, 213692, 0x1720bd8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorPrepareDualCast_: [VariantID; 1] =
@@ -12346,14 +12346,14 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorCastConcentrationSpe
     1] = [VariantID::new(266707, 213735, 0x1720e98)];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextMagic_MagicSystem__CastingType__CombatBehaviorContextMagic_____void____: [VariantID; 1] = [
-    VariantID::new(266708, 213737, 0x1720ef0)
+    VariantID::new(266708, 213737, 0x1720ef0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_MagicSystem__CastingType_: [VariantID; 1] =
     [VariantID::new(266709, 213739, 0x1720f50)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorFunc1_bool_____float__CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextMagic_float__CombatBehaviorContextMagic_____void______: [VariantID; 1] = [
-    VariantID::new(266710, 213741, 0x1720fb0)
+    VariantID::new(266710, 213741, 0x1720fb0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeMelee: [VariantID; 1] =
@@ -12363,7 +12363,7 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextMe
     1] = [VariantID::new(550987, 213752, 0x17214e8)];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode2_CombatBehaviorContextMelee_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_NiPointer_CombatInventoryItem__const____CombatBehaviorEquipContext_____void____CombatBehaviorContextMelee__ATTACK_TYPE_: [VariantID; 1] = [
-    VariantID::new(266745, 213763, 0x1721540)
+    VariantID::new(266745, 213763, 0x1721540),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorSpecialAttack_: [VariantID; 1] =
@@ -12385,136 +12385,136 @@ pub const VTABLE_CombatBehaviorTreeReturnToCombatArea: [VariantID; 1] =
     [VariantID::new(266836, 213794, 0x1722488)];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266869, 213798, 0x1722c80)
+    VariantID::new(266869, 213798, 0x1722c80),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderStandard_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266870, 213800, 0x1722ca8)
+    VariantID::new(266870, 213800, 0x1722ca8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(551026, 213802, 0x17224f8)
+    VariantID::new(551026, 213802, 0x17224f8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(266840, 213806, 0x1722518)
+    VariantID::new(266840, 213806, 0x1722518),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551031, 213808, 0x1722538)
+    VariantID::new(551031, 213808, 0x1722538),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(266841, 213812, 0x1722558)
+    VariantID::new(266841, 213812, 0x1722558),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(266842, 213814, 0x1722578)
+    VariantID::new(266842, 213814, 0x1722578),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551037, 213816, 0x1722590)
+    VariantID::new(551037, 213816, 0x1722590),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266843, 213820, 0x17225b0)
+    VariantID::new(266843, 213820, 0x17225b0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551042, 213822, 0x17225d0)
+    VariantID::new(551042, 213822, 0x17225d0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(266844, 213826, 0x17225f0)
+    VariantID::new(266844, 213826, 0x17225f0),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard_CombatPathDestinationLocation_: [VariantID; 3] = [
     VariantID::new(266845, 213830, 0x1722610),
     VariantID::new(266846, 213832, 0x1722630),
-    VariantID::new(266847, 213834, 0x1722648)
+    VariantID::new(266847, 213834, 0x1722648),
 ];
 
 pub const VTABLE_CombatBehaviorTreeExitWater: [VariantID; 1] =
     [VariantID::new(266848, 213836, 0x1722668)];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(551051, 213840, 0x17226c0)
+    VariantID::new(551051, 213840, 0x17226c0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(266852, 213844, 0x17226e0)
+    VariantID::new(266852, 213844, 0x17226e0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551056, 213846, 0x1722700)
+    VariantID::new(551056, 213846, 0x1722700),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(266853, 213850, 0x1722720)
+    VariantID::new(266853, 213850, 0x1722720),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(266854, 213852, 0x1722740)
+    VariantID::new(266854, 213852, 0x1722740),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266871, 213854, 0x1722cd0)
+    VariantID::new(266871, 213854, 0x1722cd0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551062, 213856, 0x1722758)
+    VariantID::new(551062, 213856, 0x1722758),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266855, 213860, 0x1722778)
+    VariantID::new(266855, 213860, 0x1722778),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551067, 213862, 0x1722798)
+    VariantID::new(551067, 213862, 0x1722798),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266872, 213866, 0x1722d18)
+    VariantID::new(266872, 213866, 0x1722d18),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(266856, 213868, 0x17227b8)
+    VariantID::new(266856, 213868, 0x17227b8),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(266857, 213872, 0x17227d8),
     VariantID::new(266858, 213874, 0x17227f8),
-    VariantID::new(266859, 213876, 0x1722810)
+    VariantID::new(266859, 213876, 0x1722810),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatDisableActionController_CombatObject_: [VariantID; 1] =
     [VariantID::new(551075, 213878, 0x1722830)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatDisableActionController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(266860, 213882, 0x1722850)
+    VariantID::new(266860, 213882, 0x1722850),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatDisableActionController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551080, 213884, 0x1722870)
+    VariantID::new(551080, 213884, 0x1722870),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatDisableActionController_: [VariantID; 1] =
     [VariantID::new(266861, 213888, 0x1722890)];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(266862, 213890, 0x17228b0)
+    VariantID::new(266862, 213890, 0x17228b0),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyExitWater_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266863, 213892, 0x1722920)
+    VariantID::new(266863, 213892, 0x1722920),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard__CombatPathDestinationLocation_: [VariantID; 1] = [
-    VariantID::new(266864, 213894, 0x1722990)
+    VariantID::new(266864, 213894, 0x1722990),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyReturnToCombatArea_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(266865, 213896, 0x1722a00)
+    VariantID::new(266865, 213896, 0x1722a00),
 ];
 
 pub const VTABLE_CombatDisableActionController: [VariantID; 1] =
@@ -12542,27 +12542,27 @@ pub const VTABLE_CombatBehaviorTreeMovement: [VariantID; 1] =
     [VariantID::new(266881, 213945, 0x1722ea0)];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_Actor_bool__Actor_____void___CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_Actor_FLY_STATE__ActorState_____void___FLY_STATE_OpNotEquals___OpOr___: [VariantID; 1] = [
-    VariantID::new(266898, 213965, 0x1723050)
+    VariantID::new(266898, 213965, 0x1723050),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_CombatState_bool__CombatState_____void___CombatBehaviorExpression_CombatBehaviorMemberFunc_Actor_bool__Actor_____void____OpOr___: [VariantID; 1] = [
-    VariantID::new(266899, 213967, 0x17230b0)
+    VariantID::new(266899, 213967, 0x17230b0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorUnaryExpression_CombatBehaviorMemberFunc1_CombatController_bool__CombatController_____Actor____CombatBehaviorTree__CombatBehaviorAttacker__OpNot___: [VariantID; 1] = [
-    VariantID::new(266900, 213969, 0x1723110)
+    VariantID::new(266900, 213969, 0x1723110),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_Actor_bool__Actor_____void___CombatBehaviorExpression_CombatBehaviorUnaryExpression_CombatBehaviorMemberFunc_Actor_bool__Actor_____void___OpNot___OpAnd___: [VariantID; 1] = [
-    VariantID::new(266901, 213971, 0x1723170)
+    VariantID::new(266901, 213971, 0x1723170),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_CombatInventory_float__CombatInventory_____void___float_OpGreaterThan___: [VariantID; 1] = [
-    VariantID::new(266902, 213973, 0x17231d0)
+    VariantID::new(266902, 213973, 0x17231d0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc1_TESCombatStyle_bool__TESCombatStyle_____uint__TESCombatStyle__FLAG___: [VariantID; 1] = [
-    VariantID::new(266903, 213975, 0x1723230)
+    VariantID::new(266903, 213975, 0x1723230),
 ];
 
 pub const VTABLE_CombatBehaviorTreeRangedMovement: [VariantID; 1] =
@@ -12587,64 +12587,64 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorStrafe_: [VariantID;
     [VariantID::new(266934, 214026, 0x17237e0)];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextRangedMovement_bool__CombatBehaviorContextRangedMovement_____void____: [VariantID; 1] = [
-    VariantID::new(266935, 214028, 0x1723838)
+    VariantID::new(266935, 214028, 0x1723838),
 ];
 
 pub const VTABLE_CombatBehaviorTreeValueNodeT_uint_CombatBehaviorExpression_CombatBehaviorMemberFunc_Actor_bool__IMovementState_____void____: [VariantID; 1] = [
-    VariantID::new(266936, 214030, 0x1723898)
+    VariantID::new(266936, 214030, 0x1723898),
 ];
 
 pub const VTABLE_CombatBehaviorTreeSearch: [VariantID; 1] =
     [VariantID::new(267035, 214032, 0x1724850)];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267091, 214034, 0x1725578)
+    VariantID::new(267091, 214034, 0x1725578),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267092, 214036, 0x17255c0)
+    VariantID::new(267092, 214036, 0x17255c0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(551177, 214039, 0x17249a8)
+    VariantID::new(551177, 214039, 0x17249a8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(267053, 214043, 0x17249c8)
+    VariantID::new(267053, 214043, 0x17249c8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551182, 214045, 0x17249e8)
+    VariantID::new(551182, 214045, 0x17249e8),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(267054, 214049, 0x1724a08)
+    VariantID::new(267054, 214049, 0x1724a08),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(267055, 214051, 0x1724a28)
+    VariantID::new(267055, 214051, 0x1724a28),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551188, 214053, 0x1724a40)
+    VariantID::new(551188, 214053, 0x1724a40),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267056, 214057, 0x1724a60)
+    VariantID::new(267056, 214057, 0x1724a60),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551193, 214059, 0x1724a80)
+    VariantID::new(551193, 214059, 0x1724a80),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(267057, 214063, 0x1724aa0)
+    VariantID::new(267057, 214063, 0x1724aa0),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(267058, 214067, 0x1724ac0),
     VariantID::new(267059, 214069, 0x1724ae0),
-    VariantID::new(267060, 214071, 0x1724af8)
+    VariantID::new(267060, 214071, 0x1724af8),
 ];
 
 pub const VTABLE_CombatSearchLockData: [VariantID; 1] = [VariantID::new(267061, 214073, 0x1724b18)];
@@ -12653,77 +12653,77 @@ pub const VTABLE_BSTDerivedCreator_CombatSearchLockData_BSPathingLockData_: [Var
     [VariantID::new(551202, 214077, 0x1724b70)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatSearchLockData_BSPathingLockData__BSTSmartPointerPathingFactoryManager_BSPathingLockData_64__: [VariantID; 1] = [
-    VariantID::new(267063, 214081, 0x1724b90)
+    VariantID::new(267063, 214081, 0x1724b90),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatSearchLockData_BSTSmartPointerPathingFactoryManager_BSPathingLockData_64__: [VariantID; 1] = [
-    VariantID::new(267064, 214083, 0x1724bb0)
+    VariantID::new(267064, 214083, 0x1724bb0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(551208, 214086, 0x1724bf8)
+    VariantID::new(551208, 214086, 0x1724bf8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(267066, 214090, 0x1724c18)
+    VariantID::new(267066, 214090, 0x1724c18),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551213, 214092, 0x1724c38)
+    VariantID::new(551213, 214092, 0x1724c38),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(267067, 214096, 0x1724c58)
+    VariantID::new(267067, 214096, 0x1724c58),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(267068, 214098, 0x1724c78)
+    VariantID::new(267068, 214098, 0x1724c78),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551219, 214100, 0x1724c90)
+    VariantID::new(551219, 214100, 0x1724c90),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267069, 214104, 0x1724cb0)
+    VariantID::new(267069, 214104, 0x1724cb0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551224, 214106, 0x1724cd0)
+    VariantID::new(551224, 214106, 0x1724cd0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(267070, 214110, 0x1724cf0)
+    VariantID::new(267070, 214110, 0x1724cf0),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(267071, 214114, 0x1724d10),
     VariantID::new(267072, 214116, 0x1724d30),
-    VariantID::new(267073, 214118, 0x1724d48)
+    VariantID::new(267073, 214118, 0x1724d48),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(267074, 214120, 0x1724d68)
+    VariantID::new(267074, 214120, 0x1724d68),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267075, 214122, 0x1724dd8)
+    VariantID::new(267075, 214122, 0x1724dd8),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(267076, 214124, 0x1724e48)
+    VariantID::new(267076, 214124, 0x1724e48),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267077, 214126, 0x1724eb8)
+    VariantID::new(267077, 214126, 0x1724eb8),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicySearchWander_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267089, 214128, 0x1725528)
+    VariantID::new(267089, 214128, 0x1725528),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicySearch_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267090, 214130, 0x1725550)
+    VariantID::new(267090, 214130, 0x1725550),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextSearch_: [VariantID;
@@ -12733,18 +12733,18 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNode_CombatBehaviorContextSearch
     [VariantID::new(267078, 214159, 0x1724f80)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorIdle_CombatBehaviorExpression_CombatBehaviorFunc1_float_____SettingT_GameSettingCollection_____SettingT_GameSettingCollection______: [VariantID; 1] = [
-    VariantID::new(267079, 214161, 0x1724fd8)
+    VariantID::new(267079, 214161, 0x1724fd8),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeUpdateFunction_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextSearch_bool__CombatBehaviorContextSearch_____void____: [VariantID; 1] = [
-    VariantID::new(267080, 214163, 0x1725030)
+    VariantID::new(267080, 214163, 0x1725030),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorSearchLocation_: [VariantID; 1] =
     [VariantID::new(551250, 214165, 0x1725088)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorSearchLocation_COMBAT_SEARCH_PRIORITY_: [VariantID; 1] = [
-    VariantID::new(267081, 214176, 0x17250e0)
+    VariantID::new(267081, 214176, 0x17250e0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorSearch_: [VariantID; 1] =
@@ -12757,14 +12757,14 @@ pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorSearchWander_: [
     [VariantID::new(551274, 214191, 0x17251e8)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorSearchWander_COMBAT_SEARCH_PRIORITY_: [VariantID; 1] = [
-    VariantID::new(267083, 214202, 0x1725240)
+    VariantID::new(267083, 214202, 0x1725240),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorSearchCenter_: [VariantID; 1] =
     [VariantID::new(551286, 214204, 0x1725298)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject1_CombatBehaviorSearchCenter_COMBAT_SEARCH_PRIORITY_: [VariantID; 1] = [
-    VariantID::new(267084, 214215, 0x17252f0)
+    VariantID::new(267084, 214215, 0x17252f0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorForceFail_: [VariantID; 1] =
@@ -12780,7 +12780,7 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorSearchInvestigateDoo
     [VariantID::new(267086, 214241, 0x1725450)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorBinaryExpression_CombatBehaviorMemberFunc_CombatBehaviorContextSearch_uint__CombatBehaviorContextSearch_____void___uint_OpGreaterThan___: [VariantID; 1] = [
-    VariantID::new(267088, 214244, 0x17254d0)
+    VariantID::new(267088, 214244, 0x17254d0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeShout: [VariantID; 1] =
@@ -12790,7 +12790,7 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextSh
     1] = [VariantID::new(551328, 214256, 0x17258d8)];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode1_CombatBehaviorContextShout_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_NiPointer_CombatInventoryItem__const____CombatBehaviorEquipContext_____void____: [VariantID; 1] = [
-    VariantID::new(267115, 214267, 0x1725930)
+    VariantID::new(267115, 214267, 0x1725930),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorCastShout_: [VariantID; 1] =
@@ -12800,68 +12800,68 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorCastShout_: [Variant
     [VariantID::new(267116, 214280, 0x17259e0)];
 
 pub const VTABLE_CombatBehaviorTreeConditionalNode_CombatBehaviorExpression_CombatBehaviorFunc1_bool_____float__CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextShout_float__CombatBehaviorContextShout_____void______: [VariantID; 1] = [
-    VariantID::new(267117, 214282, 0x1725a38)
+    VariantID::new(267117, 214282, 0x1725a38),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267196, 214284, 0x1726928)
+    VariantID::new(267196, 214284, 0x1726928),
 ];
 
 pub const VTABLE_CombatBehaviorTreeUseCover: [VariantID; 1] =
     [VariantID::new(267168, 214288, 0x1726240)];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(551354, 214291, 0x1726340)
+    VariantID::new(551354, 214291, 0x1726340),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(267179, 214295, 0x1726360)
+    VariantID::new(267179, 214295, 0x1726360),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551359, 214297, 0x1726380)
+    VariantID::new(551359, 214297, 0x1726380),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(267180, 214301, 0x17263a0)
+    VariantID::new(267180, 214301, 0x17263a0),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(267181, 214303, 0x17263c0)
+    VariantID::new(267181, 214303, 0x17263c0),
 ];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267195, 214305, 0x1726900)
+    VariantID::new(267195, 214305, 0x1726900),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551365, 214307, 0x17263d8)
+    VariantID::new(551365, 214307, 0x17263d8),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267182, 214311, 0x17263f8)
+    VariantID::new(267182, 214311, 0x17263f8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551370, 214313, 0x1726418)
+    VariantID::new(551370, 214313, 0x1726418),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(267183, 214317, 0x1726438)
+    VariantID::new(267183, 214317, 0x1726438),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(267184, 214321, 0x1726458),
     VariantID::new(267185, 214323, 0x1726478),
-    VariantID::new(267186, 214325, 0x1726490)
+    VariantID::new(267186, 214325, 0x1726490),
 ];
 
 pub const VTABLE_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard__CombatPathDestinationNone_: [VariantID; 1] = [
-    VariantID::new(267187, 214327, 0x17264b0)
+    VariantID::new(267187, 214327, 0x17264b0),
 ];
 
 pub const VTABLE_CombatPathingRequestGeneric_CombatPathingGoalPolicyFindCover_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267188, 214329, 0x1726520)
+    VariantID::new(267188, 214329, 0x1726520),
 ];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextCover_: [VariantID;
@@ -12877,11 +12877,11 @@ pub const VTABLE_CombatBehaviorTreeNodeObject_CombatBehaviorFindCover_: [Variant
     [VariantID::new(267190, 214365, 0x1726698)];
 
 pub const VTABLE_CombatBehaviorTreeNodeObject2_CombatBehaviorRepeat_float_CombatBehaviorRepeat__FLAGS_: [VariantID; 1] = [
-    VariantID::new(267191, 214367, 0x17266f0)
+    VariantID::new(267191, 214367, 0x17266f0),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeEvaluateFunction_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorContextCover_bool__CombatBehaviorContextCover_____void____: [VariantID; 1] = [
-    VariantID::new(267192, 214369, 0x1726748)
+    VariantID::new(267192, 214369, 0x1726748),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorWaitBehindCover_: [VariantID; 1] =
@@ -12903,7 +12903,7 @@ pub const VTABLE_CombatBehaviorTreeCreateContextNodeBase_CombatBehaviorContextUs
     [VariantID; 1] = [VariantID::new(551433, 214406, 0x1726b38)];
 
 pub const VTABLE_CombatBehaviorTreeCreateContextNode1_CombatBehaviorContextUsePotion_CombatBehaviorExpression_CombatBehaviorMemberFunc_CombatBehaviorEquipContext_NiPointer_CombatInventoryItem__const____CombatBehaviorEquipContext_____void____: [VariantID; 1] = [
-    VariantID::new(267212, 214417, 0x1726b90)
+    VariantID::new(267212, 214417, 0x1726b90),
 ];
 
 pub const VTABLE_CombatBehaviorTreeNodeObjectBase_CombatBehaviorDrinkPotion_: [VariantID; 1] =
@@ -12931,53 +12931,53 @@ pub const VTABLE_BSTDerivedCreator_CombatPathingRequestStandard_BSPathingRequest
     [VariantID::new(551467, 214458, 0x17286f0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestStandard_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(267385, 214462, 0x1728710)
+    VariantID::new(267385, 214462, 0x1728710),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestStandard_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551472, 214464, 0x1728730)
+    VariantID::new(551472, 214464, 0x1728730),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestStandard_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(267386, 214468, 0x1728750)
+    VariantID::new(267386, 214468, 0x1728750),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestAdapter_BSPathingRequest_: [VariantID; 1] =
     [VariantID::new(551477, 214470, 0x1728770)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestAdapter_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(267387, 214474, 0x1728790)
+    VariantID::new(267387, 214474, 0x1728790),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestAdapter_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551482, 214476, 0x17287b0)
+    VariantID::new(551482, 214476, 0x17287b0),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestAdapter_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(267388, 214480, 0x17287d0)
+    VariantID::new(267388, 214480, 0x17287d0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestMultiGoal_BSPathingRequest_: [VariantID; 1] =
     [VariantID::new(551487, 214482, 0x17287f0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestMultiGoal_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(267389, 214486, 0x1728810)
+    VariantID::new(267389, 214486, 0x1728810),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestMultiGoal_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551492, 214488, 0x1728830)
+    VariantID::new(551492, 214488, 0x1728830),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestMultiGoal_BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(267390, 214492, 0x1728850)
+    VariantID::new(267390, 214492, 0x1728850),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestStandard_CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(267391, 214494, 0x1728870)
+    VariantID::new(267391, 214494, 0x1728870),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestMultiGoal_CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(267392, 214496, 0x1728888)
+    VariantID::new(267392, 214496, 0x1728888),
 ];
 
 pub const VTABLE_CombatPathingRequestStandard: [VariantID; 1] =
@@ -12990,11 +12990,11 @@ pub const VTABLE_BSTDerivedCreator_CombatPathingDebugData_CombatObject_: [Varian
     [VariantID::new(551499, 214502, 0x17288a0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingDebugData_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267393, 214506, 0x17288c0)
+    VariantID::new(267393, 214506, 0x17288c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingDebugData_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551504, 214508, 0x17288e0)
+    VariantID::new(551504, 214508, 0x17288e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathingDebugData_: [VariantID; 1] =
@@ -13007,246 +13007,246 @@ pub const VTABLE_CombatPathingDebugData: [VariantID; 1] =
     [VariantID::new(267383, 214523, 0x17286a8)];
 
 pub const VTABLE_CombatPathBuilderT_CombatPathBuilderOpen_CombatPathingGoalPolicyLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267395, 214526, 0x1728920)
+    VariantID::new(267395, 214526, 0x1728920),
 ];
 
 pub const VTABLE_CombatNavmeshSearchT_CombatPathingGoalPolicyLocation_CombatPathingSearchPolicyStandard_: [VariantID; 1] = [
-    VariantID::new(267396, 214528, 0x1728948)
+    VariantID::new(267396, 214528, 0x1728948),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestStandard_CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551511, 214536, 0x172a220)
+    VariantID::new(551511, 214536, 0x172a220),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestStandard_CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267557, 214540, 0x172a240)
+    VariantID::new(267557, 214540, 0x172a240),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestStandard_CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551516, 214542, 0x172a260)
+    VariantID::new(551516, 214542, 0x172a260),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestStandard_CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(267558, 214546, 0x172a280)
+    VariantID::new(267558, 214546, 0x172a280),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestStandard_CombatPathDestinationRef__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551521, 214549, 0x172a2a0)
+    VariantID::new(551521, 214549, 0x172a2a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestStandard_CombatPathDestinationRef__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267559, 214553, 0x172a2c0)
+    VariantID::new(267559, 214553, 0x172a2c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestStandard_CombatPathDestinationRef__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551526, 214555, 0x172a2e0)
+    VariantID::new(551526, 214555, 0x172a2e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestStandard_CombatPathDestinationRef__: [VariantID; 1] = [
-    VariantID::new(267560, 214559, 0x172a300)
+    VariantID::new(267560, 214559, 0x172a300),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationLocations__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551531, 214561, 0x172a320)
+    VariantID::new(551531, 214561, 0x172a320),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationLocations__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267561, 214565, 0x172a340)
+    VariantID::new(267561, 214565, 0x172a340),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationLocations__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551536, 214567, 0x172a360)
+    VariantID::new(551536, 214567, 0x172a360),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationLocations__: [VariantID; 1] = [
-    VariantID::new(267562, 214571, 0x172a380)
+    VariantID::new(267562, 214571, 0x172a380),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationRefs__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551541, 214573, 0x172a3a0)
+    VariantID::new(551541, 214573, 0x172a3a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationRefs__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267563, 214577, 0x172a3c0)
+    VariantID::new(267563, 214577, 0x172a3c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationRefs__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551546, 214579, 0x172a3e0)
+    VariantID::new(551546, 214579, 0x172a3e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestMultiGoal_CombatPathDestinationRefs__: [VariantID; 1] = [
-    VariantID::new(267564, 214583, 0x172a400)
+    VariantID::new(267564, 214583, 0x172a400),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationLocations__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551551, 214585, 0x172a420)
+    VariantID::new(551551, 214585, 0x172a420),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationLocations__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267565, 214589, 0x172a440)
+    VariantID::new(267565, 214589, 0x172a440),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationLocations__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551556, 214591, 0x172a460)
+    VariantID::new(551556, 214591, 0x172a460),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationLocations__: [VariantID; 1] = [
-    VariantID::new(267566, 214595, 0x172a480)
+    VariantID::new(267566, 214595, 0x172a480),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationRefs__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551561, 214597, 0x172a4a0)
+    VariantID::new(551561, 214597, 0x172a4a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationRefs__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267567, 214602, 0x172a4c0)
+    VariantID::new(267567, 214602, 0x172a4c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationRefs__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551566, 214604, 0x172a4e0)
+    VariantID::new(551566, 214604, 0x172a4e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestWeightedMultiGoal_CombatPathDestinationRefs__: [VariantID; 1] = [
-    VariantID::new(267568, 214608, 0x172a500)
+    VariantID::new(267568, 214608, 0x172a500),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestStraightPath_CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551571, 214610, 0x172a520)
+    VariantID::new(551571, 214610, 0x172a520),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestStraightPath_CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267569, 214614, 0x172a540)
+    VariantID::new(267569, 214614, 0x172a540),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestStraightPath_CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551576, 214616, 0x172a560)
+    VariantID::new(551576, 214616, 0x172a560),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestStraightPath_CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(267570, 214620, 0x172a580)
+    VariantID::new(267570, 214620, 0x172a580),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestRotatePath_CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551581, 214622, 0x172a5a0)
+    VariantID::new(551581, 214622, 0x172a5a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestRotatePath_CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267571, 214626, 0x172a5c0)
+    VariantID::new(267571, 214626, 0x172a5c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestRotatePath_CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551586, 214628, 0x172a5e0)
+    VariantID::new(551586, 214628, 0x172a5e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestRotatePath_CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(267572, 214632, 0x172a600)
+    VariantID::new(267572, 214632, 0x172a600),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestFlight_CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551591, 214634, 0x172a620)
+    VariantID::new(551591, 214634, 0x172a620),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestFlight_CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267573, 214638, 0x172a640)
+    VariantID::new(267573, 214638, 0x172a640),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestFlight_CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551596, 214640, 0x172a660)
+    VariantID::new(551596, 214640, 0x172a660),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestFlight_CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(267574, 214644, 0x172a680)
+    VariantID::new(267574, 214644, 0x172a680),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestFlight_CombatPathDestinationRef__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551601, 214646, 0x172a6a0)
+    VariantID::new(551601, 214646, 0x172a6a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestFlight_CombatPathDestinationRef__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267575, 214650, 0x172a6c0)
+    VariantID::new(267575, 214650, 0x172a6c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestFlight_CombatPathDestinationRef__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551606, 214652, 0x172a6e0)
+    VariantID::new(551606, 214652, 0x172a6e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestFlight_CombatPathDestinationRef__: [VariantID; 1] = [
-    VariantID::new(267576, 214656, 0x172a700)
+    VariantID::new(267576, 214656, 0x172a700),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestOrbit_CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551611, 214658, 0x172a720)
+    VariantID::new(551611, 214658, 0x172a720),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestOrbit_CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267577, 214662, 0x172a740)
+    VariantID::new(267577, 214662, 0x172a740),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestOrbit_CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551616, 214664, 0x172a760)
+    VariantID::new(551616, 214664, 0x172a760),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestOrbit_CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(267578, 214668, 0x172a780)
+    VariantID::new(267578, 214668, 0x172a780),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestLanding_CombatPathDestinationLocation__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551621, 214670, 0x172a7a0)
+    VariantID::new(551621, 214670, 0x172a7a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestLanding_CombatPathDestinationLocation__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267579, 214674, 0x172a7c0)
+    VariantID::new(267579, 214674, 0x172a7c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestLanding_CombatPathDestinationLocation__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551626, 214676, 0x172a7e0)
+    VariantID::new(551626, 214676, 0x172a7e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestLanding_CombatPathDestinationLocation__: [VariantID; 1] = [
-    VariantID::new(267580, 214680, 0x172a800)
+    VariantID::new(267580, 214680, 0x172a800),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestHover_CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551631, 214682, 0x172a820)
+    VariantID::new(551631, 214682, 0x172a820),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestHover_CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267581, 214686, 0x172a840)
+    VariantID::new(267581, 214686, 0x172a840),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestHover_CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551636, 214688, 0x172a860)
+    VariantID::new(551636, 214688, 0x172a860),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestHover_CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(267582, 214692, 0x172a880)
+    VariantID::new(267582, 214692, 0x172a880),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestFlyingAttack_CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551641, 214694, 0x172a8a0)
+    VariantID::new(551641, 214694, 0x172a8a0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestFlyingAttack_CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267583, 214698, 0x172a8c0)
+    VariantID::new(267583, 214698, 0x172a8c0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestFlyingAttack_CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551646, 214700, 0x172a8e0)
+    VariantID::new(551646, 214700, 0x172a8e0),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestFlyingAttack_CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(267584, 214704, 0x172a900)
+    VariantID::new(267584, 214704, 0x172a900),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatApproachTargetSpeedController_CombatObject_: [VariantID;
     1] = [VariantID::new(551651, 214707, 0x172a920)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatApproachTargetSpeedController_CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267585, 214711, 0x172a940)
+    VariantID::new(267585, 214711, 0x172a940),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatApproachTargetSpeedController_BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551656, 214713, 0x172a960)
+    VariantID::new(551656, 214713, 0x172a960),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatApproachTargetSpeedController_: [VariantID; 1] =
@@ -13295,45 +13295,45 @@ pub const VTABLE_CombatPathT_CombatPathRequestFlyingAttack_CombatPathDestination
     1] = [VariantID::new(267600, 214746, 0x172af50)];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__BSPathingRequest_: [VariantID; 1] = [
-    VariantID::new(551675, 214748, 0x172afc0)
+    VariantID::new(551675, 214748, 0x172afc0),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(267601, 214752, 0x172afe0)
+    VariantID::new(267601, 214752, 0x172afe0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathingRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(551680, 214754, 0x172b000)
+    VariantID::new(551680, 214754, 0x172b000),
 ];
 
 pub const VTABLE_AutoRegisterSmartPtrDerivedPathingType_CombatPathingRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__BSPathingRequest_64_: [VariantID; 1] = [
-    VariantID::new(267602, 214758, 0x172b020)
+    VariantID::new(267602, 214758, 0x172b020),
 ];
 
 pub const VTABLE_AutoRegisterPathBuilderFactory_CombatPathingRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__CombatPathingRequestBuilder_: [VariantID; 1] = [
-    VariantID::new(267603, 214760, 0x172b040)
+    VariantID::new(267603, 214760, 0x172b040),
 ];
 
 pub const VTABLE_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject_: [VariantID; 1] = [
-    VariantID::new(551686, 214762, 0x172b058)
+    VariantID::new(551686, 214762, 0x172b058),
 ];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__CombatObject__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(267604, 214766, 0x172b078)
+    VariantID::new(267604, 214766, 0x172b078),
 ];
 
 pub const VTABLE_AutoRegisterCreator_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__BSTCreateFactoryManager_uint_CombatObject_256__: [VariantID; 1] = [
-    VariantID::new(551691, 214768, 0x172b098)
+    VariantID::new(551691, 214768, 0x172b098),
 ];
 
 pub const VTABLE_AutoRegisterCombatObject_CombatPathT_CombatPathRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard__CombatPathDestinationNone__: [VariantID; 1] = [
-    VariantID::new(267605, 214772, 0x172b0b8)
+    VariantID::new(267605, 214772, 0x172b0b8),
 ];
 
 pub const VTABLE_AutoRegisterCombatPathingRequestGeneric_CombatPathingGoalPolicyRetreat_CombatPathingSearchPolicyStandard_CombatPathDestinationNone_: [VariantID; 3] = [
     VariantID::new(267606, 214776, 0x172b0d8),
     VariantID::new(267607, 214778, 0x172b0f8),
-    VariantID::new(267608, 214780, 0x172b110)
+    VariantID::new(267608, 214780, 0x172b110),
 ];
 
 pub const VTABLE_CombatBlackboardKey_float_: [VariantID; 1] =
@@ -13631,7 +13631,7 @@ pub const VTABLE_std___Func_impl_no_alloc_void_____char_const___bool__void_char_
     [VariantID; 1] = [VariantID::new(0, 215762, 0x0)];
 
 pub const VTABLE_std___Func_impl_no_alloc_void_____Upsell__UpsellResult_bool__void_Upsell__UpsellResult_bool_: [VariantID; 1] = [
-    VariantID::new(0, 215764, 0x0)
+    VariantID::new(0, 215764, 0x0),
 ];
 
 pub const VTABLE_MenuControls: [VariantID; 2] = [
@@ -13745,77 +13745,77 @@ pub const VTABLE_BSTDerivedCreator_HUDData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551881, 216250, 0x17471b8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_HUDData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270530, 216254, 0x17471d8)
+    VariantID::new(270530, 216254, 0x17471d8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_HUDData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270531, 216256, 0x17471f8)
+    VariantID::new(270531, 216256, 0x17471f8),
 ];
 
 pub const VTABLE_BSTDerivedCreator_ConsoleData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551887, 216259, 0x1747220)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_ConsoleData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270533, 216263, 0x1747240)
+    VariantID::new(270533, 216263, 0x1747240),
 ];
 
 pub const VTABLE_AutoRegisterCreator_ConsoleData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270534, 216265, 0x1747260)
+    VariantID::new(270534, 216265, 0x1747260),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MessageBoxData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551893, 216268, 0x1747290)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MessageBoxData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270536, 216272, 0x17472b0)
+    VariantID::new(270536, 216272, 0x17472b0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MessageBoxData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270537, 216274, 0x17472d0)
+    VariantID::new(270537, 216274, 0x17472d0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_FaderData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551899, 216277, 0x1747300)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_FaderData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270539, 216281, 0x1747320)
+    VariantID::new(270539, 216281, 0x1747320),
 ];
 
 pub const VTABLE_AutoRegisterCreator_FaderData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270540, 216283, 0x1747340)
+    VariantID::new(270540, 216283, 0x1747340),
 ];
 
 pub const VTABLE_BSTDerivedCreator_InventoryUpdateData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551905, 216286, 0x1747370)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_InventoryUpdateData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270542, 216290, 0x1747390)
+    VariantID::new(270542, 216290, 0x1747390),
 ];
 
 pub const VTABLE_AutoRegisterCreator_InventoryUpdateData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270543, 216292, 0x17473b0)
+    VariantID::new(270543, 216292, 0x17473b0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_RefHandleUIData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551911, 216295, 0x17473e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_RefHandleUIData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270545, 216299, 0x1747408)
+    VariantID::new(270545, 216299, 0x1747408),
 ];
 
 pub const VTABLE_AutoRegisterCreator_RefHandleUIData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270546, 216301, 0x1747428)
+    VariantID::new(270546, 216301, 0x1747428),
 ];
 
 pub const VTABLE_BSTDerivedCreator_TESFormUIData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551917, 216304, 0x1747458)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_TESFormUIData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270548, 216308, 0x1747478)
+    VariantID::new(270548, 216308, 0x1747478),
 ];
 
 pub const VTABLE_AutoRegisterCreator_TESFormUIData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270549, 216310, 0x1747498)
+    VariantID::new(270549, 216310, 0x1747498),
 ];
 
 pub const VTABLE_HUDData: [VariantID; 1] = [VariantID::new(270520, 216313, 0x1747108)];
@@ -13824,35 +13824,35 @@ pub const VTABLE_BSTDerivedCreator_LoadingMenuData_IUIMessageData_: [VariantID; 
     [VariantID::new(551923, 216315, 0x17474c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_LoadingMenuData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270551, 216319, 0x17474e8)
+    VariantID::new(270551, 216319, 0x17474e8),
 ];
 
 pub const VTABLE_ConsoleData: [VariantID; 1] = [VariantID::new(270521, 216321, 0x1747118)];
 
 pub const VTABLE_AutoRegisterCreator_LoadingMenuData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270552, 216323, 0x1747508)
+    VariantID::new(270552, 216323, 0x1747508),
 ];
 
 pub const VTABLE_BSTDerivedCreator_KinectStateChangeData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551929, 216326, 0x1747538)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_KinectStateChangeData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270554, 216330, 0x1747558)
+    VariantID::new(270554, 216330, 0x1747558),
 ];
 
 pub const VTABLE_AutoRegisterCreator_KinectStateChangeData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270555, 216332, 0x1747578)
+    VariantID::new(270555, 216332, 0x1747578),
 ];
 
 pub const VTABLE_BSTDerivedCreator_KinectUserEventData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(551935, 216335, 0x17475b0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_KinectUserEventData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270557, 216339, 0x17475d0)
+    VariantID::new(270557, 216339, 0x17475d0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_KinectUserEventData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(270558, 216341, 0x17475f0)
+    VariantID::new(270558, 216341, 0x17475f0),
 ];
 
 pub const VTABLE_FaderData: [VariantID; 1] = [VariantID::new(270522, 216344, 0x1747128)];
@@ -14054,95 +14054,95 @@ pub const VTABLE_BSScript__IStore: [VariantID; 1] = [VariantID::new(271502, 2168
 pub const VTABLE_SkyrimScript__Store: [VariantID; 1] = [VariantID::new(271503, 216811, 0x1751960)];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216817, 0x0)
+    VariantID::new(0, 216817, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216819, 0x0)
+    VariantID::new(0, 216819, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216821, 0x0)
+    VariantID::new(0, 216821, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____KeywordStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216823, 0x0)
+    VariantID::new(0, 216823, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216825, 0x0)
+    VariantID::new(0, 216825, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216827, 0x0)
+    VariantID::new(0, 216827, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216829, 0x0)
+    VariantID::new(0, 216829, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216831, 0x0)
+    VariantID::new(0, 216831, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216833, 0x0)
+    VariantID::new(0, 216833, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216835, 0x0)
+    VariantID::new(0, 216835, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216837, 0x0)
+    VariantID::new(0, 216837, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216839, 0x0)
+    VariantID::new(0, 216839, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____ActorValueStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216841, 0x0)
+    VariantID::new(0, 216841, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216843, 0x0)
+    VariantID::new(0, 216843, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216845, 0x0)
+    VariantID::new(0, 216845, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216847, 0x0)
+    VariantID::new(0, 216847, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216849, 0x0)
+    VariantID::new(0, 216849, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216851, 0x0)
+    VariantID::new(0, 216851, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216853, 0x0)
+    VariantID::new(0, 216853, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216855, 0x0)
+    VariantID::new(0, 216855, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216857, 0x0)
+    VariantID::new(0, 216857, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__UIntStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216859, 0x0)
+    VariantID::new(0, 216859, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__RefStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__LocationStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__FormStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_SkyrimScript__A0xd7d22f7b__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(0, 216861, 0x0)
+    VariantID::new(0, 216861, 0x0),
 ];
 
 pub const VTABLE_BSResource__ArchiveFoundStreamCB: [VariantID; 1] =
@@ -14327,23 +14327,23 @@ pub const VTABLE_SkyrimVM__SleepStopEventFunctor: [VariantID; 1] =
     [VariantID::new(272002, 217035, 0x17561c0)];
 
 pub const VTABLE_BSTFreeList_BSTSmartPointer_SkyrimScript__DelayFunctor_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(272003, 217037, 0x17561d8)
+    VariantID::new(272003, 217037, 0x17561d8),
 ];
 
 pub const VTABLE_BSTStaticFreeList_BSTSmartPointer_SkyrimScript__DelayFunctor_BSTSmartPointerIntrusiveRefCount__512_: [VariantID; 1] = [
-    VariantID::new(272004, 217039, 0x17561e8)
+    VariantID::new(272004, 217039, 0x17561e8),
 ];
 
 pub const VTABLE_BSTMessageQueue_BSTSmartPointer_SkyrimScript__DelayFunctor_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(272005, 217041, 0x17561f8)
+    VariantID::new(272005, 217041, 0x17561f8),
 ];
 
 pub const VTABLE_BSTCommonMessageQueue_BSTSmartPointer_SkyrimScript__DelayFunctor_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(552121, 217043, 0x1756228)
+    VariantID::new(552121, 217043, 0x1756228),
 ];
 
 pub const VTABLE_BSTCommonLLMessageQueue_BSTSmartPointer_SkyrimScript__DelayFunctor_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(272006, 217051, 0x1756268)
+    VariantID::new(272006, 217051, 0x1756268),
 ];
 
 pub const VTABLE_SkyrimVM__InventoryEventFilter: [VariantID; 1] =
@@ -14491,7 +14491,7 @@ pub const VTABLE_BSScript__NativeFunction0_ActiveEffect_Actor___: [VariantID; 1]
     [VariantID::new(272216, 217310, 0x1757f40)];
 
 pub const VTABLE_BSScript__NativeFunction2_ActiveEffect_bool_TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272217, 217312, 0x1758000)
+    VariantID::new(272217, 217312, 0x1758000),
 ];
 
 pub const VTABLE_BSScript__NativeFunction2_ActiveEffect_void_Actor___TESObjectREFR___: [VariantID;
@@ -14501,14 +14501,14 @@ pub const VTABLE_BSScript__NativeFunction1_ActiveEffect_void_float_: [VariantID;
     [VariantID::new(272219, 217316, 0x1758180)];
 
 pub const VTABLE_BSScript__NativeFunction2_ActiveEffect_void_TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272220, 217318, 0x1758240)
+    VariantID::new(272220, 217318, 0x1758240),
 ];
 
 pub const VTABLE_SkyrimScript____AttachAshPileFunctor: [VariantID; 1] =
     [VariantID::new(272443, 217344, 0x175a408)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____AttachAshPileFunctor_14_: [VariantID; 1] = [
-    VariantID::new(272444, 217346, 0x175a448)
+    VariantID::new(272444, 217346, 0x175a448),
 ];
 
 pub const VTABLE_SkyrimScript____ResurrectFunctor: [VariantID; 1] =
@@ -14521,7 +14521,7 @@ pub const VTABLE_SkyrimScript____MoveToPackLocFunctor: [VariantID; 1] =
     [VariantID::new(272486, 217353, 0x175ac00)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____MoveToPackLocFunctor_10_: [VariantID; 1] = [
-    VariantID::new(272487, 217355, 0x175ac40)
+    VariantID::new(272487, 217355, 0x175ac40),
 ];
 
 pub const VTABLE_IGiftMenuScriptCallback: [VariantID; 1] =
@@ -14651,7 +14651,7 @@ pub const VTABLE_BSScript__NativeFunction1_Actor_bool_TESFaction___: [VariantID;
     [VariantID::new(272570, 217527, 0x175d1e8)];
 
 pub const VTABLE_BSScript__NativeFunction9_Actor_void_Actor___float_float_float_float_float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(272571, 217529, 0x175d2a8)
+    VariantID::new(272571, 217529, 0x175d2a8),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_Actor_void_Actor___: [VariantID; 1] =
@@ -14730,7 +14730,7 @@ pub const VTABLE_BSScript__NativeFunction0_BGSBaseAlias_TESQuest___: [VariantID;
     [VariantID::new(272725, 217675, 0x175f178)];
 
 pub const VTABLE_BSScript__NativeFunction2_BGSBaseAlias_bool_TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272726, 217677, 0x175f238)
+    VariantID::new(272726, 217677, 0x175f238),
 ];
 
 pub const VTABLE_BSScript__NativeFunction2_BGSBaseAlias_void_Actor___TESObjectREFR___: [VariantID;
@@ -14743,19 +14743,19 @@ pub const VTABLE_BSScript__NativeFunction0_BGSBaseAlias_void_: [VariantID; 1] =
     [VariantID::new(272729, 217683, 0x175f478)];
 
 pub const VTABLE_BSScript__NativeFunction2_BGSBaseAlias_void_TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272730, 217685, 0x175f538)
+    VariantID::new(272730, 217685, 0x175f538),
 ];
 
 pub const VTABLE_BSScript__NativeFunction5_BGSKeyword_void_BGSLocation___TESObjectREFR___TESObjectREFR___uint_uint_: [VariantID; 1] = [
-    VariantID::new(272758, 217689, 0x175fa40)
+    VariantID::new(272758, 217689, 0x175fa40),
 ];
 
 pub const VTABLE_BSScript__NativeFunction5_BGSKeyword_bool_BGSLocation___TESObjectREFR___TESObjectREFR___uint_uint_: [VariantID; 1] = [
-    VariantID::new(272759, 217691, 0x175fb00)
+    VariantID::new(272759, 217691, 0x175fb00),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction5_BGSKeyword_bool_BGSLocation___TESObjectREFR___TESObjectREFR___uint_uint_: [VariantID; 1] = [
-    VariantID::new(272760, 217693, 0x175fbc0)
+    VariantID::new(272760, 217693, 0x175fbc0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_BGSLocAlias_void_: [VariantID; 1] =
@@ -14795,19 +14795,19 @@ pub const VTABLE_SkyrimScript____ScriptMessageBoxCallback: [VariantID; 1] =
     [VariantID::new(272833, 217737, 0x1760d40)];
 
 pub const VTABLE_BSScript__NativeFunction9_BGSMessage_bool_float_float_float_float_float_float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(272835, 217740, 0x1760da8)
+    VariantID::new(272835, 217740, 0x1760da8),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction9_BGSMessage_int_float_float_float_float_float_float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(272836, 217742, 0x1760e68)
+    VariantID::new(272836, 217742, 0x1760e68),
 ];
 
 pub const VTABLE_BSScript__NativeFunction4_BGSMessage_void_BSFixedString_const___float_float_int_: [VariantID; 1] = [
-    VariantID::new(272837, 217744, 0x1760f28)
+    VariantID::new(272837, 217744, 0x1760f28),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272838, 217746, 0x1760fe8)
+    VariantID::new(272838, 217746, 0x1760fe8),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_BGSMusicType_void_: [VariantID; 1] =
@@ -14826,7 +14826,7 @@ pub const VTABLE_BSScript__NativeFunction1_BGSRefAlias_void_TESObjectREFR___: [V
     [VariantID::new(272876, 217763, 0x17618d0)];
 
 pub const VTABLE_BSScript__NativeFunction3_BGSReferenceEffect_void_TESObjectREFR___float_TESObjectREFR___: [VariantID; 1] = [
-    VariantID::new(272893, 217773, 0x1761c38)
+    VariantID::new(272893, 217773, 0x1761c38),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BGSReferenceEffect_void_TESObjectREFR___: [VariantID;
@@ -14857,15 +14857,15 @@ pub const VTABLE_SkyrimScript____LatentPlayerMover: [VariantID; 1] =
     [VariantID::new(272980, 217808, 0x1762ed0)];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_bool_BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272996, 217825, 0x1763110)
+    VariantID::new(272996, 217825, 0x1763110),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction1_BSScript__StaticFunctionTag_float_BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272997, 217827, 0x17631d0)
+    VariantID::new(272997, 217827, 0x17631d0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_void_BSFixedString_const___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(272998, 217829, 0x1763290)
+    VariantID::new(272998, 217829, 0x1763290),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_TESQuest___:
@@ -14875,25 +14875,25 @@ pub const VTABLE_BSScript__NativeFunction0_BSScript__StaticFunctionTag_bool_: [V
     [VariantID::new(273000, 217833, 0x16b91b0)];
 
 pub const VTABLE_BSScript__NativeLatentFunction0_BSScript__StaticFunctionTag_BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273001, 217835, 0x1763410)
+    VariantID::new(273001, 217835, 0x1763410),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_BSScript__StaticFunctionTag_void_: [VariantID; 1] =
     [VariantID::new(273002, 217837, 0x16b90f0)];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_void_TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273003, 217839, 0x17634d0)
+    VariantID::new(273003, 217839, 0x17634d0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_bool_: [VariantID; 1] =
     [VariantID::new(273004, 217841, 0x16b9270)];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_void_BSFixedString_const___uint_: [VariantID; 1] = [
-    VariantID::new(273005, 217843, 0x1763590)
+    VariantID::new(273005, 217843, 0x1763590),
 ];
 
 pub const VTABLE_BSScript__NativeFunction3_BSScript__StaticFunctionTag_bool_BSFixedString_const___BSFixedString_const___uint_: [VariantID; 1] = [
-    VariantID::new(273006, 217845, 0x1763650)
+    VariantID::new(273006, 217845, 0x1763650),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_EffectSetting_bool_: [VariantID; 1] =
@@ -14909,7 +14909,7 @@ pub const VTABLE_SkyrimScript____AddRemoveConstraintFunctor: [VariantID; 1] =
     [VariantID::new(273120, 217878, 0x1764998)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____AddRemoveConstraintFunctor_15_: [VariantID; 1] = [
-    VariantID::new(273121, 217880, 0x17649d8)
+    VariantID::new(273121, 217880, 0x17649d8),
 ];
 
 pub const VTABLE_SkyrimScript____FadeThenMainMenuCallback: [VariantID; 1] =
@@ -14919,68 +14919,68 @@ pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_int_
     [VariantID::new(273149, 217912, 0x16b9330)];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_void_BSFixedString_const___float_: [VariantID; 1] = [
-    VariantID::new(273150, 217914, 0x1764fc0)
+    VariantID::new(273150, 217914, 0x1764fc0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction10_BSScript__StaticFunctionTag_bool_TESObjectREFR___BSFixedString_const___TESObjectREFR___BSFixedString_const___float_float_float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(273151, 217916, 0x1765080)
+    VariantID::new(273151, 217916, 0x1765080),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction10_BSScript__StaticFunctionTag_bool_TESObjectREFR___BSFixedString_const___TESObjectREFR___BSFixedString_const___float_float_float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(273152, 217918, 0x1765140)
+    VariantID::new(273152, 217918, 0x1765140),
 ];
 
 pub const VTABLE_BSScript__NativeFunction4_BSScript__StaticFunctionTag_bool_TESObjectREFR___BSFixedString_const___TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273153, 217920, 0x1765200)
+    VariantID::new(273153, 217920, 0x1765200),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction4_BSScript__StaticFunctionTag_bool_TESObjectREFR___BSFixedString_const___TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273154, 217922, 0x17652c0)
+    VariantID::new(273154, 217922, 0x17652c0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_uint_uint_: [VariantID; 1] =
     [VariantID::new(273155, 217924, 0x1765380)];
 
 pub const VTABLE_BSScript__NativeFunction9_BSScript__StaticFunctionTag_void_bool_bool_bool_bool_bool_bool_bool_bool_uint_: [VariantID; 1] = [
-    VariantID::new(273156, 217926, 0x1765440)
+    VariantID::new(273156, 217926, 0x1765440),
 ];
 
 pub const VTABLE_BSScript__NativeFunction4_BSScript__StaticFunctionTag_void_bool_bool_float_float_: [VariantID; 1] = [
-    VariantID::new(273157, 217928, 0x1765500)
+    VariantID::new(273157, 217928, 0x1765500),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_TESObjectREFR___:
     [VariantID; 1] = [VariantID::new(273158, 217930, 0x1765680)];
 
 pub const VTABLE_BSScript__NativeFunction5_BSScript__StaticFunctionTag_TESObjectREFR___TESForm___float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(273159, 217932, 0x1765740)
+    VariantID::new(273159, 217932, 0x1765740),
 ];
 
 pub const VTABLE_BSScript__NativeFunction5_BSScript__StaticFunctionTag_TESObjectREFR___BGSListForm___float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(273160, 217934, 0x1765800)
+    VariantID::new(273160, 217934, 0x1765800),
 ];
 
 pub const VTABLE_BSScript__NativeFunction4_BSScript__StaticFunctionTag_Actor___float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(273161, 217936, 0x17658c0)
+    VariantID::new(273161, 217936, 0x17658c0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_TESForm___uint_:
     [VariantID; 1] = [VariantID::new(273162, 217938, 0x1765980)];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_TESForm___uint_BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273163, 217940, 0x1765a40)
+    VariantID::new(273163, 217940, 0x1765a40),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_float_BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273164, 217942, 0x1765b00)
+    VariantID::new(273164, 217942, 0x1765b00),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_int_BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273165, 217944, 0x1765bc0)
+    VariantID::new(273165, 217944, 0x1765bc0),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction1_BSScript__StaticFunctionTag_BSFixedString_const___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(273166, 217946, 0x1765c80)
+    VariantID::new(273166, 217946, 0x1765c80),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_BSScript__StaticFunctionTag_Actor___: [VariantID; 1] =
@@ -14993,14 +14993,14 @@ pub const VTABLE_BSScript__NativeFunction0_BSScript__StaticFunctionTag_float_: [
     [VariantID::new(273169, 217952, 0x1765ec0)];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_void_BSFixedString_const___int_: [VariantID; 1] = [
-    VariantID::new(273170, 217954, 0x1765f80)
+    VariantID::new(273170, 217954, 0x1765f80),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_bool_TESWordOfPower___:
     [VariantID; 1] = [VariantID::new(273171, 217956, 0x1766040)];
 
 pub const VTABLE_BSScript__NativeFunction5_BSScript__StaticFunctionTag_void_BSFixedString_const___bool_bool_bool_bool_: [VariantID; 1] = [
-    VariantID::new(273172, 217958, 0x1766100)
+    VariantID::new(273172, 217958, 0x1766100),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_Actor___: [VariantID;
@@ -15013,14 +15013,14 @@ pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_floa
     [VariantID::new(273175, 217964, 0x1766580)];
 
 pub const VTABLE_BSScript__NativeFunction3_BSScript__StaticFunctionTag_void_TESObjectREFR___float_float_: [VariantID; 1] = [
-    VariantID::new(273176, 217966, 0x1766640)
+    VariantID::new(273176, 217966, 0x1766640),
 ];
 
 pub const VTABLE_BSScript__NativeFunction3_BSScript__StaticFunctionTag_void_float_float_float_:
     [VariantID; 1] = [VariantID::new(273177, 217968, 0x1766700)];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_TESImageSpaceModifier___: [VariantID; 1] = [
-    VariantID::new(273178, 217970, 0x17667c0)
+    VariantID::new(273178, 217970, 0x17667c0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_void_TESWordOfPower___:
@@ -15078,7 +15078,7 @@ pub const VTABLE_BSScript__NativeFunction2_ScrollItem_bool_TESObjectREFR___TESOb
     [VariantID; 1] = [VariantID::new(273337, 218107, 0x17683d0)];
 
 pub const VTABLE_BSScript__NativeLatentFunction2_ScrollItem_void_TESObjectREFR___TESObjectREFR___: [VariantID; 1] = [
-    VariantID::new(273338, 218109, 0x1768490)
+    VariantID::new(273338, 218109, 0x1768490),
 ];
 
 pub const VTABLE_SkyrimScript____CastFunctor: [VariantID; 1] =
@@ -15094,11 +15094,11 @@ pub const VTABLE_BSScript__NativeLatentFunction2_SpellItem_void_TESObjectREFR___
     [VariantID; 1] = [VariantID::new(273368, 218122, 0x1768ab0)];
 
 pub const VTABLE_BSScript__NativeFunction3_SpellItem_bool_TESObjectREFR___Actor___TESObjectREFR___: [VariantID; 1] = [
-    VariantID::new(273369, 218124, 0x1768b70)
+    VariantID::new(273369, 218124, 0x1768b70),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction3_SpellItem_void_TESObjectREFR___Actor___TESObjectREFR___: [VariantID; 1] = [
-    VariantID::new(273370, 218126, 0x1768c30)
+    VariantID::new(273370, 218126, 0x1768c30),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_SpellItem_bool_: [VariantID; 1] =
@@ -15117,7 +15117,7 @@ pub const VTABLE_SkyrimScript____SendPlayerToJailFunctor: [VariantID; 1] =
     [VariantID::new(273422, 218143, 0x1769738)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____SendPlayerToJailFunctor_19_: [VariantID; 1] = [
-    VariantID::new(273423, 218145, 0x1769778)
+    VariantID::new(273423, 218145, 0x1769778),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_TESFaction_bool_: [VariantID; 1] =
@@ -15196,7 +15196,7 @@ pub const VTABLE_BSScript__NativeFunction1_TESImageSpaceModifier_void_float_: [V
     [VariantID::new(273514, 218222, 0x176b428)];
 
 pub const VTABLE_BSScript__NativeFunction2_TESImageSpaceModifier_void_TESImageSpaceModifier___float_: [VariantID; 1] = [
-    VariantID::new(273515, 218224, 0x176b4e8)
+    VariantID::new(273515, 218224, 0x176b4e8),
 ];
 
 pub const VTABLE_BSScript__NativeFunction0_TESImageSpaceModifier_void_: [VariantID; 1] =
@@ -15284,14 +15284,14 @@ pub const VTABLE_SkyrimScript____MoveToOwnEditorLocFunctor: [VariantID; 1] =
     [VariantID::new(273968, 218307, 0x1770888)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____MoveToOwnEditorLocFunctor_1_: [VariantID; 1] = [
-    VariantID::new(273969, 218309, 0x17708c8)
+    VariantID::new(273969, 218309, 0x17708c8),
 ];
 
 pub const VTABLE_SkyrimScript____DamageObjectFunctor: [VariantID; 1] =
     [VariantID::new(273970, 218311, 0x17708e8)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____DamageObjectFunctor_2_: [VariantID; 1] = [
-    VariantID::new(273971, 218313, 0x1770928)
+    VariantID::new(273971, 218313, 0x1770928),
 ];
 
 pub const VTABLE_SkyrimScript____EnableFunctor: [VariantID; 1] =
@@ -15316,7 +15316,7 @@ pub const VTABLE_SkyrimScript____NonLatentDeleteFunctor: [VariantID; 1] =
     [VariantID::new(273980, 218327, 0x1770aa8)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____NonLatentDeleteFunctor_9_: [VariantID; 1] = [
-    VariantID::new(273981, 218329, 0x1770ae8)
+    VariantID::new(273981, 218329, 0x1770ae8),
 ];
 
 pub const VTABLE_SkyrimScript____SetPositionFunctor: [VariantID; 1] =
@@ -15341,14 +15341,14 @@ pub const VTABLE_SkyrimScript____ForceAddRemoveRagdollFunctor: [VariantID; 1] =
     [VariantID::new(273992, 218343, 0x1770ca8)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____ForceAddRemoveRagdollFunctor_16_: [VariantID; 1] = [
-    VariantID::new(273993, 218345, 0x1770ce8)
+    VariantID::new(273993, 218345, 0x1770ce8),
 ];
 
 pub const VTABLE_SkyrimScript____ApplyHavokImpulseFunctor: [VariantID; 1] =
     [VariantID::new(273995, 218347, 0x1770d50)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____ApplyHavokImpulseFunctor_17_: [VariantID; 1] = [
-    VariantID::new(273996, 218349, 0x1770d90)
+    VariantID::new(273996, 218349, 0x1770d90),
 ];
 
 pub const VTABLE_SkyrimScript____ResetFunctor: [VariantID; 1] =
@@ -15367,7 +15367,7 @@ pub const VTABLE_SkyrimScript____SetMotionTypeFunctor: [VariantID; 1] =
     [VariantID::new(274067, 218360, 0x1771ac8)];
 
 pub const VTABLE_SkyrimScript__ConcreteDelayFunctorFactory_SkyrimScript____SetMotionTypeFunctor_8_: [VariantID; 1] = [
-    VariantID::new(274070, 218364, 0x1771b68)
+    VariantID::new(274070, 218364, 0x1771b68),
 ];
 
 pub const VTABLE_SkyrimScript____SetScaleFunctor: [VariantID; 1] =
@@ -15524,65 +15524,65 @@ pub const VTABLE_BSScript__NativeFunction2_TESObjectREFR_void_bool_bool_: [Varia
     [VariantID::new(274125, 218580, 0x1773e30)];
 
 pub const VTABLE_BSScript__NativeFunction5_TESObjectREFR_bool_TESObjectREFR___float_float_float_bool_: [VariantID; 1] = [
-    VariantID::new(274126, 218582, 0x1773ef0)
+    VariantID::new(274126, 218582, 0x1773ef0),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction5_TESObjectREFR_void_TESObjectREFR___float_float_float_bool_: [VariantID; 1] = [
-    VariantID::new(274127, 218584, 0x1773fb0)
+    VariantID::new(274127, 218584, 0x1773fb0),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction1_TESObjectREFR_void_TESObjectREFR___: [VariantID;
     1] = [VariantID::new(274128, 218586, 0x1774070)];
 
 pub const VTABLE_BSScript__NativeFunction2_TESObjectREFR_bool_TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274129, 218588, 0x1774130)
+    VariantID::new(274129, 218588, 0x1774130),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction2_TESObjectREFR_void_TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274130, 218590, 0x17741f0)
+    VariantID::new(274130, 218590, 0x17741f0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction4_TESObjectREFR_TESObjectREFR___TESForm___uint_bool_bool_: [VariantID; 1] = [
-    VariantID::new(274131, 218592, 0x17742b0)
+    VariantID::new(274131, 218592, 0x17742b0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction3_TESObjectREFR_Actor___TESNPC___uint_BGSEncounterZone___: [VariantID; 1] = [
-    VariantID::new(274132, 218594, 0x1774370)
+    VariantID::new(274132, 218594, 0x1774370),
 ];
 
 pub const VTABLE_BSScript__NativeFunction2_TESObjectREFR_bool_BSFixedString_const___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274133, 218596, 0x1774430)
+    VariantID::new(274133, 218596, 0x1774430),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction2_TESObjectREFR_bool_BSFixedString_const___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274134, 218598, 0x17744f0)
+    VariantID::new(274134, 218598, 0x17744f0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction3_TESObjectREFR_bool_BSFixedString_const___bool_float_:
     [VariantID; 1] = [VariantID::new(274135, 218600, 0x17745b0)];
 
 pub const VTABLE_BSScript__NativeFunction8_TESObjectREFR_bool_BGSImpactDataSet___BSFixedString_const___float_float_float_float_bool_bool_: [VariantID; 1] = [
-    VariantID::new(274136, 218602, 0x1774670)
+    VariantID::new(274136, 218602, 0x1774670),
 ];
 
 pub const VTABLE_BSScript__NativeFunction3_TESObjectREFR_bool_BSFixedString_const___TESObjectREFR___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274137, 218604, 0x1774730)
+    VariantID::new(274137, 218604, 0x1774730),
 ];
 
 pub const VTABLE_BSScript__NativeFunction5_TESObjectREFR_bool_BSFixedString_const___BSFixedString_const___TESObjectREFR___BSFixedString_const___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274138, 218606, 0x17747f0)
+    VariantID::new(274138, 218606, 0x17747f0),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction5_TESObjectREFR_bool_BSFixedString_const___BSFixedString_const___TESObjectREFR___BSFixedString_const___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274139, 218608, 0x17748b0)
+    VariantID::new(274139, 218608, 0x17748b0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction2_TESObjectREFR_void_BSFixedString_const___BSFixedString_const___: [VariantID; 1] = [
-    VariantID::new(274140, 218610, 0x1774970)
+    VariantID::new(274140, 218610, 0x1774970),
 ];
 
 pub const VTABLE_BSScript__NativeFunction11_TESObjectREFR_void_TESObjectREFR___float_float_float_float_float_float_float_float_int_float_: [VariantID; 1] = [
-    VariantID::new(274141, 218612, 0x1774a30)
+    VariantID::new(274141, 218612, 0x1774a30),
 ];
 
 pub const VTABLE_BSScript__NativeFunction2_TESObjectREFR_void_Actor___float_: [VariantID; 1] =
@@ -15592,11 +15592,11 @@ pub const VTABLE_BSScript__NativeFunction3_TESObjectREFR_void_TESObjectREFR___bo
     [VariantID; 1] = [VariantID::new(274143, 218616, 0x1774bb0)];
 
 pub const VTABLE_BSScript__NativeFunction4_TESObjectREFR_bool_TESForm___uint_bool_TESObjectREFR___: [VariantID; 1] = [
-    VariantID::new(274144, 218618, 0x1774c70)
+    VariantID::new(274144, 218618, 0x1774c70),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction4_TESObjectREFR_void_TESForm___uint_bool_TESObjectREFR___: [VariantID; 1] = [
-    VariantID::new(274145, 218620, 0x1774d30)
+    VariantID::new(274145, 218620, 0x1774d30),
 ];
 
 pub const VTABLE_BSScript__NativeFunction3_TESObjectREFR_void_TESTopic___Actor___bool_:
@@ -15633,15 +15633,15 @@ pub const VTABLE_BSScript__NativeLatentFunction2_TESObjectREFR_void_uint_bool_: 
     [VariantID::new(274156, 218642, 0x1775570)];
 
 pub const VTABLE_BSScript__NativeFunction8_TESObjectREFR_void_float_float_float_float_float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(274157, 218644, 0x1775630)
+    VariantID::new(274157, 218644, 0x1775630),
 ];
 
 pub const VTABLE_BSScript__NativeFunction9_TESObjectREFR_void_float_float_float_float_float_float_float_float_float_: [VariantID; 1] = [
-    VariantID::new(274158, 218646, 0x17756f0)
+    VariantID::new(274158, 218646, 0x17756f0),
 ];
 
 pub const VTABLE_BSScript__NativeFunction5_TESObjectREFR_void_TESObjectREFR___BSFixedString_const___float_float_float_: [VariantID; 1] = [
-    VariantID::new(274159, 218648, 0x17757b0)
+    VariantID::new(274159, 218648, 0x17757b0),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction1_TESObjectREFR_bool_BSFixedString_const___:
@@ -15729,14 +15729,14 @@ pub const VTABLE_BSScript__NativeFunction1_BSScript__StaticFunctionTag_bool_floa
     [VariantID::new(274416, 218834, 0x17787a0)];
 
 pub const VTABLE_BSScript__NativeLatentFunction1_BSScript__StaticFunctionTag_BSFixedString_const___float_: [VariantID; 1] = [
-    VariantID::new(274417, 218836, 0x1778860)
+    VariantID::new(274417, 218836, 0x1778860),
 ];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_int_int_int_: [VariantID;
     1] = [VariantID::new(274418, 218838, 0x1778920)];
 
 pub const VTABLE_BSScript__NativeFunction2_BSScript__StaticFunctionTag_void_BSFixedString_const___bool_: [VariantID; 1] = [
-    VariantID::new(274419, 218840, 0x17789e0)
+    VariantID::new(274419, 218840, 0x17789e0),
 ];
 
 pub const VTABLE_BSScript__NativeLatentFunction1_BSScript__StaticFunctionTag_void_float_:
@@ -16963,15 +16963,15 @@ pub const VTABLE_BSAnimationGraphManager: [VariantID; 1] =
     [VariantID::new(282127, 232742, 0x17c78e8)];
 
 pub const VTABLE_BSTMessageQueue_BSTSmartPointer_BSAnimationGraphManager_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(282130, 232744, 0x17c7958)
+    VariantID::new(282130, 232744, 0x17c7958),
 ];
 
 pub const VTABLE_BSTCommonMessageQueue_BSTSmartPointer_BSAnimationGraphManager_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(558716, 232746, 0x17c7988)
+    VariantID::new(558716, 232746, 0x17c7988),
 ];
 
 pub const VTABLE_BSTCommonStaticMessageQueue_BSTSmartPointer_BSAnimationGraphManager_BSTSmartPointerIntrusiveRefCount__128_: [VariantID; 1] = [
-    VariantID::new(282131, 232754, 0x17c79c8)
+    VariantID::new(282131, 232754, 0x17c79c8),
 ];
 
 pub const VTABLE___DeferredUpdate: [VariantID; 1] = [VariantID::new(282132, 232762, 0x17c7a08)];
@@ -17010,7 +17010,7 @@ pub const VTABLE_BSAnimationGraphLoadScrapper: [VariantID; 1] =
     [VariantID::new(282349, 232800, 0x17c9e38)];
 
 pub const VTABLE_AutoRegisterFactory___BShkbAnimationGraphLoadScrapper_BSTFactoryManager_BSFixedString_BSAnimationGraphLoadScrapper_2_BSTSingletonImplicit__: [VariantID; 1] = [
-    VariantID::new(282368, 232802, 0x17ca118)
+    VariantID::new(282368, 232802, 0x17ca118),
 ];
 
 pub const VTABLE___GraphPhysicsStepListener: [VariantID; 1] =
@@ -17040,11 +17040,11 @@ pub const VTABLE_BSTDerivedCreator_BShkVisibilityController_BShkNonTransformCont
     [VariantID; 1] = [VariantID::new(558752, 232889, 0x17ca4c8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BShkVisibilityController_BShkNonTransformController__BSTCreateFactoryManager_BSFixedString_BShkNonTransformController_32__: [VariantID; 1] = [
-    VariantID::new(282395, 232893, 0x17ca4e8)
+    VariantID::new(282395, 232893, 0x17ca4e8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BShkVisibilityController_BSTCreateFactoryManager_BSFixedString_BShkNonTransformController_32__: [VariantID; 1] = [
-    VariantID::new(282396, 232895, 0x17ca508)
+    VariantID::new(282396, 232895, 0x17ca508),
 ];
 
 pub const VTABLE_BShkbUtils__GraphInspectionFunctor: [VariantID; 1] =
@@ -17593,11 +17593,11 @@ pub const VTABLE_BSTDerivedCreator_BSNullImplAudio_BSAudio_: [VariantID; 1] =
     [VariantID::new(559972, 236505, 0x17e3168)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BSNullImplAudio_BSAudio__BSTCreateFactoryManager_BSFixedStringCI_BSAudio_4__: [VariantID; 1] = [
-    VariantID::new(285034, 236509, 0x17e3188)
+    VariantID::new(285034, 236509, 0x17e3188),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BSNullImplAudio_BSTCreateFactoryManager_BSFixedStringCI_BSAudio_4__: [VariantID; 1] = [
-    VariantID::new(285035, 236513, 0x17e31a8)
+    VariantID::new(285035, 236513, 0x17e31a8),
 ];
 
 pub const VTABLE_BSAudioListener: [VariantID; 1] = [VariantID::new(285036, 236515, 0x17e31d8)];
@@ -17617,11 +17617,11 @@ pub const VTABLE_BSTDerivedCreator_BSXAudio2Audio_BSAudio_: [VariantID; 1] =
     [VariantID::new(559986, 236536, 0x17e3728)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BSXAudio2Audio_BSAudio__BSTCreateFactoryManager_BSFixedStringCI_BSAudio_4__: [VariantID; 1] = [
-    VariantID::new(285072, 236540, 0x17e3748)
+    VariantID::new(285072, 236540, 0x17e3748),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BSXAudio2Audio_BSTCreateFactoryManager_BSFixedStringCI_BSAudio_4__: [VariantID; 1] = [
-    VariantID::new(285073, 236542, 0x17e3768)
+    VariantID::new(285073, 236542, 0x17e3768),
 ];
 
 pub const VTABLE_BSTArrayAllocatorFunctor_BSTSmallArrayHeapAllocator_128__: [VariantID; 1] =
@@ -17831,7 +17831,7 @@ pub const VTABLE_BSResource____ArchiveRegistrationTaskData: [VariantID; 1] =
     [VariantID::new(285865, 237023, 0x17ed568)];
 
 pub const VTABLE__BSResource__RegisterPrefix_char_const___char_const___BSResource__Location_______2___Traverser: [VariantID; 1] = [
-    VariantID::new(285866, 237025, 0x17ed590)
+    VariantID::new(285866, 237025, 0x17ed590),
 ];
 
 pub const VTABLE_BSResource____LooseFileSBTraits__AsyncFunctor: [VariantID; 1] =
@@ -17912,21 +17912,21 @@ pub const VTABLE_NiTPointerMap_NiObject_const___uint_: [VariantID; 1] =
 pub const VTABLE_NiStream: [VariantID; 1] = [VariantID::new(286064, 237126, 0x17ef860)];
 
 pub const VTABLE_NiTMapBase_NiTPointerAllocator_unsigned___int64__char_const___NiObject_______void__: [VariantID; 1] = [
-    VariantID::new(286065, 237128, 0x17ef928)
+    VariantID::new(286065, 237128, 0x17ef928),
 ];
 
 pub const VTABLE_NiTPointerMap_char_const___NiObject_______void__: [VariantID; 1] =
     [VariantID::new(286066, 237130, 0x17ef968)];
 
 pub const VTABLE_NiTStringTemplateMap_NiTPointerMap_char_const___NiObject_______void___NiObject_______void__: [VariantID; 1] = [
-    VariantID::new(286067, 237132, 0x17ef9a8)
+    VariantID::new(286067, 237132, 0x17ef9a8),
 ];
 
 pub const VTABLE_NiTStringPointerMap_NiObject_______void__: [VariantID; 1] =
     [VariantID::new(286068, 237134, 0x17ef9e8)];
 
 pub const VTABLE_NiTArray_void_____NiStream___NiObject____NiTMallocInterface_void_____NiStream___NiObject_____: [VariantID; 1] = [
-    VariantID::new(286069, 237136, 0x17efa28)
+    VariantID::new(286069, 237136, 0x17efa28),
 ];
 
 pub const VTABLE_NiTPrimitiveArray_void_____NiStream___NiObject____: [VariantID; 1] =
@@ -18011,7 +18011,7 @@ pub const VTABLE_BSResourceNiBinaryStream: [VariantID; 1] =
     [VariantID::new(286277, 237307, 0x17f32f0)];
 
 pub const VTABLE_NiTMapBase_DFALL_NiTMapItem_ulong_BSNiUpdateTracker_____ulong_BSNiUpdateTracker___: [VariantID; 1] = [
-    VariantID::new(286282, 237310, 0x17f33c8)
+    VariantID::new(286282, 237310, 0x17f33c8),
 ];
 
 pub const VTABLE_NiTMap_ulong_BSNiUpdateTracker___: [VariantID; 1] =
@@ -18057,7 +18057,7 @@ pub const VTABLE_NiIntegerExtraData: [VariantID; 1] = [VariantID::new(286443, 23
 pub const VTABLE_NiIntegersExtraData: [VariantID; 1] = [VariantID::new(286448, 237431, 0x17f5ee8)];
 
 pub const VTABLE_NiTArray_NiPointer_NiMetricsOutputModule__NiTNewInterface_NiPointer_NiMetricsOutputModule___: [VariantID; 1] = [
-    VariantID::new(286462, 237433, 0x17f6230)
+    VariantID::new(286462, 237433, 0x17f6230),
 ];
 
 pub const VTABLE_NiTObjectArray_NiPointer_NiMetricsOutputModule__: [VariantID; 1] =
@@ -18164,7 +18164,7 @@ pub const VTABLE_NiSphereTriIntersector: [VariantID; 1] =
     [VariantID::new(286626, 237533, 0x17f9538)];
 
 pub const VTABLE_NiTArray_NiPointer_NiControllerSequence__NiTNewInterface_NiPointer_NiControllerSequence___: [VariantID; 1] = [
-    VariantID::new(286681, 237537, 0x17f9de8)
+    VariantID::new(286681, 237537, 0x17f9de8),
 ];
 
 pub const VTABLE_NiTObjectArray_NiPointer_NiControllerSequence__: [VariantID; 1] =
@@ -18216,7 +18216,7 @@ pub const VTABLE_NiBlendAccumTransformInterpolator: [VariantID; 1] =
     [VariantID::new(286891, 237672, 0x17fd430)];
 
 pub const VTABLE_NiTArray_BSAnimNoteListener__BSAnimReceiverType___NiTMallocInterface_BSAnimNoteListener__BSAnimReceiverType____: [VariantID; 1] = [
-    VariantID::new(286896, 237675, 0x17fd6c8)
+    VariantID::new(286896, 237675, 0x17fd6c8),
 ];
 
 pub const VTABLE_NiTPrimitiveArray_BSAnimNoteListener__BSAnimReceiverType___: [VariantID; 1] =
@@ -18289,14 +18289,14 @@ pub const VTABLE_NiFloatsExtraDataPoint3Controller: [VariantID; 1] =
     [VariantID::new(287007, 237738, 0x1800e58)];
 
 pub const VTABLE_NiTMapBase_NiTPointerAllocator_unsigned___int64__char_const___NiPointer_NiSequence__: [VariantID; 1] = [
-    VariantID::new(287019, 237742, 0x1801200)
+    VariantID::new(287019, 237742, 0x1801200),
 ];
 
 pub const VTABLE_NiTPointerMap_char_const___NiPointer_NiSequence__: [VariantID; 1] =
     [VariantID::new(287020, 237744, 0x1801240)];
 
 pub const VTABLE_NiTStringTemplateMap_NiTPointerMap_char_const___NiPointer_NiSequence___NiPointer_NiSequence__: [VariantID; 1] = [
-    VariantID::new(287021, 237746, 0x1801280)
+    VariantID::new(287021, 237746, 0x1801280),
 ];
 
 pub const VTABLE_NiTStringPointerMap_NiPointer_NiSequence__: [VariantID; 1] =
@@ -18330,7 +18330,7 @@ pub const VTABLE_NiRollController: [VariantID; 1] = [VariantID::new(287076, 2377
 pub const VTABLE_NiRotData: [VariantID; 1] = [VariantID::new(287081, 237780, 0x1802c50)];
 
 pub const VTABLE_NiTArray_NiPointer_NiTransformController__NiTNewInterface_NiPointer_NiTransformController___: [VariantID; 1] = [
-    VariantID::new(287098, 237782, 0x1803000)
+    VariantID::new(287098, 237782, 0x1803000),
 ];
 
 pub const VTABLE_NiTObjectArray_NiPointer_NiTransformController__: [VariantID; 1] =
@@ -18411,7 +18411,7 @@ pub const VTABLE_NiPSysMeshUpdateModifier: [VariantID; 1] =
 pub const VTABLE_NiPSysUpdateCtlr: [VariantID; 1] = [VariantID::new(287377, 237976, 0x1808178)];
 
 pub const VTABLE_NiTArray_NiTObjectArray_NiPointer_NiAVObject_____NiTMallocInterface_NiTObjectArray_NiPointer_NiAVObject______: [VariantID; 1] = [
-    VariantID::new(287390, 237979, 0x18084d8)
+    VariantID::new(287390, 237979, 0x18084d8),
 ];
 
 pub const VTABLE_NiTPrimitiveArray_NiTObjectArray_NiPointer_NiAVObject_____: [VariantID; 1] =
@@ -18694,7 +18694,7 @@ pub const VTABLE_BSBehaviorGraphExtraData: [VariantID; 1] =
     [VariantID::new(288025, 238393, 0x1815118)];
 
 pub const VTABLE_NiTArray_NiTPrimitiveSet_NiNode______NiTMallocInterface_NiTPrimitiveSet_NiNode_______: [VariantID; 1] = [
-    VariantID::new(288049, 238398, 0x18155d0)
+    VariantID::new(288049, 238398, 0x18155d0),
 ];
 
 pub const VTABLE_NiTPrimitiveArray_NiTPrimitiveSet_NiNode______: [VariantID; 1] =
@@ -19287,7 +19287,7 @@ pub const VTABLE_hkpCompressedMeshShape: [VariantID; 2] = [
 ];
 
 pub const VTABLE_hkgpAbstractMesh_hkgpIndexedMeshDefinitions__Edge_hkgpIndexedMeshDefinitions__Vertex_hkgpIndexedMeshDefinitions__Triangle_hkContainerHeapAllocator_: [VariantID; 1] = [
-    VariantID::new(290795, 241474, 0x1862800)
+    VariantID::new(290795, 241474, 0x1862800),
 ];
 
 pub const VTABLE_hkLiquidAction: [VariantID; 1] = [VariantID::new(290824, 241492, 0x1862be8)];
@@ -19298,7 +19298,7 @@ pub const VTABLE_hkOrientHingedBodyAction: [VariantID; 1] =
 pub const VTABLE_hkgpConvexHull: [VariantID; 1] = [VariantID::new(290833, 241501, 0x1862d38)];
 
 pub const VTABLE_hkgpAbstractMesh_hkgpConvexHullImpl__Edge_hkgpConvexHullImpl__Vertex_hkgpConvexHullImpl__Triangle_hkContainerHeapAllocator_: [VariantID; 1] = [
-    VariantID::new(290834, 241503, 0x1862d58)
+    VariantID::new(290834, 241503, 0x1862d58),
 ];
 
 pub const VTABLE_bhkPointToPathConstraint: [VariantID; 1] =
@@ -19341,7 +19341,7 @@ pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_uint___Coll
     1] = [VariantID::new(290932, 241628, 0x1863b68)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_uint___ClosestPointCollector: [VariantID; 1] = [
-    VariantID::new(290933, 241630, 0x1863b80)
+    VariantID::new(290933, 241630, 0x1863b80),
 ];
 
 pub const VTABLE_hkGeometryProcessingInternals__NearestFeaturePolicy: [VariantID; 1] =
@@ -19351,7 +19351,7 @@ pub const VTABLE_hkGeometryProcessing__IFunction_hkVector4_float_: [VariantID; 1
     [VariantID::new(290937, 241636, 0x1863bd8)];
 
 pub const VTABLE_hkGeometryProcessing__ConstFunction_hkGeometryProcessing__IFunction_hkVector4_float__: [VariantID; 1] = [
-    VariantID::new(290938, 241638, 0x1863bf0)
+    VariantID::new(290938, 241638, 0x1863bf0),
 ];
 
 pub const VTABLE_hkProcess: [VariantID; 1] = [VariantID::new(290940, 241641, 0x1863c18)];
@@ -19422,47 +19422,47 @@ pub const VTABLE_hkAabbTree_hkAabbTreeData__hkAabbTreeAabb16_ushort_: [VariantID
     [VariantID::new(291002, 241750, 0x1864378)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_ushort___TreeTreeCollector: [VariantID; 1] = [
-    VariantID::new(291003, 241752, 0x1864388)
+    VariantID::new(291003, 241752, 0x1864388),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_ushort___ClosestPointCollector: [VariantID; 1] = [
-    VariantID::new(291004, 241754, 0x18643a0)
+    VariantID::new(291004, 241754, 0x18643a0),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_ushort___TreeTreeNodePairCollector: [VariantID; 1] = [
-    VariantID::new(291005, 241756, 0x18643b8)
+    VariantID::new(291005, 241756, 0x18643b8),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_ushort___AllHitsCollector:
     [VariantID; 1] = [VariantID::new(291006, 241758, 0x18643d0)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_ushort___AllHitsNodeCollector: [VariantID; 1] = [
-    VariantID::new(291007, 241760, 0x18643e8)
+    VariantID::new(291007, 241760, 0x18643e8),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_ushort___TreeTreeCollector:
     [VariantID; 1] = [VariantID::new(291008, 241762, 0x1864400)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_ushort___ClosestPointCollector: [VariantID; 1] = [
-    VariantID::new(291009, 241764, 0x1864418)
+    VariantID::new(291009, 241764, 0x1864418),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_ushort___TreeTreeNodePairCollector: [VariantID; 1] = [
-    VariantID::new(291010, 241766, 0x1864430)
+    VariantID::new(291010, 241766, 0x1864430),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_ushort___AllHitsCollector:
     [VariantID; 1] = [VariantID::new(291011, 241768, 0x1864448)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_ushort___AllHitsNodeCollector: [VariantID; 1] = [
-    VariantID::new(291012, 241770, 0x1864460)
+    VariantID::new(291012, 241770, 0x1864460),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_uint___TreeTreeCollector:
     [VariantID; 1] = [VariantID::new(291013, 241772, 0x1864478)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_uint___TreeTreeNodePairCollector: [VariantID; 1] = [
-    VariantID::new(291014, 241774, 0x1864490)
+    VariantID::new(291014, 241774, 0x1864490),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb_uint___AllHitsCollector:
@@ -19478,18 +19478,18 @@ pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_uint___Co
     [VariantID; 1] = [VariantID::new(291018, 241782, 0x18644f0)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_uint___ClosestPointCollector: [VariantID; 1] = [
-    VariantID::new(291019, 241784, 0x1864508)
+    VariantID::new(291019, 241784, 0x1864508),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_uint___TreeTreeNodePairCollector: [VariantID; 1] = [
-    VariantID::new(291020, 241786, 0x1864520)
+    VariantID::new(291020, 241786, 0x1864520),
 ];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_uint___AllHitsCollector:
     [VariantID; 1] = [VariantID::new(291021, 241788, 0x1864538)];
 
 pub const VTABLE_hkAabbTreeQueryUtils_hkAabbTreeData__hkAabbTreeAabb16_uint___AllHitsNodeCollector: [VariantID; 1] = [
-    VariantID::new(291022, 241790, 0x1864550)
+    VariantID::new(291022, 241790, 0x1864550),
 ];
 
 pub const VTABLE_hkgpTriangulatorBase: [VariantID; 1] = [VariantID::new(561966, 241792, 0x1864588)];
@@ -19497,7 +19497,7 @@ pub const VTABLE_hkgpTriangulatorBase: [VariantID; 1] = [VariantID::new(561966, 
 pub const VTABLE_hkgpJobQueue__IJob: [VariantID; 1] = [VariantID::new(291023, 241796, 0x18645a8)];
 
 pub const VTABLE_hkgpAbstractMesh_hkgpMeshBase__Edge_hkgpMeshBase__Vertex_hkgpMeshBase__Triangle_hkContainerHeapAllocator_: [VariantID; 1] = [
-    VariantID::new(291024, 241798, 0x18645c0)
+    VariantID::new(291024, 241798, 0x18645c0),
 ];
 
 pub const VTABLE_hkgpMesh__IConvexOverlap__IConvexShape: [VariantID; 1] =
@@ -19523,11 +19523,11 @@ pub const VTABLE_hkgpMesh: [VariantID; 1] = [VariantID::new(291031, 241812, 0x18
 pub const VTABLE_hkGskShape: [VariantID; 1] = [VariantID::new(291034, 241816, 0x1864768)];
 
 pub const VTABLE_hkgpAbstractMesh_hkgpTriangulatorType_hkContainerHeapAllocator_hkgpTriangulatorBase__VertexBase_hkgpTriangulatorBase__TriangleBase_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkgpTriangulatorBase__SparseEdgeDataPolicy_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkContainerHeapAllocator___1_4_15_0___Edge_hkgpTriangulatorType_hkContainerHeapAllocator_hkgpTriangulatorBase__VertexBase_hkgpTriangulatorBase__TriangleBase_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkgpTriangulatorBase__SparseEdgeDataPolicy_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkContainerHeapAllocator___1_4_15_0___Vertex_hkgpTriangulatorType_hkContainerHeapAllocator_hkgpTriangulatorBase__VertexBase_hkgpTriangulatorBase__TriangleBase_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkgpTriangulatorBase__SparseEdgeDataPolicy_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkContainerHeapAllocator___1_4_15_0___Triangle_hkContainerHeapAllocator_: [VariantID; 1] = [
-    VariantID::new(291037, 241820, 0x1864828)
+    VariantID::new(291037, 241820, 0x1864828),
 ];
 
 pub const VTABLE_hkgpTriangulatorType_hkContainerHeapAllocator_hkgpTriangulatorBase__VertexBase_hkgpTriangulatorBase__TriangleBase_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkgpTriangulatorBase__SparseEdgeDataPolicy_hkgpTriangulatorBase__DefaultEdgeData_hkContainerHeapAllocator__hkContainerHeapAllocator___1_4_15_0_: [VariantID; 1] = [
-    VariantID::new(291038, 241822, 0x1864850)
+    VariantID::new(291038, 241822, 0x1864850),
 ];
 
 pub const VTABLE_hkgpMeshInternals__SimpleCollector: [VariantID; 1] =
@@ -19565,22 +19565,22 @@ pub const VTABLE_BSTDerivedCreator_BSUIScaleformData_IUIMessageData_: [VariantID
     [VariantID::new(562010, 241900, 0x1865820)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BSUIScaleformData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(291146, 241904, 0x1865840)
+    VariantID::new(291146, 241904, 0x1865840),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BSUIScaleformData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(291147, 241906, 0x1865860)
+    VariantID::new(291147, 241906, 0x1865860),
 ];
 
 pub const VTABLE_BSTDerivedCreator_BSUIMessageData_IUIMessageData_: [VariantID; 1] =
     [VariantID::new(562016, 241909, 0x1865898)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BSUIMessageData_IUIMessageData__BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(291149, 241913, 0x18658b8)
+    VariantID::new(291149, 241913, 0x18658b8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BSUIMessageData_BSTCreateFactoryManager_BSFixedString_IUIMessageData_16__: [VariantID; 1] = [
-    VariantID::new(291150, 241915, 0x18658d8)
+    VariantID::new(291150, 241915, 0x18658d8),
 ];
 
 pub const VTABLE_BSUIScaleformData: [VariantID; 1] = [VariantID::new(291145, 241917, 0x18657d0)];
@@ -19720,7 +19720,7 @@ pub const VTABLE___PathSmootherRayCastBuildNodesForLargeZDelta: [VariantID; 1] =
     [VariantID::new(294296, 245672, 0x18a3f40)];
 
 pub const VTABLE_AStarSearch_BSNavmeshInfo_const___BSTSmartPointer_BSPathingDoor_BSTSmartPointerIntrusiveRefCount__22_: [VariantID; 1] = [
-    VariantID::new(294313, 245681, 0x18a4170)
+    VariantID::new(294313, 245681, 0x18a4170),
 ];
 
 pub const VTABLE_BSNavmeshInfoSearch: [VariantID; 1] = [VariantID::new(294314, 245683, 0x18a4190)];
@@ -19735,11 +19735,11 @@ pub const VTABLE_BSTDerivedCreator_MovementAgentActorState_MovementAgent_: [Vari
     [VariantID::new(562902, 245691, 0x18a44d0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementAgentActorState_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(294335, 245695, 0x18a44f0)
+    VariantID::new(294335, 245695, 0x18a44f0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementAgentActorState_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(562907, 245697, 0x18a4510)
+    VariantID::new(562907, 245697, 0x18a4510),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementAgentActorState_: [VariantID; 1] =
@@ -19760,15 +19760,15 @@ pub const VTABLE_BSTDerivedCreator_BSPathingRequest_BSPathingRequest_: [VariantI
     [VariantID::new(562915, 245718, 0x18a46b0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BSPathingRequest_BSPathingRequest__BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(294347, 245722, 0x18a46d0)
+    VariantID::new(294347, 245722, 0x18a46d0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BSPathingRequest_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(562920, 245724, 0x18a46f0)
+    VariantID::new(562920, 245724, 0x18a46f0),
 ];
 
 pub const VTABLE_AutoRegisterPathing_BSPathingRequest_BSTSmartPointerPathingFactoryManager_BSPathingRequest_64__: [VariantID; 1] = [
-    VariantID::new(294348, 245728, 0x18a4710)
+    VariantID::new(294348, 245728, 0x18a4710),
 ];
 
 pub const VTABLE_BSPathingRequest: [VariantID; 1] = [VariantID::new(294344, 245730, 0x18a4630)];
@@ -19782,11 +19782,11 @@ pub const VTABLE_BSTDerivedCreator_MovementAgentPathFollowerStandard_MovementAge
     1] = [VariantID::new(562962, 245739, 0x18a5808)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementAgentPathFollowerStandard_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(294449, 245743, 0x18a5828)
+    VariantID::new(294449, 245743, 0x18a5828),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementAgentPathFollowerStandard_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(562967, 245745, 0x18a5848)
+    VariantID::new(562967, 245745, 0x18a5848),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementAgentPathFollowerStandard_: [VariantID;
@@ -19855,11 +19855,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPathManagerArbiter_MovementArbiter_: 
     [VariantID::new(562989, 245828, 0x18a6258)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPathManagerArbiter_MovementArbiter__BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(294505, 245832, 0x18a6278)
+    VariantID::new(294505, 245832, 0x18a6278),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPathManagerArbiter_BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(562994, 245834, 0x18a6298)
+    VariantID::new(562994, 245834, 0x18a6298),
 ];
 
 pub const VTABLE_AutoRegisterMovementArbiterCreator_MovementPathManagerArbiter_: [VariantID; 1] =
@@ -19885,7 +19885,7 @@ pub const VTABLE_MovementMessageNewPath: [VariantID; 1] =
     [VariantID::new(294498, 245856, 0x18a6148)];
 
 pub const VTABLE_IMovementAgentDataTracker_IMovementPathManagerAgent_MovementPathManagerAgentReturnData__AGENT_RESULT_: [VariantID; 1] = [
-    VariantID::new(294499, 245858, 0x18a6180)
+    VariantID::new(294499, 245858, 0x18a6180),
 ];
 
 pub const VTABLE_IMovementPathManagerDataTracker: [VariantID; 1] =
@@ -19901,15 +19901,15 @@ pub const VTABLE_BSTDerivedCreator_BSPathingSolution_BSPathingSolution_: [Varian
     [VariantID::new(563000, 245875, 0x18a6748)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_BSPathingSolution_BSPathingSolution__BSTSmartPointerPathingFactoryManager_BSPathingSolution_64__: [VariantID; 1] = [
-    VariantID::new(294538, 245879, 0x18a6768)
+    VariantID::new(294538, 245879, 0x18a6768),
 ];
 
 pub const VTABLE_AutoRegisterCreator_BSPathingSolution_BSTSmartPointerPathingFactoryManager_BSPathingSolution_64__: [VariantID; 1] = [
-    VariantID::new(563005, 245881, 0x18a6788)
+    VariantID::new(563005, 245881, 0x18a6788),
 ];
 
 pub const VTABLE_AutoRegisterPathing_BSPathingSolution_BSTSmartPointerPathingFactoryManager_BSPathingSolution_64__: [VariantID; 1] = [
-    VariantID::new(294539, 245885, 0x18a67a8)
+    VariantID::new(294539, 245885, 0x18a67a8),
 ];
 
 pub const VTABLE_BSNavmesh: [VariantID; 1] = [VariantID::new(294610, 245898, 0x18a72a8)];
@@ -19949,11 +19949,11 @@ pub const VTABLE_MovementArbitrationAverageFloat: [VariantID; 1] =
     [VariantID::new(294747, 245953, 0x18a8800)];
 
 pub const VTABLE_MovementArbitrationScheme_BSTSmartPointer_IMovementParameters_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(294748, 245955, 0x18a8818)
+    VariantID::new(294748, 245955, 0x18a8818),
 ];
 
 pub const VTABLE_MovementArbitrationMaxWeight_BSTSmartPointer_IMovementParameters_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(563033, 245957, 0x18a8830)
+    VariantID::new(563033, 245957, 0x18a8830),
 ];
 
 pub const VTABLE_MovementArbitrationMaxWeightParameters: [VariantID; 1] =
@@ -20021,15 +20021,15 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageActivateDoor_MovementMessage_:
     [VariantID::new(563065, 246122, 0x18abae8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageActivateDoor_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295047, 246126, 0x18abb08)
+    VariantID::new(295047, 246126, 0x18abb08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageActivateDoor_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563070, 246128, 0x18abb28)
+    VariantID::new(563070, 246128, 0x18abb28),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageActivateDoor_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295048, 246132, 0x18abb48)
+    VariantID::new(295048, 246132, 0x18abb48),
 ];
 
 pub const VTABLE_MovementMessageDoor: [VariantID; 1] = [VariantID::new(295043, 246134, 0x18aba18)];
@@ -20046,15 +20046,15 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageWarpToLocation_MovementMessage
     [VariantID::new(563076, 246144, 0x18abc80)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageWarpToLocation_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295056, 246148, 0x18abca0)
+    VariantID::new(295056, 246148, 0x18abca0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageWarpToLocation_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563081, 246150, 0x18abcc0)
+    VariantID::new(563081, 246150, 0x18abcc0),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageWarpToLocation_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295057, 246154, 0x18abce0)
+    VariantID::new(295057, 246154, 0x18abce0),
 ];
 
 pub const VTABLE_MovementMessageWarpToLocation: [VariantID; 1] =
@@ -20064,33 +20064,33 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageWarpToMultiple_MovementMessage
     [VariantID::new(563087, 246159, 0x18abe70)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageWarpToMultiple_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295067, 246163, 0x18abe90)
+    VariantID::new(295067, 246163, 0x18abe90),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageWarpToMultiple_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563092, 246165, 0x18abeb0)
+    VariantID::new(563092, 246165, 0x18abeb0),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageWarpToMultiple_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295068, 246169, 0x18abed0)
+    VariantID::new(295068, 246169, 0x18abed0),
 ];
 
 pub const VTABLE_MovementMessageWarpToMultiple: [VariantID; 1] =
     [VariantID::new(295066, 246172, 0x18abe38)];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageBlocked_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295073, 246175, 0x18abfd0)
+    VariantID::new(295073, 246175, 0x18abfd0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MovementMessageBlocked_MovementMessage_: [VariantID; 1] =
     [VariantID::new(563098, 246177, 0x18abf70)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageBlocked_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295072, 246181, 0x18abf90)
+    VariantID::new(295072, 246181, 0x18abf90),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageBlocked_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563103, 246183, 0x18abfb0)
+    VariantID::new(563103, 246183, 0x18abfb0),
 ];
 
 pub const VTABLE_MovementMessageBlocked: [VariantID; 1] =
@@ -20100,33 +20100,33 @@ pub const VTABLE_BSTDerivedCreator_MovementMessagePlayIdle_MovementMessage_: [Va
     [VariantID::new(563109, 246191, 0x18ac1d8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessagePlayIdle_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295086, 246195, 0x18ac1f8)
+    VariantID::new(295086, 246195, 0x18ac1f8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessagePlayIdle_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563114, 246197, 0x18ac218)
+    VariantID::new(563114, 246197, 0x18ac218),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessagePlayIdle_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295087, 246201, 0x18ac238)
+    VariantID::new(295087, 246201, 0x18ac238),
 ];
 
 pub const VTABLE_MovementMessagePlayIdle: [VariantID; 1] =
     [VariantID::new(295085, 246203, 0x18ac1a0)];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageFreezeDirection_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295092, 246206, 0x18ac330)
+    VariantID::new(295092, 246206, 0x18ac330),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MovementMessageFreezeDirection_MovementMessage_: [VariantID; 1] =
     [VariantID::new(563120, 246208, 0x18ac2d0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageFreezeDirection_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295091, 246212, 0x18ac2f0)
+    VariantID::new(295091, 246212, 0x18ac2f0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageFreezeDirection_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563125, 246214, 0x18ac310)
+    VariantID::new(563125, 246214, 0x18ac310),
 ];
 
 pub const VTABLE_MovementMessageFreezeDirection: [VariantID; 1] =
@@ -20136,15 +20136,15 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageSetStaticPath_MovementMessage_
     [VariantID::new(563131, 246221, 0x18ac3d0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageSetStaticPath_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295096, 246225, 0x18ac3f0)
+    VariantID::new(295096, 246225, 0x18ac3f0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageSetStaticPath_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563136, 246227, 0x18ac410)
+    VariantID::new(563136, 246227, 0x18ac410),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageSetStaticPath_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295097, 246231, 0x18ac430)
+    VariantID::new(295097, 246231, 0x18ac430),
 ];
 
 pub const VTABLE_MovementMessageSetStaticPath: [VariantID; 1] =
@@ -20154,15 +20154,15 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageJump_MovementMessage_: [Varian
     [VariantID::new(563143, 246236, 0x18ac520)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageJump_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295103, 246240, 0x18ac540)
+    VariantID::new(295103, 246240, 0x18ac540),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageJump_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563148, 246242, 0x18ac560)
+    VariantID::new(563148, 246242, 0x18ac560),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageJump_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295104, 246246, 0x18ac580)
+    VariantID::new(295104, 246246, 0x18ac580),
 ];
 
 pub const VTABLE_MovementMessageJump: [VariantID; 2] = [
@@ -20174,11 +20174,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPostUpdateArbiter_MovementArbiter_: [
     [VariantID::new(563156, 246253, 0x18ac758)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPostUpdateArbiter_MovementArbiter__BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(295113, 246257, 0x18ac778)
+    VariantID::new(295113, 246257, 0x18ac778),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPostUpdateArbiter_BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(563161, 246259, 0x18ac798)
+    VariantID::new(563161, 246259, 0x18ac798),
 ];
 
 pub const VTABLE_AutoRegisterMovementArbiterCreator_MovementPostUpdateArbiter_: [VariantID; 1] =
@@ -20195,11 +20195,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPathManagerAgentStaticAvoider_Movemen
     [VariantID; 1] = [VariantID::new(563172, 246281, 0x18ace10)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPathManagerAgentStaticAvoider_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295153, 246285, 0x18ace30)
+    VariantID::new(295153, 246285, 0x18ace30),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPathManagerAgentStaticAvoider_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563177, 246287, 0x18ace50)
+    VariantID::new(563177, 246287, 0x18ace50),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPathManagerAgentStaticAvoider_:
@@ -20222,11 +20222,11 @@ pub const VTABLE_BSTDerivedCreator_MovementAgentActorAvoider_MovementAgent_: [Va
     [VariantID::new(563187, 246316, 0x18ad6f8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementAgentActorAvoider_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295209, 246320, 0x18ad718)
+    VariantID::new(295209, 246320, 0x18ad718),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementAgentActorAvoider_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563192, 246322, 0x18ad738)
+    VariantID::new(563192, 246322, 0x18ad738),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementAgentActorAvoider_: [VariantID; 1] =
@@ -20250,11 +20250,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentTranslationController_Mov
     [VariantID; 1] = [VariantID::new(563203, 246347, 0x18adbf0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentTranslationController_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295235, 246351, 0x18adc10)
+    VariantID::new(295235, 246351, 0x18adc10),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentTranslationController_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563208, 246353, 0x18adc30)
+    VariantID::new(563208, 246353, 0x18adc30),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentTranslationController_:
@@ -20273,11 +20273,11 @@ pub const VTABLE_BSTDerivedCreator_MovementTweenerAgentFixedDelta_MovementAgent_
     [VariantID::new(563217, 246369, 0x18ade88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementTweenerAgentFixedDelta_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295250, 246373, 0x18adea8)
+    VariantID::new(295250, 246373, 0x18adea8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementTweenerAgentFixedDelta_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563222, 246375, 0x18adec8)
+    VariantID::new(563222, 246375, 0x18adec8),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementTweenerAgentFixedDelta_: [VariantID; 1] =
@@ -20296,11 +20296,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerArbiter_MovementArbiter_: [Var
     [VariantID::new(563230, 246394, 0x18ae1e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerArbiter_MovementArbiter__BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(295268, 246398, 0x18ae208)
+    VariantID::new(295268, 246398, 0x18ae208),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerArbiter_BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(563235, 246400, 0x18ae228)
+    VariantID::new(563235, 246400, 0x18ae228),
 ];
 
 pub const VTABLE_AutoRegisterMovementArbiterCreator_MovementHandlerArbiter_: [VariantID; 1] =
@@ -20315,30 +20315,30 @@ pub const VTABLE_MovementHandlerAgent: [VariantID; 2] = [
 ];
 
 pub const VTABLE_IMovementAgentDataTracker_IMovementHandlerAgent_MovementHandlerUpdateDataSmallDelta_: [VariantID; 1] = [
-    VariantID::new(295270, 246413, 0x18ae268)
+    VariantID::new(295270, 246413, 0x18ae268),
 ];
 
 pub const VTABLE_MovementAgentNullTracker_IMovementHandlerAgent_MovementHandlerUpdateDataSmallDelta_: [VariantID; 1] = [
-    VariantID::new(295271, 246415, 0x18ae280)
+    VariantID::new(295271, 246415, 0x18ae280),
 ];
 
 pub const VTABLE_IMovementAgentDataTracker_IMovementHandlerAgent_MovementHandlerOutputDataSmallDelta_: [VariantID; 1] = [
-    VariantID::new(295272, 246417, 0x18ae298)
+    VariantID::new(295272, 246417, 0x18ae298),
 ];
 
 pub const VTABLE_MovementAgentNullTracker_IMovementHandlerAgent_MovementHandlerOutputDataSmallDelta_: [VariantID; 1] = [
-    VariantID::new(295273, 246419, 0x18ae2b0)
+    VariantID::new(295273, 246419, 0x18ae2b0),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MovementPlannerArbiter_MovementArbiter_: [VariantID; 1] =
     [VariantID::new(563249, 246428, 0x18ae928)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPlannerArbiter_MovementArbiter__BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(295311, 246432, 0x18ae948)
+    VariantID::new(295311, 246432, 0x18ae948),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPlannerArbiter_BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(563254, 246434, 0x18ae968)
+    VariantID::new(563254, 246434, 0x18ae968),
 ];
 
 pub const VTABLE_AutoRegisterMovementArbiterCreator_MovementPlannerArbiter_: [VariantID; 1] =
@@ -20358,19 +20358,19 @@ pub const VTABLE_MovementPlannerAgent: [VariantID; 2] = [
 ];
 
 pub const VTABLE_IMovementAgentDataTracker_IMovementPlannerAgent_MovementPlannerAgentReturnDataSmallDelta_: [VariantID; 1] = [
-    VariantID::new(295313, 246451, 0x18ae9a8)
+    VariantID::new(295313, 246451, 0x18ae9a8),
 ];
 
 pub const VTABLE_MovementAgentNullTracker_IMovementPlannerAgent_MovementPlannerAgentReturnDataSmallDelta_: [VariantID; 1] = [
-    VariantID::new(295314, 246453, 0x18ae9c0)
+    VariantID::new(295314, 246453, 0x18ae9c0),
 ];
 
 pub const VTABLE_WeightedModifierVisitor_BSTSmartPointer_IMovementParameters_BSTSmartPointerIntrusiveRefCount__: [VariantID; 1] = [
-    VariantID::new(295316, 246456, 0x18ae9e8)
+    VariantID::new(295316, 246456, 0x18ae9e8),
 ];
 
 pub const VTABLE_VisitReturnData_BSTSmartPointer_IMovementParameters_BSTSmartPointerIntrusiveRefCount__BSScrapArrayAllocator_: [VariantID; 1] = [
-    VariantID::new(295317, 246458, 0x18aea08)
+    VariantID::new(295317, 246458, 0x18aea08),
 ];
 
 pub const VTABLE_WeightedModifierVisitor_MovementVector_: [VariantID; 1] =
@@ -20392,11 +20392,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPathManagerAgentLoadedAreaMonitor_Mov
     [VariantID; 1] = [VariantID::new(563270, 246470, 0x18aec20)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPathManagerAgentLoadedAreaMonitor_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295329, 246474, 0x18aec40)
+    VariantID::new(295329, 246474, 0x18aec40),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPathManagerAgentLoadedAreaMonitor_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563275, 246476, 0x18aec60)
+    VariantID::new(563275, 246476, 0x18aec60),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPathManagerAgentLoadedAreaMonitor_:
@@ -20411,11 +20411,11 @@ pub const VTABLE_BSTDerivedCreator_MovementAgentPathFollowerFlight_MovementAgent
     [VariantID::new(563286, 246488, 0x18af150)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementAgentPathFollowerFlight_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295358, 246492, 0x18af170)
+    VariantID::new(295358, 246492, 0x18af170),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementAgentPathFollowerFlight_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563291, 246494, 0x18af190)
+    VariantID::new(563291, 246494, 0x18af190),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementAgentPathFollowerFlight_: [VariantID; 1] =
@@ -20435,11 +20435,11 @@ pub const VTABLE_BSTDerivedCreator_MovementAgentPathFollowerVirtual_MovementAgen
     [VariantID::new(563301, 246514, 0x18af598)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementAgentPathFollowerVirtual_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295379, 246518, 0x18af5b8)
+    VariantID::new(295379, 246518, 0x18af5b8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementAgentPathFollowerVirtual_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563306, 246520, 0x18af5d8)
+    VariantID::new(563306, 246520, 0x18af5d8),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementAgentPathFollowerVirtual_: [VariantID;
@@ -20457,11 +20457,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentAngleController_MovementA
     1] = [VariantID::new(563313, 246538, 0x18af740)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentAngleController_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295387, 246542, 0x18af760)
+    VariantID::new(295387, 246542, 0x18af760),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentAngleController_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563318, 246544, 0x18af780)
+    VariantID::new(563318, 246544, 0x18af780),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentAngleController_:
@@ -20476,11 +20476,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentAngleGain_MovementAgent_:
     [VariantID::new(563325, 246556, 0x18af8e8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentAngleGain_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295396, 246560, 0x18af908)
+    VariantID::new(295396, 246560, 0x18af908),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentAngleGain_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563330, 246562, 0x18af928)
+    VariantID::new(563330, 246562, 0x18af928),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentAngleGain_: [VariantID; 1] =
@@ -20495,11 +20495,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentSpeedPassThrough_Movement
     [VariantID; 1] = [VariantID::new(563337, 246573, 0x18afa88)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentSpeedPassThrough_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295404, 246577, 0x18afaa8)
+    VariantID::new(295404, 246577, 0x18afaa8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentSpeedPassThrough_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563342, 246579, 0x18afac8)
+    VariantID::new(563342, 246579, 0x18afac8),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentSpeedPassThrough_:
@@ -20514,11 +20514,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentAnglePassThrough_Movement
     [VariantID; 1] = [VariantID::new(563349, 246590, 0x18afc30)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentAnglePassThrough_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295412, 246594, 0x18afc50)
+    VariantID::new(295412, 246594, 0x18afc50),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentAnglePassThrough_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563354, 246596, 0x18afc70)
+    VariantID::new(563354, 246596, 0x18afc70),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentAnglePassThrough_:
@@ -20533,11 +20533,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentDirectionPassThrough_Move
     [VariantID; 1] = [VariantID::new(563361, 246607, 0x18afdd8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentDirectionPassThrough_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295420, 246611, 0x18afdf8)
+    VariantID::new(295420, 246611, 0x18afdf8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentDirectionPassThrough_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563366, 246613, 0x18afe18)
+    VariantID::new(563366, 246613, 0x18afe18),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentDirectionPassThrough_:
@@ -20552,11 +20552,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentStrafing_MovementAgent_: 
     [VariantID::new(563373, 246625, 0x18afff0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentStrafing_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295431, 246629, 0x18b0010)
+    VariantID::new(295431, 246629, 0x18b0010),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentStrafing_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563378, 246631, 0x18b0030)
+    VariantID::new(563378, 246631, 0x18b0030),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentStrafing_: [VariantID; 1] =
@@ -20571,11 +20571,11 @@ pub const VTABLE_BSTDerivedCreator_MovementHandlerAgentLargeDeltaIdle_MovementAg
     1] = [VariantID::new(563385, 246642, 0x18b0198)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementHandlerAgentLargeDeltaIdle_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295439, 246646, 0x18b01b8)
+    VariantID::new(295439, 246646, 0x18b01b8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementHandlerAgentLargeDeltaIdle_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563390, 246648, 0x18b01d8)
+    VariantID::new(563390, 246648, 0x18b01d8),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementHandlerAgentLargeDeltaIdle_: [VariantID;
@@ -20590,11 +20590,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPlannerAgentNavmeshBounds_MovementAge
     1] = [VariantID::new(563398, 246661, 0x18b0638)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPlannerAgentNavmeshBounds_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295465, 246665, 0x18b0658)
+    VariantID::new(295465, 246665, 0x18b0658),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPlannerAgentNavmeshBounds_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563403, 246667, 0x18b0678)
+    VariantID::new(563403, 246667, 0x18b0678),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPlannerAgentNavmeshBounds_: [VariantID;
@@ -20610,11 +20610,11 @@ pub const VTABLE_BSTDerivedCreator_MovementPathManagerAgentAvoidBox_MovementAgen
     [VariantID::new(563410, 246680, 0x18b09f8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementPathManagerAgentAvoidBox_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295486, 246684, 0x18b0a18)
+    VariantID::new(295486, 246684, 0x18b0a18),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementPathManagerAgentAvoidBox_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563415, 246686, 0x18b0a38)
+    VariantID::new(563415, 246686, 0x18b0a38),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementPathManagerAgentAvoidBox_: [VariantID;
@@ -20634,11 +20634,11 @@ pub const VTABLE_BSTDerivedCreator_MovementTweenerArbiter_MovementArbiter_: [Var
     [VariantID::new(563434, 246704, 0x18b0ee8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementTweenerArbiter_MovementArbiter__BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(295513, 246708, 0x18b0f08)
+    VariantID::new(295513, 246708, 0x18b0f08),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementTweenerArbiter_BSTCreateFactoryManager_BSFixedString_MovementArbiter_32__: [VariantID; 1] = [
-    VariantID::new(563439, 246710, 0x18b0f28)
+    VariantID::new(563439, 246710, 0x18b0f28),
 ];
 
 pub const VTABLE_AutoRegisterMovementArbiterCreator_MovementTweenerArbiter_: [VariantID; 1] =
@@ -20673,11 +20673,11 @@ pub const VTABLE_BSTDerivedCreator_MovementStateTweener_MovementAgent_: [Variant
     [VariantID::new(563448, 246743, 0x18b1160)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementStateTweener_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295524, 246747, 0x18b1180)
+    VariantID::new(295524, 246747, 0x18b1180),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementStateTweener_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563453, 246749, 0x18b11a0)
+    VariantID::new(563453, 246749, 0x18b11a0),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementStateTweener_: [VariantID; 1] =
@@ -20692,11 +20692,11 @@ pub const VTABLE_BSTDerivedCreator_MovementStateFollowPath_MovementAgent_: [Vari
     [VariantID::new(563460, 246761, 0x18b13b8)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementStateFollowPath_MovementAgent__BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(295533, 246765, 0x18b13d8)
+    VariantID::new(295533, 246765, 0x18b13d8),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementStateFollowPath_BSTCreateFactoryManager_BSFixedString_MovementAgent_32__: [VariantID; 1] = [
-    VariantID::new(563465, 246767, 0x18b13f8)
+    VariantID::new(563465, 246767, 0x18b13f8),
 ];
 
 pub const VTABLE_AutoRegisterMovementAgentCreator_MovementStateFollowPath_: [VariantID; 1] =
@@ -20714,45 +20714,45 @@ pub const VTABLE_BSTDerivedCreator_MovementMessageNewPath_MovementMessage_: [Var
     [VariantID::new(563475, 246783, 0x18b1730)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessageNewPath_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295553, 246787, 0x18b1750)
+    VariantID::new(295553, 246787, 0x18b1750),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessageNewPath_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563480, 246789, 0x18b1770)
+    VariantID::new(563480, 246789, 0x18b1770),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessageNewPath_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295554, 246793, 0x18b1790)
+    VariantID::new(295554, 246793, 0x18b1790),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MovementMessagePathComplete_MovementMessage_: [VariantID; 1] =
     [VariantID::new(563485, 246795, 0x18b17b0)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessagePathComplete_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295555, 246799, 0x18b17d0)
+    VariantID::new(295555, 246799, 0x18b17d0),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessagePathComplete_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563490, 246801, 0x18b17f0)
+    VariantID::new(563490, 246801, 0x18b17f0),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessagePathComplete_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295556, 246805, 0x18b1810)
+    VariantID::new(295556, 246805, 0x18b1810),
 ];
 
 pub const VTABLE_BSTDerivedCreator_MovementMessagePathFailed_MovementMessage_: [VariantID; 1] =
     [VariantID::new(563495, 246807, 0x18b1830)];
 
 pub const VTABLE_AutoRegisterFactory_BSTDerivedCreator_MovementMessagePathFailed_MovementMessage__BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295557, 246811, 0x18b1850)
+    VariantID::new(295557, 246811, 0x18b1850),
 ];
 
 pub const VTABLE_AutoRegisterCreator_MovementMessagePathFailed_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(563500, 246813, 0x18b1870)
+    VariantID::new(563500, 246813, 0x18b1870),
 ];
 
 pub const VTABLE_AutoRegisterPathing_MovementMessagePathFailed_BSTSmartPointerPathingFactoryManager_MovementMessage_64__: [VariantID; 1] = [
-    VariantID::new(295558, 246817, 0x18b1890)
+    VariantID::new(295558, 246817, 0x18b1890),
 ];
 
 pub const VTABLE_MovementMessagePathEvent: [VariantID; 1] =
@@ -20841,7 +20841,7 @@ pub const VTABLE_bnet__Callback_bnet__BNetErrorResult_bnet__EmptyStatus_: [Varia
     [VariantID::new(295891, 246936, 0x0)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet__BNetErrorResult_bnet__EmptyStatus__void_____unsigned___int64_bnet__BNetErrorResult____bnet__BNetError_bnet__EmptyStatus_const____: [VariantID; 1] = [
-    VariantID::new(295892, 246938, 0x0)
+    VariantID::new(295892, 246938, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__FileChunk__bnet__HttpResponseInfo_:
@@ -20851,104 +20851,104 @@ pub const VTABLE_BSPlatform__BSAsyncRequestBase: [VariantID; 1] =
     [VariantID::new(296147, 246981, 0x18b6538)];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64___: [VariantID; 1] = [
-    VariantID::new(296148, 246983, 0x18b6548)
+    VariantID::new(296148, 246983, 0x18b6548),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_char_const_____: [VariantID; 1] = [
-    VariantID::new(296149, 246985, 0x18bd0d8)
+    VariantID::new(296149, 246985, 0x18bd0d8),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__UgcCreationResult__bnet__HttpResponseInfo_:
     [VariantID; 1] = [VariantID::new(296153, 246987, 0x18b65c8)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcCreationResult__bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296154, 246989, 0x0)
+    VariantID::new(296154, 246989, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo_: [VariantID; 1] =
     [VariantID::new(296146, 246992, 0x18b6628)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296156, 246994, 0x0)
+    VariantID::new(296156, 246994, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__UgcContent__bnet__HttpResponseInfo_:
     [VariantID; 1] = [VariantID::new(296158, 246997, 0x18b6678)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcContent__bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296159, 246999, 0x0)
+    VariantID::new(296159, 246999, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const_____: [VariantID; 1] = [
-    VariantID::new(296160, 247001, 0x18b66c8)
+    VariantID::new(296160, 247001, 0x18b66c8),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__UgcChunkUploadResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(296163, 247005, 0x18b66d8)
+    VariantID::new(296163, 247005, 0x18b66d8),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcChunkUploadResult__bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296164, 247007, 0x0)
+    VariantID::new(296164, 247007, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__FileChunk__bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296168, 247011, 0x0)
+    VariantID::new(296168, 247011, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__UgcPagedContentListResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(296177, 247021, 0x18b67e0)
+    VariantID::new(296177, 247021, 0x18b67e0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcPagedContentListResult__bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296178, 247023, 0x0)
+    VariantID::new(296178, 247023, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const_____: [VariantID; 1] = [
-    VariantID::new(296179, 247025, 0x18b6830)
+    VariantID::new(296179, 247025, 0x18b6830),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__UgcContent_25_1_bnet___impl__StdAllocator_bnet__UgcContent____bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(296183, 247030, 0x0)
+    VariantID::new(296183, 247030, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__UgcContent_25_1_bnet___impl__StdAllocator_bnet__UgcContent____bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296184, 247032, 0x0)
+    VariantID::new(296184, 247032, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__UgcListCategoriesResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(296187, 247036, 0x18b6840)
+    VariantID::new(296187, 247036, 0x18b6840),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcListCategoriesResult__bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296188, 247038, 0x0)
+    VariantID::new(296188, 247038, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const_____: [VariantID; 1] = [
-    VariantID::new(296189, 247040, 0x18b6890)
+    VariantID::new(296189, 247040, 0x18b6890),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_char_const___BSPlatform__BNetResult___BSStringT_char_4294967295_DynamicMemoryManagementPol_____BSPlatform__BSModsManager___std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSStringT_char_4294967295_DynamicMemoryManagementPol_____void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(0, 247043, 0x0)
+    VariantID::new(0, 247043, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BNetResult____BSPlatform__BSModsManager___std___Ph_1__const___std___Ph_2__const___BSPlatform__BNetResult____void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 247045, 0x0)
+    VariantID::new(0, 247045, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const___BSPlatform__BNetResult___BSPlatform__BSUserContent____BSPlatform__BSModsManager___std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSPlatform__BSUserContent____void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const___: [VariantID; 1] = [
-    VariantID::new(0, 247047, 0x0)
+    VariantID::new(0, 247047, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_char_const___BSPlatform__BNetResult____BSPlatform__BSModsManager___std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult____void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(0, 247049, 0x0)
+    VariantID::new(0, 247049, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator_____BSPlatform__BSModsManager___std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator_____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 247051, 0x0)
+    VariantID::new(0, 247051, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator_____BSPlatform__BSModsManager___std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator_____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 247053, 0x0)
+    VariantID::new(0, 247053, 0x0),
 ];
 
 pub const VTABLE_bnet__IProducerConsumerQueue_bnet__UniquePtr_bnet__Job__: [VariantID; 1] =
@@ -20963,62 +20963,62 @@ pub const VTABLE_bnet__SteamExternalAuthInfo: [VariantID; 1] =
     [VariantID::new(297568, 248076, 0x0)];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__AccountResult__bnet__AccountAuthenticationStatus_: [VariantID; 1] = [
-    VariantID::new(297570, 248084, 0x18bc3c0)
+    VariantID::new(297570, 248084, 0x18bc3c0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__AccountResult__bnet__AccountAuthenticationStatus__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(297571, 248086, 0x18bc3e8)
+    VariantID::new(297571, 248086, 0x18bc3e8),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__SessionValidateResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(0, 248092, 0x0)
+    VariantID::new(0, 248092, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__SessionValidateResult__bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(0, 248094, 0x0)
+    VariantID::new(0, 248094, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bool_bnet__HttpResponseInfo_: [VariantID; 1] =
     [VariantID::new(297576, 248099, 0x18bc488)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bool_bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(297577, 248101, 0x18bc4b0)
+    VariantID::new(297577, 248101, 0x18bc4b0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__AccountLinkingResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(297579, 248104, 0x18bc410)
+    VariantID::new(297579, 248104, 0x18bc410),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__AccountLinkingResult__bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(297580, 248106, 0x18bc438)
+    VariantID::new(297580, 248106, 0x18bc438),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(297582, 248109, 0x18bc460)
+    VariantID::new(297582, 248109, 0x18bc460),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__LegalDocument_5_1_bnet___impl__StdAllocator_bnet__LegalDocument____bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(297587, 248115, 0x18bc4d8)
+    VariantID::new(297587, 248115, 0x18bc4d8),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__LegalDocument_5_1_bnet___impl__StdAllocator_bnet__LegalDocument____bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(297588, 248117, 0x18bc500)
+    VariantID::new(297588, 248117, 0x18bc500),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const_____: [VariantID; 1] = [
-    VariantID::new(297589, 248119, 0x18bc528)
+    VariantID::new(297589, 248119, 0x18bc528),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_std__vector_bnet__Entitlements__Item_bnet___impl__StdAllocator_bnet__Entitlements__Item____bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(0, 248125, 0x0)
+    VariantID::new(0, 248125, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_std__vector_bnet__Entitlements__Item_bnet___impl__StdAllocator_bnet__Entitlements__Item____bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(0, 248127, 0x0)
+    VariantID::new(0, 248127, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator__const_____: [VariantID; 1] = [
-    VariantID::new(297596, 248129, 0x0)
+    VariantID::new(297596, 248129, 0x0),
 ];
 
 pub const VTABLE_bnet__CustomData__ElementalValue_5_: [VariantID; 1] =
@@ -21028,231 +21028,231 @@ pub const VTABLE_bnet__CustomData__NumericValue_5_: [VariantID; 1] =
     [VariantID::new(0, 248134, 0x0)];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__Gsp__Profile__Profile__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(0, 248136, 0x0)
+    VariantID::new(0, 248136, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__Gsp__Profile__Profile__bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(0, 248138, 0x0)
+    VariantID::new(0, 248138, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet___impl__FixedString_500_1_1_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(0, 248141, 0x0)
+    VariantID::new(0, 248141, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet___impl__FixedString_500_1_1_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo__BSPlatform__BSBNetAccountManager_: [VariantID; 1] = [
-    VariantID::new(0, 248143, 0x0)
+    VariantID::new(0, 248143, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSBNetAccountManager_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BNetResult____BSPlatform__BSBNetAccountManager___std___Ph_1__const___std___Ph_2__const___BSPlatform__BNetResult____void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248146, 0x0)
+    VariantID::new(0, 248146, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_94ac3c6738a5b01d98230634473f9182__void_BSPlatform__BNetResult_unsigned___int64_char_const___char_const___: [VariantID; 1] = [
-    VariantID::new(0, 248149, 0x0)
+    VariantID::new(0, 248149, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSBNetAccountManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator_____BSPlatform__BSBNetAccountManager___std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator_____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248152, 0x0)
+    VariantID::new(0, 248152, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc_std___Binder_std___Unforced_void__BSPlatform__BSBNetAccountManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator_____BSPlatform__BSBNetAccountManager___std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator_____void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248154, 0x0)
+    VariantID::new(0, 248154, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_bc80a00499250b780cbc2561b1d535aa__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(0, 248156, 0x0)
+    VariantID::new(0, 248156, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcContent__bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297783, 248177, 0x0)
+    VariantID::new(297783, 248177, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const_____: [VariantID; 1] = [
-    VariantID::new(297784, 248179, 0x0)
+    VariantID::new(297784, 248179, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__PurchaseResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(0, 248181, 0x0)
+    VariantID::new(0, 248181, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__PurchaseResult__bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(0, 248183, 0x0)
+    VariantID::new(0, 248183, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__Balance__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(297788, 248186, 0x0)
+    VariantID::new(297788, 248186, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__Balance__bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297789, 248188, 0x0)
+    VariantID::new(297789, 248188, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_int___: [VariantID; 1] = [
-    VariantID::new(297790, 248190, 0x0)
+    VariantID::new(297790, 248190, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297792, 248193, 0x0)
+    VariantID::new(297792, 248193, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcPagedContentListResult__bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297795, 248197, 0x0)
+    VariantID::new(297795, 248197, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const_____: [VariantID; 1] = [
-    VariantID::new(297796, 248199, 0x0)
+    VariantID::new(297796, 248199, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__UgcContent_25_1_bnet___impl__StdAllocator_bnet__UgcContent____bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297797, 248201, 0x0)
+    VariantID::new(297797, 248201, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcListCategoriesResult__bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297799, 248204, 0x0)
+    VariantID::new(297799, 248204, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Catalog__Item__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(297802, 248208, 0x0)
+    VariantID::new(297802, 248208, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Catalog__Item__bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297803, 248210, 0x0)
+    VariantID::new(297803, 248210, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSTArray_uint_BSTArrayHeapAllocator__const_____: [VariantID; 1] = [
-    VariantID::new(297804, 248212, 0x0)
+    VariantID::new(297804, 248212, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UgcCreationResult__bnet__HttpResponseInfo__BSPlatform__BSCreationClubManager_: [VariantID; 1] = [
-    VariantID::new(297806, 248215, 0x0)
+    VariantID::new(297806, 248215, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_190f6d692505062aad0a2346bf90014f__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const___: [VariantID; 1] = [
-    VariantID::new(0, 248217, 0x0)
+    VariantID::new(0, 248217, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_91b2a428d7d08b3621a88d67ec429c17__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248219, 0x0)
+    VariantID::new(0, 248219, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_b661d007b682adf079e9d3a7e977c0b2__void_BSPlatform__BNetResult_unsigned___int64_int_: [VariantID; 1] = [
-    VariantID::new(0, 248221, 0x0)
+    VariantID::new(0, 248221, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_db76a9fb04acf52ae099739ff5db71fb__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248223, 0x0)
+    VariantID::new(0, 248223, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_9431982a811f31c19b132e5b5e738388__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248225, 0x0)
+    VariantID::new(0, 248225, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_431dc82b74ec70de388d1ce79e67d9f1__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248227, 0x0)
+    VariantID::new(0, 248227, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_d5924669d8849d915d6365e2ddad9c90__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248229, 0x0)
+    VariantID::new(0, 248229, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_90545b18a4f477ffe599bad0cd534743__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248232, 0x0)
+    VariantID::new(0, 248232, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_b464a8c803bcf72b0df457dd6c436e2c__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248235, 0x0)
+    VariantID::new(0, 248235, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_7ba8e9094a90c5d1cbcc29a16d3efb96__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248238, 0x0)
+    VariantID::new(0, 248238, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_84e10439dd283255d1362fa643fed06c__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248240, 0x0)
+    VariantID::new(0, 248240, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_23b47feb52ff11d0edc967581e1c01fe__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248242, 0x0)
+    VariantID::new(0, 248242, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_d749ffc91f5f8c160bde1f819a04a9da__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248244, 0x0)
+    VariantID::new(0, 248244, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_c9624af4975becce7de0520a69c92116__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248246, 0x0)
+    VariantID::new(0, 248246, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_85a8c20f4d161d243ef8dd5f4669364b__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_uint_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248248, 0x0)
+    VariantID::new(0, 248248, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_05bc441d0797192a04dd2fd23b85421c__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248250, 0x0)
+    VariantID::new(0, 248250, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_15ef56dac2e2587e0662df84e4bbe9f4__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_uint_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248252, 0x0)
+    VariantID::new(0, 248252, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_7afa17f1b9a803328b13fd909916ebcf__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(0, 248254, 0x0)
+    VariantID::new(0, 248254, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_c140c664848deadbbfc4a34824669dff__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248256, 0x0)
+    VariantID::new(0, 248256, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_990dca4e372f134d660796e9ef8caf71__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(0, 248258, 0x0)
+    VariantID::new(0, 248258, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_2933cdabf00c32878810271f2e3f976f__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 248260, 0x0)
+    VariantID::new(0, 248260, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__CMS__Message_5_1_bnet___impl__StdAllocator_bnet__CMS__Message____bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(297867, 248264, 0x0)
+    VariantID::new(297867, 248264, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__CMS__Message_5_1_bnet___impl__StdAllocator_bnet__CMS__Message____bnet__HttpResponseInfo__BSPlatform__BSCoreServicesManager_: [VariantID; 1] = [
-    VariantID::new(297868, 248266, 0x0)
+    VariantID::new(297868, 248266, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__Status__ExtServerStatusResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(297870, 248269, 0x0)
+    VariantID::new(297870, 248269, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__Status__ExtServerStatusResult__bnet__HttpResponseInfo__BSPlatform__BSCoreServicesManager_: [VariantID; 1] = [
-    VariantID::new(297871, 248271, 0x0)
+    VariantID::new(297871, 248271, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSAsyncRequest_std__function_void__BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const_____: [VariantID; 1] = [
-    VariantID::new(297872, 248273, 0x0)
+    VariantID::new(297872, 248273, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_b4e0526b7f19d34ffe932e41f2076dd0__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(0, 248276, 0x0)
+    VariantID::new(0, 248276, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_no_alloc__lambda_b05a401b0b049ab81045113609a029a8__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const___: [VariantID; 1] = [
-    VariantID::new(0, 248278, 0x0)
+    VariantID::new(0, 248278, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char___16_1_bnet___impl__StdAllocator_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char_____const__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(296191, 248282, 0x18b68a0)
+    VariantID::new(296191, 248282, 0x18b68a0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char___16_1_bnet___impl__StdAllocator_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char_____const__bnet__HttpResponseInfo__BSPlatform__BSBlacklist_: [VariantID; 1] = [
-    VariantID::new(0, 248284, 0x0)
+    VariantID::new(0, 248284, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_60c92fbe056b5671f83faf53b84c1237__: [VariantID; 1] = [
-    VariantID::new(0, 248290, 0x0)
+    VariantID::new(0, 248290, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_04fa99b640f42b78bf6ed9a9639476f1__: [VariantID; 1] = [
-    VariantID::new(0, 248292, 0x0)
+    VariantID::new(0, 248292, 0x0),
 ];
 
 pub const VTABLE_BSPlatform__BSUploadRequest: [VariantID; 1] =
@@ -21333,7 +21333,7 @@ pub const VTABLE_bnet__IProducerConsumerQueue_bnet__UniquePtr_bnet__BaseCallback
     [VariantID::new(298108, 248457, 0x18be650)];
 
 pub const VTABLE_bnet__ProducerConsumerQueue_bnet__UniquePtr_bnet__BaseCallback__bnet__ta__ThreadSafe_: [VariantID; 1] = [
-    VariantID::new(298109, 248459, 0x18be688)
+    VariantID::new(298109, 248459, 0x18be688),
 ];
 
 pub const VTABLE_bnet__ProducerConsumerQueue_bnet__UniquePtr_bnet__Job__bnet__ta__ThreadSafe_:
@@ -21355,15 +21355,15 @@ pub const VTABLE_bnet__Caller_void_____bnet__NetworkLoop____bnet__NetworkLoop___
     [VariantID::new(298124, 248481, 0x18be8e0)];
 
 pub const VTABLE_std___Ref_count_resource_alloc_HINSTANCE_______bnet____ModuleDeleter_bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 248483, 0x0)
+    VariantID::new(0, 248483, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_resource_alloc_std__nullptr_t_bnet___impl__MemoryDeleter_HINSTANCE______bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 248485, 0x0)
+    VariantID::new(0, 248485, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_resource_alloc_std__nullptr_t_bnet___impl__MemoryDeleter__SECURITY_FUNCTION_TABLE_A_const__bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 248487, 0x0)
+    VariantID::new(0, 248487, 0x0),
 ];
 
 pub const VTABLE_bnet___detail__implComposite_bnet__ta__ThreadSafe_: [VariantID; 2] = [
@@ -21402,15 +21402,15 @@ pub const VTABLE_bnet__JobProcessorCollection: [VariantID; 2] = [
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_9cca12040213b3da000694161bebcee9__: [VariantID; 1] = [
-    VariantID::new(0, 248540, 0x0)
+    VariantID::new(0, 248540, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_4c7e74cec18a431d97657732ab13fca1__: [VariantID; 1] = [
-    VariantID::new(0, 248542, 0x0)
+    VariantID::new(0, 248542, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_42b9bb4a1b0748c8c5b76c78e138c4a1__: [VariantID; 1] = [
-    VariantID::new(0, 248544, 0x0)
+    VariantID::new(0, 248544, 0x0),
 ];
 
 pub const VTABLE_bnet__Caller_void_____bnet__InternalBNet____bnet__InternalBNet___: [VariantID; 1] =
@@ -21457,15 +21457,15 @@ pub const VTABLE_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo_:
     [VariantID::new(0, 248592, 0x0)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo___lambda_836672b064d0327a3c934f0edacd85b8__: [VariantID; 1] = [
-    VariantID::new(0, 248594, 0x0)
+    VariantID::new(0, 248594, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_39d439a9eb09d1a77923f4b6540ee32d__: [VariantID; 1] = [
-    VariantID::new(0, 248596, 0x0)
+    VariantID::new(0, 248596, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_7db70bbc0223df4444b0ca4c87b0e1c4__: [VariantID; 1] = [
-    VariantID::new(0, 248598, 0x0)
+    VariantID::new(0, 248598, 0x0),
 ];
 
 pub const VTABLE_bnet__CustomData__StringValue: [VariantID; 1] =
@@ -21493,19 +21493,19 @@ pub const VTABLE_bnet__EventLog____CollectLogBatchRequest: [VariantID; 1] =
     [VariantID::new(0, 248689, 0x0)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_e6f883344f0a2a786687f3487297f4d1__: [VariantID; 1] = [
-    VariantID::new(298268, 248692, 0x0)
+    VariantID::new(298268, 248692, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_af6f1ca71d7b3a355a877b8a5720c1b0__: [VariantID; 1] = [
-    VariantID::new(298269, 248695, 0x0)
+    VariantID::new(298269, 248695, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_8ea3c5df3d7193a20ae803752ae5ab32__: [VariantID; 1] = [
-    VariantID::new(0, 248698, 0x0)
+    VariantID::new(0, 248698, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_a097cfda01280b7d3cdbd01ad04c8769__: [VariantID; 1] = [
-    VariantID::new(0, 248702, 0x0)
+    VariantID::new(0, 248702, 0x0),
 ];
 
 pub const VTABLE_bnet__LogoutFlow: [VariantID; 3] = [
@@ -21518,11 +21518,11 @@ pub const VTABLE_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus_: [Varian
     [VariantID::new(0, 248731, 0x0)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_8f4c3030725a4741f42837bac0b4eaa3__: [VariantID; 1] = [
-    VariantID::new(0, 248733, 0x0)
+    VariantID::new(0, 248733, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_3757cc6ae04895e7fd4a9ac3ad51f44c__: [VariantID; 1] = [
-    VariantID::new(0, 248735, 0x0)
+    VariantID::new(0, 248735, 0x0),
 ];
 
 pub const VTABLE_std__exception: [VariantID; 1] = [VariantID::new(298100, 248772, 0x1911b40)];
@@ -21536,15 +21536,15 @@ pub const VTABLE_bnet__Notification__UserWebSocket__OnConnected: [VariantID; 1] 
     [VariantID::new(0, 248780, 0x0)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet__Notification__Frame_bnet__WebSocketStatus___lambda_26cf5f3fb32f6b0e47232c08e1841e6c__: [VariantID; 1] = [
-    VariantID::new(0, 248782, 0x0)
+    VariantID::new(0, 248782, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_7805f14b27189db11de55c81efb19410__: [VariantID; 1] = [
-    VariantID::new(0, 248784, 0x0)
+    VariantID::new(0, 248784, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__Notification__SystemModel_8_1_bnet___impl__StdAllocator_bnet__Notification__SystemModel____bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(0, 248786, 0x0)
+    VariantID::new(0, 248786, 0x0),
 ];
 
 pub const VTABLE_bnet__Notification__UserData__OnSystemIdFetchedRegister: [VariantID; 1] =
@@ -21556,30 +21556,30 @@ pub const VTABLE_bnet__Notification__UserWebSocket__OnSystemIdFetchedSend: [Vari
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__Notification__SystemModel_8_1_bnet___impl__StdAllocator_bnet__Notification__SystemModel____bnet__HttpResponseInfo__bnet__Notification__UserWebSocket__OnSystemIdFetchedSend_: [VariantID; 1] = [
-    VariantID::new(0, 248796, 0x0)
+    VariantID::new(0, 248796, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus__bnet__Notification__UserWebSocket__OnSystemIdFetchedSend_: [VariantID; 1] = [
-    VariantID::new(0, 248798, 0x0)
+    VariantID::new(0, 248798, 0x0),
 ];
 
 pub const VTABLE_bnet__Notification__UserData__ReconnectJob: [VariantID; 1] =
     [VariantID::new(0, 248801, 0x0)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus__bnet__Notification__UserData__ReconnectJob_: [VariantID; 1] = [
-    VariantID::new(0, 248803, 0x0)
+    VariantID::new(0, 248803, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_2cd59c90ff377cb46cc0a8cdfcd5d61a__: [VariantID; 1] = [
-    VariantID::new(0, 248806, 0x0)
+    VariantID::new(0, 248806, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_obj_alloc_bnet__Notification__UserWebSocket_bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 248818, 0x0)
+    VariantID::new(0, 248818, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_resource_alloc_std__nullptr_t_bnet___impl__MemoryDeleter_bnet__Notification__UserWebSocket__bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 248820, 0x0)
+    VariantID::new(0, 248820, 0x0),
 ];
 
 pub const VTABLE_bnet__IUgcUploader: [VariantID; 1] = [VariantID::new(298316, 248847, 0x18bf508)];
@@ -21600,11 +21600,11 @@ pub const VTABLE_bnet__Callback_unsigned___int64_bnet__HttpResponseInfo_: [Varia
     [VariantID::new(298323, 248861, 0x18bf600)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_unsigned___int64_bnet__HttpResponseInfo__bnet__ChunkedUploadFlow_: [VariantID; 1] = [
-    VariantID::new(298324, 248863, 0x18bf628)
+    VariantID::new(298324, 248863, 0x18bf628),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__ChunkedUploadFlow_: [VariantID; 1] = [
-    VariantID::new(298325, 248865, 0x18bf650)
+    VariantID::new(298325, 248865, 0x18bf650),
 ];
 
 pub const VTABLE_bnet__IDownloader: [VariantID; 1] = [VariantID::new(298378, 248874, 0x18bfe20)];
@@ -21620,22 +21620,22 @@ pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__CdpFileInfoResult__bnet__H
     [VariantID; 1] = [VariantID::new(298383, 248884, 0x18bfec0)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__CdpFileInfoResult__bnet__HttpResponseInfo__bnet__DownloadFlow_: [VariantID; 1] = [
-    VariantID::new(298384, 248886, 0x18bfee8)
+    VariantID::new(298384, 248886, 0x18bfee8),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__CdpKeyResult__bnet__HttpResponseInfo_:
     [VariantID; 1] = [VariantID::new(298385, 248888, 0x18bff10)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__CdpKeyResult__bnet__HttpResponseInfo__bnet__DownloadFlow_: [VariantID; 1] = [
-    VariantID::new(298386, 248890, 0x18bff38)
+    VariantID::new(298386, 248890, 0x18bff38),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__FileChunk__bnet__HttpResponseInfo__bnet__DownloadFlow_: [VariantID; 1] = [
-    VariantID::new(298387, 248892, 0x18bff60)
+    VariantID::new(298387, 248892, 0x18bff60),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__DownloadFlow_: [VariantID; 1] = [
-    VariantID::new(298388, 248894, 0x18bff88)
+    VariantID::new(298388, 248894, 0x18bff88),
 ];
 
 pub const VTABLE_bnet__FileDownloader: [VariantID; 4] = [
@@ -21646,7 +21646,7 @@ pub const VTABLE_bnet__FileDownloader: [VariantID; 4] = [
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__UgcPagedContentListResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298431, 248916, 0x18c0aa8)
+    VariantID::new(298431, 248916, 0x18c0aa8),
 ];
 
 pub const VTABLE_bnet__UgcBrowseRequest: [VariantID; 1] =
@@ -21656,18 +21656,18 @@ pub const VTABLE_bnet__UgcArgLessRequest: [VariantID; 1] =
     [VariantID::new(298447, 248927, 0x18c0ec0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__Count_bnet___impl__FixedString_64_1_1_bnet___impl__StdAllocator_char____40_1_bnet___impl__StdAllocator_bnet__Count_bnet___impl__FixedString_64_1_1_bnet___impl__StdAllocator_char_______bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298469, 248937, 0x18c1318)
+    VariantID::new(298469, 248937, 0x18c1318),
 ];
 
 pub const VTABLE_bnet__UgcCategoryCountRequest: [VariantID; 1] =
     [VariantID::new(298470, 248939, 0x18c1380)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UgcType__UploadStatus_bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298482, 248946, 0x18c1660)
+    VariantID::new(298482, 248946, 0x18c1660),
 ];
 
 pub const VTABLE_bnet__UgcUploadRequest_bnet__Callback_bnet__UgcType__UploadStatus_bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298483, 248948, 0x18c16c8)
+    VariantID::new(298483, 248948, 0x18c16c8),
 ];
 
 pub const VTABLE_bnet__UgcContentUploadRequest: [VariantID; 1] =
@@ -21680,21 +21680,21 @@ pub const VTABLE_bnet__UgcAddVideoRequest: [VariantID; 1] =
     [VariantID::new(298495, 248960, 0x18c1960)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__UgcContent__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298508, 248966, 0x18c1c28)
+    VariantID::new(298508, 248966, 0x18c1c28),
 ];
 
 pub const VTABLE_bnet__UgcContentRequest: [VariantID; 1] =
     [VariantID::new(298509, 248968, 0x18c1c90)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__UgcUploadDetails__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298521, 248975, 0x18c1f40)
+    VariantID::new(298521, 248975, 0x18c1f40),
 ];
 
 pub const VTABLE_bnet__UgcContentUploadDetailsRequest: [VariantID; 1] =
     [VariantID::new(298522, 248977, 0x18c1fa8)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__UgcCreationResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298540, 248984, 0x18c22f8)
+    VariantID::new(298540, 248984, 0x18c22f8),
 ];
 
 pub const VTABLE_bnet__UgcCreationRequest: [VariantID; 1] =
@@ -21705,56 +21705,56 @@ pub const VTABLE_bnet__UgcEditRequest: [VariantID; 1] = [VariantID::new(298559, 
 pub const VTABLE_bnet__UgcFlagRequest: [VariantID; 1] = [VariantID::new(298569, 249012, 0x18c2660)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__UgcContent_25_1_bnet___impl__StdAllocator_bnet__UgcContent____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298593, 249018, 0x0)
+    VariantID::new(298593, 249018, 0x0),
 ];
 
 pub const VTABLE_bnet__UgcListContentRequest: [VariantID; 1] =
     [VariantID::new(298594, 249020, 0x18c2b90)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__UgcListCategoriesResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298612, 249028, 0x18c2ee8)
+    VariantID::new(298612, 249028, 0x18c2ee8),
 ];
 
 pub const VTABLE_bnet__UgcListCategoriesRequest: [VariantID; 1] =
     [VariantID::new(298613, 249030, 0x18c2f50)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet___impl__FixedString_32_1_1_bnet___impl__StdAllocator_char___16_1_bnet___impl__StdAllocator_bnet___impl__FixedString_32_1_1_bnet___impl__StdAllocator_char______bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298633, 249037, 0x18c3330)
+    VariantID::new(298633, 249037, 0x18c3330),
 ];
 
 pub const VTABLE_bnet__UgcListDlcRequest: [VariantID; 1] =
     [VariantID::new(298634, 249039, 0x18c3398)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__Platform_10_1_bnet___impl__StdAllocator_bnet__Platform____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298652, 249053, 0x0)
+    VariantID::new(298652, 249053, 0x0),
 ];
 
 pub const VTABLE_bnet__Ugc__ListPlatformsRequest: [VariantID; 1] =
     [VariantID::new(298653, 249055, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet___impl__FixedString_128_1_1_bnet___impl__StdAllocator_char___8_1_bnet___impl__StdAllocator_bnet___impl__FixedString_128_1_1_bnet___impl__StdAllocator_char______bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298676, 249064, 0x0)
+    VariantID::new(298676, 249064, 0x0),
 ];
 
 pub const VTABLE_bnet__Ugc__ListProductsRequest: [VariantID; 1] =
     [VariantID::new(298677, 249066, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__UgcAuthor_20_1_bnet___impl__StdAllocator_bnet__UgcAuthor____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298692, 249072, 0x18c36b8)
+    VariantID::new(298692, 249072, 0x18c36b8),
 ];
 
 pub const VTABLE_bnet__UgcListFollowedAuthorRequest: [VariantID; 1] =
     [VariantID::new(298693, 249074, 0x18c3720)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__UgcNotification_20_1_bnet___impl__StdAllocator_bnet__UgcNotification____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298704, 249080, 0x18c39b0)
+    VariantID::new(298704, 249080, 0x18c39b0),
 ];
 
 pub const VTABLE_bnet__UgcListNotificationRequest: [VariantID; 1] =
     [VariantID::new(298705, 249082, 0x18c3a18)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char___16_1_bnet___impl__StdAllocator_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char_____const__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298722, 249090, 0x18c3e58)
+    VariantID::new(298722, 249090, 0x18c3e58),
 ];
 
 pub const VTABLE_bnet__UgcListBlacklistedRequest: [VariantID; 1] =
@@ -21804,23 +21804,23 @@ pub const VTABLE_bnet__NetworkLoop: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_0fef014c3585202ea9bb5b50fde01da8__: [VariantID; 1] = [
-    VariantID::new(0, 249232, 0x0)
+    VariantID::new(0, 249232, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_32f67e29b70c464ab35e841b7eabe82a__: [VariantID; 1] = [
-    VariantID::new(0, 249234, 0x0)
+    VariantID::new(0, 249234, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo___lambda_be3df00bd17e637cfeb51294e1183fa1__: [VariantID; 1] = [
-    VariantID::new(0, 249243, 0x0)
+    VariantID::new(0, 249243, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_722473eb64546b46d289713233d4b9ac__: [VariantID; 1] = [
-    VariantID::new(0, 249246, 0x0)
+    VariantID::new(0, 249246, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_5c295880e99a11278f8bd0122f626c9f__: [VariantID; 1] = [
-    VariantID::new(0, 249249, 0x0)
+    VariantID::new(0, 249249, 0x0),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bool_bnet__HttpResponseInfo__: [VariantID; 1] =
@@ -21836,15 +21836,15 @@ pub const VTABLE_bnet__ListLegalDocumentsFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__LegalDocument_5_1_bnet___impl__StdAllocator_bnet__LegalDocument____bnet__HttpResponseInfo__bnet__ListLegalDocumentsFlow_: [VariantID; 1] = [
-    VariantID::new(298979, 249295, 0x18c5ff8)
+    VariantID::new(298979, 249295, 0x18c5ff8),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__ListLegalDocumentsFlow_: [VariantID; 1] = [
-    VariantID::new(298980, 249297, 0x18c6020)
+    VariantID::new(298980, 249297, 0x18c6020),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__AccountLinkingResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(298993, 249302, 0x18c6338)
+    VariantID::new(298993, 249302, 0x18c6338),
 ];
 
 pub const VTABLE_bnet__AccountLinkingRequest: [VariantID; 1] =
@@ -21860,11 +21860,11 @@ pub const VTABLE_bnet__AccountQuickCreateFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__BeamUserData__bnet__HttpResponseInfo__bnet__AccountQuickCreateFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249325, 0x0)
+    VariantID::new(0, 249325, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__LegalDocument_5_1_bnet___impl__StdAllocator_bnet__LegalDocument____bnet__HttpResponseInfo__bnet__AccountQuickCreateFlow_: [VariantID; 1] = [
-    VariantID::new(299032, 249328, 0x18c69a8)
+    VariantID::new(299032, 249328, 0x18c69a8),
 ];
 
 pub const VTABLE_bnet__AnonymousAuthenticationFlow: [VariantID; 3] = [
@@ -21874,7 +21874,7 @@ pub const VTABLE_bnet__AnonymousAuthenticationFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__AnonymousAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249336, 0x0)
+    VariantID::new(0, 249336, 0x0),
 ];
 
 pub const VTABLE_bnet__SessionAnonymousCreateFlow: [VariantID; 3] = [
@@ -21884,7 +21884,7 @@ pub const VTABLE_bnet__SessionAnonymousCreateFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__SessionAnonymousCreateFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249344, 0x0)
+    VariantID::new(0, 249344, 0x0),
 ];
 
 pub const VTABLE_bnet__SessionQuickCreateFlow: [VariantID; 3] = [
@@ -21894,7 +21894,7 @@ pub const VTABLE_bnet__SessionQuickCreateFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__SessionQuickCreateFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249352, 0x0)
+    VariantID::new(0, 249352, 0x0),
 ];
 
 pub const VTABLE_bnet__AccountDeletionRequest: [VariantID; 1] =
@@ -21916,11 +21916,11 @@ pub const VTABLE_bnet__UserCredentialsAuthenticationFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__BeamAuthResult__bnet__HttpResponseInfo__bnet__UserCredentialsAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249377, 0x0)
+    VariantID::new(0, 249377, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__UserCredentialsAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249379, 0x0)
+    VariantID::new(0, 249379, 0x0),
 ];
 
 pub const VTABLE_bnet__ExternalAuthenticationFlow: [VariantID; 3] = [
@@ -21930,15 +21930,15 @@ pub const VTABLE_bnet__ExternalAuthenticationFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__BeamAuthResult__bnet__HttpResponseInfo__bnet__ExternalAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249387, 0x0)
+    VariantID::new(0, 249387, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__ExternalAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249389, 0x0)
+    VariantID::new(0, 249389, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__ExternalAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(299093, 249391, 0x0)
+    VariantID::new(299093, 249391, 0x0),
 ];
 
 pub const VTABLE_bnet__GameCodeAuthenticationFlow: [VariantID; 3] = [
@@ -21948,7 +21948,7 @@ pub const VTABLE_bnet__GameCodeAuthenticationFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameCodeAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249399, 0x0)
+    VariantID::new(0, 249399, 0x0),
 ];
 
 pub const VTABLE_bnet__UnlinkAccountFlow: [VariantID; 3] = [
@@ -21958,15 +21958,15 @@ pub const VTABLE_bnet__UnlinkAccountFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__UpgradeTokenResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(299115, 249408, 0x18c7588)
+    VariantID::new(299115, 249408, 0x18c7588),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__UpgradeTokenResult__bnet__HttpResponseInfo__bnet__UnlinkAccountFlow_: [VariantID; 1] = [
-    VariantID::new(299116, 249410, 0x18c75b0)
+    VariantID::new(299116, 249410, 0x18c75b0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__UnlinkAccountFlow_: [VariantID; 1] = [
-    VariantID::new(299117, 249412, 0x18c75d8)
+    VariantID::new(299117, 249412, 0x18c75d8),
 ];
 
 pub const VTABLE_bnet__UsernameValidationRequest: [VariantID; 1] =
@@ -21979,13 +21979,13 @@ pub const VTABLE_bnet__VerifyLinkRequest: [VariantID; 1] =
     [VariantID::new(299137, 249435, 0x18c7950)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__TwitchAccountInfoResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249443, 0x0)
+    VariantID::new(0, 249443, 0x0),
 ];
 
 pub const VTABLE_bnet__TwitchAccountInfoRequest: [VariantID; 1] = [VariantID::new(0, 249445, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__AccountDisplayNameInfoResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249450, 0x0)
+    VariantID::new(0, 249450, 0x0),
 ];
 
 pub const VTABLE_bnet__CheckDisplayNameRequest: [VariantID; 1] = [VariantID::new(0, 249452, 0x0)];
@@ -22002,29 +22002,29 @@ pub const VTABLE_bnet__ResendVerificationRequest: [VariantID; 1] =
     [VariantID::new(299159, 249469, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__SessionValidateResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249475, 0x0)
+    VariantID::new(0, 249475, 0x0),
 ];
 
 pub const VTABLE_bnet__SessionValidateRequest: [VariantID; 1] = [VariantID::new(0, 249477, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__AccountInfoResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249482, 0x0)
+    VariantID::new(0, 249482, 0x0),
 ];
 
 pub const VTABLE_bnet__AccountInfoRequest: [VariantID; 1] = [VariantID::new(0, 249484, 0x0)];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__ExternalAccountInfo__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(299179, 249490, 0x0)
+    VariantID::new(299179, 249490, 0x0),
 ];
 
 pub const VTABLE_bnet__BaseCallbackJob_bnet__Sequence_bnet__ta__ThreadSafe_bnet__ta__ErrorPropagation__bnet__Callback_bnet__UniquePtr_bnet__ExternalAccountInfo__bnet__HttpResponseInfo__bnet__ta__ThreadSafe_: [VariantID; 2] = [
     VariantID::new(299180, 249492, 0x0),
-    VariantID::new(299181, 249494, 0x0)
+    VariantID::new(299181, 249494, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackSequence_bnet__Callback_bnet__UniquePtr_bnet__ExternalAccountInfo__bnet__HttpResponseInfo__bnet__ta__ThreadSafe_bnet__ta__ErrorPropagation_: [VariantID; 2] = [
     VariantID::new(299182, 249496, 0x0),
-    VariantID::new(299183, 249498, 0x0)
+    VariantID::new(299183, 249498, 0x0),
 ];
 
 pub const VTABLE_bnet__RetrieveExternalAccountJob: [VariantID; 3] = [
@@ -22034,18 +22034,18 @@ pub const VTABLE_bnet__RetrieveExternalAccountJob: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__ExternalAccountInfo__bnet__HttpResponseInfo__bnet__RetrieveExternalAccountJob_: [VariantID; 1] = [
-    VariantID::new(299187, 249506, 0x0)
+    VariantID::new(299187, 249506, 0x0),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__ExternalIdAccountInfo_4_1_bnet___impl__StdAllocator_bnet__ExternalIdAccountInfo____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249514, 0x0)
+    VariantID::new(0, 249514, 0x0),
 ];
 
 pub const VTABLE_bnet__ExternalServiceRetrieveAccountRequest: [VariantID; 1] =
     [VariantID::new(0, 249516, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet___impl__FixedString_2000_1_0_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249529, 0x0)
+    VariantID::new(0, 249529, 0x0),
 ];
 
 pub const VTABLE_bnet__AccountUpgradeAnonymousToQuickRequest: [VariantID; 1] =
@@ -22058,7 +22058,7 @@ pub const VTABLE_bnet__GameAccountLinkFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameAccountLinkFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249544, 0x0)
+    VariantID::new(0, 249544, 0x0),
 ];
 
 pub const VTABLE_bnet__GameAccountLinkConflictResolveFlow: [VariantID; 3] = [
@@ -22068,7 +22068,7 @@ pub const VTABLE_bnet__GameAccountLinkConflictResolveFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameAccountLinkConflictResolveFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249552, 0x0)
+    VariantID::new(0, 249552, 0x0),
 ];
 
 pub const VTABLE_bnet__GameAccountExternalLinkConflictResolveFlow: [VariantID; 3] = [
@@ -22078,7 +22078,7 @@ pub const VTABLE_bnet__GameAccountExternalLinkConflictResolveFlow: [VariantID; 3
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameAccountExternalLinkConflictResolveFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249560, 0x0)
+    VariantID::new(0, 249560, 0x0),
 ];
 
 pub const VTABLE_bnet__GameAccountUserCredentialsAuthenticationFlow: [VariantID; 3] = [
@@ -22088,11 +22088,11 @@ pub const VTABLE_bnet__GameAccountUserCredentialsAuthenticationFlow: [VariantID;
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__BeamAuthResult__bnet__HttpResponseInfo__bnet__GameAccountUserCredentialsAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249568, 0x0)
+    VariantID::new(0, 249568, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameAccountUserCredentialsAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249570, 0x0)
+    VariantID::new(0, 249570, 0x0),
 ];
 
 pub const VTABLE_bnet__GameAccountExternalAuthenticationFlow: [VariantID; 3] = [
@@ -22102,11 +22102,11 @@ pub const VTABLE_bnet__GameAccountExternalAuthenticationFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameAccountExternalAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249578, 0x0)
+    VariantID::new(0, 249578, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__GameAccountExternalAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249580, 0x0)
+    VariantID::new(0, 249580, 0x0),
 ];
 
 pub const VTABLE_bnet__GameAccountExternalLinkFlow: [VariantID; 3] = [
@@ -22116,7 +22116,7 @@ pub const VTABLE_bnet__GameAccountExternalLinkFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameAccountExternalLinkFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249588, 0x0)
+    VariantID::new(0, 249588, 0x0),
 ];
 
 pub const VTABLE_bnet__GameAccountGameCodeAuthenticationFlow: [VariantID; 3] = [
@@ -22126,7 +22126,7 @@ pub const VTABLE_bnet__GameAccountGameCodeAuthenticationFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__GameAccountGameCodeAuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249596, 0x0)
+    VariantID::new(0, 249596, 0x0),
 ];
 
 pub const VTABLE_bnet__SessionResumeFlow: [VariantID; 3] = [
@@ -22136,7 +22136,7 @@ pub const VTABLE_bnet__SessionResumeFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__bnet__SessionResumeFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249604, 0x0)
+    VariantID::new(0, 249604, 0x0),
 ];
 
 pub const VTABLE_bnet__NewGameSessionFlow: [VariantID; 3] = [
@@ -22146,25 +22146,25 @@ pub const VTABLE_bnet__NewGameSessionFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__NewGameSessionFlow_: [VariantID; 1] = [
-    VariantID::new(0, 249612, 0x0)
+    VariantID::new(0, 249612, 0x0),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__Entitlements__Mapping_1_1_bnet___impl__StdAllocator_bnet__Entitlements__Mapping____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249620, 0x0)
+    VariantID::new(0, 249620, 0x0),
 ];
 
 pub const VTABLE_bnet__Entitlements__CombinedEntitlementsListRequest: [VariantID; 1] =
     [VariantID::new(0, 249622, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_std__vector_bnet__Entitlements__Item_bnet___impl__StdAllocator_bnet__Entitlements__Item____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249630, 0x0)
+    VariantID::new(0, 249630, 0x0),
 ];
 
 pub const VTABLE_bnet__Entitlements__ListRequest: [VariantID; 1] =
     [VariantID::new(299202, 249632, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__Entitlements__ConsumeResponse_bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(299215, 249637, 0x0)
+    VariantID::new(299215, 249637, 0x0),
 ];
 
 pub const VTABLE_bnet__Entitlements__ConsumeRequest: [VariantID; 1] =
@@ -22174,28 +22174,28 @@ pub const VTABLE_bnet__Entitlements__SearchRequest: [VariantID; 1] =
     [VariantID::new(0, 249643, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__MTX__Generic__CatalogResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249650, 0x0)
+    VariantID::new(0, 249650, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__MTX__Generic__GetCatalogRequest: [VariantID; 1] =
     [VariantID::new(0, 249652, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__MTX__Generic__PurchaseResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249662, 0x0)
+    VariantID::new(0, 249662, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__MTX__Generic__PurchaseRequest: [VariantID; 1] =
     [VariantID::new(0, 249664, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet___impl__FixedString_500_1_1_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249671, 0x0)
+    VariantID::new(0, 249671, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__MTX__Generic__GetStoreURLRequest: [VariantID; 1] =
     [VariantID::new(0, 249673, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__Gsp__Profile__DataAttachment__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249695, 0x0)
+    VariantID::new(0, 249695, 0x0),
 ];
 
 pub const VTABLE_bnet__Gsp__Profile__DataAttachmentRequestBase: [VariantID; 1] =
@@ -22211,7 +22211,7 @@ pub const VTABLE_bnet__Gsp__Profile__DataAttachmentGetRequest: [VariantID; 1] =
     [VariantID::new(0, 249703, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__Gsp__Profile__DataAttachmentListPage__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249707, 0x0)
+    VariantID::new(0, 249707, 0x0),
 ];
 
 pub const VTABLE_bnet__Gsp__Profile__DataAttachmentListRequest: [VariantID; 1] =
@@ -22221,7 +22221,7 @@ pub const VTABLE_bnet__Gsp__Profile__DataAttachmentUpdateRequest: [VariantID; 1]
     [VariantID::new(0, 249712, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__Gsp__Profile__Profile__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 249717, 0x0)
+    VariantID::new(0, 249717, 0x0),
 ];
 
 pub const VTABLE_bnet__Gsp__Profile__ProfileGetRequest: [VariantID; 1] =
@@ -22233,35 +22233,35 @@ pub const VTABLE_bnet__Gsp__Profile__ProfileUpdateRequest: [VariantID; 1] =
 pub const VTABLE_bnet__EventLog__LogEventRequest: [VariantID; 1] = [VariantID::new(0, 249724, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__Balance__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(299890, 250701, 0x0)
+    VariantID::new(299890, 250701, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Wallet__BalanceRequest: [VariantID; 1] =
     [VariantID::new(299891, 250703, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__VCCS__Wallet__Balance_1_1_bnet___impl__StdAllocator_bnet__VCCS__Wallet__Balance____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250713, 0x0)
+    VariantID::new(0, 250713, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Wallet__BalanceListRequest: [VariantID; 1] =
     [VariantID::new(0, 250715, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__PurchaseResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250720, 0x0)
+    VariantID::new(0, 250720, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Wallet__PurchaseRequest: [VariantID; 1] =
     [VariantID::new(299905, 250722, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__PurchasePreviewResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250737, 0x0)
+    VariantID::new(0, 250737, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Wallet__PurchasePreviewRequest: [VariantID; 1] =
     [VariantID::new(0, 250739, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__ServerlessTransactionResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250744, 0x0)
+    VariantID::new(0, 250744, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Wallet__ServerlessCreditRequest: [VariantID; 1] =
@@ -22277,32 +22277,32 @@ pub const VTABLE_bnet__UgcMtxPurchaseFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Wallet__PurchaseResult__bnet__HttpResponseInfo__bnet__UgcMtxPurchaseFlow_: [VariantID; 1] = [
-    VariantID::new(0, 250762, 0x0)
+    VariantID::new(0, 250762, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo__bnet__UgcMtxPurchaseFlow_: [VariantID; 1] = [
-    VariantID::new(299937, 250764, 0x0)
+    VariantID::new(299937, 250764, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Fulfillment__UpdateFirstPartyEntitlementRequest: [VariantID; 1] =
     [VariantID::new(299984, 250767, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Catalog__GetContentsResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250775, 0x0)
+    VariantID::new(0, 250775, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Catalog__GetContentsRequest: [VariantID; 1] =
     [VariantID::new(0, 250777, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Catalog__Item__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(299947, 250786, 0x0)
+    VariantID::new(299947, 250786, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Catalog__GetItemRequest: [VariantID; 1] =
     [VariantID::new(299948, 250788, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__VCCS__Catalog__CatalogCategoryPathResponse_1_1_bnet___impl__StdAllocator_bnet__VCCS__Catalog__CatalogCategoryPathResponse____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250798, 0x0)
+    VariantID::new(0, 250798, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Catalog__ListCategoryPathRequest: [VariantID; 1] =
@@ -22312,42 +22312,42 @@ pub const VTABLE_bnet__VCCS__Catalog__ListCategoryPathChildrenRequest: [VariantI
     [VariantID::new(0, 250806, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__VCCS__Catalog__ListItemsResult_bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(299973, 250811, 0x0)
+    VariantID::new(299973, 250811, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Catalog__ListItemsRequest: [VariantID; 1] =
     [VariantID::new(299974, 250813, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Catalog__BundlePreview__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250818, 0x0)
+    VariantID::new(0, 250818, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Catalog__GetBundlePreviewRequest: [VariantID; 1] =
     [VariantID::new(0, 250820, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__VCCS__Catalog__GetBundlePreviewListResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250826, 0x0)
+    VariantID::new(0, 250826, 0x0),
 ];
 
 pub const VTABLE_bnet__VCCS__Catalog__GetBundlePreviewListRequest: [VariantID; 1] =
     [VariantID::new(0, 250828, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__CMS__Message_5_1_bnet___impl__StdAllocator_bnet__CMS__Message____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(300001, 250836, 0x0)
+    VariantID::new(300001, 250836, 0x0),
 ];
 
 pub const VTABLE_bnet__CMS__ListMessagesRequest: [VariantID; 1] =
     [VariantID::new(300002, 250838, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__CMS__MultiMessage__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 250850, 0x0)
+    VariantID::new(0, 250850, 0x0),
 ];
 
 pub const VTABLE_bnet__CMS__GetMultiMessageRequest: [VariantID; 1] =
     [VariantID::new(0, 250852, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__Status__ExtServerStatusResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(300025, 250860, 0x0)
+    VariantID::new(300025, 250860, 0x0),
 ];
 
 pub const VTABLE_bnet__Status__GetExtServerStatusRequest: [VariantID; 1] =
@@ -22363,11 +22363,11 @@ pub const VTABLE_bnet__NotificationLogoutRequest: [VariantID; 2] = [
 ];
 
 pub const VTABLE_std___Ref_count_obj_alloc_bnet__Notification__EventData_bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 250886, 0x0)
+    VariantID::new(0, 250886, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_resource_alloc_std__nullptr_t_bnet___impl__MemoryDeleter_bnet__Notification__EventData__bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 250888, 0x0)
+    VariantID::new(0, 250888, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__WebSocketReadResult_bnet__WebSocketStatus_: [VariantID; 1] =
@@ -22385,7 +22385,7 @@ pub const VTABLE_bnet__Notification__ReceiveJob: [VariantID; 2] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__Notification__Frame_bnet__WebSocketStatus__bnet__Notification__ReceiveJob_: [VariantID; 1] = [
-    VariantID::new(0, 250929, 0x0)
+    VariantID::new(0, 250929, 0x0),
 ];
 
 pub const VTABLE_bnet__Notification__FilterJob: [VariantID; 3] = [
@@ -22410,14 +22410,14 @@ pub const VTABLE_bnet__UgcChunkUploadRequest: [VariantID; 1] =
     [VariantID::new(300056, 250959, 0x18c7ff0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__CdpFileInfoResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(300085, 250972, 0x18c8588)
+    VariantID::new(300085, 250972, 0x18c8588),
 ];
 
 pub const VTABLE_bnet__CdpFileInfoRequest: [VariantID; 1] =
     [VariantID::new(300086, 250974, 0x18c85f0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__CdpKeyResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(300125, 251005, 0x18c8ad0)
+    VariantID::new(300125, 251005, 0x18c8ad0),
 ];
 
 pub const VTABLE_bnet__CdpKeyRequest: [VariantID; 1] = [VariantID::new(300126, 251007, 0x18c8b38)];
@@ -22446,7 +22446,7 @@ pub const VTABLE_bnet__WinHttpTransport: [VariantID; 2] = [
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 251171, 0x0)
+    VariantID::new(0, 251171, 0x0),
 ];
 
 pub const VTABLE_bnet__SessionRefreshRequest: [VariantID; 1] =
@@ -22455,18 +22455,18 @@ pub const VTABLE_bnet__SessionRefreshRequest: [VariantID; 1] =
 pub const VTABLE_bnet__SessionResumeRequest: [VariantID; 1] = [VariantID::new(0, 251176, 0x0)];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__FileChunk__bnet__HttpResponseInfo__bnet__LegalDocument_: [VariantID; 1] = [
-    VariantID::new(300567, 251180, 0x18cbb88)
+    VariantID::new(300567, 251180, 0x18cbb88),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__LegalDocument_5_1_bnet___impl__StdAllocator_bnet__LegalDocument____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(300573, 251183, 0x18cbd40)
+    VariantID::new(300573, 251183, 0x18cbd40),
 ];
 
 pub const VTABLE_bnet__ListRequiredLegalDocumentsRequest: [VariantID; 1] =
     [VariantID::new(300574, 251185, 0x18cbda8)];
 
 pub const VTABLE_bnet__Callback_bnet___impl__FixedString_40_1_1_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(0, 251194, 0x0)
+    VariantID::new(0, 251194, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__AccessToken_bnet__HttpResponseInfo_: [VariantID; 1] =
@@ -22479,43 +22479,43 @@ pub const VTABLE_bnet__AuthenticationFlow: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__AccessToken_bnet__HttpResponseInfo__bnet__AuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 251204, 0x0)
+    VariantID::new(0, 251204, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__LegalDocument_5_1_bnet___impl__StdAllocator_bnet__LegalDocument____bnet__HttpResponseInfo__bnet__AuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 251206, 0x0)
+    VariantID::new(0, 251206, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet___impl__FixedString_40_1_1_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo__bnet__AuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 251208, 0x0)
+    VariantID::new(0, 251208, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_df8b8af1427737c8ee3af057608c6b35__: [VariantID; 1] = [
-    VariantID::new(0, 251210, 0x0)
+    VariantID::new(0, 251210, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus__bnet__AuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 251212, 0x0)
+    VariantID::new(0, 251212, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__Notification__SystemModel_8_1_bnet___impl__StdAllocator_bnet__Notification__SystemModel____bnet__HttpResponseInfo__bnet__AuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(0, 251214, 0x0)
+    VariantID::new(0, 251214, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_3482580cff410991d89973f2e1feb3c5__: [VariantID; 1] = [
-    VariantID::new(0, 251216, 0x0)
+    VariantID::new(0, 251216, 0x0),
 ];
 
 pub const VTABLE_bnet__Callback_bnet__UniquePtr_bnet__CdpAuthenticationResult__bnet__HttpResponseInfo_: [VariantID; 1] = [
-    VariantID::new(300626, 251218, 0x18cc8c0)
+    VariantID::new(300626, 251218, 0x18cc8c0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet__CdpAuthenticationResult__bnet__HttpResponseInfo__bnet__AuthenticationFlow_: [VariantID; 1] = [
-    VariantID::new(300627, 251220, 0x18cc8e8)
+    VariantID::new(300627, 251220, 0x18cc8e8),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__BeamUserData__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 251226, 0x0)
+    VariantID::new(0, 251226, 0x0),
 ];
 
 pub const VTABLE_bnet__BeamQuickCreationRequest: [VariantID; 1] = [VariantID::new(0, 251228, 0x0)];
@@ -22530,7 +22530,7 @@ pub const VTABLE_bnet__SessionQuickCreateRequest: [VariantID; 1] = [VariantID::n
 pub const VTABLE_bnet__SessionAuthRequest: [VariantID; 1] = [VariantID::new(300654, 251242, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__BeamAuthResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 251245, 0x0)
+    VariantID::new(0, 251245, 0x0),
 ];
 
 pub const VTABLE_bnet__BeamUserCredentialsAuthenticationRequest: [VariantID; 1] =
@@ -22546,7 +22546,7 @@ pub const VTABLE_bnet__Session__GameCodeAuthRequest: [VariantID; 1] =
     [VariantID::new(0, 251257, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__UpgradeTokenResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(300683, 251262, 0x18cd2f8)
+    VariantID::new(300683, 251262, 0x18cd2f8),
 ];
 
 pub const VTABLE_bnet__TokenUpgradeRequest: [VariantID; 1] =
@@ -22556,7 +22556,7 @@ pub const VTABLE_bnet__AccountUnlinkingRequest: [VariantID; 1] =
     [VariantID::new(300699, 251276, 0x18cd638)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__ExternalAccountInfo__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(300710, 251321, 0x0)
+    VariantID::new(300710, 251321, 0x0),
 ];
 
 pub const VTABLE_bnet__RetrieveExternalAccountRequest: [VariantID; 1] =
@@ -22615,7 +22615,7 @@ pub const VTABLE_bnet__WebSocketUtils__WebSocketJob__IWriteJobSequence: [Variant
     [VariantID::new(0, 251694, 0x0)];
 
 pub const VTABLE_bnet___impl__Observable_bnet__WebSocketUtils__WebSocketJob__IWriteJobSequence_bnet_std__void_t_: [VariantID; 1] = [
-    VariantID::new(0, 251696, 0x0)
+    VariantID::new(0, 251696, 0x0),
 ];
 
 pub const VTABLE_bnet__WebSocketUtils__WebSocketJob__WriteJobSequence__WriteJob: [VariantID; 2] = [
@@ -22641,43 +22641,43 @@ pub const VTABLE_bnet__WebSocketUtils__WebSocketJob: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__WebSocketUtils__WebSocketJob_: [VariantID; 1] = [
-    VariantID::new(0, 251718, 0x0)
+    VariantID::new(0, 251718, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus__bnet__WebSocketUtils__WebSocketJob_: [VariantID; 1] = [
-    VariantID::new(0, 251720, 0x0)
+    VariantID::new(0, 251720, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_d908d9d4366428b82d5b2783cb4bc50c__: [VariantID; 1] = [
-    VariantID::new(0, 251722, 0x0)
+    VariantID::new(0, 251722, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_c18d1050b00c785e3b8c1554b9fcfe1d__: [VariantID; 1] = [
-    VariantID::new(0, 251729, 0x0)
+    VariantID::new(0, 251729, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_91b47bc9ba781c42b1f1c064baa0f828__: [VariantID; 1] = [
-    VariantID::new(0, 251732, 0x0)
+    VariantID::new(0, 251732, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__WebSocketUtils__WebSocketJob__InitJob_: [VariantID; 1] = [
-    VariantID::new(0, 251735, 0x0)
+    VariantID::new(0, 251735, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__ArrayView_uchar__bnet__SocketStatus__bnet__WebSocketUtils__WebSocketJob__InitJob_: [VariantID; 1] = [
-    VariantID::new(0, 251739, 0x0)
+    VariantID::new(0, 251739, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__SocketStatus___lambda_0d9d97693a9ac4b1a430d38428cf9c40__: [VariantID; 1] = [
-    VariantID::new(0, 251752, 0x0)
+    VariantID::new(0, 251752, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__ArrayView_uchar__bnet__SocketStatus__bnet__WebSocketUtils__WebSocketJob__ReadJob_: [VariantID; 1] = [
-    VariantID::new(0, 251765, 0x0)
+    VariantID::new(0, 251765, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus__bnet__WebSocketUtils__Impl_: [VariantID; 1] = [
-    VariantID::new(0, 251769, 0x0)
+    VariantID::new(0, 251769, 0x0),
 ];
 
 pub const VTABLE_bnet__Evaluator_bool__unsigned___int64____IEvaluator: [VariantID; 1] =
@@ -22690,23 +22690,23 @@ pub const VTABLE_std___Ref_count_obj_alloc_bnet__CSocket_bnet___impl__StdAllocat
     [VariantID; 1] = [VariantID::new(0, 251776, 0x0)];
 
 pub const VTABLE_bnet__Evaluator_bool__unsigned___int64____EvaluateBind__lambda_54db177f6b9159b8fb673d9a9d9c0672__: [VariantID; 1] = [
-    VariantID::new(0, 251778, 0x0)
+    VariantID::new(0, 251778, 0x0),
 ];
 
 pub const VTABLE_bnet__Evaluator_bool__unsigned___int64____EvaluateBind__lambda_0685422d8c54c120bc0870935302290f__: [VariantID; 1] = [
-    VariantID::new(0, 251780, 0x0)
+    VariantID::new(0, 251780, 0x0),
 ];
 
 pub const VTABLE_bnet__Evaluator_bool__unsigned___int64____EvaluateBind__lambda_722de555acf57d83cb044e20ef5e27a4__: [VariantID; 1] = [
-    VariantID::new(0, 251782, 0x0)
+    VariantID::new(0, 251782, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_resource_alloc_bnet__ISocket___std__default_delete_bnet__ISocket__bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(0, 251784, 0x0)
+    VariantID::new(0, 251784, 0x0),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet__Notification__SystemModel_8_1_bnet___impl__StdAllocator_bnet__Notification__SystemModel____bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 251789, 0x0)
+    VariantID::new(0, 251789, 0x0),
 ];
 
 pub const VTABLE_bnet__Notification__ListSystemRequest: [VariantID; 1] =
@@ -22716,7 +22716,7 @@ pub const VTABLE_bnet__Notification__ChangeFilterRequest: [VariantID; 1] =
     [VariantID::new(0, 251799, 0x0)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__WebSocketStatus___lambda_91cc87ba468df1c3fcfc3e803efc0d7a__: [VariantID; 1] = [
-    VariantID::new(0, 251801, 0x0)
+    VariantID::new(0, 251801, 0x0),
 ];
 
 pub const VTABLE_bnet__Presence__AppearDoNotDisturbRequest: [VariantID; 1] =
@@ -22726,7 +22726,7 @@ pub const VTABLE_bnet__Presence__AppearOfflineRequest: [VariantID; 1] =
     [VariantID::new(0, 251924, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__Presence__AggregatedStatuses__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 251930, 0x0)
+    VariantID::new(0, 251930, 0x0),
 ];
 
 pub const VTABLE_bnet__Presence__GetRequest: [VariantID; 1] = [VariantID::new(0, 251932, 0x0)];
@@ -22749,18 +22749,18 @@ pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__AccessToken_bnet__HttpRe
 pub const VTABLE_bnet__SessionAccessTokenRequest: [VariantID; 1] = [VariantID::new(0, 251963, 0x0)];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet__UniquePtr_bnet__CdpAuthenticationResult__bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(301220, 251968, 0x18d7930)
+    VariantID::new(301220, 251968, 0x18d7930),
 ];
 
 pub const VTABLE_bnet__CdpAuthenticationRequest: [VariantID; 1] =
     [VariantID::new(301221, 251970, 0x18d7998)];
 
 pub const VTABLE_std___Ref_count_obj_alloc_bnet__InternalUser_bnet___impl__StdAllocatorNoConstruct_void__: [VariantID; 1] = [
-    VariantID::new(0, 251975, 0x0)
+    VariantID::new(0, 251975, 0x0),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet___impl__FixedString_40_1_1_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 251979, 0x0)
+    VariantID::new(0, 251979, 0x0),
 ];
 
 pub const VTABLE_bnet__SessionResumeTokenRequest: [VariantID; 1] = [VariantID::new(0, 251981, 0x0)];
@@ -22789,15 +22789,15 @@ pub const VTABLE_bnet____WinSocket__SocketJob: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__SocketStatus___lambda_1ada5026df61be64bdd5e540038d8589__: [VariantID; 1] = [
-    VariantID::new(0, 252059, 0x0)
+    VariantID::new(0, 252059, 0x0),
 ];
 
 pub const VTABLE_bnet__BaseCallbackJob_bnet__Job_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__ta__ThreadSafe_: [VariantID; 1] = [
-    VariantID::new(0, 252087, 0x0)
+    VariantID::new(0, 252087, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackJob_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__ta__ThreadSafe_: [VariantID; 1] = [
-    VariantID::new(0, 252089, 0x0)
+    VariantID::new(0, 252089, 0x0),
 ];
 
 pub const VTABLE_bnet__SecureSocket__pImpl__SecureSocketJob__HandshakeJob: [VariantID; 2] = [
@@ -22837,43 +22837,43 @@ pub const VTABLE_bnet__SecureSocket__pImpl__SecureSocketJob: [VariantID; 3] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob_: [VariantID; 1] = [
-    VariantID::new(0, 252123, 0x0)
+    VariantID::new(0, 252123, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__SocketStatus___lambda_89b4b1eea91fb4a28026bf72735dc267__: [VariantID; 1] = [
-    VariantID::new(0, 252126, 0x0)
+    VariantID::new(0, 252126, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob__HandshakeJob_: [VariantID; 1] = [
-    VariantID::new(0, 252128, 0x0)
+    VariantID::new(0, 252128, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__ArrayView_uchar__bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob__HandshakeJob_: [VariantID; 1] = [
-    VariantID::new(0, 252133, 0x0)
+    VariantID::new(0, 252133, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob__InitializeJob_: [VariantID; 1] = [
-    VariantID::new(0, 252137, 0x0)
+    VariantID::new(0, 252137, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob__WriteJob_: [VariantID; 1] = [
-    VariantID::new(0, 252141, 0x0)
+    VariantID::new(0, 252141, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__ArrayView_uchar__bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob__ReceiveJob__DecodeJob_: [VariantID; 1] = [
-    VariantID::new(0, 252146, 0x0)
+    VariantID::new(0, 252146, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet____SecBufferList_4__bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob__ReceiveJob_: [VariantID; 1] = [
-    VariantID::new(0, 252150, 0x0)
+    VariantID::new(0, 252150, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet_std__void_t_bnet__SocketStatus__bnet__SecureSocket__pImpl__SecureSocketJob__ReceiveJob_: [VariantID; 1] = [
-    VariantID::new(0, 252153, 0x0)
+    VariantID::new(0, 252153, 0x0),
 ];
 
 pub const VTABLE_bnet__Evaluator_bool__unsigned___int64____EvaluateBind__lambda_9869b9ae218058d9ae4a71355e3c08eb__: [VariantID; 1] = [
-    VariantID::new(0, 252155, 0x0)
+    VariantID::new(0, 252155, 0x0),
 ];
 
 pub const VTABLE_bnet__CustomData__ElementalValue_2_: [VariantID; 1] =
@@ -23962,7 +23962,7 @@ pub const VTABLE_NiTObjectArray_NiPointer_NiTexture__: [VariantID; 1] =
     [VariantID::new(304594, 254770, 0x18ff118)];
 
 pub const VTABLE_NiTArray_BSGraphics__TextureFilterMode_NiTMallocInterface_BSGraphics__TextureFilterMode__: [VariantID; 1] = [
-    VariantID::new(304595, 254772, 0x18ff128)
+    VariantID::new(304595, 254772, 0x18ff128),
 ];
 
 pub const VTABLE_NiTPrimitiveArray_BSGraphics__TextureFilterMode_: [VariantID; 1] =
@@ -24050,7 +24050,7 @@ pub const VTABLE_NiTPrimitiveArray_ImageSpaceTexture___: [VariantID; 1] =
     [VariantID::new(305430, 255177, 0x1905ce8)];
 
 pub const VTABLE_NiTArray_ImageSpaceEffect__EffectInput___NiTMallocInterface_ImageSpaceEffect__EffectInput____: [VariantID; 1] = [
-    VariantID::new(305431, 255179, 0x1905cf8)
+    VariantID::new(305431, 255179, 0x1905cf8),
 ];
 
 pub const VTABLE_NiTPrimitiveArray_ImageSpaceEffect__EffectInput___: [VariantID; 1] =
@@ -24331,15 +24331,15 @@ pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_ch
     [VariantID; 1] = [VariantID::new(257152, 0, 0x16a9a48)];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257153, 0, 0x18bc538)
+    VariantID::new(257153, 0, 0x18bc538),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const___: [VariantID; 1] = [
-    VariantID::new(257154, 0, 0x0)
+    VariantID::new(257154, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257155, 0, 0x0)
+    VariantID::new(257155, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] =
@@ -24349,51 +24349,51 @@ pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_in
     [VariantID::new(257157, 0, 0x0)];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257158, 0, 0x16a9af0)
+    VariantID::new(257158, 0, 0x16a9af0),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257163, 0, 0x16a9b38)
+    VariantID::new(257163, 0, 0x16a9b38),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_int__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_int_: [VariantID; 1] = [
-    VariantID::new(257164, 0, 0x0)
+    VariantID::new(257164, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(257165, 0, 0x16a9b70)
+    VariantID::new(257165, 0, 0x16a9b70),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257166, 0, 0x0)
+    VariantID::new(257166, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const___: [VariantID; 1] = [
-    VariantID::new(257167, 0, 0x0)
+    VariantID::new(257167, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257168, 0, 0x0)
+    VariantID::new(257168, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_char_const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(257169, 0, 0x16a9be0)
+    VariantID::new(257169, 0, 0x16a9be0),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257477, 0, 0x16a9a10)
+    VariantID::new(257477, 0, 0x16a9a10),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const___: [VariantID; 1] = [
-    VariantID::new(257478, 0, 0x16a9a80)
+    VariantID::new(257478, 0, 0x16a9a80),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const___: [VariantID; 1] = [
-    VariantID::new(257479, 0, 0x16a9ba8)
+    VariantID::new(257479, 0, 0x16a9ba8),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(257480, 0, 0x16a9c18)
+    VariantID::new(257480, 0, 0x16a9c18),
 ];
 
 pub const VTABLE___ModsChanged_ConfirmResetCallback: [VariantID; 1] =
@@ -24402,115 +24402,115 @@ pub const VTABLE___ModsChanged_ConfirmResetCallback: [VariantID; 1] =
 pub const VTABLE_FxResponseArgs_9_: [VariantID; 1] = [VariantID::new(269477, 0, 0x0)];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const___: [VariantID; 1] = [
-    VariantID::new(269490, 0, 0x0)
+    VariantID::new(269490, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_void_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const___: [VariantID; 1] = [
-    VariantID::new(269491, 0, 0x0)
+    VariantID::new(269491, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_4d3ba31be161bb5fd965603713df41f6__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(269492, 0, 0x0)
+    VariantID::new(269492, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_b05e2427973c4351e7f40713ae13ee88__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(269493, 0, 0x0)
+    VariantID::new(269493, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_e5a48bc04dc17e105890de7a88b6436e__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(269494, 0, 0x0)
+    VariantID::new(269494, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271560, 0, 0x0)
+    VariantID::new(271560, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271561, 0, 0x0)
+    VariantID::new(271561, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271562, 0, 0x0)
+    VariantID::new(271562, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____KeywordStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271563, 0, 0x0)
+    VariantID::new(271563, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271564, 0, 0x0)
+    VariantID::new(271564, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271565, 0, 0x0)
+    VariantID::new(271565, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271566, 0, 0x0)
+    VariantID::new(271566, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271567, 0, 0x0)
+    VariantID::new(271567, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271568, 0, 0x0)
+    VariantID::new(271568, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271569, 0, 0x0)
+    VariantID::new(271569, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271570, 0, 0x0)
+    VariantID::new(271570, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271571, 0, 0x0)
+    VariantID::new(271571, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____ActorValueStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271572, 0, 0x0)
+    VariantID::new(271572, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271573, 0, 0x0)
+    VariantID::new(271573, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271574, 0, 0x0)
+    VariantID::new(271574, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271575, 0, 0x0)
+    VariantID::new(271575, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271576, 0, 0x0)
+    VariantID::new(271576, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271577, 0, 0x0)
+    VariantID::new(271577, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271578, 0, 0x0)
+    VariantID::new(271578, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271579, 0, 0x0)
+    VariantID::new(271579, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271580, 0, 0x0)
+    VariantID::new(271580, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__UIntStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271581, 0, 0x0)
+    VariantID::new(271581, 0, 0x0),
 ];
 
 pub const VTABLE_SkyrimScript____StoryEventArguments_SkyrimScript____RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__RefStoryEventArgConverter_SkyrimScript__A0xe101b7a9__LocationStoryEventArgConverter_SkyrimScript__A0xe101b7a9__FormStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_SkyrimScript__A0xe101b7a9__EmptyStoryEventArgConverter_: [VariantID; 1] = [
-    VariantID::new(271582, 0, 0x0)
+    VariantID::new(271582, 0, 0x0),
 ];
 
 pub const VTABLE___LoggingDisabler: [VariantID; 2] = [
@@ -24519,193 +24519,193 @@ pub const VTABLE___LoggingDisabler: [VariantID; 2] = [
 ];
 
 pub const VTABLE_bnet__CallbackBind_bnet__Callback_bnet__UniquePtr_bnet___impl__FixedVector_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char___16_1_bnet___impl__StdAllocator_bnet___impl__FixedString_10_1_1_bnet___impl__StdAllocator_char_____const__bnet__HttpResponseInfo__BSPlatform__BSModsManager_: [VariantID; 1] = [
-    VariantID::new(296192, 0, 0x0)
+    VariantID::new(296192, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_char_const___BSPlatform__BNetResult___BSStringT_char_4294967295_DynamicMemoryManagementPol_____BSPlatform__BSModsManager___const_std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSStringT_char_4294967295_DynamicMemoryManagementPol_____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(296194, 0, 0x0)
+    VariantID::new(296194, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BNetResult____BSPlatform__BSModsManager___const_std___Ph_1__const___std___Ph_2__const___BSPlatform__BNetResult____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(296195, 0, 0x0)
+    VariantID::new(296195, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const___BSPlatform__BNetResult___BSPlatform__BSUserContent____BSPlatform__BSModsManager___const_std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSPlatform__BSUserContent____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSUserContent_const___: [VariantID; 1] = [
-    VariantID::new(296196, 0, 0x0)
+    VariantID::new(296196, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_char_const___BSPlatform__BNetResult____BSPlatform__BSModsManager___const_std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(296197, 0, 0x0)
+    VariantID::new(296197, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator_____BSPlatform__BSModsManager___const_std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator_____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSUserContent_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(296198, 0, 0x0)
+    VariantID::new(296198, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSModsManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator_____BSPlatform__BSModsManager___const_std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator_____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(296199, 0, 0x0)
+    VariantID::new(296199, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297598, 0, 0x0)
+    VariantID::new(297598, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_char_const___char_const___: [VariantID; 1] = [
-    VariantID::new(297599, 0, 0x0)
+    VariantID::new(297599, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSBNetAccountManager_____BSPlatform__BNetResult_unsigned___int64_BSPlatform__BNetResult____BSPlatform__BSBNetAccountManager___const_std___Ph_1__const___std___Ph_2__const___BSPlatform__BNetResult____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297600, 0, 0x18bc570)
+    VariantID::new(297600, 0, 0x18bc570),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_94ac3c6738a5b01d98230634473f9182__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_char_const___char_const___: [VariantID; 1] = [
-    VariantID::new(297602, 0, 0x0)
+    VariantID::new(297602, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSBNetAccountManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator_____BSPlatform__BSBNetAccountManager___const_std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator_____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSLegalDocument_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297604, 0, 0x18bc5a8)
+    VariantID::new(297604, 0, 0x18bc5a8),
 ];
 
 pub const VTABLE_std___Func_impl_std___Binder_std___Unforced_void__BSPlatform__BSBNetAccountManager_____BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator_____BSPlatform__BSBNetAccountManager___const_std___Ph_1__const___std___Ph_2__const___std___Ph_3__const___BSPlatform__BNetResult___BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator_____std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSEntitlement_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297605, 0, 0x0)
+    VariantID::new(297605, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_base_void_BSPlatform__BNetResult_unsigned___int64_BSTArray_uint_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297807, 0, 0x0)
+    VariantID::new(297807, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_190f6d692505062aad0a2346bf90014f__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSCreation_const___: [VariantID; 1] = [
-    VariantID::new(297808, 0, 0x0)
+    VariantID::new(297808, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_91b2a428d7d08b3621a88d67ec429c17__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297809, 0, 0x0)
+    VariantID::new(297809, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_b661d007b682adf079e9d3a7e977c0b2__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_int_: [VariantID; 1] = [
-    VariantID::new(297810, 0, 0x0)
+    VariantID::new(297810, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_db76a9fb04acf52ae099739ff5db71fb__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297811, 0, 0x0)
+    VariantID::new(297811, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_9431982a811f31c19b132e5b5e738388__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297812, 0, 0x0)
+    VariantID::new(297812, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_431dc82b74ec70de388d1ce79e67d9f1__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297813, 0, 0x0)
+    VariantID::new(297813, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_90545b18a4f477ffe599bad0cd534743__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297814, 0, 0x0)
+    VariantID::new(297814, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_b464a8c803bcf72b0df457dd6c436e2c__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297816, 0, 0x0)
+    VariantID::new(297816, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_7ba8e9094a90c5d1cbcc29a16d3efb96__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297818, 0, 0x0)
+    VariantID::new(297818, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_84e10439dd283255d1362fa643fed06c__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297819, 0, 0x0)
+    VariantID::new(297819, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_23b47feb52ff11d0edc967581e1c01fe__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297820, 0, 0x0)
+    VariantID::new(297820, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_d749ffc91f5f8c160bde1f819a04a9da__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSStringT_char_4294967295_DynamicMemoryManagementPol__BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297821, 0, 0x0)
+    VariantID::new(297821, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_c9624af4975becce7de0520a69c92116__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297822, 0, 0x0)
+    VariantID::new(297822, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_85a8c20f4d161d243ef8dd5f4669364b__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_uint_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297823, 0, 0x0)
+    VariantID::new(297823, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_05bc441d0797192a04dd2fd23b85421c__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_15ef56dac2e2587e0662df84e4bbe9f4__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_uint_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_7afa17f1b9a803328b13fd909916ebcf__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(297826, 0, 0x0)
+    VariantID::new(297826, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_c140c664848deadbbfc4a34824669dff__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297827, 0, 0x0)
+    VariantID::new(297827, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_990dca4e372f134d660796e9ef8caf71__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_: [VariantID; 1] = [
-    VariantID::new(297828, 0, 0x0)
+    VariantID::new(297828, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_2933cdabf00c32878810271f2e3f976f__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSTArray_BSPlatform__BSCreation_BSTArrayHeapAllocator__const___: [VariantID; 1] = [
-    VariantID::new(297829, 0, 0x0)
+    VariantID::new(297829, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_b4e0526b7f19d34ffe932e41f2076dd0__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_char_const___: [VariantID; 1] = [
-    VariantID::new(297874, 0, 0x0)
+    VariantID::new(297874, 0, 0x0),
 ];
 
 pub const VTABLE_std___Func_impl__lambda_b05a401b0b049ab81045113609a029a8__std__allocator_int__void_BSPlatform__BNetResult_unsigned___int64_BSPlatform__BSExternalServerStatusInfo_const___: [VariantID; 1] = [
-    VariantID::new(297875, 0, 0x0)
+    VariantID::new(297875, 0, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_6c876738465d8e384a04e19defc45448__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_ad635becf3cf0cf4ca0a7c75107f2157__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_base: [VariantID; 1] = [VariantID::new(298104, 0, 0x15a3120)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_8e7eedb9857acc9795e57367d0e04d46__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_3d4d063c74c3b4f85651deb924af0ba6__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_del_alloc_HINSTANCE_____bnet____ModuleDeleter_bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(298125, 0, 0x0)
+    VariantID::new(298125, 0, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_del_alloc_HINSTANCE_____bnet___impl__MemoryDeleter_HINSTANCE______bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(298126, 0, 0x0)
+    VariantID::new(298126, 0, 0x0),
 ];
 
 pub const VTABLE_std___Ref_count_del_alloc__SECURITY_FUNCTION_TABLE_A_const_bnet___impl__MemoryDeleter__SECURITY_FUNCTION_TABLE_A_const__bnet___impl__StdAllocator_void__: [VariantID; 1] = [
-    VariantID::new(298127, 0, 0x0)
+    VariantID::new(298127, 0, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_1e37111acc0cabbbaec9c53f9ab72e5f__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_bnet__Job: [VariantID; 1] = [VariantID::new(298797, 0, 0x18c4670)];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet__SessionAuthResult_bnet__HttpResponseInfo___lambda_5e637e0832f74c2bc01c43b188467450__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_bnet__HttpRequest_bnet__Callback_bnet___impl__FixedString_2000_1_1_bnet___impl__StdAllocator_char___bnet__HttpResponseInfo__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];
 
 pub const VTABLE_bnet__CallbackWrapper_bnet__Callback_bnet_std__void_t_bnet__HttpResponseInfo___lambda_60701eed7f9660644968404f5df4fc84__: [VariantID; 1] = [
-    VariantID::new(0, 0, 0x0)
+    VariantID::new(0, 0, 0x0),
 ];

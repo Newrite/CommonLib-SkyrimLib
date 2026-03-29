@@ -31,3 +31,14 @@ impl IUIMessageData {
         pub fn dtor()
     }
 }
+
+pub trait IUIMessageDataExt {
+    fn dtor(&mut self);
+}
+
+impl<T: AsRef<IUIMessageData> + AsMut<IUIMessageData>> IUIMessageDataExt for T {
+    #[inline(always)]
+    fn dtor(&mut self) {
+        self.as_mut().dtor()
+    }
+}

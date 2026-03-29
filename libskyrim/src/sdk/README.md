@@ -4,6 +4,10 @@
 It sits above the source-backed ABI layers in `libskyrim::re` and
 `libskyrim::skse`.
 
+For ongoing SDK research, backlog ideas, and architecture memory, also see
+[`MEMORY.md`](./MEMORY.md) and
+[`SKSEPROJECTS_RESEARCH.md`](./SKSEPROJECTS_RESEARCH.md).
+
 ## Purpose
 
 The low-level layers have a different job from the future SDK:
@@ -1168,7 +1172,8 @@ Implemented foundation:
 - `sdk::plugin::entry`
   light SDK wrappers for common `LoadInterface` initialization paths
 - `sdk::plugin::config`
-  early INI-focused helpers built on the existing `Ini` surface
+  typed INI access, config-to-form lookup glue, and reusable hotkey parsing /
+  matching helpers over the translated input surface
 - `sdk::persistence::cosave`
   typed `RecordId` / `UniqueId`, bounded record readers/writers, and first-class
   codecs for fixed-width primitives, `String`, `Option<T>`, `[T; N]`, `Vec<T>`,
@@ -1187,16 +1192,178 @@ Implemented foundation:
   `IntoEventFlow` callback sugar, `EventBatch` / `EventInstaller` batching,
   attribute-driven event authoring, and a first synchronous plugin-local
   mutable event bus
+- `sdk::interop`
+  first-pass plugin-to-plugin interop covering `RequestPluginAPI`-style DLL
+  APIs, typed inter-plugin message dispatch, reusable `RequestClient`, and a
+  builder-based `RequestServer` for synchronous request / response protocols
+- `sdk::ui::menus`
+  menu registration, queued open / close / toggle messaging, menu-state
+  predicates, top-most lookup, `MenuOpenCloseEvent` helpers, and first-pass
+  typed `IUIMessageData` payload helpers for `FaderData`, `LoadingMenuData`,
+  `BSUIMessageData`, and `BSUIScaleformData`
+- `sdk::ui::scaleform`
+  owner-backed menu-side Scaleform surface covering open-menu `GFxMovieView`
+  and `FxDelegate` lookup, plus movie `invoke` / `get_variable` /
+  `set_variable` helpers
+- `sdk::gameplay::player`
+  high-level access to the player singleton, current world state, current
+  command target, and common player state such as combat
+- `sdk::gameplay::input`
+  context-stack inspection, input-state snapshot/restore, scoped gameplay-input
+  suppression helpers, and user-event mapping lookup over `ControlMap` /
+  `PlayerControls`
+- `sdk::gameplay::actors`
+  loaded/high actor traversal, retained actor collections, player-following and
+  summon/command categorization, hostility/ally predicates, and point/player
+  proximity helpers over `ProcessLists`
+- `sdk::gameplay::combat`
+  hostile-nearby collection, cached faction-fight cleanup, player combat-state
+  queries, and stop-combat helpers over `ProcessLists`
+- `sdk::forms::lookup`
+  `TESDataHandler` singleton access, plugin-file presence checks, local/raw
+  form-ID resolution, typed form lookup, editor-ID lookup, community-standard
+  `po3_Tweaks` editor-ID fallback for unsupported form types, and
+  `"Plugin.esp|0x123"` helpers
+- `sdk::advanced::physics`
+  world-locked closest/all-hit Havok raycasts, actor-aware query filters,
+  post-query `LayerMask` filtering, hit resolution into raw `TESObjectREFR` /
+  `NiAVObject` pointers, plus LOS / backoff / ground-snap helpers
 
 Still intentionally placeholder-heavy:
 
-- `sdk::forms`
-- `sdk::gameplay`
-- `sdk::ui`
-- `sdk::interop`
+- parts of `sdk::forms` outside `lookup`
+- large parts of `sdk::gameplay`
+- most of `sdk::ui`
 - most of `sdk::hooks`
-- all of `sdk::advanced`
+- most of `sdk::advanced` outside `sdk::advanced::physics`
 
 The migration strategy is to move existing ergonomic layers into `sdk` first as
 thin, compatibility-friendly facades, then gradually converge on more
 domain-oriented implementations once real plugin usage shapes the stable API.
+
+## Interop Examples
+
+### RequestPluginAPI-style DLL API
+
+```rust,ignore
+use libskyrim::sdk::interop::external_api;
+use libskyrim::sdk::interop::messaging::ApiVersion;
+
+#[repr(C)]
+pub struct ExampleApi {
+    pub set_enabled: unsafe extern "system" fn(bool),
+    pub current_version: unsafe extern "system" fn() -> u32,
+}
+
+fn query_dependency_api() -> Result<(), external_api::RequestApiError> {
+    let api = unsafe {
+        external_api::request_plugin_api_for_plugin::<ExampleApi, ApiVersion>(
+            "ExampleDependency",
+            ApiVersion::new(1, 0),
+        )?
+    };
+
+    let api = unsafe { api.as_ref() };
+    unsafe { (api.set_enabled)(true) };
+    Ok(())
+}
+```
+
+### Messaging request / response server
+
+```rust,ignore
+use libskyrim::sdk::interop::messaging::{
+    ApiVersion, QueryResponse, RequestMessageIds, RequestServer,
+};
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct PingRequest {
+    value: u32,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct PongResponse {
+    doubled: u32,
+}
+
+const MSG_VERSION: u32 = 0x9000;
+const MSG_QUERY: u32 = 0x9001;
+const REQ_PING: u32 = 1;
+
+fn install_server(
+) -> Result<(), libskyrim::sdk::interop::messaging::ListenerInstallError> {
+    let _server = RequestServer::builder(
+        ApiVersion::new(1, 0),
+        RequestMessageIds::new(MSG_VERSION, MSG_QUERY),
+    )
+    .handle_value(REQ_PING, |_context, request: &PingRequest| {
+        Ok(PongResponse {
+            doubled: request.value * 2,
+        })
+    })
+    .handle_raw(2, |context| context.reject(QueryResponse::UnsupportedRequest))
+    .install()?;
+
+    Ok(())
+}
+```
+
+### Matching client
+
+```rust,ignore
+use libskyrim::sdk::interop::messaging::{
+    ApiVersion, ClientError, RequestClient, RequestMessageIds,
+};
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct PingRequest {
+    value: u32,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct PongResponse {
+    doubled: u32,
+}
+
+const MSG_VERSION: u32 = 0x9000;
+const MSG_QUERY: u32 = 0x9001;
+const REQ_PING: u32 = 1;
+
+fn ping_server() -> Result<u32, ClientError> {
+    let client = RequestClient::new_str(
+        "ExampleServer",
+        ApiVersion::new(1, 0),
+        RequestMessageIds::new(MSG_VERSION, MSG_QUERY),
+    )
+    .expect("plugin names used for SKSE messaging cannot contain NUL");
+
+    client.check_version()?;
+    let response: PongResponse = client.query(REQ_PING, &PingRequest { value: 21 })?;
+    Ok(response.doubled)
+}
+```
+
+### Plugin config helpers
+
+```rust,ignore
+use libskyrim::sdk::plugin::config::{Config, HotkeyCombo};
+
+fn load_settings(ini: &libskyrim::sdk::plugin::Ini) {
+    let config = Config::new(ini);
+
+    let enabled = config.bool_or("General", "Enabled", true);
+    let interval = config.f32_or("General", "TickInterval", 0.25);
+    let _spell = config
+        .form_typed::<libskyrim::re::SpellItem>("General", "RescueSpell")
+        .unwrap_or(libskyrim::sdk::core::GamePtr::null());
+    let _hotkey = config
+        .hotkey("General", "Hotkey")
+        .unwrap_or_else(|_| HotkeyCombo::parse("Shift + E").unwrap());
+
+    let _ = (enabled, interval);
+}
+```

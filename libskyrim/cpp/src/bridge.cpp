@@ -417,6 +417,10 @@ extern "C" {
         bridge_gptr_release<RE::GFxMovieView>(movie_view);
     }
 
+    void commonlib_gfx_resource_delete(void* resource) noexcept {
+        delete static_cast<RE::GFxResource*>(resource);
+    }
+
     void commonlib_fx_delegate_add_ref(void* delegate) noexcept {
         bridge_gptr_add_ref<RE::FxDelegate>(delegate);
     }

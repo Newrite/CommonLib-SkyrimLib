@@ -63,6 +63,7 @@ translations and hook ports with Codex.
 | `translate-partial` | main | `gpt-5.4` | `high` |
 | `verify-translation` | main | `gpt-5.4` | `high` |
 | `translate-runtime-layout` | main | `gpt-5.4` | `high` |
+| `refactor-runtime-layout` | main | `gpt-5.4` | `high` |
 | `port-hooking` | main | `gpt-5.4` | `high` |
 | `reconcile-api-ergonomics` | main or subagent | `gpt-5.4-mini` or `gpt-5.4` | `medium` |
 | `add-extension-trait` | subagent or main | `gpt-5.4-mini` | `medium` |
@@ -204,6 +205,47 @@ Then:
 After that, run $verify-translation for <TypeName> semantics in the same main thread.
 If any honest compromise remains, leave a source-backed `// TODO:` comment at
 the exact site.
+Run cargo fmt, cargo check -p libskyrim, and cargo check -p libskyrim --tests.
+```
+
+## Template 4B: Existing Runtime-Layout Refactor
+
+Use when the type already exists, already has runtime-tail access of some kind,
+but needs to be restructured into better raw blocks and a better runtime-facing
+API.
+
+```text
+Use $refactor-runtime-layout for <TypeName>.
+
+Keep the main thread on gpt-5.4 with high reasoning effort.
+
+Before editing:
+- run python scripts/audit_translation.py <TypeName>
+- use one subagent on gpt-5.4-mini high to inspect the current Rust file and the
+  matching CommonLib header/cpp and report:
+  - existing whole-tail accessors
+  - existing field-level accessors
+  - candidate shared raw blocks across SE / AE / VR
+  - naming mismatches such as universal-sounding accessors that are actually
+    `_flat` or runtime-specific
+  - places where tiny remaining overlap should become direct getter/setter
+    helpers instead of more micro-structs
+
+Then in the main thread:
+- preserve the honest raw runtime surface
+- extract meaningful shared raw sub-structures for reusable runtime overlap
+- keep `_flat`, `_se`, `_ae`, `_vr` raw entrypoints truthfully named
+- add or repair `runtime_view()` / `runtime_view_mut()` as the ergonomic layer
+- if only a couple of overlapping fields remain, expose them through direct
+  runtime-aware getter/setter helpers instead of forcing tiny structs
+- replace repeated local runtime branching with owner-side helpers or view
+  methods when the layout contract stays honest
+- if the existing runtime accessor macros are missing a needed pattern, extend
+  libskyrim/src/runtime.rs instead of keeping per-file pointer-arithmetic
+  helpers
+
+After that, run $verify-translation for <TypeName> semantics in the same main
+thread.
 Run cargo fmt, cargo check -p libskyrim, and cargo check -p libskyrim --tests.
 ```
 
@@ -415,6 +457,7 @@ Split this into subagents:
 - Default main thread: `gpt-5.4 high`
 - Default audit subagent: `gpt-5.4-mini medium`
 - Default partial-translation subagent: `gpt-5.4-mini high`
+- Default runtime-layout-refactor subagent: `gpt-5.4-mini high`
 - Default ergonomics-pass subagent: `gpt-5.4-mini medium`
 - Use `xhigh` rarely and only for the hardest runtime-layout or MI cases
 - For event-heavy owners, keep final translation and event-contract decisions in

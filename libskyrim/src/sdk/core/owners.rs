@@ -1,6 +1,8 @@
 //! Native smart-pointer traits shared across SDK domains.
 
-use crate::re::{BSTSmartPointer, BSTSmartPointerManager, HkRef, NiPointer, NiRef, hkRefPtr};
+use crate::re::{
+    BSTSmartPointer, BSTSmartPointerManager, GPtr, GPtrTarget, HkRef, NiPointer, NiRef, hkRefPtr,
+};
 use crate::relocation::{RttiType, skyrim_cast};
 
 use super::sealed;
@@ -94,6 +96,38 @@ where
     U: NiRef,
 {
     type Owner = NiPointer<U>;
+}
+
+impl<T> sealed::Sealed for GPtr<T> where T: GPtrTarget {}
+
+impl<T> NativeOwner for GPtr<T>
+where
+    T: GPtrTarget,
+{
+    type Target = T;
+
+    #[inline(always)]
+    unsafe fn from_raw(raw: *mut Self::Target) -> Self {
+        unsafe { GPtr::from_raw(raw) }
+    }
+
+    #[inline(always)]
+    fn as_ptr(&self) -> *mut Self::Target {
+        self.get()
+    }
+
+    #[inline(always)]
+    fn into_raw(self) -> *mut Self::Target {
+        GPtr::into_raw(self)
+    }
+}
+
+impl<T, U> NativeOwnerFamily<U> for GPtr<T>
+where
+    T: GPtrTarget,
+    U: GPtrTarget,
+{
+    type Owner = GPtr<U>;
 }
 
 impl<T, M> sealed::Sealed for BSTSmartPointer<T, M> where M: BSTSmartPointerManager<T> {}

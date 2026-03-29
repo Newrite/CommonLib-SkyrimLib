@@ -66,6 +66,22 @@ impl INPUT_CONTEXT_ID {
     }
 }
 
+impl crate::rex::EnumSetType<u32> for INPUT_CONTEXT_ID {
+    #[inline(always)]
+    fn to_underlying(self) -> u32 {
+        self.get()
+    }
+}
+
+impl TryFrom<u32> for INPUT_CONTEXT_ID {
+    type Error = core::convert::Infallible;
+
+    #[inline(always)]
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        Ok(Self(value))
+    }
+}
+
 impl INPUT_CONTEXT_IDS {
     pub const kGameplay: INPUT_CONTEXT_ID = INPUT_CONTEXT_ID::kGameplay;
     pub const kMenuMode: INPUT_CONTEXT_ID = INPUT_CONTEXT_ID::kMenuMode;

@@ -7,3 +7,5 @@ pub enum BSGraphicsTextureAddressMode {
     WrapSClampT = 2,
     WrapSWrapT = 3,
 }
+
+core_util::impl_enumset_type!(BSGraphicsTextureAddressMode => u8);

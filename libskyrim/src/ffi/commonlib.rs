@@ -72,6 +72,7 @@ unsafe extern "C" {
     pub fn commonlib_make_nismart_ni_ref_object(out: *mut c_void) -> bool;
     pub fn commonlib_gfx_movie_view_add_ref(movie_view: *mut c_void);
     pub fn commonlib_gfx_movie_view_release(movie_view: *mut c_void);
+    pub fn commonlib_gfx_resource_delete(resource: *mut c_void);
     pub fn commonlib_fx_delegate_add_ref(delegate: *mut c_void);
     pub fn commonlib_fx_delegate_release(delegate: *mut c_void);
     pub fn commonlib_fx_delegate_handler_add_ref(handler: *mut c_void);

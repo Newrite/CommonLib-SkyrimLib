@@ -5,22 +5,26 @@ use core_util::{EnumSet, inherit};
 
 use crate::offsets::offsets_rtti::{RTTI_Actor, RTTI_Actor__ForEachSpellVisitor};
 use crate::offsets::offsets_vtable::{VTABLE_Actor, VTABLE_Actor__ForEachSpellVisitor};
+use crate::re::magic_system::CannotCastReason;
+use crate::re::tes_form::FormID;
 use crate::re::{
-    ACTOR_LOS_LOCATION, AIProcess, AITimeStamp, ActorHandle, ActorMagicCaster,
+    ACTOR_LIFE_STATE, ACTOR_LOS_LOCATION, AIProcess, AITimeStamp, ActorHandle, ActorMagicCaster,
     ActorMotionFeedbackData, ActorMotionFeedbackOutput, ActorMover, ActorState, ActorValue,
-    ActorValueModifier, ActorValueOwner, BGSAttackData, BGSDefaultObjectManager, BGSDialogueBranch,
-    BGSEquipSlot, BGSKeyword, BGSPerk, BSAnimationGraphEvent, BSAnimationGraphManager,
-    BSContainerForEachResult, BSExtraData, BSFaceGenAnimationData, BSFixedString, BSTEventSink,
-    BSTSmartPointer, BSTransformDeltaEvent, BipedAnim, CFilter, CombatController, CombatGroup,
-    DETECTION_PRIORITY, EmotionType, ExtraCanTalkToPlayer, ExtraDataList, ExtraDataType,
-    ExtraLeveledCreature, FIGHT_REACTION, FormCastable, FormType, HighProcessData,
-    IAnimationGraphManagerHolder, IAnimationGraphManagerHolderExt,
+    ActorValueModifier, ActorValueOwner, AlchemyItem, BGSAttackData, BGSDefaultObjectManager,
+    BGSDialogueBranch, BGSEquipSlot, BGSKeyword, BGSOutfit, BGSPerk, BSAnimationGraphEvent,
+    BSAnimationGraphManager, BSContainerForEachResult, BSExtraData, BSFaceGenAnimationData,
+    BSFixedString, BSSoundHandle, BSTEventSink, BSTSmartPointer, BSTransformDeltaEvent, BipedAnim,
+    BipedObjectSlot, CFilter, CastingSource, CombatController, CombatGroup, DETECTION_PRIORITY,
+    EffectArchetype, EmotionType, ExtraCanTalkToPlayer, ExtraDataList, ExtraDataType,
+    ExtraFactionChanges, ExtraLeveledCreature, FIGHT_REACTION, FormCastable, FormType,
+    HeadPartType, HighProcessData, IAnimationGraphManagerHolder, IAnimationGraphManagerHolderExt,
     IPostAnimationChannelUpdateFunctor, InventoryEntryData, MagicCaster, MagicItem, MagicTarget,
-    MiddleHighProcessData, MovementControllerNPC, NiPoint3, NiPointer, NiRef, ObjectRefHandle,
-    PROCESS_TYPE, PackageLocation, PerkEntryVisitor, ProcessLists, SpellItem, TESBoundObject,
-    TESFaction, TESForm, TESIdleForm, TESNPC, TESObjectCELL, TESObjectMISC, TESObjectREFR,
-    TESPackage, TESRace, TESShout, TESTopicInfo, TESWordOfPower, TrespassPackage,
-    bhkCharacterController, bhkCharacterMoveFinishEvent,
+    MiddleHighProcessData, MovementControllerNPC, MovementMessageActorCollision, NiAVObject,
+    NiColor, NiPoint3, NiPointer, NiRef, ObjectRefHandle, PACKAGE_TYPE, PROCESS_TYPE,
+    PackageLocation, PerkEntryVisitor, ProcessLists, SOUL_LEVEL, SpellItem, TESBoundObject,
+    TESFaction, TESForm, TESIdleForm, TESNPC, TESObjectARMA, TESObjectARMO, TESObjectCELL,
+    TESObjectMISC, TESObjectREFR, TESPackage, TESRace, TESShout, TESTopicInfo, TESWordOfPower,
+    TrespassPackage, bhkCharacterController, bhkCharacterMoveFinishEvent,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset, skyrim_cast};
 use crate::version::RUNTIME_SSE_1_6_629;
@@ -567,6 +571,25 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_head_part_object(&mut self, part_type: HeadPartType) -> *mut NiAVObject {
+        let actor_base = self.get_actor_base();
+        let face_node = self.get_face_node_skinned();
+        if actor_base.is_null() || face_node.is_null() {
+            return core::ptr::null_mut();
+        }
+
+        let face_part = unsafe { (*actor_base).get_current_head_part_by_type(part_type) };
+        if face_part.is_null() {
+            return core::ptr::null_mut();
+        }
+
+        unsafe {
+            (&mut *face_node.cast::<NiAVObject>())
+                .get_object_by_name(&(*face_part).form_editor_id as *const _)
+        }
+    }
+
+    #[inline(always)]
     pub fn get_actor_base(&self) -> *mut TESNPC {
         unsafe { skyrim_cast::<TESBoundObject, TESNPC>(self.base.get_base_object()) }
     }
@@ -588,6 +611,40 @@ impl Actor {
             .map(AIProcess::get_commanding_actor)
             .unwrap_or_else(ActorHandle::new)
             .get()
+    }
+
+    #[inline(always)]
+    fn get_crime_faction_impl(&self) -> *mut TESFaction {
+        if self.is_commanded_actor() {
+            return core::ptr::null_mut();
+        }
+
+        let x_faction = self
+            .base
+            .extra_list
+            .get_by_type_typed::<ExtraFactionChanges>();
+        if !x_faction.is_null()
+            && unsafe { !(*x_faction).crime_faction.is_null() || (*x_faction).remove_crime_faction }
+        {
+            return unsafe { (*x_faction).crime_faction };
+        }
+
+        let base = self.get_actor_base();
+        if base.is_null() {
+            core::ptr::null_mut()
+        } else {
+            unsafe { (*base).crime_faction }
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_crime_faction(&self) -> *mut TESFaction {
+        self.get_crime_faction_impl()
+    }
+
+    #[inline(always)]
+    pub fn get_crime_faction_ref(&self) -> Option<&TESFaction> {
+        unsafe { self.get_crime_faction().as_ref() }
     }
 
     #[inline(always)]
@@ -666,6 +723,61 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_attacking_weapon(&self) -> *mut InventoryEntryData {
+        let Some(process) = self.current_process() else {
+            return core::ptr::null_mut();
+        };
+
+        let Some(high_process) = (unsafe { process.high.as_ref() }) else {
+            return core::ptr::null_mut();
+        };
+        let attack_data = high_process.attack_data.get();
+        if attack_data.is_null() {
+            return core::ptr::null_mut();
+        }
+
+        let Some(middle_high) = (unsafe { process.middle_high.as_ref() }) else {
+            return core::ptr::null_mut();
+        };
+
+        if unsafe { (&*attack_data).is_left_attack() } {
+            middle_high.left_hand
+        } else {
+            middle_high.right_hand
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_attacking_weapon_ref(&self) -> Option<&InventoryEntryData> {
+        unsafe { self.get_attacking_weapon().as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn get_height(&mut self) -> f32 {
+        let min = self.base.get_bound_min();
+        let max = self.base.get_bound_max();
+        let height = self.base.get_base_height() * (max.z - min.z);
+
+        let Some(current_process) =
+            (unsafe { self.get_actor_runtime_data_mut().current_process.as_mut() })
+        else {
+            return height;
+        };
+
+        if !current_process.in_high_process() {
+            return height;
+        }
+
+        let cached_height = current_process.get_cached_height();
+        if cached_height == 0.0 {
+            current_process.set_cached_height(height);
+            height
+        } else {
+            cached_height
+        }
+    }
+
+    #[inline(always)]
     pub fn get_killer(&self) -> *mut Actor {
         if self.base.is_dead(false) {
             core::ptr::null_mut()
@@ -716,6 +828,55 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_regen_delay(&self, actor_value: ActorValue) -> f32 {
+        self.current_process()
+            .map(|process| process.get_regen_delay(actor_value))
+            .unwrap_or(0.0)
+    }
+
+    #[inline(always)]
+    pub fn get_skin(&self) -> *mut TESObjectARMO {
+        let base = self.get_actor_base();
+        if !base.is_null() {
+            let skin = unsafe { (*base).actor_base.skin_form.skin };
+            if !skin.is_null() {
+                return skin;
+            }
+        }
+
+        let race = self.get_race();
+        if race.is_null() {
+            core::ptr::null_mut()
+        } else {
+            unsafe { (*race).skin_form.skin }
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_skin_ref(&self) -> Option<&TESObjectARMO> {
+        unsafe { self.get_skin().as_ref() }
+    }
+
+    #[inline(always)]
+    pub fn get_skin_for_slot(
+        &mut self,
+        slot: BipedObjectSlot,
+        no_init: bool,
+    ) -> *mut TESObjectARMO {
+        let worn = self.get_worn_armor(slot, no_init);
+        if worn.is_null() {
+            self.get_skin()
+        } else {
+            worn
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_soul_size(&self) -> SOUL_LEVEL {
+        self.get_soul_size_raw()
+    }
+
+    #[inline(always)]
     pub fn get_middle_high_process(&self) -> *mut MiddleHighProcessData {
         self.current_process()
             .map(|process| process.middle_high)
@@ -748,6 +909,44 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_worn_armor(&mut self, slot: BipedObjectSlot, no_init: bool) -> *mut TESObjectARMO {
+        let inventory = self
+            .base
+            .get_inventory_with(|object: &TESBoundObject| object.is_armor(), no_init);
+        for (item, (count, entry)) in inventory {
+            if count <= 0 || !entry.is_worn() {
+                continue;
+            }
+
+            let armor = unsafe { skyrim_cast::<TESForm, TESObjectARMO>(item.cast::<TESForm>()) };
+            if !armor.is_null() && unsafe { (*armor).biped_object_form.has_part_of(slot) } {
+                return armor;
+            }
+        }
+
+        core::ptr::null_mut()
+    }
+
+    #[inline(always)]
+    pub fn get_worn_armor_by_form_id(
+        &mut self,
+        form_id: FormID,
+        no_init: bool,
+    ) -> *mut TESObjectARMO {
+        let inventory = self.base.get_inventory_with(
+            |object: &TESBoundObject| object.is_armor() && object.get_form_id() == form_id,
+            no_init,
+        );
+        for (item, (count, entry)) in inventory {
+            if count > 0 && entry.is_worn() {
+                return item.cast::<TESObjectARMO>();
+            }
+        }
+
+        core::ptr::null_mut()
+    }
+
+    #[inline(always)]
     pub fn get_vendor_faction(&self) -> *mut TESFaction {
         if self.get_actor_runtime_data().vendor_faction.is_null() {
             self.calculate_current_vendor_faction();
@@ -768,10 +967,22 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn get_rider(&mut self, out_rider: &mut NiPointer<Actor>) -> bool {
+        self.get_mounted_by(out_rider)
+    }
+
+    #[inline(always)]
     pub fn get_char_controller(&self) -> *mut bhkCharacterController {
         self.current_process()
             .map(AIProcess::get_char_controller)
             .unwrap_or(core::ptr::null_mut())
+    }
+
+    #[inline(always)]
+    pub fn get_collision_filter(&self) -> CFilter {
+        let mut collision_filter = CFilter::default();
+        self.get_collision_filter_info(&mut collision_filter);
+        collision_filter
     }
 
     #[inline(always)]
@@ -1051,10 +1262,23 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn has_line_of_sight(&self, refr: *mut TESObjectREFR) -> bool {
+        let mut unk = false;
+        self.has_line_of_sight_raw(refr, &mut unk)
+    }
+
+    #[inline(always)]
     pub fn is_ai_enabled(&self) -> bool {
         self.get_actor_runtime_data()
             .bool_bits
             .all(BOOL_BITS::ProcessMe)
+    }
+
+    #[inline(always)]
+    pub fn is_alarmed(&self) -> bool {
+        self.get_current_package_ref()
+            .map(|package| package.pack_data.pack_type.underlying() == PACKAGE_TYPE::Alarm as u8)
+            .unwrap_or(false)
     }
 
     #[inline(always)]
@@ -1105,10 +1329,29 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn is_dual_casting(&self) -> bool {
+        self.current_process()
+            .and_then(|process| unsafe { process.high.as_ref() })
+            .map(|high_process| high_process.is_dual_casting)
+            .unwrap_or(false)
+    }
+
+    #[inline(always)]
     pub fn is_essential(&self) -> bool {
         self.get_actor_runtime_data()
             .bool_flags
             .all(BOOL_FLAGS::Essential)
+    }
+
+    #[inline(always)]
+    pub fn is_faction_in_crime_group(&self, faction: *const TESFaction) -> bool {
+        let crime_faction = self.get_crime_faction();
+        if crime_faction.is_null() {
+            return false;
+        }
+
+        core::ptr::eq(crime_faction as *const TESFaction, faction)
+            || unsafe { (*crime_faction).is_faction_in_crime_group(faction) }
     }
 
     #[inline(always)]
@@ -1123,6 +1366,13 @@ impl Actor {
         self.get_actor_runtime_data()
             .bool_flags
             .all(BOOL_FLAGS::IsInKillMove)
+    }
+
+    #[inline(always)]
+    pub fn is_in_jump_state(&self) -> bool {
+        let mut result = false;
+        let variable = BSFixedString::from_str("bInJumpState");
+        self.get_graph_variable_bool(&variable, &mut result) && result
     }
 
     #[inline(always)]
@@ -1223,6 +1473,13 @@ impl Actor {
     }
 
     #[inline(always)]
+    pub fn remove_extra_arrows_3d(&mut self) {
+        self.base
+            .extra_list
+            .remove_by_type(ExtraDataType::AttachedArrows3D);
+    }
+
+    #[inline(always)]
     pub fn set_player_controls(&mut self, enable: bool) {
         let mut movement_controller = self.get_actor_runtime_data().movement_controller.clone();
         if movement_controller.get().is_null() {
@@ -1235,6 +1492,44 @@ impl Actor {
         } else {
             movement_controller.set_ai_driven();
         }
+    }
+
+    #[inline(always)]
+    pub fn set_default_outfit(&mut self, outfit: *mut BGSOutfit, update_3d: bool) -> bool {
+        let actor_base = self.get_actor_base();
+        if actor_base.is_null()
+            || outfit.is_null()
+            || unsafe { (*actor_base).default_outfit == outfit }
+        {
+            return false;
+        }
+
+        self.remove_outfit_items(unsafe { (*actor_base).default_outfit });
+        unsafe { (&mut *actor_base).set_default_outfit(outfit) };
+        self.base.init_inventory_if_required(false);
+        if !self.base.is_disabled() {
+            self.add_worn_outfit(outfit, update_3d);
+        }
+        true
+    }
+
+    #[inline(always)]
+    pub fn set_sleep_outfit(&mut self, outfit: *mut BGSOutfit, update_3d: bool) -> bool {
+        let actor_base = self.get_actor_base();
+        if actor_base.is_null()
+            || outfit.is_null()
+            || unsafe { (*actor_base).sleep_outfit == outfit }
+        {
+            return false;
+        }
+
+        self.remove_outfit_items(unsafe { (*actor_base).sleep_outfit });
+        unsafe { (&mut *actor_base).set_sleep_outfit(outfit) };
+        self.base.init_inventory_if_required(false);
+        if !self.base.is_disabled() {
+            self.add_worn_outfit(outfit, update_3d);
+        }
+        true
     }
 
     #[inline(always)]
@@ -1254,6 +1549,134 @@ impl Actor {
         {
             current_process.update_regen_delay(actor_value, regen_delay);
         }
+    }
+
+    #[inline(always)]
+    pub fn update_3d_model(&mut self) {
+        let actor = self as *mut Self;
+        if let Some(current_process) =
+            unsafe { self.get_actor_runtime_data_mut().current_process.as_mut() }
+        {
+            current_process.update_3d_model(actor);
+        }
+    }
+
+    #[inline(always)]
+    pub fn update_hair_color(&mut self) {
+        let Some(actor_base) = (unsafe { self.get_actor_base().as_ref() }) else {
+            return;
+        };
+        let Some(head_related_data) = (unsafe { actor_base.head_related_data.as_ref() }) else {
+            return;
+        };
+        let Some(hair_color) = (unsafe { head_related_data.hair_color.as_ref() }) else {
+            return;
+        };
+
+        let color = NiColor::new(
+            hair_color.color.red as f32 / 128.0,
+            hair_color.color.green as f32 / 128.0,
+            hair_color.color.blue as f32 / 128.0,
+        );
+
+        let model = self.base.get_3d();
+        if let Some(model) = unsafe { model.as_mut() } {
+            model.update_hair_color(color);
+        }
+    }
+
+    #[inline(always)]
+    pub fn update_skin_color(&mut self) {
+        let Some(actor_base) = (unsafe { self.get_actor_base().as_ref() }) else {
+            return;
+        };
+
+        let color = NiColor::from(actor_base.body_tint_color);
+        let third_person = self.base.get_3d();
+        if let Some(third_person) = unsafe { third_person.as_mut() } {
+            third_person.update_body_tint(color);
+        }
+
+        let first_person = self.base.get_3d_with_view(true);
+        if let Some(first_person) = unsafe { first_person.as_mut() } {
+            first_person.update_body_tint(color);
+        }
+    }
+
+    pub fn visit_armor_addon<F>(
+        &mut self,
+        armor: *mut TESObjectARMO,
+        arma: *mut TESObjectARMA,
+        mut visitor: F,
+    ) where
+        F: FnMut(bool, *mut NiAVObject),
+    {
+        if arma.is_null() {
+            return;
+        }
+
+        let mut addon_name = [0 as core::ffi::c_char; 48];
+        unsafe {
+            (*arma).get_node_name(
+                addon_name.as_mut_ptr(),
+                self as *const Self as *const TESObjectREFR,
+                armor,
+                -1.0,
+            );
+        }
+
+        let addon_name = BSFixedString::new(addon_name.as_ptr());
+        let mut skeleton_roots = [self.base.get_3d(), self.base.get_3d_with_view(true)];
+        if skeleton_roots[1] == skeleton_roots[0] {
+            skeleton_roots[1] = core::ptr::null_mut();
+        }
+
+        for (index, root) in skeleton_roots.iter_mut().enumerate() {
+            if root.is_null() {
+                continue;
+            }
+
+            let object = unsafe { (&mut **root).get_object_by_name_ref(&addon_name) };
+            if !object.is_null() {
+                visitor(index == 1, object);
+            }
+        }
+    }
+
+    pub fn visit_factions<F>(&self, mut visitor: F) -> bool
+    where
+        F: FnMut(*mut TESFaction, i8) -> bool,
+    {
+        let actor_base = self.get_actor_base();
+        if actor_base.is_null() {
+            return false;
+        }
+
+        for faction_info in unsafe { (*actor_base).actor_base.actor_base_data.factions.as_slice() }
+        {
+            if visitor(faction_info.faction, faction_info.rank) {
+                return true;
+            }
+        }
+
+        let faction_changes = self
+            .base
+            .extra_list
+            .get_by_type_typed::<ExtraFactionChanges>();
+        if !faction_changes.is_null() {
+            for change in unsafe { (*faction_changes).faction_changes.as_slice() } {
+                if visitor(change.faction, change.rank) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    #[inline(always)]
+    pub fn would_be_stealing(&self, target: *const TESObjectREFR) -> bool {
+        !target.is_null() && unsafe { !(&*target).is_an_owner(self as *const Self, true, false) }
     }
 
     crate::relocated_virtual_method! {
@@ -1544,6 +1967,206 @@ impl Actor {
     }
 
     crate::relocated_virtual_method! {
+        pub const VFUNC_SET_SIZE: VariantOffset = VariantOffset::new_se_ae(0x0D9, 0x0DB);
+        pub fn set_size(&mut self, size: f32)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_END_DIALOGUE: VariantOffset = VariantOffset::new_se_ae(0x0DA, 0x0DC);
+        pub fn end_dialogue(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_UP_TALKING_ACTIVATOR_ACTOR: VariantOffset =
+            VariantOffset::new_se_ae(0x0DB, 0x0DD);
+        pub fn set_up_talking_activator_actor(
+            &mut self,
+            target: *mut Actor,
+            activator: &mut *mut Actor
+        ) -> *mut Actor
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_INITIATE_SPECTATOR: VariantOffset =
+            VariantOffset::new_se_ae(0x0DC, 0x0DE);
+        pub fn initiate_spectator(&mut self, target: *mut Actor)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_INITIATE_FLEE: VariantOffset = VariantOffset::new_se_ae(0x0DD, 0x0DF);
+        pub fn initiate_flee(
+            &mut self,
+            flee_ref: *mut TESObjectREFR,
+            run_once: bool,
+            knows: bool,
+            combat_mode: bool,
+            cell: *mut TESObjectCELL,
+            refr: *mut TESObjectREFR,
+            flee_from_dist: f32,
+            flee_to_dist: f32
+        )
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_INITIATE_GET_UP_PACKAGE: VariantOffset =
+            VariantOffset::new_se_ae(0x0DE, 0x0E0);
+        pub fn initiate_get_up_package(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_PUT_CREATED_PACKAGE: VariantOffset =
+            VariantOffset::new_se_ae(0x0DF, 0x0E1);
+        pub fn put_created_package(
+            &mut self,
+            package: *mut TESPackage,
+            temp_package: bool,
+            created_package: bool,
+            allow_from_furniture: bool
+        )
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UPDATE_ALPHA: VariantOffset = VariantOffset::new_se_ae(0x0E0, 0x0E2);
+        pub fn update_alpha(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_ALPHA: VariantOffset = VariantOffset::new_se_ae(0x0E1, 0x0E3);
+        pub fn set_alpha(&mut self, alpha: f32)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_ALPHA: VariantOffset = VariantOffset::new_se_ae(0x0E2, 0x0E4);
+        pub fn get_alpha(&self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_IS_IN_COMBAT: VariantOffset = VariantOffset::new_se_ae(0x0E3, 0x0E5);
+        pub fn is_in_combat(&self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UPDATE_COMBAT: VariantOffset = VariantOffset::new_se_ae(0x0E4, 0x0E6);
+        pub fn update_combat(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_STOP_COMBAT: VariantOffset = VariantOffset::new_se_ae(0x0E5, 0x0E7);
+        pub fn stop_combat(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CALC_ARMOR_RATING: VariantOffset =
+            VariantOffset::new_se_ae(0x0E6, 0x0E8);
+        pub fn calc_armor_rating(&mut self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_ARMOR_BASE_FACTOR_SUM: VariantOffset =
+            VariantOffset::new_se_ae(0x0E7, 0x0E9);
+        pub fn get_armor_base_factor_sum(&mut self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CALC_UNARMED_DAMAGE: VariantOffset =
+            VariantOffset::new_se_ae(0x0E8, 0x0EA);
+        pub fn calc_unarmed_damage(&mut self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UNK_E9: VariantOffset = VariantOffset::new_se_ae(0x0E9, 0x0EB);
+        pub fn unk_e9(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UNK_EA: VariantOffset = VariantOffset::new_se_ae(0x0EA, 0x0EC);
+        pub fn unk_ea(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_RUN_SPEED: VariantOffset = VariantOffset::new_se_ae(0x0EB, 0x0ED);
+        pub fn get_run_speed(&self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_JOG_SPEED: VariantOffset = VariantOffset::new_se_ae(0x0EC, 0x0EE);
+        pub fn get_jog_speed(&self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_FAST_WALK_SPEED: VariantOffset =
+            VariantOffset::new_se_ae(0x0ED, 0x0EF);
+        pub fn get_fast_walk_speed(&self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_WALK_SPEED: VariantOffset = VariantOffset::new_se_ae(0x0EE, 0x0F0);
+        pub fn get_walk_speed(&self) -> f32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_WEAPON_SWING_CALL_BACK: VariantOffset =
+            VariantOffset::new_se_ae(0x0EF, 0x0F1);
+        pub fn weapon_swing_call_back(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_ACTOR_STARTING_POSITION: VariantOffset =
+            VariantOffset::new_se_ae(0x0F0, 0x0F2);
+        pub fn set_actor_starting_position(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_MOVE_TO_HIGH: VariantOffset = VariantOffset::new_se_ae(0x0F1, 0x0F3);
+        pub fn move_to_high(&mut self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_MOVETO_LOW: VariantOffset = VariantOffset::new_se_ae(0x0F2, 0x0F4);
+        pub fn moveto_low(&mut self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_MOVETO_MIDDLE_LOW: VariantOffset =
+            VariantOffset::new_se_ae(0x0F3, 0x0F5);
+        pub fn moveto_middle_low(&mut self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_MOVE_TO_MIDDLE_HIGH: VariantOffset =
+            VariantOffset::new_se_ae(0x0F4, 0x0F6);
+        pub fn move_to_middle_high(&mut self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_HAS_BEEN_ATTACKED: VariantOffset =
+            VariantOffset::new_se_ae(0x0F5, 0x0F7);
+        pub fn has_been_attacked(&self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_BEEN_ATTACKED: VariantOffset =
+            VariantOffset::new_se_ae(0x0F6, 0x0F8);
+        pub fn set_been_attacked(&mut self, set: bool)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_USE_SKILL: VariantOffset = VariantOffset::new_se_ae(0x0F7, 0x0F9);
+        pub fn use_skill(&mut self, av: ActorValue, points: f32, arg3: *mut TESForm)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_IS_AT_POINT: VariantOffset = VariantOffset::new_se_ae(0x0F8, 0x0FA);
+        pub fn is_at_point(
+            &self,
+            point: &NiPoint3,
+            radius: f32,
+            expand_radius: bool,
+            always_test_height: bool
+        ) -> bool
+    }
+
+    crate::relocated_virtual_method! {
         pub const VFUNC_IS_IN_FACTION: VariantOffset = VariantOffset::new_se_ae(0x0F9, 0x0FB);
         pub fn is_in_faction(&self, faction: *const TESFaction) -> bool
     }
@@ -1598,6 +2221,24 @@ impl Actor {
     }
 
     crate::relocated_virtual_method! {
+        pub const VFUNC_START_POWER_ATTACK_COOL_DOWN: VariantOffset =
+            VariantOffset::new_se_ae(0x102, 0x104);
+        pub fn start_power_attack_cool_down(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_IS_POWER_ATTACK_COOLING_DOWN: VariantOffset =
+            VariantOffset::new_se_ae(0x103, 0x105);
+        pub fn is_power_attack_cooling_down(&self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_HANDLE_HEALTH_DAMAGE: VariantOffset =
+            VariantOffset::new_se_ae(0x104, 0x106);
+        pub fn handle_health_damage(&mut self, attacker: *mut Actor, damage: f32)
+    }
+
+    crate::relocated_virtual_method! {
         pub const VFUNC_Q_SPEAKING_DONE: VariantOffset = VariantOffset::new_se_ae(0x107, 0x109);
         pub fn q_speaking_done(&self) -> bool
     }
@@ -1612,6 +2253,130 @@ impl Actor {
         pub const VFUNC_CREATE_MOVEMENT_CONTROLLER: VariantOffset =
             VariantOffset::new_se_ae(0x109, 0x10B);
         pub fn create_movement_controller(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_EMOTION_TYPE: VariantOffset =
+            VariantOffset::new_se_ae(0x10A, 0x10C);
+        pub fn get_emotion_type(&self) -> EmotionType
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_EMOTION_TYPE: VariantOffset =
+            VariantOffset::new_se_ae(0x10B, 0x10D);
+        pub fn set_emotion_type(&mut self, emotion_type: EmotionType)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_EMOTION_VALUE: VariantOffset =
+            VariantOffset::new_se_ae(0x10C, 0x10E);
+        pub fn get_emotion_value(&self) -> u32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_EMOTION_VALUE: VariantOffset =
+            VariantOffset::new_se_ae(0x10D, 0x10F);
+        pub fn set_emotion_value(&mut self, emotion_value: u32)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_KILL_IMPL: VariantOffset = VariantOffset::new_se_ae(0x10E, 0x110);
+        pub fn kill_impl(
+            &mut self,
+            attacker: *mut Actor,
+            damage: f32,
+            send_event: bool,
+            ragdoll_instant: bool
+        )
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_DRINK_POTION: VariantOffset = VariantOffset::new_se_ae(0x10F, 0x111);
+        pub fn drink_potion(
+            &mut self,
+            potion: *mut AlchemyItem,
+            extra_list: *mut ExtraDataList
+        ) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CHECK_CAST: VariantOffset = VariantOffset::new_se_ae(0x110, 0x112);
+        pub fn check_cast(
+            &mut self,
+            spell: *mut MagicItem,
+            dual_cast: bool,
+            reason: *mut CannotCastReason
+        ) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CHECK_TEMP_MODIFIERS: VariantOffset =
+            VariantOffset::new_se_ae(0x111, 0x113);
+        pub fn check_temp_modifiers(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_CURRENT_SHOUT_LEVEL: VariantOffset =
+            VariantOffset::new_se_ae(0x112, 0x114);
+        pub fn get_current_shout_level(&self) -> i32
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SET_LAST_RIDDEN_MOUNT: VariantOffset =
+            VariantOffset::new_se_ae(0x113, 0x115);
+        pub fn set_last_ridden_mount(&mut self, mount: ActorHandle)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_Q_LAST_RIDDEN_MOUNT: VariantOffset =
+            VariantOffset::new_se_ae(0x114, 0x116);
+        pub fn q_last_ridden_mount(&self) -> ActorHandle
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CALCULATE_CACHED_OWNER_IS_UNDEAD: VariantOffset =
+            VariantOffset::new_se_ae(0x115, 0x117);
+        pub fn calculate_cached_owner_is_undead(&self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CALCULATE_CACHED_OWNER_IS_NPC: VariantOffset =
+            VariantOffset::new_se_ae(0x116, 0x118);
+        pub fn calculate_cached_owner_is_npc(&self) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UNK_117: VariantOffset = VariantOffset::new_se_ae(0x117, 0x119);
+        pub fn unk_117(&mut self, origin: &mut NiPoint3)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_INIT_VALUES: VariantOffset = VariantOffset::new_se_ae(0x118, 0x11A);
+        pub fn init_values(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_GET_RESPONSE_STRING: VariantOffset =
+            VariantOffset::new_se_ae(0x119, 0x11B);
+        pub fn get_response_string(&self) -> *const BSFixedString
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_MODIFY_MOVEMENT_DATA: VariantOffset =
+            VariantOffset::new_se_ae(0x11A, 0x11C);
+        pub fn modify_movement_data(&mut self, delta: f32, arg3: &mut NiPoint3, arg4: &mut NiPoint3)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UPDATE_COMBAT_CONTROLLER_SETTINGS: VariantOffset =
+            VariantOffset::new_se_ae(0x11B, 0x11D);
+        pub fn update_combat_controller_settings(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UPDATE_FADE_SETTINGS: VariantOffset =
+            VariantOffset::new_se_ae(0x11C, 0x11E);
+        pub fn update_fade_settings(&mut self, controller: *mut bhkCharacterController)
     }
 
     crate::relocated_virtual_method! {
@@ -1634,6 +2399,178 @@ impl Actor {
         ) -> bool
     }
 
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UPDATE_ACTOR_3D_POSITION: VariantOffset =
+            VariantOffset::new_se_ae(0x11F, 0x121);
+        pub fn update_actor_3d_position(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_PRECACHE_DATA: VariantOffset = VariantOffset::new_se_ae(0x120, 0x122);
+        pub fn precache_data(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_WORN_ARMOR_CHANGED: VariantOffset =
+            VariantOffset::new_se_ae(0x121, 0x123);
+        pub fn worn_armor_changed(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_PROCESS_TRACKING: VariantOffset = VariantOffset::new_se_ae(0x122, 0x124);
+        pub fn process_tracking(&mut self, delta: f32, obj3d: *mut NiAVObject)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_UNK_123: VariantOffset = VariantOffset::new_se_ae(0x123, 0x125);
+        pub fn unk_123(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CREATE_ACTOR_MOVER: VariantOffset =
+            VariantOffset::new_se_ae(0x124, 0x126);
+        pub fn create_actor_mover(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_DESTROY_ACTOR_MOVER: VariantOffset =
+            VariantOffset::new_se_ae(0x125, 0x127);
+        pub fn destroy_actor_mover(&mut self)
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_SHOULD_RESPOND_TO_ACTOR_COLLISION: VariantOffset =
+            VariantOffset::new_se_ae(0x126, 0x128);
+        pub fn should_respond_to_actor_collision(
+            &mut self,
+            msg: &MovementMessageActorCollision,
+            target: &ActorHandlePtr
+        ) -> bool
+    }
+
+    crate::relocated_virtual_method! {
+        pub const VFUNC_CHECK_CLAMP_DAMAGE_MODIFIER: VariantOffset =
+            VariantOffset::new_se_ae(0x127, 0x129);
+        pub fn check_clamp_damage_modifier(&mut self, av: ActorValue, delta: f32) -> f32
+    }
+
+    crate::relocation_func! {
+        pub fn has_line_of_sight_raw(&self, refr: *mut TESObjectREFR, unk: &mut bool) -> bool
+            => RelocationID::new(53029, 53829)
+    }
+
+    crate::relocation_func! {
+        pub fn has_magic_effect_with_keyword(&self, keyword: *mut BGSKeyword) -> bool
+            => RelocationID::new(19220, 19646)
+    }
+
+    crate::relocation_func! {
+        pub fn has_outfit_items(&self, outfit: *mut BGSOutfit) -> bool
+            => RelocationID::new(19265, 19691)
+    }
+
+    crate::relocation_func! {
+        pub fn initiate_do_nothing_package(&mut self) => RelocationID::new(36408, 37402)
+    }
+
+    crate::relocation_func! {
+        pub fn interrupt_cast(&mut self, restore_magicka: bool)
+            => RelocationID::new(37808, 38757)
+    }
+
+    crate::relocation_func! {
+        pub fn is_attacking(&self) -> bool => RelocationID::new(37637, 38590)
+    }
+
+    crate::relocation_func! {
+        pub fn is_blocking(&self) -> bool => RelocationID::new(36927, 37952)
+    }
+
+    crate::relocation_func! {
+        pub fn is_casting(&self, spell: *mut MagicItem) -> bool => RelocationID::new(37810, 38759)
+    }
+
+    crate::relocation_func! {
+        pub fn is_combat_target(&self, other: *mut Actor) -> bool
+            => RelocationID::new(37618, 38571)
+    }
+
+    crate::relocation_func! {
+        pub fn is_current_shout(&self, power: *mut SpellItem) -> bool
+            => RelocationID::new(37858, 38812)
+    }
+
+    crate::relocation_func! {
+        pub fn is_essential_down(&self) -> bool => RelocationID::new(48460, 0)
+    }
+
+    crate::relocation_func! {
+        pub fn is_ghost(&self) -> bool => RelocationID::new(36286, 37275)
+    }
+
+    crate::relocation_func! {
+        pub fn is_hostile_to_actor(&self, actor: *mut Actor) -> bool
+            => RelocationID::new(36537, 37537)
+    }
+
+    crate::relocation_func! {
+        pub fn is_in_bleedout(&self) -> bool => RelocationID::new(48461, 0)
+    }
+
+    crate::relocation_func! {
+        pub fn is_in_cast_power_list(&self, power: *mut SpellItem) -> bool
+            => RelocationID::new(37793, 38742)
+    }
+
+    crate::relocation_func! {
+        pub fn is_in_midair(&self) -> bool => RelocationID::new(36259, 37243)
+    }
+
+    crate::relocation_func! {
+        pub fn is_in_ragdoll_state(&self) -> bool => RelocationID::new(36492, 37491)
+    }
+
+    crate::relocation_func! {
+        pub fn is_leveled(&self) -> bool => RelocationID::new(19824, 20229)
+    }
+
+    crate::relocation_func! {
+        pub fn is_limb_gone(&self, limb: u32) -> bool => RelocationID::new(19338, 19765)
+    }
+
+    crate::relocation_func! {
+        pub fn is_moving(&self) -> bool => RelocationID::new(36928, 37953)
+    }
+
+    crate::relocation_func! {
+        pub fn is_on_water_triangle(&self) -> bool => RelocationID::new(36817, 0)
+    }
+
+    crate::relocation_func! {
+        pub fn is_over_encumbered(&self) -> bool => RelocationID::new(36457, 37453)
+    }
+
+    crate::relocation_func! {
+        pub fn is_pathing(&self) -> bool => RelocationID::new(36812, 37828)
+    }
+
+    crate::relocation_func! {
+        pub fn is_power_attacking(&self) -> bool => RelocationID::new(37639, 38592)
+    }
+
+    crate::relocation_func! {
+        pub fn is_running(&self) -> bool => RelocationID::new(36252, 37234)
+    }
+
+    crate::relocation_func! {
+        pub fn kill_immediate(&mut self) => RelocationID::new(36723, 37735)
+    }
+
+    crate::relocation_func! {
+        pub fn remove_cast_scroll(&mut self, spell: *mut SpellItem, source: CastingSource)
+            => RelocationID::new(37798, 38747)
+    }
+
     crate::relocation_func! {
         pub fn add_cast_power(&mut self, power: *mut SpellItem) => RelocationID::new(37787, 38736)
     }
@@ -1649,6 +2586,11 @@ impl Actor {
     crate::relocation_func! {
         pub fn add_to_faction(&mut self, faction: *mut TESFaction, rank: i8)
             => RelocationID::new(36678, 37686)
+    }
+
+    crate::relocation_func! {
+        pub fn add_worn_outfit(&mut self, outfit: *mut BGSOutfit, force_update: bool)
+            => RelocationID::new(19266, 19692)
     }
 
     crate::relocation_func! {
@@ -1693,6 +2635,11 @@ impl Actor {
 
     crate::relocation_func! {
         pub fn deselect_spell(&mut self, spell: *mut SpellItem) => RelocationID::new(37820, 38769)
+    }
+
+    crate::relocation_func! {
+        pub fn dispel_altered_states(&mut self, exception: EffectArchetype)
+            => RelocationID::new(37864, 38819)
     }
 
     crate::relocation_func! {
@@ -1771,6 +2718,10 @@ impl Actor {
     }
 
     crate::relocation_func! {
+        fn get_soul_size_raw(&self) -> SOUL_LEVEL => RelocationID::new(37862, 38817)
+    }
+
+    crate::relocation_func! {
         pub fn get_mount(&mut self, out_mount: &mut NiPointer<Actor>) -> bool
             => RelocationID::new(37757, 38702)
     }
@@ -1846,6 +2797,11 @@ impl Actor {
     }
 
     crate::relocation_func! {
+        pub fn remove_outfit_items(&mut self, outfit: *mut BGSOutfit)
+            => RelocationID::new(19264, 19690)
+    }
+
+    crate::relocation_func! {
         pub fn remove_spell(&mut self, spell: *mut SpellItem) -> bool => RelocationID::new(37772, 38717)
     }
 
@@ -1857,6 +2813,78 @@ impl Actor {
     crate::relocation_func! {
         pub fn request_los(&mut self, target: *mut Actor, view_cone: f32) -> i32
             => RelocationID::new(36752, 37768)
+    }
+
+    crate::relocation_func! {
+        pub fn play_a_sound(
+            &mut self,
+            result: &mut BSSoundHandle,
+            form_id: FormID,
+            unk03: bool,
+            flags: u32
+        ) => RelocationID::new(36730, 37743)
+    }
+
+    crate::relocation_func! {
+        pub fn set_heading(&mut self, angle: f32) => RelocationID::new(36248, 37230)
+    }
+
+    crate::relocation_func! {
+        pub fn set_life_state(&mut self, life_state: ACTOR_LIFE_STATE)
+            => RelocationID::new(36604, 37612)
+    }
+
+    crate::relocation_func! {
+        pub fn set_looking(&mut self, angle: f32) => RelocationID::new(36602, 37610)
+    }
+
+    crate::relocation_func! {
+        pub fn steal_alarm(
+            &mut self,
+            refr: *mut TESObjectREFR,
+            object: *mut TESForm,
+            num: i32,
+            total: i32,
+            owner: *mut TESForm,
+            allow_warning: bool
+        ) => RelocationID::new(36427, 37422)
+    }
+
+    crate::relocation_func! {
+        pub fn stop_interacting_quick(&mut self, unk02: bool) => RelocationID::new(37752, 38697)
+    }
+
+    crate::relocation_func! {
+        pub fn stop_moving(&mut self, delta: f32) => RelocationID::new(36801, 37817)
+    }
+
+    crate::relocation_func! {
+        pub fn switch_race(&mut self, race: *mut TESRace, player: bool)
+            => RelocationID::new(36901, 37925)
+    }
+
+    crate::relocation_func! {
+        pub fn trespass_alarm(&mut self, refr: *mut TESObjectREFR, ownership: *mut TESForm, crime: i32)
+            => RelocationID::new(36432, 37427)
+    }
+
+    crate::relocation_func! {
+        pub fn update_armor_ability(&mut self, armor: *mut TESForm, extra_data: *mut ExtraDataList)
+            => RelocationID::new(37802, 38751)
+    }
+
+    crate::relocation_func! {
+        pub fn update_awake_sound(&mut self, obj3d: *mut NiAVObject)
+            => RelocationID::new(36943, 37968)
+    }
+
+    crate::relocation_func! {
+        pub fn update_weapon_ability(
+            &mut self,
+            weapon: *mut TESForm,
+            extra_data: *mut ExtraDataList,
+            left_hand: bool
+        ) => RelocationID::new(37803, 38752)
     }
 
     #[inline(always)]
@@ -1904,7 +2932,16 @@ pub trait ActorExt {
     fn get_actor_value_modifier(&self, modifier: ACTOR_VALUE_MODIFIER, value: ActorValue) -> f32;
     fn get_aim_angle(&self) -> f32;
     fn get_aim_heading(&self) -> f32;
+    fn get_attack_chance(&self, target: *mut Actor, attack_data: *mut BGSAttackData) -> f32;
+    fn get_attack_reach(&self) -> f32;
+    fn get_attacking_weapon(&self) -> *mut InventoryEntryData;
+    fn get_attacking_weapon_ref(&self) -> Option<&InventoryEntryData>;
+    fn get_bound_radius(&self) -> f32;
     fn get_commanding_actor(&self) -> NiPointer<Actor>;
+    fn get_collision_filter_info(&self, out_collision_filter_info: &mut CFilter);
+    fn get_collision_filter(&self) -> CFilter;
+    fn get_crime_faction(&self) -> *mut TESFaction;
+    fn get_crime_faction_ref(&self) -> Option<&TESFaction>;
     fn get_current_package(&self) -> *mut TESPackage;
     fn get_current_package_ref(&self) -> Option<&TESPackage>;
     fn get_current_shout(&self) -> *mut TESShout;
@@ -1913,17 +2950,32 @@ pub trait ActorExt {
     fn get_equipped_object(&self, left_hand: bool) -> *mut TESForm;
     fn get_equipped_object_in_slot(&self, slot: *const BGSEquipSlot) -> *mut TESForm;
     fn get_equipped_weight(&self) -> f32;
+    fn get_faction_rank(&mut self, faction: *mut TESFaction, is_player: bool) -> i32;
+    fn get_faction_reaction(&self, other: *mut Actor) -> FIGHT_REACTION;
+    fn get_head_part_object(&mut self, part_type: HeadPartType) -> *mut NiAVObject;
+    fn get_height(&mut self) -> f32;
     fn get_killer(&self) -> *mut Actor;
     fn get_high_process(&self) -> *mut HighProcessData;
     fn get_occupied_furniture(&self) -> ObjectRefHandle;
     fn get_process_level(&self) -> PROCESS_TYPE;
     fn get_race(&self) -> *mut TESRace;
     fn get_race_ref(&self) -> Option<&TESRace>;
+    fn get_reach(&self) -> f32;
+    fn get_regen_delay(&self, actor_value: ActorValue) -> f32;
+    fn get_skin(&self) -> *mut TESObjectARMO;
+    fn get_skin_ref(&self) -> Option<&TESObjectARMO>;
+    fn get_skin_for_slot(&mut self, slot: BipedObjectSlot, no_init: bool) -> *mut TESObjectARMO;
+    fn get_soul_size(&self) -> SOUL_LEVEL;
+    fn get_submerged_level(&self, z_pos: f32, cell: *mut TESObjectCELL) -> f32;
     fn get_middle_high_process(&self) -> *mut MiddleHighProcessData;
+    fn get_move_direction_relative_to_facing(&mut self) -> f64;
     fn get_tracked_damage(&self) -> f32;
+    fn get_worn_armor(&mut self, slot: BipedObjectSlot, no_init: bool) -> *mut TESObjectARMO;
+    fn get_worn_armor_by_form_id(&mut self, form_id: FormID, no_init: bool) -> *mut TESObjectARMO;
     fn get_vendor_faction(&self) -> *mut TESFaction;
     fn get_vendor_faction_ref(&self) -> Option<&TESFaction>;
     fn get_voice_recovery_time(&self) -> f32;
+    fn get_rider(&mut self, out_rider: &mut NiPointer<Actor>) -> bool;
     fn get_char_controller(&self) -> *mut bhkCharacterController;
     fn calculate_los_location(&self, location: ACTOR_LOS_LOCATION) -> NiPoint3;
     fn can_fly_here(&self) -> bool;
@@ -1937,23 +2989,51 @@ pub trait ActorExt {
     fn get_template_base(&self) -> *mut TESNPC;
     fn has_keyword(&self, keyword: *const BGSKeyword) -> bool;
     fn has_keyword_string(&self, form_editor_id: &str) -> bool;
+    fn has_line_of_sight_raw(&self, refr: *mut TESObjectREFR, unk: &mut bool) -> bool;
+    fn has_line_of_sight(&self, refr: *mut TESObjectREFR) -> bool;
+    fn has_magic_effect_with_keyword(&self, keyword: *mut BGSKeyword) -> bool;
+    fn has_outfit_items(&self, outfit: *mut BGSOutfit) -> bool;
     fn is_in_faction(&self, faction: *const TESFaction) -> bool;
     fn can_talk_to_player(&self) -> bool;
     fn is_ai_enabled(&self) -> bool;
+    fn is_alarmed(&self) -> bool;
     fn is_a_mount(&self) -> bool;
     fn is_angry_with_player(&self) -> bool;
     fn is_animation_driven(&self) -> bool;
+    fn is_attacking(&self) -> bool;
     fn is_allow_rotation(&self) -> bool;
     fn is_being_ridden(&self) -> bool;
+    fn is_blocking(&self) -> bool;
+    fn is_casting(&self, spell: *mut MagicItem) -> bool;
+    fn is_combat_target(&self, other: *mut Actor) -> bool;
     fn is_commanded_actor(&self) -> bool;
+    fn is_current_shout(&self, power: *mut SpellItem) -> bool;
     fn is_doing_favor(&self) -> bool;
+    fn is_dual_casting(&self) -> bool;
     fn is_essential(&self) -> bool;
+    fn is_faction_in_crime_group(&self, faction: *const TESFaction) -> bool;
+    fn is_essential_down(&self) -> bool;
+    fn is_ghost(&self) -> bool;
     fn is_guard(&self) -> bool;
+    fn is_hostile_to_actor(&self, actor: *mut Actor) -> bool;
+    fn is_in_bleedout(&self) -> bool;
+    fn is_in_cast_power_list(&self, power: *mut SpellItem) -> bool;
+    fn is_in_jump_state(&self) -> bool;
     fn is_in_kill_move(&self) -> bool;
+    fn is_in_midair(&self) -> bool;
+    fn is_in_ragdoll_state(&self) -> bool;
+    fn is_leveled(&self) -> bool;
+    fn is_limb_gone(&self, limb: u32) -> bool;
+    fn is_moving(&self) -> bool;
     fn is_on_mount(&self) -> bool;
+    fn is_on_water_triangle(&self) -> bool;
+    fn is_over_encumbered(&self) -> bool;
+    fn is_pathing(&self) -> bool;
     fn is_player_teammate(&self) -> bool;
+    fn is_power_attacking(&self) -> bool;
     fn is_protected(&self) -> bool;
     fn is_rotation_allowed(&self) -> bool;
+    fn is_running(&self) -> bool;
     fn is_sneaking(&self) -> bool;
     fn is_staggering(&self) -> bool;
     fn is_summoned(&self) -> bool;
@@ -1961,19 +3041,92 @@ pub trait ActorExt {
     fn is_trespassing(&self) -> bool;
     fn not_show_on_stealth_meter(&self) -> bool;
     fn who_is_casting(&self) -> u8;
+    fn visit_factions<F>(&self, visitor: F) -> bool
+    where
+        F: FnMut(*mut TESFaction, i8) -> bool;
+    fn would_be_stealing(&self, target: *const TESObjectREFR) -> bool;
+    fn initiate_do_nothing_package(&mut self);
+    fn interrupt_cast(&mut self, restore_magicka: bool);
+    fn kill_immediate(&mut self);
+    fn play_a_sound(
+        &mut self,
+        result: &mut BSSoundHandle,
+        form_id: FormID,
+        unk03: bool,
+        flags: u32,
+    );
+    fn remove_cast_scroll(&mut self, spell: *mut SpellItem, source: CastingSource);
+    fn remove_extra_arrows_3d(&mut self);
     fn allow_bleedout_dialogue(&mut self, can_talk: bool);
     fn allow_pc_dialogue(&mut self, talk: bool);
+    fn add_death_items(&mut self);
+    fn add_worn_outfit(&mut self, outfit: *mut BGSOutfit, force_update: bool);
+    fn cast_permanent_magic(
+        &mut self,
+        worn_item_enchantments: bool,
+        base_spells: bool,
+        race_spells: bool,
+        every_actor_ability: bool,
+    );
     fn clear_expression_override(&mut self);
     fn set_player_controls(&mut self, enable: bool);
+    fn set_default_outfit(&mut self, outfit: *mut BGSOutfit, update_3d: bool) -> bool;
+    fn set_heading(&mut self, angle: f32);
+    fn set_life_state(&mut self, life_state: ACTOR_LIFE_STATE);
+    fn set_looking(&mut self, angle: f32);
+    fn set_sleep_outfit(&mut self, outfit: *mut BGSOutfit, update_3d: bool) -> bool;
+    fn steal_alarm(
+        &mut self,
+        refr: *mut TESObjectREFR,
+        object: *mut TESForm,
+        num: i32,
+        total: i32,
+        owner: *mut TESForm,
+        allow_warning: bool,
+    );
     fn stop_alarm_on_actor(&mut self);
+    fn stop_interacting_quick(&mut self, unk02: bool);
+    fn stop_moving(&mut self, delta: f32);
+    fn switch_race(&mut self, race: *mut TESRace, player: bool);
+    fn trespass_alarm(&mut self, refr: *mut TESObjectREFR, ownership: *mut TESForm, crime: i32);
+    fn update_armor_ability(&mut self, armor: *mut TESForm, extra_data: *mut ExtraDataList);
+    fn update_awake_sound(&mut self, obj3d: *mut NiAVObject);
+    fn update_3d_model(&mut self);
+    fn update_hair_color(&mut self);
     fn update_regen_delay(&mut self, actor_value: ActorValue, regen_delay: f32);
+    fn update_skin_color(&mut self);
+    fn update_weapon_ability(
+        &mut self,
+        weapon: *mut TESForm,
+        extra_data: *mut ExtraDataList,
+        left_hand: bool,
+    );
+    fn visit_armor_addon<F>(
+        &mut self,
+        armor: *mut TESObjectARMO,
+        arma: *mut TESObjectARMA,
+        visitor: F,
+    ) where
+        F: FnMut(bool, *mut NiAVObject);
     fn add_spell(&mut self, spell: *mut SpellItem) -> bool;
     fn add_to_faction(&mut self, faction: *mut TESFaction, rank: i8);
     fn can_attack_actor(&self, actor: *mut Actor) -> bool;
     fn can_fly(&self) -> bool;
     fn can_use_idle(&self, idle: *mut TESIdleForm) -> bool;
     fn clear_death_state(&mut self);
+    fn decapitate(&mut self) -> bool;
+    fn deselect_spell(&mut self, spell: *mut SpellItem);
+    fn dispel_altered_states(&mut self, exception: EffectArchetype);
+    fn dispel_worn_item_enchantments(&mut self);
+    fn do_reset_3d(&mut self, update_weight: bool);
+    fn do_damage(
+        &mut self,
+        health_damage: f32,
+        source: *mut Actor,
+        dont_adjust_difficulty: bool,
+    ) -> bool;
     fn evaluate_package(&mut self, immediate: bool, reset_ai: bool);
+    fn fights_in_water(&self) -> bool;
     fn get_level(&self) -> u16;
     fn get_mount(&mut self, out_mount: &mut NiPointer<Actor>) -> bool;
     fn get_mounted_by(&mut self, out_rider: &mut NiPointer<Actor>) -> bool;
@@ -1983,6 +3136,7 @@ pub trait ActorExt {
     fn has_perk_entries(&self, entry_type: EntryPoint) -> bool;
     fn has_shout(&self, shout: *mut TESShout) -> bool;
     fn has_spell(&self, spell: *mut SpellItem) -> bool;
+    fn remove_outfit_items(&mut self, outfit: *mut BGSOutfit);
     fn process_vats_attack(
         &mut self,
         caster: *mut MagicCaster,
@@ -2007,9 +3161,113 @@ pub trait ActorExt {
     fn for_each_perk(&self, visitor: &mut PerkEntryVisitor);
     fn for_each_perk_entry(&self, entry_type: EntryPoint, visitor: &mut PerkEntryVisitor);
     fn apply_perks_from_base(&mut self);
+    fn set_size(&mut self, size: f32);
+    fn end_dialogue(&mut self);
+    fn set_up_talking_activator_actor(
+        &mut self,
+        target: *mut Actor,
+        activator: &mut *mut Actor,
+    ) -> *mut Actor;
+    fn initiate_spectator(&mut self, target: *mut Actor);
+    fn initiate_flee(
+        &mut self,
+        flee_ref: *mut TESObjectREFR,
+        run_once: bool,
+        knows: bool,
+        combat_mode: bool,
+        cell: *mut TESObjectCELL,
+        refr: *mut TESObjectREFR,
+        flee_from_dist: f32,
+        flee_to_dist: f32,
+    );
+    fn initiate_get_up_package(&mut self);
+    fn put_created_package(
+        &mut self,
+        package: *mut TESPackage,
+        temp_package: bool,
+        created_package: bool,
+        allow_from_furniture: bool,
+    );
+    fn update_alpha(&mut self);
+    fn set_alpha(&mut self, alpha: f32);
+    fn get_alpha(&self) -> f32;
+    fn is_in_combat(&self) -> bool;
+    fn update_combat(&mut self);
+    fn stop_combat(&mut self);
+    fn calc_armor_rating(&mut self) -> f32;
+    fn get_armor_base_factor_sum(&mut self) -> f32;
+    fn calc_unarmed_damage(&mut self) -> f32;
+    fn unk_e9(&mut self);
+    fn unk_ea(&mut self);
+    fn get_run_speed(&self) -> f32;
+    fn get_jog_speed(&self) -> f32;
+    fn get_fast_walk_speed(&self) -> f32;
+    fn get_walk_speed(&self) -> f32;
+    fn weapon_swing_call_back(&mut self);
+    fn set_actor_starting_position(&mut self);
+    fn move_to_high(&mut self) -> bool;
+    fn moveto_low(&mut self) -> bool;
+    fn moveto_middle_low(&mut self) -> bool;
+    fn move_to_middle_high(&mut self) -> bool;
+    fn has_been_attacked(&self) -> bool;
+    fn set_been_attacked(&mut self, set: bool);
+    fn use_skill(&mut self, av: ActorValue, points: f32, arg3: *mut TESForm);
+    fn is_at_point(
+        &self,
+        point: &NiPoint3,
+        radius: f32,
+        expand_radius: bool,
+        always_test_height: bool,
+    ) -> bool;
+    fn start_power_attack_cool_down(&mut self);
+    fn is_power_attack_cooling_down(&self) -> bool;
+    fn handle_health_damage(&mut self, attacker: *mut Actor, damage: f32);
     fn q_speaking_done(&self) -> bool;
     fn set_speaking_done(&mut self, set: bool);
     fn create_movement_controller(&mut self);
+    fn get_emotion_type(&self) -> EmotionType;
+    fn set_emotion_type(&mut self, emotion_type: EmotionType);
+    fn get_emotion_value(&self) -> u32;
+    fn set_emotion_value(&mut self, emotion_value: u32);
+    fn kill_impl(
+        &mut self,
+        attacker: *mut Actor,
+        damage: f32,
+        send_event: bool,
+        ragdoll_instant: bool,
+    );
+    fn drink_potion(&mut self, potion: *mut AlchemyItem, extra_list: *mut ExtraDataList) -> bool;
+    fn check_cast(
+        &mut self,
+        spell: *mut MagicItem,
+        dual_cast: bool,
+        reason: *mut CannotCastReason,
+    ) -> bool;
+    fn check_temp_modifiers(&mut self);
+    fn get_current_shout_level(&self) -> i32;
+    fn set_last_ridden_mount(&mut self, mount: ActorHandle);
+    fn q_last_ridden_mount(&self) -> ActorHandle;
+    fn calculate_cached_owner_is_undead(&self) -> bool;
+    fn calculate_cached_owner_is_npc(&self) -> bool;
+    fn unk_117(&mut self, origin: &mut NiPoint3);
+    fn init_values(&mut self);
+    fn get_response_string(&self) -> *const BSFixedString;
+    fn modify_movement_data(&mut self, delta: f32, arg3: &mut NiPoint3, arg4: &mut NiPoint3);
+    fn update_combat_controller_settings(&mut self);
+    fn update_fade_settings(&mut self, controller: *mut bhkCharacterController);
+    fn update_actor_3d_position(&mut self);
+    fn precache_data(&mut self);
+    fn worn_armor_changed(&mut self);
+    fn process_tracking(&mut self, delta: f32, obj3d: *mut NiAVObject);
+    fn unk_123(&mut self);
+    fn create_actor_mover(&mut self);
+    fn destroy_actor_mover(&mut self);
+    fn should_respond_to_actor_collision(
+        &mut self,
+        msg: &MovementMessageActorCollision,
+        target: &ActorHandlePtr,
+    ) -> bool;
+    fn check_clamp_damage_modifier(&mut self, av: ActorValue, delta: f32) -> f32;
     fn update_nav_pos(&self, pos: &NiPoint3, new_pos: &NiPoint3, speed: f32, distance: f32)
     -> bool;
     fn visit_spells(&mut self, visitor: &mut ActorForEachSpellVisitor);
@@ -2132,8 +3390,53 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_attack_chance(&self, target: *mut Actor, attack_data: *mut BGSAttackData) -> f32 {
+        Actor::get_attack_chance(self.as_ref(), target, attack_data)
+    }
+
+    #[inline(always)]
+    fn get_attack_reach(&self) -> f32 {
+        Actor::get_attack_reach(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_attacking_weapon(&self) -> *mut InventoryEntryData {
+        Actor::get_attacking_weapon(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_attacking_weapon_ref(&self) -> Option<&InventoryEntryData> {
+        Actor::get_attacking_weapon_ref(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_bound_radius(&self) -> f32 {
+        Actor::get_bound_radius(self.as_ref())
+    }
+
+    #[inline(always)]
     fn get_commanding_actor(&self) -> NiPointer<Actor> {
         Actor::get_commanding_actor(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_collision_filter_info(&self, out_collision_filter_info: &mut CFilter) {
+        Actor::get_collision_filter_info(self.as_ref(), out_collision_filter_info)
+    }
+
+    #[inline(always)]
+    fn get_collision_filter(&self) -> CFilter {
+        Actor::get_collision_filter(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_crime_faction(&self) -> *mut TESFaction {
+        Actor::get_crime_faction(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_crime_faction_ref(&self) -> Option<&TESFaction> {
+        Actor::get_crime_faction_ref(self.as_ref())
     }
 
     #[inline(always)]
@@ -2177,6 +3480,26 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_faction_rank(&mut self, faction: *mut TESFaction, is_player: bool) -> i32 {
+        Actor::get_faction_rank(self.as_mut(), faction, is_player)
+    }
+
+    #[inline(always)]
+    fn get_faction_reaction(&self, other: *mut Actor) -> FIGHT_REACTION {
+        Actor::get_faction_reaction(self.as_ref(), other)
+    }
+
+    #[inline(always)]
+    fn get_head_part_object(&mut self, part_type: HeadPartType) -> *mut NiAVObject {
+        Actor::get_head_part_object(self.as_mut(), part_type)
+    }
+
+    #[inline(always)]
+    fn get_height(&mut self) -> f32 {
+        Actor::get_height(self.as_mut())
+    }
+
+    #[inline(always)]
     fn get_killer(&self) -> *mut Actor {
         Actor::get_killer(self.as_ref())
     }
@@ -2207,13 +3530,63 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn get_reach(&self) -> f32 {
+        Actor::get_reach(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_regen_delay(&self, actor_value: ActorValue) -> f32 {
+        Actor::get_regen_delay(self.as_ref(), actor_value)
+    }
+
+    #[inline(always)]
+    fn get_skin(&self) -> *mut TESObjectARMO {
+        Actor::get_skin(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_skin_ref(&self) -> Option<&TESObjectARMO> {
+        Actor::get_skin_ref(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_skin_for_slot(&mut self, slot: BipedObjectSlot, no_init: bool) -> *mut TESObjectARMO {
+        Actor::get_skin_for_slot(self.as_mut(), slot, no_init)
+    }
+
+    #[inline(always)]
+    fn get_soul_size(&self) -> SOUL_LEVEL {
+        Actor::get_soul_size(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_submerged_level(&self, z_pos: f32, cell: *mut TESObjectCELL) -> f32 {
+        Actor::get_submerged_level(self.as_ref(), z_pos, cell)
+    }
+
+    #[inline(always)]
     fn get_middle_high_process(&self) -> *mut MiddleHighProcessData {
         Actor::get_middle_high_process(self.as_ref())
     }
 
     #[inline(always)]
+    fn get_move_direction_relative_to_facing(&mut self) -> f64 {
+        Actor::get_move_direction_relative_to_facing(self.as_mut())
+    }
+
+    #[inline(always)]
     fn get_tracked_damage(&self) -> f32 {
         Actor::get_tracked_damage(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_worn_armor(&mut self, slot: BipedObjectSlot, no_init: bool) -> *mut TESObjectARMO {
+        Actor::get_worn_armor(self.as_mut(), slot, no_init)
+    }
+
+    #[inline(always)]
+    fn get_worn_armor_by_form_id(&mut self, form_id: FormID, no_init: bool) -> *mut TESObjectARMO {
+        Actor::get_worn_armor_by_form_id(self.as_mut(), form_id, no_init)
     }
 
     #[inline(always)]
@@ -2229,6 +3602,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn get_voice_recovery_time(&self) -> f32 {
         Actor::get_voice_recovery_time(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_rider(&mut self, out_rider: &mut NiPointer<Actor>) -> bool {
+        Actor::get_rider(self.as_mut(), out_rider)
     }
 
     #[inline(always)]
@@ -2297,6 +3675,26 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn has_line_of_sight_raw(&self, refr: *mut TESObjectREFR, unk: &mut bool) -> bool {
+        Actor::has_line_of_sight_raw(self.as_ref(), refr, unk)
+    }
+
+    #[inline(always)]
+    fn has_line_of_sight(&self, refr: *mut TESObjectREFR) -> bool {
+        Actor::has_line_of_sight(self.as_ref(), refr)
+    }
+
+    #[inline(always)]
+    fn has_magic_effect_with_keyword(&self, keyword: *mut BGSKeyword) -> bool {
+        Actor::has_magic_effect_with_keyword(self.as_ref(), keyword)
+    }
+
+    #[inline(always)]
+    fn has_outfit_items(&self, outfit: *mut BGSOutfit) -> bool {
+        Actor::has_outfit_items(self.as_ref(), outfit)
+    }
+
+    #[inline(always)]
     fn is_in_faction(&self, faction: *const TESFaction) -> bool {
         Actor::is_in_faction(self.as_ref(), faction)
     }
@@ -2309,6 +3707,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn is_ai_enabled(&self) -> bool {
         Actor::is_ai_enabled(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_alarmed(&self) -> bool {
+        Actor::is_alarmed(self.as_ref())
     }
 
     #[inline(always)]
@@ -2327,6 +3730,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn is_attacking(&self) -> bool {
+        Actor::is_attacking(self.as_ref())
+    }
+
+    #[inline(always)]
     fn is_allow_rotation(&self) -> bool {
         Actor::is_allow_rotation(self.as_ref())
     }
@@ -2337,8 +3745,28 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn is_blocking(&self) -> bool {
+        Actor::is_blocking(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_casting(&self, spell: *mut MagicItem) -> bool {
+        Actor::is_casting(self.as_ref(), spell)
+    }
+
+    #[inline(always)]
+    fn is_combat_target(&self, other: *mut Actor) -> bool {
+        Actor::is_combat_target(self.as_ref(), other)
+    }
+
+    #[inline(always)]
     fn is_commanded_actor(&self) -> bool {
         Actor::is_commanded_actor(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_current_shout(&self, power: *mut SpellItem) -> bool {
+        Actor::is_current_shout(self.as_ref(), power)
     }
 
     #[inline(always)]
@@ -2347,8 +3775,28 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn is_dual_casting(&self) -> bool {
+        Actor::is_dual_casting(self.as_ref())
+    }
+
+    #[inline(always)]
     fn is_essential(&self) -> bool {
         Actor::is_essential(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_faction_in_crime_group(&self, faction: *const TESFaction) -> bool {
+        Actor::is_faction_in_crime_group(self.as_ref(), faction)
+    }
+
+    #[inline(always)]
+    fn is_essential_down(&self) -> bool {
+        Actor::is_essential_down(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_ghost(&self) -> bool {
+        Actor::is_ghost(self.as_ref())
     }
 
     #[inline(always)]
@@ -2357,8 +3805,53 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn is_hostile_to_actor(&self, actor: *mut Actor) -> bool {
+        Actor::is_hostile_to_actor(self.as_ref(), actor)
+    }
+
+    #[inline(always)]
+    fn is_in_bleedout(&self) -> bool {
+        Actor::is_in_bleedout(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_in_cast_power_list(&self, power: *mut SpellItem) -> bool {
+        Actor::is_in_cast_power_list(self.as_ref(), power)
+    }
+
+    #[inline(always)]
+    fn is_in_jump_state(&self) -> bool {
+        Actor::is_in_jump_state(self.as_ref())
+    }
+
+    #[inline(always)]
     fn is_in_kill_move(&self) -> bool {
         Actor::is_in_kill_move(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_in_midair(&self) -> bool {
+        Actor::is_in_midair(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_in_ragdoll_state(&self) -> bool {
+        Actor::is_in_ragdoll_state(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_leveled(&self) -> bool {
+        Actor::is_leveled(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_limb_gone(&self, limb: u32) -> bool {
+        Actor::is_limb_gone(self.as_ref(), limb)
+    }
+
+    #[inline(always)]
+    fn is_moving(&self) -> bool {
+        Actor::is_moving(self.as_ref())
     }
 
     #[inline(always)]
@@ -2367,8 +3860,28 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn is_on_water_triangle(&self) -> bool {
+        Actor::is_on_water_triangle(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_over_encumbered(&self) -> bool {
+        Actor::is_over_encumbered(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_pathing(&self) -> bool {
+        Actor::is_pathing(self.as_ref())
+    }
+
+    #[inline(always)]
     fn is_player_teammate(&self) -> bool {
         Actor::is_player_teammate(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_power_attacking(&self) -> bool {
+        Actor::is_power_attacking(self.as_ref())
     }
 
     #[inline(always)]
@@ -2379,6 +3892,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn is_rotation_allowed(&self) -> bool {
         Actor::is_rotation_allowed(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_running(&self) -> bool {
+        Actor::is_running(self.as_ref())
     }
 
     #[inline(always)]
@@ -2417,6 +3935,55 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn visit_factions<F>(&self, visitor: F) -> bool
+    where
+        F: FnMut(*mut TESFaction, i8) -> bool,
+    {
+        Actor::visit_factions(self.as_ref(), visitor)
+    }
+
+    #[inline(always)]
+    fn would_be_stealing(&self, target: *const TESObjectREFR) -> bool {
+        Actor::would_be_stealing(self.as_ref(), target)
+    }
+
+    #[inline(always)]
+    fn initiate_do_nothing_package(&mut self) {
+        Actor::initiate_do_nothing_package(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn interrupt_cast(&mut self, restore_magicka: bool) {
+        Actor::interrupt_cast(self.as_mut(), restore_magicka)
+    }
+
+    #[inline(always)]
+    fn kill_immediate(&mut self) {
+        Actor::kill_immediate(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn play_a_sound(
+        &mut self,
+        result: &mut BSSoundHandle,
+        form_id: FormID,
+        unk03: bool,
+        flags: u32,
+    ) {
+        Actor::play_a_sound(self.as_mut(), result, form_id, unk03, flags)
+    }
+
+    #[inline(always)]
+    fn remove_cast_scroll(&mut self, spell: *mut SpellItem, source: CastingSource) {
+        Actor::remove_cast_scroll(self.as_mut(), spell, source)
+    }
+
+    #[inline(always)]
+    fn remove_extra_arrows_3d(&mut self) {
+        Actor::remove_extra_arrows_3d(self.as_mut())
+    }
+
+    #[inline(always)]
     fn allow_bleedout_dialogue(&mut self, can_talk: bool) {
         Actor::allow_bleedout_dialogue(self.as_mut(), can_talk)
     }
@@ -2424,6 +3991,33 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn allow_pc_dialogue(&mut self, talk: bool) {
         Actor::allow_pc_dialogue(self.as_mut(), talk)
+    }
+
+    #[inline(always)]
+    fn add_death_items(&mut self) {
+        Actor::add_death_items(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn add_worn_outfit(&mut self, outfit: *mut BGSOutfit, force_update: bool) {
+        Actor::add_worn_outfit(self.as_mut(), outfit, force_update)
+    }
+
+    #[inline(always)]
+    fn cast_permanent_magic(
+        &mut self,
+        worn_item_enchantments: bool,
+        base_spells: bool,
+        race_spells: bool,
+        every_actor_ability: bool,
+    ) {
+        Actor::cast_permanent_magic(
+            self.as_mut(),
+            worn_item_enchantments,
+            base_spells,
+            race_spells,
+            every_actor_ability,
+        )
     }
 
     #[inline(always)]
@@ -2437,13 +4031,126 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn set_default_outfit(&mut self, outfit: *mut BGSOutfit, update_3d: bool) -> bool {
+        Actor::set_default_outfit(self.as_mut(), outfit, update_3d)
+    }
+
+    #[inline(always)]
+    fn set_heading(&mut self, angle: f32) {
+        Actor::set_heading(self.as_mut(), angle)
+    }
+
+    #[inline(always)]
+    fn set_life_state(&mut self, life_state: ACTOR_LIFE_STATE) {
+        Actor::set_life_state(self.as_mut(), life_state)
+    }
+
+    #[inline(always)]
+    fn set_looking(&mut self, angle: f32) {
+        Actor::set_looking(self.as_mut(), angle)
+    }
+
+    #[inline(always)]
+    fn set_sleep_outfit(&mut self, outfit: *mut BGSOutfit, update_3d: bool) -> bool {
+        Actor::set_sleep_outfit(self.as_mut(), outfit, update_3d)
+    }
+
+    #[inline(always)]
+    fn steal_alarm(
+        &mut self,
+        refr: *mut TESObjectREFR,
+        object: *mut TESForm,
+        num: i32,
+        total: i32,
+        owner: *mut TESForm,
+        allow_warning: bool,
+    ) {
+        Actor::steal_alarm(
+            self.as_mut(),
+            refr,
+            object,
+            num,
+            total,
+            owner,
+            allow_warning,
+        )
+    }
+
+    #[inline(always)]
     fn stop_alarm_on_actor(&mut self) {
         Actor::stop_alarm_on_actor(self.as_mut())
     }
 
     #[inline(always)]
+    fn stop_interacting_quick(&mut self, unk02: bool) {
+        Actor::stop_interacting_quick(self.as_mut(), unk02)
+    }
+
+    #[inline(always)]
+    fn stop_moving(&mut self, delta: f32) {
+        Actor::stop_moving(self.as_mut(), delta)
+    }
+
+    #[inline(always)]
+    fn switch_race(&mut self, race: *mut TESRace, player: bool) {
+        Actor::switch_race(self.as_mut(), race, player)
+    }
+
+    #[inline(always)]
+    fn trespass_alarm(&mut self, refr: *mut TESObjectREFR, ownership: *mut TESForm, crime: i32) {
+        Actor::trespass_alarm(self.as_mut(), refr, ownership, crime)
+    }
+
+    #[inline(always)]
+    fn update_armor_ability(&mut self, armor: *mut TESForm, extra_data: *mut ExtraDataList) {
+        Actor::update_armor_ability(self.as_mut(), armor, extra_data)
+    }
+
+    #[inline(always)]
+    fn update_awake_sound(&mut self, obj3d: *mut NiAVObject) {
+        Actor::update_awake_sound(self.as_mut(), obj3d)
+    }
+
+    #[inline(always)]
+    fn update_3d_model(&mut self) {
+        Actor::update_3d_model(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn update_hair_color(&mut self) {
+        Actor::update_hair_color(self.as_mut())
+    }
+
+    #[inline(always)]
     fn update_regen_delay(&mut self, actor_value: ActorValue, regen_delay: f32) {
         Actor::update_regen_delay(self.as_mut(), actor_value, regen_delay)
+    }
+
+    #[inline(always)]
+    fn update_skin_color(&mut self) {
+        Actor::update_skin_color(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn update_weapon_ability(
+        &mut self,
+        weapon: *mut TESForm,
+        extra_data: *mut ExtraDataList,
+        left_hand: bool,
+    ) {
+        Actor::update_weapon_ability(self.as_mut(), weapon, extra_data, left_hand)
+    }
+
+    #[inline(always)]
+    fn visit_armor_addon<F>(
+        &mut self,
+        armor: *mut TESObjectARMO,
+        arma: *mut TESObjectARMA,
+        visitor: F,
+    ) where
+        F: FnMut(bool, *mut NiAVObject),
+    {
+        Actor::visit_armor_addon(self.as_mut(), armor, arma, visitor)
     }
 
     #[inline(always)]
@@ -2477,8 +4184,48 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn decapitate(&mut self) -> bool {
+        Actor::decapitate(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn deselect_spell(&mut self, spell: *mut SpellItem) {
+        Actor::deselect_spell(self.as_mut(), spell)
+    }
+
+    #[inline(always)]
+    fn dispel_altered_states(&mut self, exception: EffectArchetype) {
+        Actor::dispel_altered_states(self.as_mut(), exception)
+    }
+
+    #[inline(always)]
+    fn dispel_worn_item_enchantments(&mut self) {
+        Actor::dispel_worn_item_enchantments(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn do_reset_3d(&mut self, update_weight: bool) {
+        Actor::do_reset_3d(self.as_mut(), update_weight)
+    }
+
+    #[inline(always)]
+    fn do_damage(
+        &mut self,
+        health_damage: f32,
+        source: *mut Actor,
+        dont_adjust_difficulty: bool,
+    ) -> bool {
+        Actor::do_damage(self.as_mut(), health_damage, source, dont_adjust_difficulty)
+    }
+
+    #[inline(always)]
     fn evaluate_package(&mut self, immediate: bool, reset_ai: bool) {
         Actor::evaluate_package(self.as_mut(), immediate, reset_ai)
+    }
+
+    #[inline(always)]
+    fn fights_in_water(&self) -> bool {
+        Actor::fights_in_water(self.as_ref())
     }
 
     #[inline(always)]
@@ -2524,6 +4271,11 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn has_spell(&self, spell: *mut SpellItem) -> bool {
         Actor::has_spell(self.as_ref(), spell)
+    }
+
+    #[inline(always)]
+    fn remove_outfit_items(&mut self, outfit: *mut BGSOutfit) {
+        Actor::remove_outfit_items(self.as_mut(), outfit)
     }
 
     #[inline(always)]
@@ -2603,6 +4355,229 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     }
 
     #[inline(always)]
+    fn set_size(&mut self, size: f32) {
+        Actor::set_size(self.as_mut(), size)
+    }
+
+    #[inline(always)]
+    fn end_dialogue(&mut self) {
+        Actor::end_dialogue(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn set_up_talking_activator_actor(
+        &mut self,
+        target: *mut Actor,
+        activator: &mut *mut Actor,
+    ) -> *mut Actor {
+        Actor::set_up_talking_activator_actor(self.as_mut(), target, activator)
+    }
+
+    #[inline(always)]
+    fn initiate_spectator(&mut self, target: *mut Actor) {
+        Actor::initiate_spectator(self.as_mut(), target)
+    }
+
+    #[inline(always)]
+    fn initiate_flee(
+        &mut self,
+        flee_ref: *mut TESObjectREFR,
+        run_once: bool,
+        knows: bool,
+        combat_mode: bool,
+        cell: *mut TESObjectCELL,
+        refr: *mut TESObjectREFR,
+        flee_from_dist: f32,
+        flee_to_dist: f32,
+    ) {
+        Actor::initiate_flee(
+            self.as_mut(),
+            flee_ref,
+            run_once,
+            knows,
+            combat_mode,
+            cell,
+            refr,
+            flee_from_dist,
+            flee_to_dist,
+        )
+    }
+
+    #[inline(always)]
+    fn initiate_get_up_package(&mut self) {
+        Actor::initiate_get_up_package(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn put_created_package(
+        &mut self,
+        package: *mut TESPackage,
+        temp_package: bool,
+        created_package: bool,
+        allow_from_furniture: bool,
+    ) {
+        Actor::put_created_package(
+            self.as_mut(),
+            package,
+            temp_package,
+            created_package,
+            allow_from_furniture,
+        )
+    }
+
+    #[inline(always)]
+    fn update_alpha(&mut self) {
+        Actor::update_alpha(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn set_alpha(&mut self, alpha: f32) {
+        Actor::set_alpha(self.as_mut(), alpha)
+    }
+
+    #[inline(always)]
+    fn get_alpha(&self) -> f32 {
+        Actor::get_alpha(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn is_in_combat(&self) -> bool {
+        Actor::is_in_combat(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn update_combat(&mut self) {
+        Actor::update_combat(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn stop_combat(&mut self) {
+        Actor::stop_combat(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn calc_armor_rating(&mut self) -> f32 {
+        Actor::calc_armor_rating(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn get_armor_base_factor_sum(&mut self) -> f32 {
+        Actor::get_armor_base_factor_sum(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn calc_unarmed_damage(&mut self) -> f32 {
+        Actor::calc_unarmed_damage(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn unk_e9(&mut self) {
+        Actor::unk_e9(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn unk_ea(&mut self) {
+        Actor::unk_ea(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn get_run_speed(&self) -> f32 {
+        Actor::get_run_speed(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_jog_speed(&self) -> f32 {
+        Actor::get_jog_speed(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_fast_walk_speed(&self) -> f32 {
+        Actor::get_fast_walk_speed(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn get_walk_speed(&self) -> f32 {
+        Actor::get_walk_speed(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn weapon_swing_call_back(&mut self) {
+        Actor::weapon_swing_call_back(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn set_actor_starting_position(&mut self) {
+        Actor::set_actor_starting_position(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn move_to_high(&mut self) -> bool {
+        Actor::move_to_high(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn moveto_low(&mut self) -> bool {
+        Actor::moveto_low(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn moveto_middle_low(&mut self) -> bool {
+        Actor::moveto_middle_low(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn move_to_middle_high(&mut self) -> bool {
+        Actor::move_to_middle_high(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn has_been_attacked(&self) -> bool {
+        Actor::has_been_attacked(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn set_been_attacked(&mut self, set: bool) {
+        Actor::set_been_attacked(self.as_mut(), set)
+    }
+
+    #[inline(always)]
+    fn use_skill(&mut self, av: ActorValue, points: f32, arg3: *mut TESForm) {
+        Actor::use_skill(self.as_mut(), av, points, arg3)
+    }
+
+    #[inline(always)]
+    fn is_at_point(
+        &self,
+        point: &NiPoint3,
+        radius: f32,
+        expand_radius: bool,
+        always_test_height: bool,
+    ) -> bool {
+        Actor::is_at_point(
+            self.as_ref(),
+            point,
+            radius,
+            expand_radius,
+            always_test_height,
+        )
+    }
+
+    #[inline(always)]
+    fn start_power_attack_cool_down(&mut self) {
+        Actor::start_power_attack_cool_down(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn is_power_attack_cooling_down(&self) -> bool {
+        Actor::is_power_attack_cooling_down(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn handle_health_damage(&mut self, attacker: *mut Actor, damage: f32) {
+        Actor::handle_health_damage(self.as_mut(), attacker, damage)
+    }
+
+    #[inline(always)]
     fn q_speaking_done(&self) -> bool {
         Actor::q_speaking_done(self.as_ref())
     }
@@ -2615,6 +4590,161 @@ impl<T: AsRef<Actor> + AsMut<Actor>> ActorExt for T {
     #[inline(always)]
     fn create_movement_controller(&mut self) {
         Actor::create_movement_controller(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn get_emotion_type(&self) -> EmotionType {
+        Actor::get_emotion_type(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn set_emotion_type(&mut self, emotion_type: EmotionType) {
+        Actor::set_emotion_type(self.as_mut(), emotion_type)
+    }
+
+    #[inline(always)]
+    fn get_emotion_value(&self) -> u32 {
+        Actor::get_emotion_value(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn set_emotion_value(&mut self, emotion_value: u32) {
+        Actor::set_emotion_value(self.as_mut(), emotion_value)
+    }
+
+    #[inline(always)]
+    fn kill_impl(
+        &mut self,
+        attacker: *mut Actor,
+        damage: f32,
+        send_event: bool,
+        ragdoll_instant: bool,
+    ) {
+        Actor::kill_impl(self.as_mut(), attacker, damage, send_event, ragdoll_instant)
+    }
+
+    #[inline(always)]
+    fn drink_potion(&mut self, potion: *mut AlchemyItem, extra_list: *mut ExtraDataList) -> bool {
+        Actor::drink_potion(self.as_mut(), potion, extra_list)
+    }
+
+    #[inline(always)]
+    fn check_cast(
+        &mut self,
+        spell: *mut MagicItem,
+        dual_cast: bool,
+        reason: *mut CannotCastReason,
+    ) -> bool {
+        Actor::check_cast(self.as_mut(), spell, dual_cast, reason)
+    }
+
+    #[inline(always)]
+    fn check_temp_modifiers(&mut self) {
+        Actor::check_temp_modifiers(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn get_current_shout_level(&self) -> i32 {
+        Actor::get_current_shout_level(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn set_last_ridden_mount(&mut self, mount: ActorHandle) {
+        Actor::set_last_ridden_mount(self.as_mut(), mount)
+    }
+
+    #[inline(always)]
+    fn q_last_ridden_mount(&self) -> ActorHandle {
+        Actor::q_last_ridden_mount(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn calculate_cached_owner_is_undead(&self) -> bool {
+        Actor::calculate_cached_owner_is_undead(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn calculate_cached_owner_is_npc(&self) -> bool {
+        Actor::calculate_cached_owner_is_npc(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn unk_117(&mut self, origin: &mut NiPoint3) {
+        Actor::unk_117(self.as_mut(), origin)
+    }
+
+    #[inline(always)]
+    fn init_values(&mut self) {
+        Actor::init_values(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn get_response_string(&self) -> *const BSFixedString {
+        Actor::get_response_string(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn modify_movement_data(&mut self, delta: f32, arg3: &mut NiPoint3, arg4: &mut NiPoint3) {
+        Actor::modify_movement_data(self.as_mut(), delta, arg3, arg4)
+    }
+
+    #[inline(always)]
+    fn update_combat_controller_settings(&mut self) {
+        Actor::update_combat_controller_settings(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn update_fade_settings(&mut self, controller: *mut bhkCharacterController) {
+        Actor::update_fade_settings(self.as_mut(), controller)
+    }
+
+    #[inline(always)]
+    fn update_actor_3d_position(&mut self) {
+        Actor::update_actor_3d_position(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn precache_data(&mut self) {
+        Actor::precache_data(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn worn_armor_changed(&mut self) {
+        Actor::worn_armor_changed(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn process_tracking(&mut self, delta: f32, obj3d: *mut NiAVObject) {
+        Actor::process_tracking(self.as_mut(), delta, obj3d)
+    }
+
+    #[inline(always)]
+    fn unk_123(&mut self) {
+        Actor::unk_123(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn create_actor_mover(&mut self) {
+        Actor::create_actor_mover(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn destroy_actor_mover(&mut self) {
+        Actor::destroy_actor_mover(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn should_respond_to_actor_collision(
+        &mut self,
+        msg: &MovementMessageActorCollision,
+        target: &ActorHandlePtr,
+    ) -> bool {
+        Actor::should_respond_to_actor_collision(self.as_mut(), msg, target)
+    }
+
+    #[inline(always)]
+    fn check_clamp_damage_modifier(&mut self, av: ActorValue, delta: f32) -> f32 {
+        Actor::check_clamp_damage_modifier(self.as_mut(), av, delta)
     }
 
     #[inline(always)]

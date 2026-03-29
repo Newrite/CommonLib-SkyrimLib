@@ -4,9 +4,7 @@ use crate::core_util::inherit;
 use crate::offsets::offsets_nirtti::NiRTTI_BSTextureSet;
 use crate::offsets::offsets_rtti::RTTI_BSTextureSet;
 use crate::offsets::offsets_vtable::VTABLE_BSTextureSet;
-use crate::re::NiObject;
-use crate::re::NiPointer;
-use crate::re::NiSourceTexture;
+use crate::re::{NiObject, NiPointer, NiRef, NiRefObject, NiSourceTexture};
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
 
@@ -36,6 +34,18 @@ const _: () = assert!(core::mem::size_of::<BSTextureSet>() == 0x10);
 
 impl RttiType for BSTextureSet {
     const RTTI: VariantID = RTTI_BSTextureSet;
+}
+
+impl NiRef for BSTextureSet {
+    #[inline(always)]
+    fn inc_ref(&self) {
+        unsafe { (*(self as *const _ as *const NiRefObject)).inc_ref() }
+    }
+
+    #[inline(always)]
+    fn dec_ref(&self) {
+        unsafe { (*(self as *const _ as *const NiRefObject)).dec_ref() }
+    }
 }
 
 inherit!(BSTextureSet : NiObject);
