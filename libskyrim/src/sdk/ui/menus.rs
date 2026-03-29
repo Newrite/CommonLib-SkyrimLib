@@ -10,11 +10,22 @@ use crate::re::{
     FaderMenu, GFxEvent, GFxMovieView, GPtr, IMenu, IUIMessageData, LoadingMenu, LoadingMenuData,
     MenuOpenCloseEvent, UI, UI_MESSAGE_TYPE, UICreate_t, UIMessageQueue,
 };
+use crate::relocation::RelocationID;
 use crate::sdk::core::{DynamicCastExt, GamePtr, GameRef};
 use crate::sdk::events::source::{EventFlow, EventInstallError, EventSubscription, IntoEventFlow};
 use crate::sdk::events::ui as ui_events;
 
 pub const DEFAULT_TOP_MOST_MENU_DEPTH_LIMIT: u32 = 15;
+
+crate::relocation_func! {
+    fn fade_out_game_raw(
+        fading_out: bool,
+        black_fade: bool,
+        fade_duration: f32,
+        arg4: bool,
+        secs_before_fade: f32,
+    ) => RelocationID::new(51909, 52847)
+}
 
 /// Small trait for menu-like types with a stable UI registration name.
 ///
@@ -574,6 +585,39 @@ pub fn fade_to_black(min_duration: f32, fade_duration: f32, pauses_game: bool) -
 #[inline(always)]
 pub fn fade_from_black(fade_duration: f32, pauses_game: bool) -> bool {
     queue_fade(FadeRequest::from_black(fade_duration, pauses_game))
+}
+
+/// Direct engine fade helper that bypasses `UIMessageQueue` / `Fader Menu`.
+///
+/// This is source-backed from community usage of the engine's `FadeOutGame`
+/// relocation. The fourth boolean parameter is still named `arg4` in public
+/// community references, so `pauses_game` in the convenience wrappers below is
+/// an inference from `FaderData`, not a fully proven engine symbol name.
+#[inline(always)]
+pub fn fade_out_game_direct(
+    fading_out: bool,
+    black_fade: bool,
+    fade_duration: f32,
+    arg4: bool,
+    secs_before_fade: f32,
+) {
+    fade_out_game_raw(
+        fading_out,
+        black_fade,
+        fade_duration,
+        arg4,
+        secs_before_fade,
+    );
+}
+
+#[inline(always)]
+pub fn fade_to_black_direct(min_duration: f32, fade_duration: f32, pauses_game: bool) {
+    fade_out_game_direct(true, true, fade_duration, pauses_game, min_duration);
+}
+
+#[inline(always)]
+pub fn fade_from_black_direct(fade_duration: f32, pauses_game: bool) {
+    fade_out_game_direct(false, true, fade_duration, pauses_game, 0.0);
 }
 
 #[inline(always)]

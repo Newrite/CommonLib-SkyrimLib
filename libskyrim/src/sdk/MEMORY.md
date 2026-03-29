@@ -865,3 +865,27 @@ When doing future research passes:
 - update the backlog ordering when a new pattern clearly outranks old ones
 - keep this file biased toward reusable SDK value, not toward mod-specific
   design notes
+
+## 2026-03-30: direct `FadeOutGame` helper added to `sdk::ui::menus`
+
+While debugging `GhostOfDeath`, `UIMessageQueue::AddMessage` for `Fader Menu`
+still crashed even after moving the call onto a `Main::Update` main-thread
+dispatcher and even after isolating away the typed `FaderData` payload.
+
+A useful community-backed fallback seam was identified from `CustomSkills`:
+
+- `FadeOutGame` relocation used as a direct engine call
+- SE ID `51909`
+- AE ID `52847`
+
+`sdk::ui::menus` now exposes:
+
+- `fade_out_game_direct(...)`
+- `fade_to_black_direct(...)`
+- `fade_from_black_direct(...)`
+
+Important caveat:
+
+- the fourth bool is still source-backed only as an unnamed `arg4` from public
+  community references; mapping it to `pauses_game` in the convenience wrappers
+  is an inference from `FaderData`, not yet a proven engine symbol name
