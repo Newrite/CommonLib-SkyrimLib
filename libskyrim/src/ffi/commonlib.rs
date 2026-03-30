@@ -67,6 +67,28 @@ unsafe extern "C" {
 
     // Actor helper wrappers for inline-only CommonLib API.
     pub fn commonlib_actor_get_gold_amount(actor: *mut c_void, no_init: bool) -> i32;
+    pub fn commonlib_actor_drop_object(
+        actor: *mut c_void,
+        out: *mut c_void,
+        object: *const c_void,
+        extra_list: *mut c_void,
+        count: i32,
+        drop_loc: *const c_void,
+        rotate: *const c_void,
+    );
+    pub fn commonlib_actor_set_last_ridden_mount(actor: *mut c_void, mount: *const c_void);
+    pub fn commonlib_actor_q_last_ridden_mount(actor: *const c_void, out: *mut c_void);
+    pub fn commonlib_tes_object_refr_remove_item(
+        refr: *mut c_void,
+        out: *mut c_void,
+        item: *mut c_void,
+        count: i32,
+        reason: i32,
+        extra_list: *mut c_void,
+        move_to_ref: *mut c_void,
+        drop_loc: *const c_void,
+        rotate: *const c_void,
+    );
 
     // Smart-pointer and factory helpers.
     pub fn commonlib_make_hkref_hk_referenced_object(out: *mut c_void) -> bool;

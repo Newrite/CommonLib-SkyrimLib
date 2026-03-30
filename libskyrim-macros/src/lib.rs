@@ -474,6 +474,7 @@ fn parse_function(function: ItemFn) -> syn::Result<ParsedFn> {
         ReturnType::Default => parse_quote!(()),
         ReturnType::Type(_, ty) => (**ty).clone(),
     };
+    ensure_supported_hook_abi_ty(&ret_ty, "hook return type")?;
     let returns_unit = matches!(function.sig.output, ReturnType::Default)
         || matches!(&ret_ty, Type::Tuple(tuple) if tuple.elems.is_empty());
 
@@ -520,6 +521,7 @@ fn parse_function(function: ItemFn) -> syn::Result<ParsedFn> {
 
         let user_ty = (*typed.ty).clone();
         let abi_ty = map_user_ty_to_abi(&user_ty)?;
+        ensure_supported_hook_abi_ty(&abi_ty, "hook parameter")?;
         user_params.push(UserParam {
             ident,
             ty: user_ty,
@@ -744,6 +746,31 @@ fn map_option_inner_to_abi(inner: &Type) -> syn::Result<Type> {
             "unsupported `Option<_>` hook argument type; use Option<&T>, Option<&mut T>, Option<Resolved<T>>, or Option<ResolvedHandle<H>>",
         )),
     }
+}
+
+fn is_nontrivial_bs_handle_type(ty: &Type) -> bool {
+    matches!(
+        peel_type(ty),
+        Type::Path(path)
+            if path_last_ident(path).is_some_and(|ident| {
+                ident == "ActorHandle"
+                    || ident == "ObjectRefHandle"
+                    || ident == "ProjectileHandle"
+            })
+    )
+}
+
+fn ensure_supported_hook_abi_ty(ty: &Type, context: &str) -> syn::Result<()> {
+    if is_nontrivial_bs_handle_type(ty) {
+        return Err(syn::Error::new_spanned(
+            ty,
+            format!(
+                "{context} uses a non-trivial C++ BSPointerHandle type by value; SDK hook attributes do not support this ABI. Use the low-level hook layer with an explicit out-param signature or a C++ bridge instead"
+            ),
+        ));
+    }
+
+    Ok(())
 }
 
 fn peel_type(ty: &Type) -> &Type {

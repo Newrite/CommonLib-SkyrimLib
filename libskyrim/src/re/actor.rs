@@ -1885,9 +1885,30 @@ impl Actor {
         pub fn on_armor_actor_value_changed(&mut self)
     }
 
-    crate::relocated_virtual_method! {
-        pub const VFUNC_DROP_OBJECT: VariantOffset = VariantOffset::new_se_ae(0x0CB, 0x0CD);
-        pub fn drop_object(&mut self, object: *const TESBoundObject, extra_list: *mut ExtraDataList, count: i32, drop_loc: *const NiPoint3, rotate: *const NiPoint3) -> ObjectRefHandle
+    pub const VFUNC_DROP_OBJECT: VariantOffset = VariantOffset::new_se_ae(0x0CB, 0x0CD);
+
+    #[inline(always)]
+    pub fn drop_object(
+        &mut self,
+        object: *const TESBoundObject,
+        extra_list: *mut ExtraDataList,
+        count: i32,
+        drop_loc: *const NiPoint3,
+        rotate: *const NiPoint3,
+    ) -> ObjectRefHandle {
+        let mut out = ObjectRefHandle::new();
+        unsafe {
+            crate::ffi::commonlib_actor_drop_object(
+                self as *mut Self as *mut core::ffi::c_void,
+                &mut out as *mut ObjectRefHandle as *mut core::ffi::c_void,
+                object as *const core::ffi::c_void,
+                extra_list as *mut core::ffi::c_void,
+                count,
+                drop_loc as *const core::ffi::c_void,
+                rotate as *const core::ffi::c_void,
+            );
+        }
+        out
     }
 
     crate::relocated_virtual_method! {
@@ -2321,16 +2342,30 @@ impl Actor {
         pub fn get_current_shout_level(&self) -> i32
     }
 
-    crate::relocated_virtual_method! {
-        pub const VFUNC_SET_LAST_RIDDEN_MOUNT: VariantOffset =
-            VariantOffset::new_se_ae(0x113, 0x115);
-        pub fn set_last_ridden_mount(&mut self, mount: ActorHandle)
+    pub const VFUNC_SET_LAST_RIDDEN_MOUNT: VariantOffset = VariantOffset::new_se_ae(0x113, 0x115);
+
+    #[inline(always)]
+    pub fn set_last_ridden_mount(&mut self, mount: ActorHandle) {
+        unsafe {
+            crate::ffi::commonlib_actor_set_last_ridden_mount(
+                self as *mut Self as *mut core::ffi::c_void,
+                &mount as *const ActorHandle as *const core::ffi::c_void,
+            );
+        }
     }
 
-    crate::relocated_virtual_method! {
-        pub const VFUNC_Q_LAST_RIDDEN_MOUNT: VariantOffset =
-            VariantOffset::new_se_ae(0x114, 0x116);
-        pub fn q_last_ridden_mount(&self) -> ActorHandle
+    pub const VFUNC_Q_LAST_RIDDEN_MOUNT: VariantOffset = VariantOffset::new_se_ae(0x114, 0x116);
+
+    #[inline(always)]
+    pub fn q_last_ridden_mount(&self) -> ActorHandle {
+        let mut out = ActorHandle::new();
+        unsafe {
+            crate::ffi::commonlib_actor_q_last_ridden_mount(
+                self as *const Self as *const core::ffi::c_void,
+                &mut out as *mut ActorHandle as *mut core::ffi::c_void,
+            );
+        }
+        out
     }
 
     crate::relocated_virtual_method! {

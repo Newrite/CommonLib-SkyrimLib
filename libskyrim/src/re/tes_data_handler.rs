@@ -504,10 +504,44 @@ impl TESDataHandler {
         unsafe { &mut *array.cast::<BSTArray<*mut T>>() }
     }
 
+    #[inline(always)]
+    pub fn create_reference_at_location(
+        &mut self,
+        base: *mut TESBoundObject,
+        location: &NiPoint3,
+        rotation: &NiPoint3,
+        target_cell: *mut TESObjectCELL,
+        self_world_space: *mut TESWorldSpace,
+        already_created_ref: *mut TESObjectREFR,
+        primitive: *mut BGSPrimitive,
+        linked_room_ref_handle: &ObjectRefHandle,
+        force_persist: bool,
+        arg11: bool,
+    ) -> ObjectRefHandle {
+        let mut out = ObjectRefHandle::new();
+        unsafe {
+            self.create_reference_at_location_impl(
+                &mut out,
+                base,
+                location,
+                rotation,
+                target_cell,
+                self_world_space,
+                already_created_ref,
+                primitive,
+                linked_room_ref_handle,
+                force_persist,
+                arg11,
+            );
+        }
+        out
+    }
+
     // RELOCATION_ID SE: 13625, AE: 13723
     crate::relocation_func! {
-        pub fn create_reference_at_location(
+        fn create_reference_at_location_impl(
             &mut self,
+            out: &mut ObjectRefHandle,
             base: *mut TESBoundObject,
             location: &NiPoint3,
             rotation: &NiPoint3,
@@ -518,7 +552,7 @@ impl TESDataHandler {
             linked_room_ref_handle: &ObjectRefHandle,
             force_persist: bool,
             arg11: bool
-        ) -> ObjectRefHandle => RelocationID::new(13625, 13723)
+        ) => RelocationID::new(13625, 13723)
     }
 
     runtime_data_accessor! {

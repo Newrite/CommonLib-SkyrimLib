@@ -1001,6 +1001,61 @@ macro_rules! relocate_virtual {
 }
 
 #[macro_export]
+macro_rules! __abi_guard_nontrivial_handle_ty {
+    (ActorHandle) => {
+        compile_error!(
+            "ActorHandle is a non-trivial C++ BSPointerHandle type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper or a C++ bridge."
+        );
+    };
+    (ObjectRefHandle) => {
+        compile_error!(
+            "ObjectRefHandle is a non-trivial C++ BSPointerHandle type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper or a C++ bridge."
+        );
+    };
+    (ProjectileHandle) => {
+        compile_error!(
+            "ProjectileHandle is a non-trivial C++ BSPointerHandle type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper or a C++ bridge."
+        );
+    };
+    (crate::re::ActorHandle) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(ActorHandle);
+    };
+    (crate::re::ObjectRefHandle) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(ObjectRefHandle);
+    };
+    (crate::re::ProjectileHandle) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(ProjectileHandle);
+    };
+    (crate::re::bs_pointer_handle::ActorHandle) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(ActorHandle);
+    };
+    (crate::re::bs_pointer_handle::ObjectRefHandle) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(ObjectRefHandle);
+    };
+    (crate::re::bs_pointer_handle::ProjectileHandle) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(ProjectileHandle);
+    };
+    ($other:ty) => {};
+}
+
+#[macro_export]
+macro_rules! __abi_guard_nontrivial_handle_params {
+    () => {};
+    ($head:ty $(, $tail:ty)*) => {
+        $crate::__abi_guard_nontrivial_handle_ty!($head);
+        $crate::__abi_guard_nontrivial_handle_params!($($tail),*);
+    };
+}
+
+#[macro_export]
+macro_rules! __abi_guard_nontrivial_handle_return {
+    () => {};
+    ($ret:ty) => {
+        $crate::__abi_guard_nontrivial_handle_ty!($ret);
+    };
+}
+
+#[macro_export]
 macro_rules! define_vtable_hook {
     (
         $vis:vis $hook_name:ident {
@@ -1013,6 +1068,10 @@ macro_rules! define_vtable_hook {
         $vis mod $hook_name {
             #[allow(unused_imports)]
             use super::*;
+            const _: () = {
+                $crate::__abi_guard_nontrivial_handle_params!($($arg_type),*);
+                $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
+            };
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
             type Original = $crate::relocation::Relocation<Signature>;
             static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
@@ -1056,6 +1115,10 @@ macro_rules! define_call_hook {
         $vis mod $hook_name {
             #[allow(unused_imports)]
             use super::*;
+            const _: () = {
+                $crate::__abi_guard_nontrivial_handle_params!($($arg_type),*);
+                $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
+            };
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
             type Original = $crate::relocation::Relocation<Signature>;
             static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
@@ -1102,6 +1165,10 @@ macro_rules! define_vcall_hook {
         $vis mod $hook_name {
             #[allow(unused_imports)]
             use super::*;
+            const _: () = {
+                $crate::__abi_guard_nontrivial_handle_params!($($arg_type),*);
+                $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
+            };
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
 
             #[inline(always)]
@@ -1165,6 +1232,10 @@ macro_rules! define_function_hook {
         $vis mod $hook_name {
             #[allow(unused_imports)]
             use super::*;
+            const _: () = {
+                $crate::__abi_guard_nontrivial_handle_params!($($arg_type),*);
+                $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
+            };
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
             type Original = $crate::relocation::Relocation<Signature>;
             static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
@@ -1206,6 +1277,10 @@ macro_rules! define_auto_function_hook {
         $vis mod $hook_name {
             #[allow(unused_imports)]
             use super::*;
+            const _: () = {
+                $crate::__abi_guard_nontrivial_handle_params!($($arg_type),*);
+                $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
+            };
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
             type Original = $crate::relocation::Relocation<Signature>;
             static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
@@ -1559,6 +1634,8 @@ macro_rules! virtual_method {
 
         #[inline(always)]
         $fn_vis fn $func_name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             let func: extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)? = unsafe {
                 $crate::relocation::virtual_function(self as *const Self, Self::$const_name)
             };
@@ -1574,6 +1651,8 @@ macro_rules! virtual_method {
 
         #[inline(always)]
         $fn_vis fn $func_name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             let func: extern "C" fn(*mut Self $(, $arg_ty)*) $(-> $ret)? = unsafe {
                 $crate::relocation::virtual_function(self as *mut Self, Self::$const_name)
             };
@@ -1589,6 +1668,8 @@ macro_rules! virtual_method {
 
         #[inline(always)]
         $fn_vis fn $func_name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             let func: extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)? = unsafe {
                 $crate::relocation::virtual_function(self as *const Self, Self::$const_name)
             };
@@ -1607,6 +1688,8 @@ macro_rules! relocated_virtual_method {
 
         #[inline(always)]
         $fn_vis fn $func_name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocate_virtual!(
                 extern "C" fn(*const Self $(, $arg_ty)*) $(-> $ret)?,
                 self as *const Self,
@@ -1624,6 +1707,8 @@ macro_rules! relocated_virtual_method {
 
         #[inline(always)]
         $fn_vis fn $func_name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocate_virtual!(
                 extern "C" fn(*mut Self $(, $arg_ty)*) $(-> $ret)?,
                 self as *mut Self,
@@ -1694,6 +1779,8 @@ macro_rules! relocation_variable {
 macro_rules! relocation_func {
     ( @no_inline $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         $vis fn $name($($arg_name: $arg_ty),*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocation_func!(@body ($($arg_ty),*), ($($arg_name),*), $(-> $ret)?, $id)
         }
     };
@@ -1701,12 +1788,16 @@ macro_rules! relocation_func {
     ( $vis:vis fn $name:ident($($arg_name:ident: $arg_ty:ty),* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         #[inline]
         $vis fn $name($($arg_name: $arg_ty),*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocation_func!(@body ($($arg_ty),*), ($($arg_name),*), $(-> $ret)?, $id)
         }
     };
 
     ( @no_inline $vis:vis fn $name:ident(&self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         $vis fn $name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocation_func!(@body (*const Self $(, $arg_ty)*), (self as *const Self $(, $arg_name)*), $(-> $ret)?, $id)
         }
     };
@@ -1714,12 +1805,16 @@ macro_rules! relocation_func {
     ( $vis:vis fn $name:ident(&self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         #[inline]
         $vis fn $name(&self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocation_func!(@body (*const Self $(, $arg_ty)*), (self as *const Self $(, $arg_name)*), $(-> $ret)?, $id)
         }
     };
 
     ( @no_inline $vis:vis fn $name:ident(&mut self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         $vis fn $name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocation_func!(@body (*mut Self $(, $arg_ty)*), (self as *mut Self $(, $arg_name)*), $(-> $ret)?, $id)
         }
     };
@@ -1727,6 +1822,8 @@ macro_rules! relocation_func {
     ( $vis:vis fn $name:ident(&mut self $(, $arg_name:ident: $arg_ty:ty)* $(,)?) $(-> $ret:ty)? => $id:expr ) => {
         #[inline]
         $vis fn $name(&mut self $(, $arg_name: $arg_ty)*) $(-> $ret)? {
+            $crate::__abi_guard_nontrivial_handle_params!($($arg_ty),*);
+            $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
             $crate::relocation_func!(@body (*mut Self $(, $arg_ty)*), (self as *mut Self $(, $arg_name)*), $(-> $ret)?, $id)
         }
     };

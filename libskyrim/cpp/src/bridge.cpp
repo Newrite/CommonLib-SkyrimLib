@@ -402,6 +402,94 @@ extern "C" {
         return static_cast<RE::Actor*>(actor)->GetGoldAmount(no_init);
     }
 
+    void commonlib_actor_drop_object(
+        void* actor,
+        void* out,
+        const void* object,
+        void* extra_list,
+        int32_t count,
+        const void* drop_loc,
+        const void* rotate) noexcept
+    {
+        auto* typed_out = static_cast<RE::ObjectRefHandle*>(out);
+        if (!typed_out) {
+            return;
+        }
+
+        auto* typed_actor = static_cast<RE::Actor*>(actor);
+        if (!typed_actor) {
+            *typed_out = RE::ObjectRefHandle{};
+            return;
+        }
+
+        *typed_out = typed_actor->DropObject(
+            static_cast<const RE::TESBoundObject*>(object),
+            static_cast<RE::ExtraDataList*>(extra_list),
+            count,
+            static_cast<const RE::NiPoint3*>(drop_loc),
+            static_cast<const RE::NiPoint3*>(rotate));
+    }
+
+    void commonlib_actor_set_last_ridden_mount(void* actor, const void* mount) noexcept
+    {
+        auto* typed_actor = static_cast<RE::Actor*>(actor);
+        if (!typed_actor) {
+            return;
+        }
+
+        const auto mount_handle =
+            mount ? *static_cast<const RE::ActorHandle*>(mount) : RE::ActorHandle{};
+        typed_actor->SetLastRiddenMount(mount_handle);
+    }
+
+    void commonlib_actor_q_last_ridden_mount(const void* actor, void* out) noexcept
+    {
+        auto* typed_out = static_cast<RE::ActorHandle*>(out);
+        if (!typed_out) {
+            return;
+        }
+
+        auto* typed_actor = static_cast<const RE::Actor*>(actor);
+        if (!typed_actor) {
+            *typed_out = RE::ActorHandle{};
+            return;
+        }
+
+        *typed_out = typed_actor->QLastRiddenMount();
+    }
+
+    void commonlib_tes_object_refr_remove_item(
+        void* refr,
+        void* out,
+        void* item,
+        int32_t count,
+        int32_t reason,
+        void* extra_list,
+        void* move_to_ref,
+        const void* drop_loc,
+        const void* rotate) noexcept
+    {
+        auto* typed_out = static_cast<RE::ObjectRefHandle*>(out);
+        if (!typed_out) {
+            return;
+        }
+
+        auto* typed_refr = static_cast<RE::TESObjectREFR*>(refr);
+        if (!typed_refr) {
+            *typed_out = RE::ObjectRefHandle{};
+            return;
+        }
+
+        *typed_out = typed_refr->RemoveItem(
+            static_cast<RE::TESBoundObject*>(item),
+            count,
+            static_cast<RE::ITEM_REMOVE_REASON>(reason),
+            static_cast<RE::ExtraDataList*>(extra_list),
+            static_cast<RE::TESObjectREFR*>(move_to_ref),
+            static_cast<const RE::NiPoint3*>(drop_loc),
+            static_cast<const RE::NiPoint3*>(rotate));
+    }
+
     bool commonlib_make_hkref_hk_referenced_object(void* out) noexcept {
         return construct_smart_pointer_out(
             static_cast<RE::hkRefPtr<RE::hkReferencedObject>*>(out),

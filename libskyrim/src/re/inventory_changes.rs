@@ -330,9 +330,39 @@ impl InventoryChanges {
         pub fn remove_favorite(&mut self, entry: *mut InventoryEntryData, item_list: *mut ExtraDataList) => RelocationID::new(15859, 16099)
     }
 
+    #[inline(always)]
+    pub fn remove_item(
+        &mut self,
+        refr: *mut TESObjectREFR,
+        item: *mut TESBoundObject,
+        count: i32,
+        reason: ITEM_REMOVE_REASON,
+        extra_data_list: *mut ExtraDataList,
+        move_to_ref: *mut TESObjectREFR,
+        drop_loc: &NiPoint3,
+        drop_ref: *mut TESObjectREFR,
+    ) -> ObjectRefHandle {
+        let mut out = ObjectRefHandle::new();
+        unsafe {
+            self.remove_item_impl(
+                &mut out,
+                refr,
+                item,
+                count,
+                reason,
+                extra_data_list,
+                move_to_ref,
+                drop_loc,
+                drop_ref,
+            );
+        }
+        out
+    }
+
     crate::relocation_func! {
-        pub fn remove_item(
+        fn remove_item_impl(
             &mut self,
+            out: &mut ObjectRefHandle,
             refr: *mut TESObjectREFR,
             item: *mut TESBoundObject,
             count: i32,
@@ -341,7 +371,7 @@ impl InventoryChanges {
             move_to_ref: *mut TESObjectREFR,
             drop_loc: &NiPoint3,
             drop_ref: *mut TESObjectREFR
-        ) -> ObjectRefHandle => RelocationID::new(15821, 16059)
+        ) => RelocationID::new(15821, 16059)
     }
 
     crate::relocation_func! {

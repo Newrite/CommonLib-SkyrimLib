@@ -261,8 +261,15 @@ impl AIProcess {
         self.equipped_objects[AIProcessHand::Right as usize]
     }
 
+    #[inline(always)]
+    pub fn get_headtrack_target(&self) -> ObjectRefHandle {
+        let mut out = ObjectRefHandle::new();
+        unsafe { self.get_headtrack_target_impl(&mut out) };
+        out
+    }
+
     crate::relocation_func! {
-        pub fn get_headtrack_target(&self) -> ObjectRefHandle => RelocationID::new(38483, 39484)
+        fn get_headtrack_target_impl(&self, out: &mut ObjectRefHandle) => RelocationID::new(38483, 39484)
     }
 
     #[inline(always)]

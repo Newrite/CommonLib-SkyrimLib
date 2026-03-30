@@ -497,18 +497,33 @@ impl TESObjectREFR {
         pub fn update_ref_light(&mut self)
     }
 
-    crate::virtual_method! {
-        pub const VFUNC_REMOVE_ITEM: usize = 0x56;
-        pub fn remove_item(
-            &mut self,
-            item: *mut TESBoundObject,
-            count: i32,
-            reason: ITEM_REMOVE_REASON,
-            extra_list: *mut ExtraDataList,
-            move_to_ref: *mut TESObjectREFR,
-            drop_loc: *const NiPoint3,
-            rotate: *const NiPoint3
-        ) -> ObjectRefHandle
+    pub const VFUNC_REMOVE_ITEM: usize = 0x56;
+
+    pub fn remove_item(
+        &mut self,
+        item: *mut TESBoundObject,
+        count: i32,
+        reason: ITEM_REMOVE_REASON,
+        extra_list: *mut ExtraDataList,
+        move_to_ref: *mut TESObjectREFR,
+        drop_loc: *const NiPoint3,
+        rotate: *const NiPoint3,
+    ) -> ObjectRefHandle {
+        let mut out = ObjectRefHandle::new();
+        unsafe {
+            crate::ffi::commonlib_tes_object_refr_remove_item(
+                self as *mut Self as *mut c_void,
+                &mut out as *mut _ as *mut c_void,
+                item as *mut c_void,
+                count,
+                reason as i32,
+                extra_list as *mut c_void,
+                move_to_ref as *mut c_void,
+                drop_loc as *const c_void,
+                rotate as *const c_void,
+            );
+        }
+        out
     }
 
     crate::virtual_method! {
@@ -747,12 +762,26 @@ impl TESObjectREFR {
 }
 
 impl TESObjectREFR {
+    #[inline(always)]
+    pub fn create_reference(
+        handle_out: &mut ObjectRefHandle,
+        form_type: FormType,
+        add_actor_to_process_list: bool,
+    ) -> ObjectRefHandle {
+        let mut out = ObjectRefHandle::new();
+        unsafe {
+            Self::create_reference_impl(&mut out, handle_out, form_type, add_actor_to_process_list);
+        }
+        out
+    }
+
     crate::relocation_func! {
-        pub fn create_reference(
+        fn create_reference_impl(
+            out: &mut ObjectRefHandle,
             handle_out: &mut ObjectRefHandle,
             form_type: FormType,
             add_actor_to_process_list: bool
-        ) -> ObjectRefHandle => RelocationID::new(19142, 19544)
+        ) => RelocationID::new(19142, 19544)
     }
 
     crate::relocation_func! {
