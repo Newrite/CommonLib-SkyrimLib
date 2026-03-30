@@ -10,7 +10,7 @@ pub type GImageImageFormat = GImageBaseImageFormat;
 #[repr(C)]
 pub struct GImage {
     pub base: GRefCountBaseNTS<GImage, { GStatGroup::IMAGE_MEM as u32 }>, // 00
-    pub image_base: GImageBase,                                            // 10
+    pub image_base: GImageBase,                                           // 10
 }
 
 const _: () = assert!(core::mem::size_of::<GImage>() == 0x48);

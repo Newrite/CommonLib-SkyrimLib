@@ -30,6 +30,44 @@ pub enum ParsePluginFormIdError {
     InvalidFormId,
 }
 
+#[inline]
+fn normalized_plugin_name<'a>(plugin_name: &'a str, context: &str) -> Option<&'a str> {
+    let plugin_name = plugin_name.trim();
+    if plugin_name.is_empty() {
+        crate::defensive_sdk_warn!(
+            "libskyrim sdk::forms::lookup {} received an empty plugin name",
+            context
+        );
+        None
+    } else {
+        Some(plugin_name)
+    }
+}
+
+#[inline]
+fn normalized_editor_id<'a>(editor_id: &'a str, context: &str) -> Option<&'a str> {
+    let editor_id = editor_id.trim();
+    if editor_id.is_empty() {
+        crate::defensive_sdk_warn!(
+            "libskyrim sdk::forms::lookup {} received an empty editor id",
+            context
+        );
+        None
+    } else {
+        Some(editor_id)
+    }
+}
+
+#[inline]
+fn non_zero_form_id(form_id: FormID, context: &str) -> Option<FormID> {
+    if form_id == 0 {
+        crate::defensive_sdk_warn!("libskyrim sdk::forms::lookup {} received FormID 0", context);
+        None
+    } else {
+        Some(form_id)
+    }
+}
+
 #[inline(always)]
 pub fn data_handler() -> GameRef<TESDataHandler> {
     unsafe { GameRef::from_raw(TESDataHandler::get_singleton(true)) }
@@ -37,11 +75,17 @@ pub fn data_handler() -> GameRef<TESDataHandler> {
 
 #[inline(always)]
 pub fn plugin_file(plugin_name: &str) -> GamePtr<TESFile> {
+    let Some(plugin_name) = normalized_plugin_name(plugin_name, "plugin_file") else {
+        return GamePtr::null();
+    };
     unsafe { GamePtr::from_raw(data_handler().lookup_mod_by_name(plugin_name) as *mut TESFile) }
 }
 
 #[inline(always)]
 pub fn loaded_plugin_file(plugin_name: &str) -> GamePtr<TESFile> {
+    let Some(plugin_name) = normalized_plugin_name(plugin_name, "loaded_plugin_file") else {
+        return GamePtr::null();
+    };
     unsafe {
         GamePtr::from_raw(data_handler().lookup_loaded_mod_by_name(plugin_name) as *mut TESFile)
     }
@@ -54,38 +98,62 @@ pub fn plugin_loaded(plugin_name: &str) -> bool {
 
 #[inline(always)]
 pub fn plugin_index(plugin_name: &str) -> Option<u8> {
+    let plugin_name = normalized_plugin_name(plugin_name, "plugin_index")?;
     data_handler().get_mod_index(plugin_name)
 }
 
 #[inline(always)]
 pub fn loaded_plugin_index(plugin_name: &str) -> Option<u8> {
+    let plugin_name = normalized_plugin_name(plugin_name, "loaded_plugin_index")?;
     data_handler().get_loaded_mod_index(plugin_name)
 }
 
 #[inline(always)]
 pub fn resolve_form_id(local_form_id: FormID, plugin_name: &str) -> Option<FormID> {
+    let local_form_id = non_zero_form_id(local_form_id, "resolve_form_id")?;
+    let plugin_name = normalized_plugin_name(plugin_name, "resolve_form_id")?;
     let form_id = data_handler().lookup_form_id(local_form_id, plugin_name);
     if form_id == 0 { None } else { Some(form_id) }
 }
 
 #[inline(always)]
 pub fn resolve_raw_form_id(raw_form_id: FormID, plugin_name: &str) -> Option<FormID> {
+    let raw_form_id = non_zero_form_id(raw_form_id, "resolve_raw_form_id")?;
+    let plugin_name = normalized_plugin_name(plugin_name, "resolve_raw_form_id")?;
     let form_id = data_handler().lookup_form_id_raw(raw_form_id, plugin_name);
     if form_id == 0 { None } else { Some(form_id) }
 }
 
 #[inline(always)]
 pub fn lookup_form(local_form_id: FormID, plugin_name: &str) -> GamePtr<TESForm> {
+    let Some(local_form_id) = non_zero_form_id(local_form_id, "lookup_form") else {
+        return GamePtr::null();
+    };
+    let Some(plugin_name) = normalized_plugin_name(plugin_name, "lookup_form") else {
+        return GamePtr::null();
+    };
     unsafe { GamePtr::from_raw(data_handler().lookup_form(local_form_id, plugin_name)) }
 }
 
 #[inline(always)]
 pub fn lookup_form_typed<T: FormCastable>(local_form_id: FormID, plugin_name: &str) -> GamePtr<T> {
+    let Some(local_form_id) = non_zero_form_id(local_form_id, "lookup_form_typed") else {
+        return GamePtr::null();
+    };
+    let Some(plugin_name) = normalized_plugin_name(plugin_name, "lookup_form_typed") else {
+        return GamePtr::null();
+    };
     unsafe { GamePtr::from_raw(data_handler().lookup_form_typed::<T>(local_form_id, plugin_name)) }
 }
 
 #[inline(always)]
 pub fn lookup_form_raw(raw_form_id: FormID, plugin_name: &str) -> GamePtr<TESForm> {
+    let Some(raw_form_id) = non_zero_form_id(raw_form_id, "lookup_form_raw") else {
+        return GamePtr::null();
+    };
+    let Some(plugin_name) = normalized_plugin_name(plugin_name, "lookup_form_raw") else {
+        return GamePtr::null();
+    };
     unsafe { GamePtr::from_raw(data_handler().lookup_form_raw(raw_form_id, plugin_name)) }
 }
 
@@ -94,6 +162,12 @@ pub fn lookup_form_raw_typed<T: FormCastable>(
     raw_form_id: FormID,
     plugin_name: &str,
 ) -> GamePtr<T> {
+    let Some(raw_form_id) = non_zero_form_id(raw_form_id, "lookup_form_raw_typed") else {
+        return GamePtr::null();
+    };
+    let Some(plugin_name) = normalized_plugin_name(plugin_name, "lookup_form_raw_typed") else {
+        return GamePtr::null();
+    };
     unsafe {
         GamePtr::from_raw(data_handler().lookup_form_raw_typed::<T>(raw_form_id, plugin_name))
     }
@@ -101,7 +175,9 @@ pub fn lookup_form_raw_typed<T: FormCastable>(
 
 #[inline(always)]
 pub fn lookup_by_editor_id(editor_id: &str) -> GamePtr<TESForm> {
-    let editor_id = editor_id.trim();
+    let Some(editor_id) = normalized_editor_id(editor_id, "lookup_by_editor_id") else {
+        return GamePtr::null();
+    };
     let form = TESForm::lookup_by_editor_id(editor_id).unwrap_or(core::ptr::null_mut());
     unsafe { GamePtr::from_raw(form) }
 }
@@ -169,10 +245,25 @@ pub fn parse_plugin_form_id(spec: &str) -> Result<PluginFormId<'_>, ParsePluginF
 
 #[inline]
 pub fn form_from_string(spec: &str) -> GamePtr<TESForm> {
+    let spec = spec.trim();
+    if spec.is_empty() {
+        crate::defensive_sdk_warn!(
+            "libskyrim sdk::forms::lookup form_from_string received an empty spec"
+        );
+        return GamePtr::null();
+    }
+
     if spec.contains('|') {
         match parse_plugin_form_id(spec) {
             Ok(parsed) => lookup_form(parsed.form_id, parsed.plugin_name),
-            Err(_) => GamePtr::null(),
+            Err(error) => {
+                crate::defensive_sdk_warn!(
+                    "libskyrim sdk::forms::lookup form_from_string failed to parse {:?}: {:?}",
+                    spec,
+                    error
+                );
+                GamePtr::null()
+            }
         }
     } else {
         lookup_by_editor_id(spec)
@@ -181,10 +272,25 @@ pub fn form_from_string(spec: &str) -> GamePtr<TESForm> {
 
 #[inline]
 pub fn form_from_string_typed<T: FormCastable>(spec: &str) -> GamePtr<T> {
+    let spec = spec.trim();
+    if spec.is_empty() {
+        crate::defensive_sdk_warn!(
+            "libskyrim sdk::forms::lookup form_from_string_typed received an empty spec"
+        );
+        return GamePtr::null();
+    }
+
     if spec.contains('|') {
         match parse_plugin_form_id(spec) {
             Ok(parsed) => lookup_form_typed::<T>(parsed.form_id, parsed.plugin_name),
-            Err(_) => GamePtr::null(),
+            Err(error) => {
+                crate::defensive_sdk_warn!(
+                    "libskyrim sdk::forms::lookup form_from_string_typed failed to parse {:?}: {:?}",
+                    spec,
+                    error
+                );
+                GamePtr::null()
+            }
         }
     } else {
         lookup_by_editor_id_typed::<T>(spec)
@@ -193,10 +299,25 @@ pub fn form_from_string_typed<T: FormCastable>(spec: &str) -> GamePtr<T> {
 
 #[inline]
 pub fn form_from_string_raw(spec: &str) -> GamePtr<TESForm> {
+    let spec = spec.trim();
+    if spec.is_empty() {
+        crate::defensive_sdk_warn!(
+            "libskyrim sdk::forms::lookup form_from_string_raw received an empty spec"
+        );
+        return GamePtr::null();
+    }
+
     if spec.contains('|') {
         match parse_plugin_form_id(spec) {
             Ok(parsed) => lookup_form_raw(parsed.form_id, parsed.plugin_name),
-            Err(_) => GamePtr::null(),
+            Err(error) => {
+                crate::defensive_sdk_warn!(
+                    "libskyrim sdk::forms::lookup form_from_string_raw failed to parse {:?}: {:?}",
+                    spec,
+                    error
+                );
+                GamePtr::null()
+            }
         }
     } else {
         lookup_by_editor_id(spec)
@@ -205,10 +326,25 @@ pub fn form_from_string_raw(spec: &str) -> GamePtr<TESForm> {
 
 #[inline]
 pub fn form_from_string_raw_typed<T: FormCastable>(spec: &str) -> GamePtr<T> {
+    let spec = spec.trim();
+    if spec.is_empty() {
+        crate::defensive_sdk_warn!(
+            "libskyrim sdk::forms::lookup form_from_string_raw_typed received an empty spec"
+        );
+        return GamePtr::null();
+    }
+
     if spec.contains('|') {
         match parse_plugin_form_id(spec) {
             Ok(parsed) => lookup_form_raw_typed::<T>(parsed.form_id, parsed.plugin_name),
-            Err(_) => GamePtr::null(),
+            Err(error) => {
+                crate::defensive_sdk_warn!(
+                    "libskyrim sdk::forms::lookup form_from_string_raw_typed failed to parse {:?}: {:?}",
+                    spec,
+                    error
+                );
+                GamePtr::null()
+            }
         }
     } else {
         lookup_by_editor_id_typed::<T>(spec)
@@ -259,6 +395,10 @@ fn native_editor_id_supported(form_type: FormType) -> bool {
 
 #[inline]
 fn po3_editor_id(form_id: FormID) -> Option<&'static str> {
+    if form_id == 0 {
+        return None;
+    }
+
     let module_name = core_util::create_utf16_string::<15>("po3_Tweaks.dll");
     let module = unsafe { GetModuleHandleW(module_name.as_ptr()) };
     if module.is_null() {
@@ -282,7 +422,10 @@ fn po3_editor_id(form_id: FormID) -> Option<&'static str> {
 
 #[cfg(test)]
 mod tests {
-    use super::{ParsePluginFormIdError, native_editor_id_supported, parse_plugin_form_id};
+    use super::{
+        ParsePluginFormIdError, native_editor_id_supported, non_zero_form_id, normalized_editor_id,
+        normalized_plugin_name, parse_plugin_form_id,
+    };
     use crate::re::FormType;
 
     #[test]
@@ -317,5 +460,29 @@ mod tests {
         assert!(native_editor_id_supported(FormType::Quest));
         assert!(!native_editor_id_supported(FormType::Weapon));
         assert!(!native_editor_id_supported(FormType::Spell));
+    }
+
+    #[test]
+    fn rejects_empty_plugin_name_in_normalizer() {
+        assert_eq!(normalized_plugin_name("   ", "test"), None);
+        assert_eq!(
+            normalized_plugin_name(" Skyrim.esm ", "test"),
+            Some("Skyrim.esm")
+        );
+    }
+
+    #[test]
+    fn rejects_empty_editor_id_in_normalizer() {
+        assert_eq!(normalized_editor_id("   ", "test"), None);
+        assert_eq!(
+            normalized_editor_id(" ActorTypeDragon ", "test"),
+            Some("ActorTypeDragon")
+        );
+    }
+
+    #[test]
+    fn rejects_zero_form_id() {
+        assert_eq!(non_zero_form_id(0, "test"), None);
+        assert_eq!(non_zero_form_id(0x123, "test"), Some(0x123));
     }
 }
