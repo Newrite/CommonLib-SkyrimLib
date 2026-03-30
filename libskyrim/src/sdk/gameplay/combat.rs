@@ -2,14 +2,16 @@
 
 use alloc::vec::Vec;
 
-use crate::re::{Actor, BSScrapArray, ProcessLists};
-use crate::sdk::core::{GameRef, Resolved};
+use crate::re::{Actor, BSScrapArray, NiPointer, ProcessLists};
+use crate::sdk::core::{GamePtr, GameRef, Resolved};
 use crate::sdk::gameplay::{actors, player};
 
 #[inline(always)]
 pub fn singleton() -> GameRef<ProcessLists> {
     actors::process_lists()
 }
+
+// Query-ish validation around native-sensitive combat helpers.
 
 #[inline(always)]
 fn is_valid_radius(radius: f32, caller: &'static str) -> bool {
@@ -40,6 +42,16 @@ fn can_stop_combat_on_actor(actor: &Actor) -> bool {
     }
 
     true
+}
+
+#[inline(always)]
+fn actor_from_ptr(actor: GamePtr<Actor>, caller: &'static str) -> Option<GameRef<Actor>> {
+    let Some(actor) = actor.into_option() else {
+        crate::defensive_sdk_warn!("{} received a null actor pointer", caller);
+        return None;
+    };
+
+    Some(actor)
 }
 
 #[inline(always)]
@@ -95,6 +107,24 @@ pub fn stop_combat_on_actor(actor: &mut Actor, suppress_alarm: bool) {
             process_lists.stop_combat_and_alarm_on_actor(actor, suppress_alarm)
         })
     };
+}
+
+#[inline(always)]
+pub fn stop_combat_on_actor_ptr(actor: GamePtr<Actor>, suppress_alarm: bool) -> bool {
+    let Some(actor) = actor_from_ptr(actor, "sdk::gameplay::combat::stop_combat_on_actor_ptr()")
+    else {
+        return false;
+    };
+
+    unsafe {
+        actor.with_mut_unchecked(|actor| stop_combat_on_actor(actor, suppress_alarm));
+    }
+    true
+}
+
+#[inline(always)]
+pub fn stop_combat_on_actor_owner(actor: &NiPointer<Actor>, suppress_alarm: bool) -> bool {
+    stop_combat_on_actor_ptr(unsafe { GamePtr::from_raw(actor.get()) }, suppress_alarm)
 }
 
 pub fn stop_combat_on_actors(actors: &mut [Resolved<Actor>], suppress_alarm: bool) {

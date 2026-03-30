@@ -4,14 +4,18 @@
 use alloc::vec::Vec;
 use core::ops::ControlFlow;
 
-use crate::re::{Actor, BSContainerForEachResult, NiPoint3, NiPointer, ProcessLists};
-use crate::sdk::core::{GameRef, Resolved};
+use crate::re::{
+    Actor, ActorHandle, BSContainerForEachResult, BSTArray, NiPoint3, NiPointer, ProcessLists,
+};
+use crate::sdk::core::{GamePtr, GameRef, Resolved};
 use crate::sdk::gameplay::player;
 
 #[inline(always)]
 pub fn process_lists() -> GameRef<ProcessLists> {
     unsafe { GameRef::from_raw(ProcessLists::get_singleton()) }
 }
+
+// Query-ish helpers over already-available actor state.
 
 #[inline(always)]
 pub fn distance_to_point(actor: &Actor, point: NiPoint3) -> f32 {
@@ -49,13 +53,35 @@ pub fn commanding_actor(actor: &Actor) -> NiPointer<Actor> {
 }
 
 #[inline(always)]
+pub fn commanding_actor_ptr(actor: &Actor) -> GamePtr<Actor> {
+    unsafe { GamePtr::from_raw(commanding_actor(actor).get()) }
+}
+
+#[inline(always)]
 pub fn commanding_actor_resolved(actor: &Actor) -> Option<Resolved<Actor>> {
-    Resolved::try_from_ptr(commanding_actor(actor).get())
+    Resolved::try_from_ptr(commanding_actor_ptr(actor).as_ptr())
 }
 
 #[inline(always)]
 pub fn is_hostile_to(actor: &Actor, target: &Actor) -> bool {
     actor.is_hostile_to_actor(target as *const Actor as *mut Actor)
+}
+
+#[inline(always)]
+pub fn is_hostile_to_ptr(actor: &Actor, target: GamePtr<Actor>) -> bool {
+    let Some(target) = target.as_ref() else {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::actors::is_hostile_to_ptr() received a null target actor"
+        );
+        return false;
+    };
+
+    is_hostile_to(actor, target)
+}
+
+#[inline(always)]
+pub fn is_hostile_to_owner(actor: &Actor, target: &NiPointer<Actor>) -> bool {
+    is_hostile_to_ptr(actor, unsafe { GamePtr::from_raw(target.get()) })
 }
 
 #[inline(always)]
@@ -70,8 +96,9 @@ pub fn is_summon_or_commanded_actor(actor: &Actor) -> bool {
 
 #[inline(always)]
 pub fn is_commanded_by_player(actor: &Actor) -> bool {
-    let commanding_actor = commanding_actor(actor);
-    !commanding_actor.is_null() && commanding_actor.is_player_ref()
+    commanding_actor_ptr(actor)
+        .as_ref()
+        .is_some_and(|actor| actor.base.base.is_player_ref())
 }
 
 #[inline(always)]
@@ -84,13 +111,15 @@ pub fn is_player_ally(actor: &Actor) -> bool {
     actor.is_player_ref() || is_player_follower(actor) || !is_hostile_to_player(actor)
 }
 
+// Native-sensitive helpers: container traversal, handle resolution, and
+// hostility checks over global actor state.
+
 pub fn for_each_loaded_actor(mut visit: impl FnMut(&Actor) -> ControlFlow<()>) -> ControlFlow<()> {
     let mut flow = ControlFlow::Continue(());
-    process_lists().for_all_actors(|actor| {
-        let Some(actor) = (unsafe { actor.as_ref() }) else {
+    for_each_loaded_actor_owner(|_, owner| {
+        let Some(actor) = owner_actor_ref(owner) else {
             return BSContainerForEachResult::Continue;
         };
-
         flow = visit(actor);
         flow_to_engine_result(flow)
     });
@@ -99,11 +128,10 @@ pub fn for_each_loaded_actor(mut visit: impl FnMut(&Actor) -> ControlFlow<()>) -
 
 pub fn for_each_high_actor(mut visit: impl FnMut(&Actor) -> ControlFlow<()>) -> ControlFlow<()> {
     let mut flow = ControlFlow::Continue(());
-    process_lists().for_each_high_actor(|actor| {
-        let Some(actor) = (unsafe { actor.as_ref() }) else {
+    for_each_high_actor_owner(|_, owner| {
+        let Some(actor) = owner_actor_ref(owner) else {
             return BSContainerForEachResult::Continue;
         };
-
         flow = visit(actor);
         flow_to_engine_result(flow)
     });
@@ -118,12 +146,16 @@ pub fn collect_loaded_actors_matching(
     mut predicate: impl FnMut(&Actor) -> bool,
 ) -> Vec<Resolved<Actor>> {
     let mut actors = Vec::new();
-    let _ = for_each_loaded_actor(|actor| {
+    for (handle, owner) in snapshot_loaded_actor_entries() {
+        let Some(actor) = owner_actor_ref(&owner) else {
+            continue;
+        };
         if predicate(actor) {
-            push_resolved_actor(&mut actors, actor);
+            if let Some(actor) = Resolved::from_handle_owner(handle, owner.clone()) {
+                actors.push(actor);
+            }
         }
-        ControlFlow::Continue(())
-    });
+    }
     actors
 }
 
@@ -135,12 +167,16 @@ pub fn collect_high_actors_matching(
     mut predicate: impl FnMut(&Actor) -> bool,
 ) -> Vec<Resolved<Actor>> {
     let mut actors = Vec::new();
-    let _ = for_each_high_actor(|actor| {
+    for (handle, owner) in snapshot_high_actor_entries() {
+        let Some(actor) = owner_actor_ref(&owner) else {
+            continue;
+        };
         if predicate(actor) {
-            push_resolved_actor(&mut actors, actor);
+            if let Some(actor) = Resolved::from_handle_owner(handle, owner.clone()) {
+                actors.push(actor);
+            }
         }
-        ControlFlow::Continue(())
-    });
+    }
     actors
 }
 
@@ -190,16 +226,119 @@ pub fn collect_player_followers() -> Vec<Resolved<Actor>> {
 }
 
 #[inline(always)]
-fn push_resolved_actor(out: &mut Vec<Resolved<Actor>>, actor: &Actor) {
-    if let Some(actor) = Resolved::try_from_ref(actor) {
-        out.push(actor);
-    }
-}
-
-#[inline(always)]
 fn flow_to_engine_result(flow: ControlFlow<()>) -> BSContainerForEachResult {
     match flow {
         ControlFlow::Continue(()) => BSContainerForEachResult::Continue,
         ControlFlow::Break(()) => BSContainerForEachResult::Stop,
     }
+}
+
+#[inline(always)]
+pub fn snapshot_loaded_actor_owners() -> Vec<NiPointer<Actor>> {
+    snapshot_loaded_actor_entries()
+        .into_iter()
+        .map(|(_, owner)| owner)
+        .collect()
+}
+
+#[inline(always)]
+pub fn snapshot_high_actor_owners() -> Vec<NiPointer<Actor>> {
+    snapshot_high_actor_entries()
+        .into_iter()
+        .map(|(_, owner)| owner)
+        .collect()
+}
+
+#[inline(always)]
+fn snapshot_loaded_actor_entries() -> Vec<(ActorHandle, NiPointer<Actor>)> {
+    let process_lists = process_lists();
+    let mut entries = Vec::new();
+    snapshot_actor_handle_array(&process_lists.high_actor_handles, &mut entries);
+    snapshot_actor_handle_array(&process_lists.middle_high_actor_handles, &mut entries);
+    snapshot_actor_handle_array(&process_lists.middle_low_actor_handles, &mut entries);
+    snapshot_actor_handle_array(&process_lists.low_actor_handles, &mut entries);
+    entries
+}
+
+#[inline(always)]
+fn snapshot_high_actor_entries() -> Vec<(ActorHandle, NiPointer<Actor>)> {
+    let process_lists = process_lists();
+    let mut entries = Vec::new();
+    snapshot_actor_handle_array(&process_lists.high_actor_handles, &mut entries);
+    entries
+}
+
+#[inline(always)]
+fn for_each_loaded_actor_owner(
+    mut visit: impl FnMut(ActorHandle, &NiPointer<Actor>) -> BSContainerForEachResult,
+) {
+    let process_lists = process_lists();
+    for actor_handles in [
+        &process_lists.high_actor_handles,
+        &process_lists.middle_high_actor_handles,
+        &process_lists.middle_low_actor_handles,
+        &process_lists.low_actor_handles,
+    ] {
+        if for_each_actor_handle_owner(actor_handles, &mut visit) == BSContainerForEachResult::Stop
+        {
+            return;
+        }
+    }
+}
+
+#[inline(always)]
+fn for_each_high_actor_owner(
+    mut visit: impl FnMut(ActorHandle, &NiPointer<Actor>) -> BSContainerForEachResult,
+) {
+    let process_lists = process_lists();
+    let _ = for_each_actor_handle_owner(&process_lists.high_actor_handles, &mut visit);
+}
+
+#[inline(always)]
+fn for_each_actor_handle_owner(
+    actor_handles: &BSTArray<ActorHandle>,
+    visit: &mut impl FnMut(ActorHandle, &NiPointer<Actor>) -> BSContainerForEachResult,
+) -> BSContainerForEachResult {
+    for actor_handle in unsafe { actor_handles.as_slice() } {
+        let actor_handle = *actor_handle;
+        let Some(actor_owner) = resolve_actor_handle_owner(actor_handle) else {
+            continue;
+        };
+
+        if visit(actor_handle, &actor_owner) == BSContainerForEachResult::Stop {
+            return BSContainerForEachResult::Stop;
+        }
+    }
+
+    BSContainerForEachResult::Continue
+}
+
+#[inline(always)]
+fn snapshot_actor_handle_array(
+    actor_handles: &BSTArray<ActorHandle>,
+    out: &mut Vec<(ActorHandle, NiPointer<Actor>)>,
+) {
+    for actor_handle in unsafe { actor_handles.as_slice() } {
+        let actor_handle = *actor_handle;
+        let Some(actor_owner) = resolve_actor_handle_owner(actor_handle) else {
+            continue;
+        };
+
+        out.push((actor_handle, actor_owner));
+    }
+}
+
+#[inline(always)]
+fn resolve_actor_handle_owner(actor_handle: ActorHandle) -> Option<NiPointer<Actor>> {
+    let actor_owner = actor_handle.get();
+    if actor_owner.is_null() {
+        return None;
+    }
+
+    Some(actor_owner)
+}
+
+#[inline(always)]
+fn owner_actor_ref(owner: &NiPointer<Actor>) -> Option<&Actor> {
+    unsafe { owner.get().as_ref() }
 }

@@ -202,6 +202,39 @@ Do not silently paper over a bad state when doing so would hide a real engine
 contract violation in the low-level layer. Defensive behavior is for SDK
 helpers, not for laundering ABI mistakes.
 
+### SDK Helper Taxonomy
+
+When designing or reviewing SDK helpers, classify them explicitly:
+
+- query-ish helpers
+  Pure or mostly read-only helpers that query already-available state without
+  mutating engine ownership, scheduling work, traversing fragile global
+  containers for long periods, or depending on special lifecycle timing.
+  Typical examples: distance/category checks, current camera/player state,
+  form lookup parsing, menu/movie availability checks, and lightweight
+  getters over already-validated objects.
+
+- stateful / mutating / native-sensitive helpers
+  Helpers that mutate engine state, schedule/queue work, walk transient engine
+  containers, resolve or retain handles/owners, depend on gameplay/loading/UI
+  phases, or call native seams known to be brittle on bad input. Typical
+  examples: combat-stop helpers, traversal over `ProcessLists`, UI message
+  queueing, actor hostility/combat relationship helpers, movement/teleport
+  helpers, registration helpers, and anything that reaches into task queues or
+  mutable global state.
+
+Apply stronger rules to the second group:
+
+- validate nullable pointer-like inputs before the native call
+- prefer `false` / `None` / early return for semantically nullable inputs
+- warn through `defensive-sdk-log` when a bad input or unsafe phase causes a
+  soft failure
+- snapshot transient engine containers before doing substantial follow-up work
+- avoid assuming `Main::Update`, Papyrus VM tasklets, or other common threads
+  are universal synchronization points unless source-backed evidence proves it
+- do not add broad soft-failure semantics to the raw RE layer just to protect a
+  native-sensitive SDK helper; keep the guard at the SDK boundary
+
 ## SDK Logging Policy
 
 Defensive SDK guards should be able to emit diagnostics, but diagnostics must

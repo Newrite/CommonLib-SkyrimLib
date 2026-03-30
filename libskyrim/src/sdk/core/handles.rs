@@ -300,6 +300,14 @@ where
     T: HandleFamilyTarget,
 {
     #[inline(always)]
+    pub fn from_handle_owner(
+        handle: T::Handle,
+        owner: <T::Handle as ResolvableHandle>::Owner,
+    ) -> Option<Self> {
+        Self::from_inner(ResolvedHandle::new(handle, owner)?)
+    }
+
+    #[inline(always)]
     pub fn try_from_ptr(ptr: *mut T) -> Option<Self> {
         Self::from_ptr(ptr)
     }

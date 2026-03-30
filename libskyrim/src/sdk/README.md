@@ -107,6 +107,33 @@ prefer:
 Do not force everything into `Option<T>` just to be defensive. Use `Option<T>`
 only where the surface is already semantically optional.
 
+### Helper Taxonomy
+
+The SDK should explicitly distinguish between two kinds of helpers:
+
+- query-ish helpers
+  Read-mostly helpers that inspect already-available state and do not mutate
+  engine ownership, queue work, or lean on fragile global traversal/scheduling
+  paths.
+
+- stateful / mutating / native-sensitive helpers
+  Helpers that mutate engine state, queue or schedule work, walk transient
+  engine containers, resolve or retain owners/handles, or depend heavily on
+  lifecycle timing.
+
+The second group must be treated more strictly:
+
+- validate nullable pointer-like inputs before making the native call
+- prefer `false`, `None`, null/empty, or early return for semantically
+  nullable inputs instead of blindly forwarding them
+- emit `defensive-sdk-log` warnings when a soft failure rejects bad input or an
+  unsafe lifecycle phase
+- snapshot transient engine arrays/handle lists before doing substantial
+  follow-up work
+- avoid assuming `Main::Update`, Papyrus tasklets, or similar common threads
+  are universal synchronization points unless source-backed evidence shows that
+  the specific seam is safe there
+
 ### Diagnostics
 
 Defensive SDK guards may emit diagnostics through the feature-gated
