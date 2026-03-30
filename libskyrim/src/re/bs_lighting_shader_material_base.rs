@@ -89,7 +89,7 @@ impl BSLightingShaderMaterialBase {
     }
 
     crate::relocation_func! {
-        pub(crate) fn constructor(material: *mut Self) -> *mut Self => RelocationID::new(100004, 106711)
+        pub fn constructor(material: *mut Self) -> *mut Self => RelocationID::new(100004, 106711)
     }
 
     #[inline(always)]

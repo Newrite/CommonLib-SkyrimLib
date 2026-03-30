@@ -9,9 +9,9 @@ use crate::rex::openvr::vr;
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSVRInterfaceHMDDeviceType {
-    kLighthouse = 0,
-    kOculus = 1,
-    kHolographics = 2,
+    Lighthouse = 0,
+    Oculus = 1,
+    Holographics = 2,
 }
 
 const _: () = assert!(core::mem::size_of::<BSVRInterfaceHMDDeviceType>() == 0x4);
@@ -20,13 +20,13 @@ const _: () = assert!(core::mem::size_of::<BSVRInterfaceHMDDeviceType>() == 0x4)
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSVRInterfaceHand {
-    kLeft = 0,
-    kRight = 1,
-    kTotal = 2,
+    Left = 0,
+    Right = 1,
+    Total = 2,
 }
 
 impl BSVRInterfaceHand {
-    pub const TOTAL: usize = Self::kTotal as usize;
+    pub const TOTAL: usize = Self::Total as usize;
 }
 
 const _: () = assert!(core::mem::size_of::<BSVRInterfaceHand>() == 0x4);
@@ -35,9 +35,9 @@ const _: () = assert!(core::mem::size_of::<BSVRInterfaceHand>() == 0x4);
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSVRInterfaceTrackingStatus {
-    kNotRunning = 0,
-    kRunningOk = 1,
-    kOutOfRange = 2,
+    NotRunning = 0,
+    RunningOk = 1,
+    OutOfRange = 2,
 }
 
 const _: () = assert!(core::mem::size_of::<BSVRInterfaceTrackingStatus>() == 0x4);

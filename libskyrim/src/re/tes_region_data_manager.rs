@@ -8,7 +8,7 @@ use crate::relocation::{RttiType, VariantID};
 
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum REGION_DATA_ID {
+pub enum RegionDataId {
     Objects = 2,
     Weather = 3,
     Map = 4,
@@ -47,7 +47,7 @@ impl TESRegionDataManager {
 
     crate::virtual_method! {
         pub const VFUNC_CONSTRUCT_REGION_DATA: usize = 0x02;
-        pub fn construct_region_data(id: REGION_DATA_ID) -> *mut TESRegionData
+        pub fn construct_region_data(id: RegionDataId) -> *mut TESRegionData
     }
 
     crate::virtual_method! {

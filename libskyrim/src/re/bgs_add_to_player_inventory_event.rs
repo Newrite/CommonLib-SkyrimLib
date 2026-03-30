@@ -6,17 +6,17 @@ use crate::relocation::RelocationID;
 /// C++ `RE::AQUIRE_TYPE`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum AQUIRE_TYPE {
-    kNone = 0,
-    kSteal = 1,
-    kBuy = 2,
-    kPickPocket = 3,
-    kPickup = 4,
-    kContainer = 5,
-    kDeadBody = 6,
+pub enum AcquireType {
+    None = 0,
+    Steal = 1,
+    Buy = 2,
+    PickPocket = 3,
+    Pickup = 4,
+    Container = 5,
+    DeadBody = 6,
 }
 
-core_util::impl_enumset_type!(AQUIRE_TYPE => u32);
+core_util::impl_enumset_type!(AcquireType => u32);
 
 /// C++ `RE::BGSAddToPlayerInventoryEvent`
 #[repr(C)]
@@ -25,7 +25,7 @@ pub struct BGSAddToPlayerInventoryEvent {
     pub container_ref: ObjectRefHandle,          // 04
     pub location: *mut BGSLocation,              // 08
     pub item_base: *mut TESForm,                 // 10
-    pub acquire_type: EnumSet<AQUIRE_TYPE, u32>, // 18
+    pub acquire_type: EnumSet<AcquireType, u32>, // 18
     pub pad1c: u32,                              // 1C
 }
 

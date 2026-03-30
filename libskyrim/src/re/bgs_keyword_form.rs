@@ -5,7 +5,7 @@ use crate::offsets::offsets_vtable::VTABLE_BGSKeywordForm;
 use crate::re::BGSKeyword;
 use crate::re::base_form_component::BaseFormComponent;
 use crate::re::bs_container::BSContainerForEachResult;
-use crate::re::tes_form::FormID;
+use crate::re::bs_core_types::FormID;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
 use core_util::inherit;

@@ -31,7 +31,7 @@ pub enum GFxResourceResourceType {
 }
 
 impl GFxResourceResourceType {
-    pub const kCharacterDefBit: u32 = 1 << 7;
+    pub const CHARACTER_DEF_BIT: u32 = 1 << 7;
 }
 
 /// C++ `RE::GFxResource::ResourceUse`
@@ -49,18 +49,18 @@ pub enum GFxResourceResourceUse {
 /// C++ `RE::GFxResource`
 #[repr(C)]
 pub struct GFxResource {
-    pub base: GNewOverrideBase<{ GStatGroups::kGStat_Default_Mem as u32 }>, // 00
-    pub vtable: *const usize,                                               // 00
-    pub ref_count: GAtomicInt<i32>,                                         // 08
-    pub pad0c: u32,                                                         // 0C
-    pub lib: *mut GFxResourceLibBase,                                       // 10
+    pub base: GNewOverrideBase<{ GStatGroups::DEFAULT_MEM as u32 }>, // 00
+    pub vtable: *const usize,                                        // 00
+    pub ref_count: GAtomicInt<i32>,                                  // 08
+    pub pad0c: u32,                                                  // 0C
+    pub lib: *mut GFxResourceLibBase,                                // 10
 }
 
 const _: () = assert!(core::mem::size_of::<GFxResource>() == 0x18);
 const _: () = assert!(core::mem::offset_of!(GFxResource, ref_count) == 0x08);
 const _: () = assert!(core::mem::offset_of!(GFxResource, lib) == 0x10);
 
-inherit!(GFxResource => GNewOverrideBase<{ GStatGroups::kGStat_Default_Mem as u32 }>, base);
+inherit!(GFxResource => GNewOverrideBase<{ GStatGroups::DEFAULT_MEM as u32 }>, base);
 
 impl GFxResource {
     crate::virtual_method! { pub const VFUNC_DTOR: usize = 0x00; pub fn dtor() }

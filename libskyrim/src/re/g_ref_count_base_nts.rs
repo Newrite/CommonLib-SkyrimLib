@@ -19,5 +19,5 @@ const _: () = assert!(core::mem::offset_of!(GRefCountBaseNTS<(), 0>, base) == 0x
 inherit!(for[C, const STAT: u32] GRefCountBaseNTS<C, STAT> : GRefCountBaseStatImpl<GRefCountNTSImpl, STAT>, base);
 
 impl<C, const STAT: u32> GRefCountBaseNTS<C, STAT> {
-    pub const kStatType: u32 = STAT;
+    pub const STAT_TYPE: u32 = STAT;
 }

@@ -6,7 +6,7 @@
 
 use core::ffi::c_char;
 
-use crate::re::tes_form::FormID;
+use crate::re::bs_core_types::FormID;
 use crate::re::{FormCastable, FormType, TESDataHandler, TESFile, TESForm};
 use crate::rex::W32::{GetModuleHandleW, GetProcAddress};
 use crate::sdk::core::{GamePtr, GameRef};

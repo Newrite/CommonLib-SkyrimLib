@@ -8,7 +8,7 @@ use crate::re::IMemoryStore;
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::MEM_CONTEXT`
-pub type MEM_CONTEXT = i32;
+pub type MemContext = i32;
 
 /// C++ `RE::HeapStats`
 #[repr(C)]
@@ -85,7 +85,7 @@ impl IMemoryHeap {
 
     crate::virtual_method! {
         pub const VFUNC_SHOULD_TRY_SMALL_BLOCK_POOLS: usize = 0x0D;
-        pub fn should_try_small_block_pools(size: usize, context: MEM_CONTEXT) -> bool
+        pub fn should_try_small_block_pools(size: usize, context: MemContext) -> bool
     }
 
     crate::virtual_method! {

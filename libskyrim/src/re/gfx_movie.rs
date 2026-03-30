@@ -38,13 +38,13 @@ pub enum GFxMovieSetArrayType {
 /// C++ `RE::GFxMovie`
 #[repr(C)]
 pub struct GFxMovie {
-    pub base: GRefCountBase<GFxMovie, { GFxStatMovieViews::kGFxStatMV_Other_Mem as u32 }>, // 00
+    pub base: GRefCountBase<GFxMovie, { GFxStatMovieViews::OTHER_MEM as u32 }>, // 00
 }
 
 const _: () = assert!(core::mem::size_of::<GFxMovie>() == 0x10);
 const _: () = assert!(core::mem::offset_of!(GFxMovie, base) == 0x0);
 
-inherit!(GFxMovie : GRefCountBase<GFxMovie, { GFxStatMovieViews::kGFxStatMV_Other_Mem as u32 }>, base);
+inherit!(GFxMovie : GRefCountBase<GFxMovie, { GFxStatMovieViews::OTHER_MEM as u32 }>, base);
 
 impl GFxMovie {
     crate::virtual_method! { pub const VFUNC_DTOR: usize = 0x00; pub fn dtor() }

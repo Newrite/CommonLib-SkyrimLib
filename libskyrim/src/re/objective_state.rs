@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 
-use crate::re::{BGSQuestObjective, BSTEventSource, QUEST_OBJECTIVE_STATE};
+use crate::re::{BGSQuestObjective, BSTEventSource, QuestObjectiveState};
 use crate::relocation::RelocationID;
 
 pub mod ObjectiveState {
@@ -10,8 +10,8 @@ pub mod ObjectiveState {
     #[repr(C)]
     pub struct Event {
         pub objective: *mut BGSQuestObjective, // 00
-        pub old_state: QUEST_OBJECTIVE_STATE,  // 08
-        pub new_state: QUEST_OBJECTIVE_STATE,  // 0C
+        pub old_state: QuestObjectiveState,    // 08
+        pub new_state: QuestObjectiveState,    // 0C
     }
 
     const _: () = assert!(core::mem::size_of::<Event>() == 0x10);

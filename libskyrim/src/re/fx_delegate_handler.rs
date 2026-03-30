@@ -43,7 +43,7 @@ impl FxDelegateHandlerCallbackProcessor {
 /// C++ `RE::FxDelegateHandler`
 #[repr(C)]
 pub struct FxDelegateHandler {
-    pub base: GRefCountBase<FxDelegateHandler, { GStatGroups::kGStat_Default_Mem as u32 }>, // 00
+    pub base: GRefCountBase<FxDelegateHandler, { GStatGroups::DEFAULT_MEM as u32 }>, // 00
 }
 
 const _: () = assert!(core::mem::size_of::<FxDelegateHandler>() == 0x10);
@@ -53,7 +53,7 @@ impl RttiType for FxDelegateHandler {
     const RTTI: VariantID = RTTI_FxDelegateHandler;
 }
 
-inherit!(FxDelegateHandler : GRefCountBase<FxDelegateHandler, { GStatGroups::kGStat_Default_Mem as u32 }>, base);
+inherit!(FxDelegateHandler : GRefCountBase<FxDelegateHandler, { GStatGroups::DEFAULT_MEM as u32 }>, base);
 
 impl FxDelegateHandler {
     pub const RTTI: VariantID = RTTI_FxDelegateHandler;

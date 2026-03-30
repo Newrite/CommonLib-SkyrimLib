@@ -53,16 +53,16 @@ pub enum GFxStateStateType {
 /// C++ `RE::GFxState`
 #[repr(C)]
 pub struct GFxState {
-    pub base: GRefCountBase<GFxState, { GStatGroups::kGStat_Default_Mem as u32 }>, // 00
-    pub state_type: GFxStateStateType,                                             // 10
-    pub pad14: u32,                                                                // 14
+    pub base: GRefCountBase<GFxState, { GStatGroups::DEFAULT_MEM as u32 }>, // 00
+    pub state_type: GFxStateStateType,                                      // 10
+    pub pad14: u32,                                                         // 14
 }
 
 const _: () = assert!(core::mem::size_of::<GFxState>() == 0x18);
 const _: () = assert!(core::mem::offset_of!(GFxState, base) == 0x0);
 const _: () = assert!(core::mem::offset_of!(GFxState, state_type) == 0x10);
 
-core_util::inherit!(GFxState : GRefCountBase<GFxState, { GStatGroups::kGStat_Default_Mem as u32 }>, base);
+core_util::inherit!(GFxState : GRefCountBase<GFxState, { GStatGroups::DEFAULT_MEM as u32 }>, base);
 
 impl RttiType for GFxState {
     const RTTI: VariantID = RTTI_GFxState;

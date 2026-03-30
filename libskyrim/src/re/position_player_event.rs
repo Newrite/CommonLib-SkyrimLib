@@ -4,11 +4,11 @@ use core_util::EnumSet;
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum PositionPlayerEventType {
-    kPre = 0,
-    kPreUpdatePackages = 1,
-    kPostUpdatePackages = 2,
-    kPost = 3,
-    kFinish = 4,
+    Pre = 0,
+    PreUpdatePackages = 1,
+    PostUpdatePackages = 2,
+    Post = 3,
+    Finish = 4,
 }
 
 core_util::impl_enumset_type!(PositionPlayerEventType => u32);

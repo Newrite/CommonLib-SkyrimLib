@@ -74,13 +74,13 @@ impl Default for GFxMovieDefMemoryParams {
 /// C++ `RE::GFxMovieDef::MemoryContext`
 #[repr(C)]
 pub struct GFxMovieDefMemoryContext {
-    pub base: GRefCountBase<GFxMovieDefMemoryContext, { GStatGroups::kGStat_Default_Mem as u32 }>, // 00
+    pub base: GRefCountBase<GFxMovieDefMemoryContext, { GStatGroups::DEFAULT_MEM as u32 }>, // 00
 }
 
 const _: () = assert!(core::mem::size_of::<GFxMovieDefMemoryContext>() == 0x10);
 const _: () = assert!(core::mem::offset_of!(GFxMovieDefMemoryContext, base) == 0x0);
 
-inherit!(GFxMovieDefMemoryContext : GRefCountBase<GFxMovieDefMemoryContext, { GStatGroups::kGStat_Default_Mem as u32 }>, base);
+inherit!(GFxMovieDefMemoryContext : GRefCountBase<GFxMovieDefMemoryContext, { GStatGroups::DEFAULT_MEM as u32 }>, base);
 
 impl GFxMovieDefMemoryContext {
     crate::virtual_method! { pub const VFUNC_DTOR: usize = 0x00; pub fn dtor() }

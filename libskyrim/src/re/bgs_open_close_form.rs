@@ -6,7 +6,7 @@ use crate::virtual_method;
 
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum OPEN_STATE {
+pub enum OpenState {
     None = 0,
     Open = 1,
     Opening = 2,
@@ -51,7 +51,7 @@ impl BGSOpenCloseForm {
     }
 
     crate::relocation_func! {
-        pub fn get_open_state(reference: *const TESObjectREFR) -> OPEN_STATE => RelocationID::new(14180, 14288)
+        pub fn get_open_state(reference: *const TESObjectREFR) -> OpenState => RelocationID::new(14180, 14288)
     }
 
     crate::relocation_func! {

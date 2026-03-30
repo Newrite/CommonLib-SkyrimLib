@@ -12,14 +12,14 @@ use core_util::inherit;
 bitflags! {
     #[repr(transparent)]
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub struct ChangeFlags: u32 {
+    pub struct TESObjectChangeFlags: u32 {
         const NONE = 0;
         const OBJECT_VALUE = 1 << 1;
         const OBJECT_FULL_NAME = 1 << 2;
     }
 }
 
-unsafe impl bytemuck::Zeroable for ChangeFlags {}
+unsafe impl bytemuck::Zeroable for TESObjectChangeFlags {}
 
 #[repr(C)]
 pub struct TESObject {

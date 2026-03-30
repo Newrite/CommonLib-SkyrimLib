@@ -9,15 +9,15 @@ pub type GImageImageFormat = GImageBaseImageFormat;
 /// C++ `RE::GImage`
 #[repr(C)]
 pub struct GImage {
-    pub base: GRefCountBaseNTS<GImage, { GStatGroup::kGStat_Image_Mem as u32 }>, // 00
-    pub image_base: GImageBase,                                                  // 10
+    pub base: GRefCountBaseNTS<GImage, { GStatGroup::IMAGE_MEM as u32 }>, // 00
+    pub image_base: GImageBase,                                            // 10
 }
 
 const _: () = assert!(core::mem::size_of::<GImage>() == 0x48);
 const _: () = assert!(core::mem::offset_of!(GImage, base) == 0x0);
 const _: () = assert!(core::mem::offset_of!(GImage, image_base) == 0x10);
 
-inherit!(GImage : GRefCountBaseNTS<GImage, { GStatGroup::kGStat_Image_Mem as u32 }>, base);
+inherit!(GImage : GRefCountBaseNTS<GImage, { GStatGroup::IMAGE_MEM as u32 }>, base);
 inherit!(GImage => GImageBase, image_base);
 
 impl GPtrTarget for GImage {

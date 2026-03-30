@@ -219,7 +219,7 @@ impl MenuSurface {
         value: &GFxValue,
         set_type: GFxMovieSetVarType,
     ) -> bool {
-        let mut movie = self.movie_view();
+        let movie = self.movie_view();
         if movie.is_null() {
             crate::defensive_sdk_warn!(
                 "sdk::ui::scaleform::MenuSurface::set_variable_c_str() skipped because the menu has no GFxMovieView"
@@ -314,7 +314,7 @@ impl MenuSurface {
         result: Option<&mut GFxValue>,
         args: &[GFxValue],
     ) -> bool {
-        let mut movie = self.movie_view();
+        let movie = self.movie_view();
         if movie.is_null() {
             crate::defensive_sdk_warn!(
                 "sdk::ui::scaleform::MenuSurface::invoke_c_str() skipped because the menu has no GFxMovieView"

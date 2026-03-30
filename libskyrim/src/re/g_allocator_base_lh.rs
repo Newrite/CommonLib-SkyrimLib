@@ -13,7 +13,7 @@ pub struct GAllocatorBaseLH<const SID: u32 = 0> {
 const _: () = assert!(core::mem::size_of::<GAllocatorBaseLH>() == 0x1);
 
 impl<const SID: u32> GAllocatorBaseLH<SID> {
-    pub const kStatID: u32 = SID;
+    pub const STAT_ID: u32 = SID;
 
     #[inline(always)]
     pub fn alloc(heap_addr: *const c_void, size: usize) -> *mut c_void {

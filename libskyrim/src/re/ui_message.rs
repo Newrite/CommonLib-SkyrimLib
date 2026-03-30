@@ -5,35 +5,35 @@ use crate::re::{BSFixedString, IUIMessageData};
 /// C++ `RE::UI_MESSAGE_TYPE`
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum UI_MESSAGE_TYPE {
-    kUpdate = 0,
-    kShow = 1,
-    kReshow = 2,
-    kHide = 3,
-    kForceHide = 4,
-    kScaleformEvent = 6,
-    kUserEvent = 7,
-    kInventoryUpdate = 8,
-    kUserProfileChange = 9,
-    kMUStatusChange = 10,
-    kResumeCaching = 11,
-    kUpdateController = 12,
-    kChatterEvent = 13,
+pub enum UIMessageType {
+    Update = 0,
+    Show = 1,
+    Reshow = 2,
+    Hide = 3,
+    ForceHide = 4,
+    ScaleformEvent = 6,
+    UserEvent = 7,
+    InventoryUpdate = 8,
+    UserProfileChange = 9,
+    MuStatusChange = 10,
+    ResumeCaching = 11,
+    UpdateController = 12,
+    ChatterEvent = 13,
 }
 
-core_util::impl_enumset_type!(UI_MESSAGE_TYPE => u32);
+core_util::impl_enumset_type!(UIMessageType => u32);
 
 /// C++ `RE::UIMessage`
 #[repr(C)]
 pub struct UIMessage {
-    pub menu: BSFixedString,                  // 00
-    pub type_: EnumSet<UI_MESSAGE_TYPE, u32>, // 08
-    pub pad0c: u32,                           // 0C
-    pub data: *mut IUIMessageData,            // 10
-    pub is_pooled: bool,                      // 18
-    pub pad19: u8,                            // 19
-    pub pad1a: u16,                           // 1A
-    pub pad1c: u32,                           // 1C
+    pub menu: BSFixedString,                // 00
+    pub type_: EnumSet<UIMessageType, u32>, // 08
+    pub pad0c: u32,                         // 0C
+    pub data: *mut IUIMessageData,          // 10
+    pub is_pooled: bool,                    // 18
+    pub pad19: u8,                          // 19
+    pub pad1a: u16,                         // 1A
+    pub pad1c: u32,                         // 1C
 }
 
 const _: () = assert!(core::mem::size_of::<UIMessage>() == 0x20);

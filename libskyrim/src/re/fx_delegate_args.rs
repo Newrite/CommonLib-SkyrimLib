@@ -1,7 +1,7 @@
 use core::ops::Index;
 use core::ptr;
 
-use crate::re::{FxDelegateHandler, FxResponseArgsBase, GFxMovieView, GFxMovieViewExt, GFxValue};
+use crate::re::{FxDelegateHandler, FxResponseArgsBase, GFxMovieView, GFxValue};
 
 /// C++ `RE::FxDelegateArgs`
 #[repr(C)]

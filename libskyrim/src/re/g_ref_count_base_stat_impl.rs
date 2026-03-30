@@ -18,7 +18,7 @@ const _: () =
 inherit!(for[Base, const STAT_TYPE: u32] GRefCountBaseStatImpl<Base, STAT_TYPE> : Base, base);
 
 impl<Base, const STAT_TYPE: u32> GRefCountBaseStatImpl<Base, STAT_TYPE> {
-    pub const kStatType: u32 = STAT_TYPE;
+    pub const STAT_TYPE_VALUE: u32 = STAT_TYPE;
 
     // TODO: `GRefCountBaseStatImpl.h` also injects the Scaleform heap-backed
     // C++ `new` / `delete` override layer for refcounted bases. Rust preserves
@@ -77,7 +77,7 @@ where
 
     #[inline(always)]
     fn k_stat_type(&self) -> u32 {
-        GRefCountBaseStatImpl::<Base, STAT_TYPE>::kStatType
+        GRefCountBaseStatImpl::<Base, STAT_TYPE>::STAT_TYPE_VALUE
     }
 }
 

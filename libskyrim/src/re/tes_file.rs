@@ -3,6 +3,7 @@ use core::ffi::{c_char, c_void};
 
 use core_util::EnumSet;
 
+use crate::re::bs_core_types::FormID;
 use crate::re::bs_file::BSFile;
 use crate::re::bs_string::BSString;
 use crate::re::bssimple_list::BSSimpleList;
@@ -10,7 +11,7 @@ use crate::re::form::Form;
 use crate::re::form_type::FormType;
 use crate::re::ni_t_pointer_map::NiTPointerMap;
 use crate::re::tes_bit_array_file::TESBitArrayFile;
-use crate::re::tes_form::{FormID, TESForm};
+use crate::re::tes_form::TESForm;
 use crate::re::tes_object_cell::TESObjectCELL;
 use crate::re::tes_world_space::TESWorldSpace;
 use crate::rex::W32::{FILETIME, WIN32_FIND_DATAA};
@@ -38,7 +39,7 @@ pub enum Error {
 /// C++ `RE::TESFile::RecordFlag`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum RecordFlag {
+pub enum TESFileRecordFlag {
     None = 0,
     Master = 1 << 0,
     Altered = 1 << 1,
@@ -52,7 +53,7 @@ pub enum RecordFlag {
 }
 
 core_util::impl_enumset_type!(Error => u32);
-core_util::impl_enumset_type!(RecordFlag => u32);
+core_util::impl_enumset_type!(TESFileRecordFlag => u32);
 
 /// C++ `RE::NiFile::OpenMode`
 #[repr(u32)]
@@ -110,7 +111,7 @@ pub struct TESFile {
     pub version: f32,                                   // 42C
     pub form_count: u32,                                // 430
     pub next_form_id: u32,                              // 434
-    pub record_flags: EnumSet<RecordFlag, u32>,         // 438
+    pub record_flags: EnumSet<TESFileRecordFlag, u32>,  // 438
     pub pad43c: u32,                                    // 43C
     pub masters: BSSimpleList<*const c_char>,           // 440
     pub masters_data: BSSimpleList<*mut u64>,           // 450
@@ -189,13 +190,13 @@ impl TESFile {
     // ADDED: gap-fill
     #[inline(always)]
     pub fn is_light(&self) -> bool {
-        self.record_flags.all(RecordFlag::SmallFile)
+        self.record_flags.all(TESFileRecordFlag::SmallFile)
     }
 
     // ADDED: gap-fill
     #[inline(always)]
     pub fn is_localized(&self) -> bool {
-        self.record_flags.all(RecordFlag::Delocalized)
+        self.record_flags.all(TESFileRecordFlag::Delocalized)
     }
 
     // ADDED: gap-fill
@@ -327,7 +328,7 @@ impl TESFile {
         }
 
         let owner_ref = unsafe { &*owner };
-        if owner_ref.record_flags.any(RecordFlag::SmallFile) {
+        if owner_ref.record_flags.any(TESFileRecordFlag::SmallFile) {
             (raw_form_id & 0x0000_0FFF)
                 | 0xFE00_0000
                 | ((owner_ref.small_file_compile_index as u32) << 12)

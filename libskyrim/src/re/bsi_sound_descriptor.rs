@@ -1,12 +1,12 @@
 use crate::offsets::offsets_rtti::RTTI_BSISoundDescriptor;
 use crate::offsets::offsets_vtable::VTABLE_BSISoundDescriptor;
+use crate::re::bs_core_types::FormID;
 use crate::re::bs_resource_id::BSResourceID;
 use crate::re::bsaudio_monitor::BSAudioMonitorRequest;
 use crate::re::bsi_playback_characteristics::BSIPlaybackCharacteristics;
 use crate::re::bsi_sound_category::BSISoundCategory;
 use crate::re::bsi_sound_output_model::BSISoundOutputModel;
 use crate::re::bst_array::BSTSmallArray;
-use crate::re::tes_form::FormID;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
 

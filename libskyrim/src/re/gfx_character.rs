@@ -10,10 +10,8 @@ use crate::re::{
 /// C++ `RE::GFxCharacter`
 #[repr(C)]
 pub struct GFxCharacter {
-    pub weak_support: GRefCountBaseWeakSupport<
-        GFxCharacter,
-        { GFxStatMovieViews::kGFxStatMV_MovieClip_Mem as u32 },
-    >, // 00
+    pub weak_support:
+        GRefCountBaseWeakSupport<GFxCharacter, { GFxStatMovieViews::MOVIE_CLIP_MEM as u32 }>, // 00
     pub log_base: GFxLogBase<GFxCharacter>, // 18
     pub resource_id: GFxResourceID,         // 20
     pub pad24: u32,                         // 24
@@ -36,7 +34,7 @@ const _: () = assert!(core::mem::offset_of!(GFxCharacter, weak_support) == 0x0);
 const _: () = assert!(core::mem::offset_of!(GFxCharacter, log_base) == 0x18);
 const _: () = assert!(core::mem::offset_of!(GFxCharacter, resource_id) == 0x20);
 
-inherit!(GFxCharacter : GRefCountBaseWeakSupport<GFxCharacter, { GFxStatMovieViews::kGFxStatMV_MovieClip_Mem as u32 }>, weak_support);
+inherit!(GFxCharacter : GRefCountBaseWeakSupport<GFxCharacter, { GFxStatMovieViews::MOVIE_CLIP_MEM as u32 }>, weak_support);
 inherit!(GFxCharacter => GFxLogBase<GFxCharacter>, log_base);
 
 impl GFxCharacter {

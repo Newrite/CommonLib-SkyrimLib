@@ -300,7 +300,7 @@ impl BSShaderProperty {
     pub fn load_binary(&mut self, stream: *mut crate::re::NiStream) {
         let vtable = Self::VTABLE[0].address() as *const *const ();
         let base_method: extern "C" fn(*mut BSShaderProperty, *mut crate::re::NiStream) =
-            unsafe { core::mem::transmute(*unsafe { vtable.add(0x18) }) };
+            unsafe { core::mem::transmute(*vtable.add(0x18)) };
         base_method(self, stream);
     }
 

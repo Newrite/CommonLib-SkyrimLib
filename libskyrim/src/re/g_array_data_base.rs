@@ -130,9 +130,7 @@ where
 
         if new_capacity == 0 {
             if !self.data.is_null() {
-                unsafe {
-                    Allocator::free(self.data.cast());
-                }
+                Allocator::free(self.data.cast());
                 self.data = core::ptr::null_mut();
             }
             self.policy.set_capacity(0);

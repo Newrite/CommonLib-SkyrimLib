@@ -7,24 +7,24 @@ pub struct GFxLogConstants {
 }
 
 impl GFxLogConstants {
-    pub const kChannel_General: u32 = 0x10;
-    pub const kChannel_Script: u32 = 0x20;
-    pub const kChannel_Parse: u32 = 0x30;
-    pub const kChannel_Action: u32 = 0x40;
-    pub const kChannel_Debug: u32 = 0x50;
-    pub const kChannel_Mask: u32 = 0xF0;
-    pub const kMessageType_Error: u32 = 0;
-    pub const kMessageType_Warning: u32 = 1;
-    pub const kMessageType_Message: u32 = 2;
-    pub const kError: u32 = Self::kChannel_General | Self::kMessageType_Error;
-    pub const kWarning: u32 = Self::kChannel_General | Self::kMessageType_Warning;
-    pub const kMessage: u32 = Self::kChannel_General | Self::kMessageType_Message;
-    pub const kScriptError: u32 = Self::kChannel_Script | Self::kMessageType_Error;
-    pub const kScriptWarning: u32 = Self::kChannel_Script | Self::kMessageType_Warning;
-    pub const kScriptMessage: u32 = Self::kChannel_Script | Self::kMessageType_Message;
-    pub const kParse: u32 = Self::kChannel_Parse;
-    pub const kParseShape: u32 = Self::kChannel_Parse | 1;
-    pub const kParseMorphShape: u32 = Self::kChannel_Parse | 2;
-    pub const kParseAction: u32 = Self::kChannel_Parse | 3;
-    pub const kAction: u32 = Self::kChannel_Action;
+    pub const CHANNEL_GENERAL: u32 = 0x10;
+    pub const CHANNEL_SCRIPT: u32 = 0x20;
+    pub const CHANNEL_PARSE: u32 = 0x30;
+    pub const CHANNEL_ACTION: u32 = 0x40;
+    pub const CHANNEL_DEBUG: u32 = 0x50;
+    pub const CHANNEL_MASK: u32 = 0xF0;
+    pub const MESSAGE_TYPE_ERROR: u32 = 0;
+    pub const MESSAGE_TYPE_WARNING: u32 = 1;
+    pub const MESSAGE_TYPE_MESSAGE: u32 = 2;
+    pub const ERROR: u32 = Self::CHANNEL_GENERAL | Self::MESSAGE_TYPE_ERROR;
+    pub const WARNING: u32 = Self::CHANNEL_GENERAL | Self::MESSAGE_TYPE_WARNING;
+    pub const MESSAGE: u32 = Self::CHANNEL_GENERAL | Self::MESSAGE_TYPE_MESSAGE;
+    pub const SCRIPT_ERROR: u32 = Self::CHANNEL_SCRIPT | Self::MESSAGE_TYPE_ERROR;
+    pub const SCRIPT_WARNING: u32 = Self::CHANNEL_SCRIPT | Self::MESSAGE_TYPE_WARNING;
+    pub const SCRIPT_MESSAGE: u32 = Self::CHANNEL_SCRIPT | Self::MESSAGE_TYPE_MESSAGE;
+    pub const PARSE: u32 = Self::CHANNEL_PARSE;
+    pub const PARSE_SHAPE: u32 = Self::CHANNEL_PARSE | 1;
+    pub const PARSE_MORPH_SHAPE: u32 = Self::CHANNEL_PARSE | 2;
+    pub const PARSE_ACTION: u32 = Self::CHANNEL_PARSE | 3;
+    pub const ACTION: u32 = Self::CHANNEL_ACTION;
 }

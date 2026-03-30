@@ -184,10 +184,8 @@ unsafe impl BSTArrayAllocator for BSTArrayHeapAllocator {
 
     fn deallocate(&mut self, ptr: *mut u8) {
         if !ptr.is_null() {
-            unsafe {
-                // RE::free в†’ MemoryManager::GetSingleton()->Deallocate(ptr, false)
-                memory_manager::free(ptr as *mut c_void);
-            }
+            // RE::free в†’ MemoryManager::GetSingleton()->Deallocate(ptr, false)
+            memory_manager::free(ptr as *mut c_void);
         }
     }
 
@@ -312,9 +310,7 @@ unsafe impl<const N: usize> BSTArrayAllocator for BSTSmallArrayHeapAllocator<N> 
         // Only free if the pointer is NOT our inline buffer
         let local_ptr = unsafe { self._data.local.as_ptr() as *mut u8 };
         if ptr != local_ptr && !ptr.is_null() {
-            unsafe {
-                memory_manager::free(ptr as *mut c_void);
-            }
+            memory_manager::free(ptr as *mut c_void);
         }
     }
 

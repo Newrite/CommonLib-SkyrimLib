@@ -8,9 +8,9 @@ use crate::relocation::{RttiType, VariantID, VariantOffset};
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum AttackType {
-    kRight = 0,
-    kLeft = 1,
-    kDual = 2,
+    Right = 0,
+    Left = 1,
+    Dual = 2,
 }
 
 #[repr(C)]

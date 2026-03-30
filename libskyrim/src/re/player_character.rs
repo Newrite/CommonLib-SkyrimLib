@@ -14,7 +14,7 @@ use crate::re::magic_system::{CannotCastReason, SpellType};
 use crate::re::tes_quest::TESQuestTarget;
 use crate::re::tes_race::TESRace;
 use crate::re::{
-    AITimeStamp, AQUIRE_TYPE, Actor, ActorHandle, ActorValue, AlchemyItem, BGSActorCellEvent,
+    AITimeStamp, AcquireType, Actor, ActorHandle, ActorValue, AlchemyItem, BGSActorCellEvent,
     BGSActorDeathEvent, BGSInstancedQuestObjective, BGSLocation, BGSNote, BGSPerk, BIPED_OBJECT,
     BSFadeNode, BSHandleRefObject, BSLight, BSSimpleList, BSSoundHandle, BSSpinLock, BSTArray,
     BSTEventSink, BSTEventSource, BSTHashMap, BSTSmallArray, BSTSmartPointer, BSTTuple, BSTriShape,
@@ -133,9 +133,9 @@ pub struct VR_PLAYER_TARGET_LOC {
     pub is_valid: bool,                // 47
     pub unk48: u8,                     // 48
     pub unk49: u8,                     // 49
-    pub unk4A: u8,                     // 4A
-    pub unk4B: u8,                     // 4B
-    pub unk4C: u32,                    // 4C
+    pub unk4_a: u8,                    // 4A
+    pub unk4_b: u8,                    // 4B
+    pub unk4_c: u32,                   // 4C
 }
 
 const _: () = assert!(core::mem::size_of::<VR_PLAYER_TARGET_LOC>() == 0x50);
@@ -270,13 +270,13 @@ const _: () = assert!(core::mem::size_of::<CrimeValue>() == 0x60);
 
 /// C++ `RE::PlayerCharacter::RaceData`
 #[repr(C)]
-pub struct RaceData {
+pub struct PlayerCharacterRaceData {
     pub complexion: *mut BGSTextureSet, // 00
     pub char_gen_race: *mut TESRace,    // 08
     pub race2: *mut TESRace,            // 10
 }
 
-const _: () = assert!(core::mem::size_of::<RaceData>() == 0x18);
+const _: () = assert!(core::mem::size_of::<PlayerCharacterRaceData>() == 0x18);
 
 /// C++ `RE::PlayerCharacter::GameStateData`
 #[repr(C)]
@@ -386,18 +386,18 @@ pub struct INFO_RUNTIME_DATA {
     pub last_playing_time_update: i64,                             // 08C
     pub total_playing_time: i64,                                   // 094
     pub character_seed: i32,                                       // 09C
-    pub unk0B4: u32,                                               // 0A0
+    pub unk0_b4: u32,                                              // 0A0
     pub last_known_good_location: *mut TESForm,                    // 0A4
-    pub unk0C0: u32,                                               // 0AC
-    pub unk0C4: u32,                                               // 0B0
+    pub unk0_c0: u32,                                              // 0AC
+    pub unk0_c4: u32,                                              // 0B0
     pub first_person_light: NiPointer<BSLight>,                    // 0B4
     pub third_person_light: NiPointer<BSLight>,                    // 0BC
     pub drop_angle_mod: f32,                                       // 0C4
     pub last_drop_angle_mod: f32,                                  // 0C8
     pub skills: *mut PlayerSkills,                                 // 0CC
     pub auto_aim_actor: ActorHandle,                               // 0D4
-    pub unk0EC: RefHandle,                                         // 0D8
-    pub unk0F0: u64,                                               // 0DC
+    pub unk0_ec: RefHandle,                                        // 0D8
+    pub unk0_f0: u64,                                              // 0DC
     pub targeted_3d: NiPointer<NiAVObject>,                        // 0E4
     pub combat_group: *mut CombatGroup,                            // 0EC
     pub actors_to_display_on_the_hud_array: BSTArray<ActorHandle>, // 0F4
@@ -408,7 +408,7 @@ pub struct INFO_RUNTIME_DATA {
     pub yield_timer: f32,                                          // 12C
     pub chase_timer: f32,                                          // 130
     pub draw_sheathe_safety_timer: f32,                            // 134
-    pub unk14C: u32,                                               // 138
+    pub unk14_c: u32,                                              // 138
 }
 
 const _: () = assert!(core::mem::size_of::<INFO_RUNTIME_DATA>() == 0x13C);
@@ -420,7 +420,7 @@ const _: () = assert!(core::mem::offset_of!(INFO_RUNTIME_DATA, skills) == 0xCC);
 #[repr(C)]
 pub struct VR_INFO_RUNTIME_DATA {
     pub sleep_seconds: u32,                                        // 000
-    pub unkFE4: u32,                                               // 004
+    pub unk_fe4: u32,                                              // 004
     pub large_biped: BSTSmartPointer<BipedAnim>,                   // 008
     pub first_person_3d: NiPointer<NiNode>,                        // 010
     pub eye_height: f32,                                           // 018
@@ -456,8 +456,8 @@ pub struct VR_INFO_RUNTIME_DATA {
     pub last_drop_angle_mod: f32,                                  // 0CC
     pub skills: *mut PlayerSkills,                                 // 0D0
     pub auto_aim_actor: ActorHandle,                               // 0D8
-    pub unk10BC: RefHandle,                                        // 0DC
-    pub unk10C0: u64,                                              // 0E0
+    pub unk10_bc: RefHandle,                                       // 0DC
+    pub unk10_c0: u64,                                             // 0E0
     pub targeted_3d: NiPointer<NiAVObject>,                        // 0E8
     pub combat_group: *mut CombatGroup,                            // 0F0
     pub actors_to_display_on_the_hud_array: BSTArray<ActorHandle>, // 0F8
@@ -468,7 +468,7 @@ pub struct VR_INFO_RUNTIME_DATA {
     pub yield_timer: f32,                                          // 130
     pub chase_timer: f32,                                          // 134
     pub draw_sheathe_safety_timer: f32,                            // 138
-    pub unk111C: u32,                                              // 13C
+    pub unk111_c: u32,                                             // 13C
 }
 
 const _: () = assert!(core::mem::size_of::<VR_INFO_RUNTIME_DATA>() == 0x140);
@@ -569,7 +569,7 @@ pub struct VR_NODE_DATA {
     pub left_wand_node: NiPointer<NiNode>,               // 0A0
     pub left_wand_shake_node: NiPointer<NiNode>,         // 0A8
     pub left_valve_index_controller_node: NiPointer<NiNode>, // 0B0
-    pub unk_node_0B8: NiPointer<NiNode>,                 // 0B8
+    pub unk_node_0_b8: NiPointer<NiNode>,                // 0B8
     pub left_weapon_offset_node: NiPointer<NiNode>,      // 0C0
     pub left_crossbow_offset_node: NiPointer<NiNode>,    // 0C8
     pub left_melee_weapon_offset_node: NiPointer<NiNode>, // 0D0
@@ -602,11 +602,11 @@ pub struct VR_NODE_DATA {
     pub npc_rhnd: NiPointer<NiNode>,                     // 1A8
     pub npc_lclv: NiPointer<NiNode>,                     // 1B0
     pub npc_rclv: NiPointer<NiNode>,                     // 1B8
-    pub unk1C0: u32,                                     // 1C0
-    pub unk1C4: u32,                                     // 1C4
-    pub unk1C8: u64,                                     // 1C8
+    pub unk1_c0: u32,                                    // 1C0
+    pub unk1_c4: u32,                                    // 1C4
+    pub unk1_c8: u64,                                    // 1C8
     pub bow_state: VR_Bow_State,                         // 1D0
-    pub unk1D4: u32,                                     // 1D4
+    pub unk1_d4: u32,                                    // 1D4
     pub bow_aim_node: NiPointer<NiNode>,                 // 1D8
     pub bow_rotation_node: NiPointer<NiNode>,            // 1E0
     pub arrow_snap_node: NiPointer<NiNode>,              // 1E8
@@ -657,7 +657,7 @@ pub struct PLAYER_RUNTIME_DATA {
     pub last_known_good_position: NiPoint3,   // 0A0
     pub bullet_auto_aim: NiPoint3,            // 0AC
     pub cached_velocity: NiPoint3,            // 0B8
-    pub pad49C: f32,                          // 0C4
+    pub pad49_c: f32,                         // 0C4
     pub unused_note: *mut BGSNote,            // 0C8
     pub unused_note2: *mut BGSNote,           // 0D0
     pub added_perks: BSTArray<*mut PerkRankData>, // 0D8
@@ -676,29 +676,29 @@ pub struct PLAYER_RUNTIME_DATA {
     pub random_door_space_map: crate::re::NiTMap<u32, u8>, // 230
     pub cached_world_space: *mut TESWorldSpace, // 250
     pub exterior_position: NiPoint3,          // 258
-    pub pad63C: u32,                          // 264
+    pub pad63_c: u32,                         // 264
     pub queued_target_loc: PLAYER_TARGET_LOC, // 268
     pub unused_sound: BSSoundHandle,          // 2B0
     pub magic_failure_sound: BSSoundHandle,   // 2BC
     pub shout_failure_sound: BSSoundHandle,   // 2C8
-    pub pad6AC: u32,                          // 2D4
+    pub pad6_ac: u32,                         // 2D4
     pub closest_conversation: *mut DialoguePackage, // 2D8
-    pub unk6B8: u32,                          // 2E0
-    pub unk6BC: u32,                          // 2E4
+    pub unk6_b8: u32,                         // 2E0
+    pub unk6_bc: u32,                         // 2E4
     pub ai_conversation_running: *mut DialoguePackage, // 2E8
     pub number_of_steal_warnings: i32,        // 2F0
     pub steal_warning_timer: f32,             // 2F4
     pub number_of_pickpocket_warnings: i32,   // 2F8
     pub pick_pocket_warning_timer: f32,       // 2FC
     pub warn_to_leave_timestamp: AITimeStamp, // 300
-    pub pad6DC: u32,                          // 304
+    pub pad6_dc: u32,                         // 304
     pub ironsights_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 308
     pub vats_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 310
     pub dynamic_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 318
     pub dynamic_dof_focus_time: f32,          // 320
     pub dynamic_dof_focused: bool,            // 324
-    pub unk6FD: u8,                           // 325
-    pub unk6FE: u16,                          // 326
+    pub unk6_fd: u8,                          // 325
+    pub unk6_fe: u16,                         // 326
     pub dynamic_dof_last_angle: NiPoint3,     // 328
     pub dynamic_dof_last_position: NiPoint3,  // 334
     pub current_prison_faction: *mut TESFaction, // 340
@@ -714,11 +714,11 @@ pub struct PLAYER_RUNTIME_DATA {
     pub most_recent_action: PLAYER_ACTION, // 4B8
     pub actor_doing_player_command: ActorHandle, // 4BC
     pub grab_data: GrabData, // 4C0
-    pub unk8E0: u32,         // 508
+    pub unk8_e0: u32,        // 508
     pub info_runtime_data: INFO_RUNTIME_DATA, // 50C
-    pub unkA20: [u8; 0xA0],  // 648
-    pub unkAC0: u32,         // 6E8
-    pub unkAC4: u32,         // 6EC
+    pub unk_a20: [u8; 0xA0], // 648
+    pub unk_ac0: u32,        // 6E8
+    pub unk_ac4: u32,        // 6EC
     pub current_location: *mut BGSLocation, // 6F0
     pub cached_velocity_timestamp: AITimeStamp, // 6F8
     pub telekinesis_distance: f32, // 6FC
@@ -730,23 +730,23 @@ pub struct PLAYER_RUNTIME_DATA {
     pub animation_object_action: DEFAULT_OBJECT, // 718
     pub grab_type: EnumSet<GrabbingType, u32>, // 71C
     pub game_state_data: GameStateData, // 720
-    pub unkB04: u32,         // 72C
+    pub unk_b04: u32,        // 72C
     pub resist_arrest_crime: *mut Crime, // 730
     pub tint_masks: BSTArray<*mut TintMask>, // 738
     pub overlay_tint_masks: *mut BSTArray<*mut TintMask>, // 750
-    pub race_data: RaceData, // 758
-    pub unkB48: i32,         // 770
-    pub padB4C: u32,         // 774
-    pub unkB50: BSTArray<u64>, // 778
-    pub unkB68: u64,         // 790
-    pub unkB70: u64,         // 798
-    pub unkB78: u64,         // 7A0
-    pub unkB80: u64,         // 7A8
-    pub unkB88: i32,         // 7B0
-    pub padB8C: u32,         // 7B4
-    pub unkB90: u64,         // 7B8
+    pub race_data: PlayerCharacterRaceData, // 758
+    pub unk_b48: i32,        // 770
+    pub pad_b4_c: u32,       // 774
+    pub unk_b50: BSTArray<u64>, // 778
+    pub unk_b68: u64,        // 790
+    pub unk_b70: u64,        // 798
+    pub unk_b78: u64,        // 7A0
+    pub unk_b80: u64,        // 7A8
+    pub unk_b88: i32,        // 7B0
+    pub pad_b8_c: u32,       // 7B4
+    pub unk_b90: u64,        // 7B8
     pub tempering_item: *mut InventoryEntryData, // 7C0
-    pub unkBA0: BSTSmallArray<*mut c_void, { core::mem::size_of::<*mut c_void>() * 4 }>, // 7C8
+    pub unk_ba0: BSTSmallArray<*mut c_void, { core::mem::size_of::<*mut c_void>() * 4 }>, // 7C8
     pub pre_transformation_data: *mut PreTransformationData, // 7F8
     pub player_flags: PlayerFlags, // 800
 }
@@ -798,7 +798,7 @@ pub struct PLAYER_RUNTIME_TINT_RACE_DATA {
     pub resist_arrest_crime: *mut Crime,                  // 00
     pub tint_masks: BSTArray<*mut TintMask>,              // 08
     pub overlay_tint_masks: *mut BSTArray<*mut TintMask>, // 20
-    pub race_data: RaceData,                              // 28
+    pub race_data: PlayerCharacterRaceData,               // 28
 }
 
 const _: () = assert!(core::mem::size_of::<PLAYER_RUNTIME_TINT_RACE_DATA>() == 0x40);
@@ -906,31 +906,31 @@ const _: () = assert!(core::mem::offset_of!(PLAYER_RUNTIME_DATA, player_flags) =
 /// C++ `RE::PlayerCharacter::VR_PLAYER_RUNTIME_DATA`
 #[repr(C)]
 pub struct VR_PLAYER_RUNTIME_DATA {
-    pub unk3D8: u64,                          // 000
-    pub unk3E0: u64,                          // 008
-    pub unk3E8: u64,                          // 010
+    pub unk3_d8: u64,                         // 000
+    pub unk3_e0: u64,                         // 008
+    pub unk3_e8: u64,                         // 010
     pub vr_node_data: VR_NODE_DATA,           // 018
     pub unk680: u64,                          // 2A8
     pub unk688: u64,                          // 2B0
     pub unk690: u64,                          // 2B8
     pub unk698: u64,                          // 2C0
-    pub unk6A0: u64,                          // 2C8
-    pub unk6A8: [u64; 5],                     // 2D0
-    pub unk6D0: u32,                          // 2F8
+    pub unk6_a0: u64,                         // 2C8
+    pub unk6_a8: [u64; 5],                    // 2D0
+    pub unk6_d0: u32,                         // 2F8
     pub is_right_hand_main_hand: u32,         // 2FC
     pub is_left_hand_main_hand: u32,          // 300
-    pub unk6DC: u32,                          // 304
+    pub unk6_dc: u32,                         // 304
     pub pad308: [u8; 0x10],                   // 308
-    pub unk6F0: [u64; 0x5B],                  // 318
+    pub unk6_f0: [u64; 0x5B],                 // 318
     pub quest_targets_lock: BSSpinLock,       // 5F0
     pub crime_value: CrimeValue,              // 5F8
     pub command_wait_marker: ObjectRefHandle, // 658
-    pub padA34: u32,                          // 65C
+    pub pad_a34: u32,                         // 65C
     pub faction_owner_friends_map: BSTHashMap<*const TESFaction, FriendshipFactionsStruct>, // 660
     pub last_known_good_position: NiPoint3,   // 690
     pub bullet_auto_aim: NiPoint3,            // 69C
     pub cached_velocity: NiPoint3,            // 6A8
-    pub padA8C: u32,                          // 6B4
+    pub pad_a8_c: u32,                        // 6B4
     pub unused_note: *mut BGSNote,            // 6B8
     pub unused_note2: *mut BGSNote,           // 6C0
     pub added_perks: BSTArray<*mut PerkRankData>, // 6C8
@@ -949,33 +949,33 @@ pub struct VR_PLAYER_RUNTIME_DATA {
     pub random_door_space_map: crate::re::NiTMap<u32, u8>, // 820
     pub cached_world_space: *mut TESWorldSpace, // 840
     pub exterior_position: NiPoint3,          // 848
-    pub padC2C: u32,                          // 854
+    pub pad_c2_c: u32,                        // 854
     pub queued_target_loc: VR_PLAYER_TARGET_LOC, // 858
     pub unused_sound: BSSoundHandle,          // 8A8
     pub magic_failure_sound: BSSoundHandle,   // 8B4
     pub shout_failure_sound: BSSoundHandle,   // 8C0
-    pub unkCA4: u32,                          // 8CC
+    pub unk_ca4: u32,                         // 8CC
     pub closest_conversation: *mut DialoguePackage, // 8D0
-    pub unkCB0: u64,                          // 8D8
+    pub unk_cb0: u64,                         // 8D8
     pub ai_conversation_running: *mut DialoguePackage, // 8E0
     pub number_of_steal_warnings: i32,        // 8E8
     pub steal_warning_timer: f32,             // 8EC
     pub number_of_pickpocket_warnings: u32,   // 8F0
     pub pick_pocket_warning_timer: f32,       // 8F4
     pub warn_to_leave_timestamp: AITimeStamp, // 8F8
-    pub unkCD4: u32,                          // 8FC
+    pub unk_cd4: u32,                         // 8FC
     pub ironsights_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 900
     pub vats_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 908
     pub dynamic_dof_instance: *mut ImageSpaceModifierInstanceDOF, // 910
     pub dynamic_dof_focus_time: f32,          // 918
     pub dynamic_dof_focused: bool,            // 91C
-    pub padCF5_CF7: [u8; 3],                  // 91D
+    pub pad_cf5_cf7: [u8; 3],                 // 91D
     pub dynamic_dof_last_angle: NiPoint3,     // 920
     pub dynamic_dof_last_position: NiPoint3,  // 92C
     pub current_prison_faction: *mut TESFaction, // 938
     pub jail_sentence: i32,                   // 940
-    pub unkD1C: i32,                          // 944
-    pub unkD20: u64,                          // 948
+    pub unk_d1_c: i32,                        // 944
+    pub unk_d20: u64,                         // 948
     pub queued_weapon_attachs: [QueuedWeapon; WeaponType::Total as usize], // 950
     pub vampire_feed_detection: u32,          // 9F0
     pub map_marker_iterator: u32,             // 9F4
@@ -983,15 +983,15 @@ pub struct VR_PLAYER_RUNTIME_DATA {
     pub player_action_objects: [PlayerActionObject; 0xF], // 9FC
     pub most_recent_action: PLAYER_ACTION,    // AB0
     pub actor_doing_player_command: ActorHandle, // AB4
-    pub unkE90: u64,                          // AB8
+    pub unk_e90: u64,                         // AB8
     pub grabbed_object_data: [VRGrabData; VR_DEVICE::kTotal as usize], // AC0
-    pub unkFD0: f32,                          // BF8
-    pub unk_float_FD4: f32,                   // BFC
-    pub unkFD8: u64,                          // C00
+    pub unk_fd0: f32,                         // BF8
+    pub unk_float_fd4: f32,                   // BFC
+    pub unk_fd8: u64,                         // C00
     pub vr_info_runtime_data: VR_INFO_RUNTIME_DATA, // C08
     pub unk1120: [u8; 0xA0],                  // D48
-    pub unk11C0: u32,                         // DE8
-    pub unk11C4: u32,                         // DEC
+    pub unk11_c0: u32,                        // DE8
+    pub unk11_c4: u32,                        // DEC
     pub current_location: *mut BGSLocation,   // DF0
     pub cached_velocity_timestamp: AITimeStamp, // DF8
     pub telekinesis_distance: f32,            // DFC
@@ -1005,11 +1005,11 @@ pub struct VR_PLAYER_RUNTIME_DATA {
     pub resist_arrest_crime: *mut Crime,      // E28
     pub tint_masks: BSTArray<*mut TintMask>,  // E30
     pub overlay_tint_masks: *mut BSTArray<*mut TintMask>, // E48
-    pub race_data: RaceData,                  // E50
+    pub race_data: PlayerCharacterRaceData,   // E50
     pub unk1240: [u64; 0x11],                 // E68
     pub pre_transformation_data: *mut PreTransformationData, // EF0
     pub player_flags: PlayerFlags,            // EF8
-    pub padF00: [u8; 0x18],                   // F00
+    pub pad_f00: [u8; 0x18],                  // F00
 }
 
 const _: () = assert!(core::mem::size_of::<VR_PLAYER_RUNTIME_DATA>() == 0xF18);
@@ -1137,7 +1137,7 @@ impl PlayerCharacter {
             object: *mut TESObject,
             owner: *mut TESForm,
             container: *mut TESObjectREFR,
-            acquire_type: AQUIRE_TYPE
+            acquire_type: AcquireType
         ) => RelocationID::new(39384, 40456)
     }
 
@@ -1390,12 +1390,6 @@ impl PlayerCharacter {
     }
 
     crate::runtime_data_accessor! {
-        fn crime_value_impl() -> CrimeValue {
-            offset: Self::CRIME_VALUE_OFFSET
-        }
-    }
-
-    crate::runtime_data_accessor! {
         fn player_runtime_data_flat_impl() -> PLAYER_RUNTIME_DATA {
             offset: Self::PLAYER_RUNTIME_DATA_FLAT_OFFSET
         }
@@ -1527,20 +1521,14 @@ impl PlayerCharacter {
         }
     }
 
-    crate::runtime_data_mut_accessor! {
-        fn crime_value_impl_mut() -> CrimeValue {
-            offset: Self::CRIME_VALUE_OFFSET
-        }
-    }
-
     crate::runtime_data_accessor! {
-        fn race_data_impl() -> RaceData {
+        fn race_data_impl() -> PlayerCharacterRaceData {
             offset: Self::RACE_DATA_OFFSET
         }
     }
 
     crate::runtime_data_mut_accessor! {
-        fn race_data_impl_mut() -> RaceData {
+        fn race_data_impl_mut() -> PlayerCharacterRaceData {
             offset: Self::RACE_DATA_OFFSET
         }
     }
@@ -1698,7 +1686,7 @@ impl<'a> PlayerCharacterRuntimeDataView<'a> {
     }
 
     #[inline(always)]
-    pub fn race_data(&self) -> &RaceData {
+    pub fn race_data(&self) -> &PlayerCharacterRaceData {
         self.player.get_race_data()
     }
 
@@ -1898,7 +1886,7 @@ impl<'a> PlayerCharacterRuntimeDataViewMut<'a> {
     }
 
     #[inline(always)]
-    pub fn race_data(&mut self) -> &mut RaceData {
+    pub fn race_data(&mut self) -> &mut PlayerCharacterRaceData {
         self.player.get_race_data_mut()
     }
 
@@ -2251,14 +2239,14 @@ impl PlayerCharacter {
     }
 
     #[inline(always)]
-    pub fn get_race_data(&self) -> &RaceData {
-        crate::runtime_assert_size!(RaceData, se_ae: 0x18, vr: 0x18);
+    pub fn get_race_data(&self) -> &PlayerCharacterRaceData {
+        crate::runtime_assert_size!(PlayerCharacterRaceData, se_ae: 0x18, vr: 0x18);
         self.race_data_impl()
     }
 
     #[inline(always)]
-    pub fn get_race_data_mut(&mut self) -> &mut RaceData {
-        crate::runtime_assert_size!(RaceData, se_ae: 0x18, vr: 0x18);
+    pub fn get_race_data_mut(&mut self) -> &mut PlayerCharacterRaceData {
+        crate::runtime_assert_size!(PlayerCharacterRaceData, se_ae: 0x18, vr: 0x18);
         self.race_data_impl_mut()
     }
 

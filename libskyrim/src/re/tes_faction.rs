@@ -14,7 +14,7 @@ use crate::relocation::{RelocationID, RttiType, VariantID};
 bitflags! {
     #[repr(transparent)]
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub struct FACTION_DATA_FLAG: u32 {
+    pub struct FactionDataFlag: u32 {
         const NONE = 0;
         const HIDDEN_FROM_NPC = 1 << 0;
         const SPECIAL_COMBAT = 1 << 1;
@@ -56,7 +56,7 @@ bitflags! {
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct FACTION_DATA {
-    pub flags: FACTION_DATA_FLAG, // 00
+    pub flags: FactionDataFlag, // 00
 }
 
 const _: () = assert!(core::mem::size_of::<FACTION_DATA>() == 0x04);
@@ -192,7 +192,7 @@ impl TESFaction {
 
     #[inline]
     pub fn can_be_owner(&self) -> bool {
-        self.data.flags.contains(FACTION_DATA_FLAG::CAN_BE_OWNER)
+        self.data.flags.contains(FactionDataFlag::CAN_BE_OWNER)
     }
 
     pub fn can_pay_crime_gold(&self) -> bool {
@@ -284,7 +284,7 @@ impl TESFaction {
 
     #[inline]
     pub fn has_special_combat_state(&self) -> bool {
-        self.data.flags.contains(FACTION_DATA_FLAG::SPECIAL_COMBAT)
+        self.data.flags.contains(FactionDataFlag::SPECIAL_COMBAT)
     }
 
     #[inline]
@@ -294,49 +294,49 @@ impl TESFaction {
 
     #[inline]
     pub fn hidden_from_npc(&self) -> bool {
-        self.data.flags.contains(FACTION_DATA_FLAG::HIDDEN_FROM_NPC)
+        self.data.flags.contains(FactionDataFlag::HIDDEN_FROM_NPC)
     }
 
     #[inline]
     pub fn ignores_assault(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::IGNORES_CRIMES_ASSAULT)
+            .contains(FactionDataFlag::IGNORES_CRIMES_ASSAULT)
     }
 
     #[inline]
     pub fn ignores_murder(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::IGNORES_CRIMES_MURDER)
+            .contains(FactionDataFlag::IGNORES_CRIMES_MURDER)
     }
 
     #[inline]
     pub fn ignores_pickpocket(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::IGNORES_CRIMES_PICKPOCKET)
+            .contains(FactionDataFlag::IGNORES_CRIMES_PICKPOCKET)
     }
 
     #[inline]
     pub fn ignores_stealing(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::IGNORES_CRIMES_STEALING)
+            .contains(FactionDataFlag::IGNORES_CRIMES_STEALING)
     }
 
     #[inline]
     pub fn ignores_trespass(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::IGNORES_CRIMES_TRESPASS)
+            .contains(FactionDataFlag::IGNORES_CRIMES_TRESPASS)
     }
 
     #[inline]
     pub fn ignores_werewolf(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::IGNORES_CRIMES_WEREWOLF)
+            .contains(FactionDataFlag::IGNORES_CRIMES_WEREWOLF)
     }
 
     #[inline]
@@ -352,19 +352,19 @@ impl TESFaction {
 
     #[inline]
     pub fn is_player_enemy(&self) -> bool {
-        self.data.flags.contains(FACTION_DATA_FLAG::PLAYER_IS_ENEMY)
+        self.data.flags.contains(FactionDataFlag::PLAYER_IS_ENEMY)
     }
 
     #[inline]
     pub fn is_player_expelled(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::PLAYER_IS_EXPELLED)
+            .contains(FactionDataFlag::PLAYER_IS_EXPELLED)
     }
 
     #[inline]
     pub fn is_vendor(&self) -> bool {
-        self.data.flags.contains(FACTION_DATA_FLAG::VENDOR)
+        self.data.flags.contains(FactionDataFlag::VENDOR)
     }
 
     #[inline]
@@ -391,7 +391,7 @@ impl TESFaction {
         !self
             .data
             .flags
-            .contains(FACTION_DATA_FLAG::DO_NOT_REPORT_CRIMES_AGAINST_MEMBERS)
+            .contains(FactionDataFlag::DO_NOT_REPORT_CRIMES_AGAINST_MEMBERS)
     }
 
     #[inline]
@@ -479,13 +479,13 @@ impl TESFaction {
 
     #[inline]
     pub fn tracks_crimes(&self) -> bool {
-        self.data.flags.contains(FACTION_DATA_FLAG::TRACK_CRIME)
+        self.data.flags.contains(FactionDataFlag::TRACK_CRIME)
     }
 
     #[inline]
     pub fn uses_crime_gold_defaults(&self) -> bool {
         self.data
             .flags
-            .contains(FACTION_DATA_FLAG::CRIME_GOLD_USE_DEFAULTS)
+            .contains(FactionDataFlag::CRIME_GOLD_USE_DEFAULTS)
     }
 }

@@ -6,11 +6,11 @@ use crate::re::BSIMusicType;
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSMusicMessageType {
-    kAdd = 0,
-    kRemove = 1,
-    kRemoveImmediate = 2,
-    kPause = 3,
-    kUnpause = 4,
+    Add = 0,
+    Remove = 1,
+    RemoveImmediate = 2,
+    Pause = 3,
+    Unpause = 4,
 }
 
 core_util::impl_enumset_type!(BSMusicMessageType => i32);

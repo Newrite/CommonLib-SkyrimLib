@@ -524,7 +524,7 @@ pub type GFxValueArrayVisitor = GFxValueArrVisitor;
 /// C++ `RE::GFxValue::ObjectInterface`
 #[repr(C)]
 pub struct GFxValueObjectInterface {
-    pub base: GNewOverrideBase<{ GFxStatMovieViews::kGFxStatMV_Other_Mem as u32 }>,
+    pub base: GNewOverrideBase<{ GFxStatMovieViews::OTHER_MEM as u32 }>,
     pub movie_root: *mut GFxMovieRoot, // 00
 }
 
@@ -1342,21 +1342,21 @@ impl GFxValue {
         let normalized_blue = tint.blue() as f32 / 255.0;
         let intensity = tint.alpha() as f32 / 255.0;
 
-        color_transform.matrix[GRendererCxform::kR][GRendererCxform::kMult] =
+        color_transform.matrix[GRendererCxform::R][GRendererCxform::MULT] =
             1.0 - (intensity * (1.0 - normalized_red));
-        color_transform.matrix[GRendererCxform::kG][GRendererCxform::kMult] =
+        color_transform.matrix[GRendererCxform::G][GRendererCxform::MULT] =
             1.0 - (intensity * (1.0 - normalized_green));
-        color_transform.matrix[GRendererCxform::kB][GRendererCxform::kMult] =
+        color_transform.matrix[GRendererCxform::B][GRendererCxform::MULT] =
             1.0 - (intensity * (1.0 - normalized_blue));
-        color_transform.matrix[GRendererCxform::kA][GRendererCxform::kMult] = 1.0;
+        color_transform.matrix[GRendererCxform::A][GRendererCxform::MULT] = 1.0;
 
-        color_transform.matrix[GRendererCxform::kR][GRendererCxform::kAdd] =
+        color_transform.matrix[GRendererCxform::R][GRendererCxform::ADD] =
             intensity * normalized_red * 0.5;
-        color_transform.matrix[GRendererCxform::kG][GRendererCxform::kAdd] =
+        color_transform.matrix[GRendererCxform::G][GRendererCxform::ADD] =
             intensity * normalized_green * 0.5;
-        color_transform.matrix[GRendererCxform::kB][GRendererCxform::kAdd] =
+        color_transform.matrix[GRendererCxform::B][GRendererCxform::ADD] =
             intensity * normalized_blue * 0.5;
-        color_transform.matrix[GRendererCxform::kA][GRendererCxform::kAdd] = 0.0;
+        color_transform.matrix[GRendererCxform::A][GRendererCxform::ADD] = 0.0;
 
         self.set_cxform(&color_transform)
     }

@@ -11,6 +11,7 @@ use crate::re::bgs_lighting_template::BGSLightingTemplate;
 use crate::re::bgs_location::BGSLocation;
 use crate::re::bgs_music_type::BGSMusicType;
 use crate::re::bgs_terrain_manager::BGSTerrainManager;
+use crate::re::bs_core_types::FormID;
 use crate::re::bs_portal_graph::BSPortalGraph;
 use crate::re::bs_string::BSString;
 use crate::re::bst_array::BSTArray;
@@ -24,7 +25,7 @@ use crate::re::ni_point3::NiPoint3;
 use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::ni_t_pointer_map::NiTPointerMap;
 use crate::re::tes_climate::TESClimate;
-use crate::re::tes_form::{FormID, TESForm};
+use crate::re::tes_form::TESForm;
 use crate::re::tes_full_name::TESFullName;
 use crate::re::tes_model::TESModel;
 use crate::re::tes_object_cell::TESObjectCELL;
@@ -161,9 +162,9 @@ core_util::impl_enumset_type!(Flag => u8);
 core_util::impl_enumset_type!(ParentUseFlag => u16);
 
 /// C++ `RE::TESWorldSpace::RecordFlags`
-pub struct RecordFlags;
+pub struct TESWorldSpaceRecordFlags;
 
-impl RecordFlags {
+impl TESWorldSpaceRecordFlags {
     pub const DELETED: u32 = 1 << 5;
     pub const IGNORED: u32 = 1 << 12;
     pub const CANT_WAIT: u32 = 1 << 19;

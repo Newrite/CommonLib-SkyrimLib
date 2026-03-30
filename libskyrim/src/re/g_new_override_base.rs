@@ -11,7 +11,7 @@ pub struct GNewOverrideBase<const STAT: u32> {
 const _: () = assert!(core::mem::size_of::<GNewOverrideBase<0>>() == 0x0);
 
 impl<const STAT: u32> GNewOverrideBase<STAT> {
-    pub const kStatType: u32 = STAT;
+    pub const STAT_TYPE: u32 = STAT;
 
     // TODO: `GNewOverrideBase.h` exists specifically to override C++ `new` /
     // `delete` through the Scaleform heap macros. Rust keeps only the

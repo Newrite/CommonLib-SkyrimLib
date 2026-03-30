@@ -2,7 +2,7 @@ use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_ExtraLeveledItem;
 use crate::offsets::offsets_vtable::VTABLE_ExtraLeveledItem;
-use crate::re::tes_form::FormID;
+use crate::re::bs_core_types::FormID;
 use crate::re::{BSExtraData, ExtraDataType, ExtraDataTyped};
 use crate::relocation::{RttiType, VariantID};
 

@@ -371,7 +371,7 @@ const _: () = assert!(core::mem::size_of::<ScopeArt>() == 0x30);
 bitflags! {
     #[repr(transparent)]
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub struct RecordFlags: u32 {
+    pub struct TESObjectWEAPRecordFlags: u32 {
         const NON_PLAYABLE = 1 << 2;
         const HAS_INHERITED_FROM_TEMPLATE = 1 << 3;
         const DELETED = 1 << 5;
@@ -379,7 +379,7 @@ bitflags! {
     }
 }
 
-unsafe impl bytemuck::Zeroable for RecordFlags {}
+unsafe impl bytemuck::Zeroable for TESObjectWEAPRecordFlags {}
 
 #[repr(C)]
 pub struct TESObjectWEAP {

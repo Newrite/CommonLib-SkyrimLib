@@ -264,7 +264,7 @@ impl AIProcess {
     #[inline(always)]
     pub fn get_headtrack_target(&self) -> ObjectRefHandle {
         let mut out = ObjectRefHandle::new();
-        unsafe { self.get_headtrack_target_impl(&mut out) };
+        self.get_headtrack_target_impl(&mut out);
         out
     }
 

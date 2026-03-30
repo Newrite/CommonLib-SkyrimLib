@@ -1,7 +1,7 @@
 use crate::re::bst_hash_map::{BSTHashMap, UnkKey, UnkValue};
 use crate::re::bst_message_queue::BSTCommonStaticMessageQueue;
 use crate::re::bst_singleton::BSTSingletonSDM;
-use crate::re::{BSFixedString, IUIMessageData, UI_MESSAGE_TYPE, UIMessage};
+use crate::re::{BSFixedString, IUIMessageData, UIMessage, UIMessageType};
 use crate::relocation::RelocationID;
 
 /// C++ `RE::UIMessageQueue`
@@ -38,7 +38,7 @@ impl UIMessageQueue {
         pub fn add_message(
             &mut self,
             menu_name: &BSFixedString,
-            type_: UI_MESSAGE_TYPE,
+            type_: UIMessageType,
             data: *mut IUIMessageData,
         ) => RelocationID::new(13530, 13631)
     }

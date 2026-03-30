@@ -123,5 +123,5 @@ pub enum GFxKeyCode {
 }
 
 impl GFxKey {
-    pub const kTotal: usize = GFxKeyCode::kTotal as usize;
+    pub const TOTAL: usize = GFxKeyCode::kTotal as usize;
 }

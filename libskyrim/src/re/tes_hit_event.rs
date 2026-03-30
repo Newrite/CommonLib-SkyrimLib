@@ -7,11 +7,11 @@ use crate::re::{NiPointer, TESObjectREFR};
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TESHitEventFlag {
-    kNone = 0,
-    kPowerAttack = 1 << 0,
-    kSneakAttack = 1 << 1,
-    kBashAttack = 1 << 2,
-    kHitBlocked = 1 << 3,
+    None = 0,
+    PowerAttack = 1 << 0,
+    SneakAttack = 1 << 1,
+    BashAttack = 1 << 2,
+    HitBlocked = 1 << 3,
 }
 
 core_util::impl_enumset_type!(TESHitEventFlag => u8);
@@ -38,7 +38,7 @@ impl Default for TESHitEvent {
             core::ptr::null_mut(),
             0,
             0,
-            TESHitEventFlag::kNone,
+            TESHitEventFlag::None,
         )
     }
 }

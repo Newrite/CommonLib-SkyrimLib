@@ -6,9 +6,9 @@ use crate::rex::openvr::vr;
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ControllerDeviceHand {
-    kLeft = 0,
-    kRight = 1,
-    kNeither = 3,
+    Left = 0,
+    Right = 1,
+    Neither = 3,
 }
 
 const _: () = assert!(core::mem::size_of::<ControllerDeviceHand>() == 0x4);
@@ -51,17 +51,17 @@ impl BSTrackedControllerDevice {
 
     #[inline(always)]
     pub fn is_left_hand(&self) -> bool {
-        self.hand == ControllerDeviceHand::kLeft
+        self.hand == ControllerDeviceHand::Left
     }
 
     #[inline(always)]
     pub fn is_right_hand(&self) -> bool {
-        self.hand == ControllerDeviceHand::kRight
+        self.hand == ControllerDeviceHand::Right
     }
 
     #[inline(always)]
     pub fn is_neither_hand(&self) -> bool {
-        self.hand == ControllerDeviceHand::kNeither
+        self.hand == ControllerDeviceHand::Neither
     }
 
     #[inline(always)]

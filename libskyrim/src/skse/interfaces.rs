@@ -1,7 +1,7 @@
 use core::ffi::{c_char, c_void};
 
+use crate::re::bs_core_types::FormID;
 use crate::re::bs_core_types::VMHandle;
-use crate::re::tes_form::FormID;
 use crate::re::{IVirtualMachine, VirtualMachine};
 use crate::version::Version;
 

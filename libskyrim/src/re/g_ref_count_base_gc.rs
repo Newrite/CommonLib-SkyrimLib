@@ -24,7 +24,7 @@ const _: () = assert!(core::mem::offset_of!(GRefCountBaseGC<0>, ref_count) == 0x
 core_util::inherit!(for[const STAT: u32] GRefCountBaseGC<STAT> => GNewOverrideBase<STAT>, base);
 
 impl<const STAT: u32> GRefCountBaseGC<STAT> {
-    pub const kStatType: u32 = STAT;
+    pub const STAT_TYPE: u32 = STAT;
 
     crate::virtual_method! { pub const VFUNC_UNK_00: usize = 0x00; pub fn unk_00() }
     crate::virtual_method! { pub const VFUNC_UNK_01: usize = 0x01; pub fn unk_01() }

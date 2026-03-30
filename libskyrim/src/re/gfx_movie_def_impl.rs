@@ -41,28 +41,27 @@ const _: () = assert!(core::mem::offset_of!(GFxMovieDefImplImportData, movie_def
 /// C++ `RE::GFxMovieDefImpl::BindTaskData`
 #[repr(C)]
 pub struct GFxMovieDefImplBindTaskData {
-    pub base:
-        GRefCountBase<GFxMovieDefImplBindTaskData, { GStatGroups::kGStat_Default_Mem as u32 }>, // 00
-    pub bind_data_heap: *mut GMemoryHeap,          // 10
-    pub movie_data_resource: *mut GFxMovieDataDef, // 18
-    pub unk20: *mut GFxMovieDefImpl,               // 20
-    pub unk28: u32,                                // 28
-    pub pad2c: u32,                                // 2C
-    pub import_data: GFxMovieDefImplImportData,    // 30
-    pub imported_movies: GArray<*mut GFxMovieDef>, // 80
-    pub lock: GLock,                               // 98
-    pub unkc0: u64,                                // C0
-    pub unkc8: u64,                                // C8
-    pub unkd0: u64,                                // D0
-    pub task_state: u32,                           // D8
-    pub paddc: u32,                                // DC
-    pub update_sync: GPtr<GFxLoadUpdateSync>,      // E0
-    pub loading_frame: u32,                        // E8
-    pub bytes_loaded: u32,                         // EC
-    pub has_error: bool,                           // F0
-    pub padf1: u8,                                 // F1
-    pub padf2: u16,                                // F2
-    pub padf4: u32,                                // F4
+    pub base: GRefCountBase<GFxMovieDefImplBindTaskData, { GStatGroups::DEFAULT_MEM as u32 }>, // 00
+    pub bind_data_heap: *mut GMemoryHeap,                                                      // 10
+    pub movie_data_resource: *mut GFxMovieDataDef,                                             // 18
+    pub unk20: *mut GFxMovieDefImpl,                                                           // 20
+    pub unk28: u32,                                                                            // 28
+    pub pad2c: u32,                                                                            // 2C
+    pub import_data: GFxMovieDefImplImportData,                                                // 30
+    pub imported_movies: GArray<*mut GFxMovieDef>,                                             // 80
+    pub lock: GLock,                                                                           // 98
+    pub unkc0: u64,                                                                            // C0
+    pub unkc8: u64,                                                                            // C8
+    pub unkd0: u64,                                                                            // D0
+    pub task_state: u32,                                                                       // D8
+    pub paddc: u32,                                                                            // DC
+    pub update_sync: GPtr<GFxLoadUpdateSync>,                                                  // E0
+    pub loading_frame: u32,                                                                    // E8
+    pub bytes_loaded: u32,                                                                     // EC
+    pub has_error: bool,                                                                       // F0
+    pub padf1: u8,                                                                             // F1
+    pub padf2: u16,                                                                            // F2
+    pub padf4: u32,                                                                            // F4
 }
 
 const _: () = assert!(core::mem::size_of::<GFxMovieDefImplBindTaskData>() == 0xF8);
@@ -71,7 +70,7 @@ const _: () = assert!(core::mem::offset_of!(GFxMovieDefImplBindTaskData, import_
 const _: () = assert!(core::mem::offset_of!(GFxMovieDefImplBindTaskData, imported_movies) == 0x80);
 const _: () = assert!(core::mem::offset_of!(GFxMovieDefImplBindTaskData, update_sync) == 0xE0);
 
-inherit!(GFxMovieDefImplBindTaskData : GRefCountBase<GFxMovieDefImplBindTaskData, { GStatGroups::kGStat_Default_Mem as u32 }>, base);
+inherit!(GFxMovieDefImplBindTaskData : GRefCountBase<GFxMovieDefImplBindTaskData, { GStatGroups::DEFAULT_MEM as u32 }>, base);
 
 impl GFxMovieDefImplBindTaskData {
     crate::virtual_method! { pub const VFUNC_DTOR: usize = 0x00; pub fn dtor() }

@@ -4,7 +4,6 @@ use core::marker::PhantomData;
 use crate::re::memory_manager::MemoryManager;
 use crate::re::ni_allocator::NiMemEventType;
 use crate::re::ni_mem_manager::NiMemManager;
-use crate::re::scrap_heap::ScrapHeap;
 
 #[inline]
 pub fn ni_malloc(size_in_bytes: usize) -> *mut c_void {

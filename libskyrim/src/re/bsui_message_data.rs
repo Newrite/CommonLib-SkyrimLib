@@ -5,7 +5,7 @@ use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_BSUIMessageData;
 use crate::offsets::offsets_vtable::VTABLE_BSUIMessageData;
-use crate::re::{BSFixedString, BSString, IUIMessageData, UI_MESSAGE_TYPE, UIMessageQueue};
+use crate::re::{BSFixedString, BSString, IUIMessageData, UIMessageQueue, UIMessageType};
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::BSUIMessageData::Data`
@@ -65,7 +65,7 @@ impl BSUIMessageData {
     }
 
     #[inline(always)]
-    fn send_ui_message_with<F>(menu: &BSFixedString, type_: UI_MESSAGE_TYPE, init: F)
+    fn send_ui_message_with<F>(menu: &BSFixedString, type_: UIMessageType, init: F)
     where
         F: FnOnce(&mut Self),
     {
@@ -86,21 +86,21 @@ impl BSUIMessageData {
     }
 
     #[inline(always)]
-    pub fn send_ui_bool_message(menu: &BSFixedString, type_: UI_MESSAGE_TYPE, data: bool) {
+    pub fn send_ui_bool_message(menu: &BSFixedString, type_: UIMessageType, data: bool) {
         Self::send_ui_message_with(menu, type_, |msg_data| {
             msg_data.data = BSUIMessageDataData { b: data };
         });
     }
 
     #[inline(always)]
-    pub fn send_ui_message(menu: &BSFixedString, type_: UI_MESSAGE_TYPE, data: u32) {
+    pub fn send_ui_message(menu: &BSFixedString, type_: UIMessageType, data: u32) {
         Self::send_ui_message_with(menu, type_, |msg_data| {
             msg_data.data = BSUIMessageDataData { u: data };
         });
     }
 
     #[inline(always)]
-    pub fn send_ui_ptr_message(menu: &BSFixedString, type_: UI_MESSAGE_TYPE, data: *mut c_void) {
+    pub fn send_ui_ptr_message(menu: &BSFixedString, type_: UIMessageType, data: *mut c_void) {
         Self::send_ui_message_with(menu, type_, |msg_data| {
             msg_data.data = BSUIMessageDataData { p: data };
         });
@@ -109,7 +109,7 @@ impl BSUIMessageData {
     #[inline(always)]
     pub fn send_ui_string_bool_message(
         menu: &BSFixedString,
-        type_: UI_MESSAGE_TYPE,
+        type_: UIMessageType,
         str_: &BSFixedString,
         data: bool,
     ) {
@@ -122,7 +122,7 @@ impl BSUIMessageData {
     #[inline(always)]
     pub fn send_ui_string_float_message(
         menu: &BSFixedString,
-        type_: UI_MESSAGE_TYPE,
+        type_: UIMessageType,
         str_: &BSFixedString,
         data: f32,
     ) {
@@ -135,7 +135,7 @@ impl BSUIMessageData {
     #[inline(always)]
     pub fn send_ui_string_message(
         menu: &BSFixedString,
-        type_: UI_MESSAGE_TYPE,
+        type_: UIMessageType,
         str_: &BSFixedString,
     ) {
         Self::send_ui_message_with(menu, type_, |msg_data| {
@@ -146,7 +146,7 @@ impl BSUIMessageData {
     #[inline(always)]
     pub fn send_ui_string_uint_message(
         menu: &BSFixedString,
-        type_: UI_MESSAGE_TYPE,
+        type_: UIMessageType,
         str_: &BSFixedString,
         data: u32,
     ) {

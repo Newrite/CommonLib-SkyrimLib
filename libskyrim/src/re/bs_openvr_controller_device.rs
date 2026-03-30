@@ -7,14 +7,14 @@ use crate::relocation::{Offset, Relocation, RttiType, VariantID};
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSOpenVRControllerDeviceKey {
-    kBY = 1,
-    kGrip = 2,
-    kXA = 7,
-    kJoystickTrigger = 32,
-    kTrigger = 33,
-    kGripAlt = 34,
-    kTouchpadClick = 35,
-    kTouchpadAlt = 36,
+    By = 1,
+    Grip = 2,
+    Xa = 7,
+    JoystickTrigger = 32,
+    Trigger = 33,
+    GripAlt = 34,
+    TouchpadClick = 35,
+    TouchpadAlt = 36,
 }
 
 const _: () = assert!(core::mem::size_of::<BSOpenVRControllerDeviceKey>() == 0x4);
@@ -65,44 +65,44 @@ impl BSOpenVRControllerDevice {
 
     #[inline(always)]
     pub fn is_grip_button(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kGrip as u32
-            || key_code == BSOpenVRControllerDeviceKey::kGripAlt as u32
+        key_code == BSOpenVRControllerDeviceKey::Grip as u32
+            || key_code == BSOpenVRControllerDeviceKey::GripAlt as u32
     }
 
     #[inline(always)]
     pub fn is_trigger_button(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kTrigger as u32
+        key_code == BSOpenVRControllerDeviceKey::Trigger as u32
     }
 
     #[inline(always)]
     pub fn is_stick_click(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kJoystickTrigger as u32
+        key_code == BSOpenVRControllerDeviceKey::JoystickTrigger as u32
     }
 
     #[inline(always)]
     pub fn is_a_button(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kXA as u32
+        key_code == BSOpenVRControllerDeviceKey::Xa as u32
     }
 
     #[inline(always)]
     pub fn is_b_button(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kBY as u32
+        key_code == BSOpenVRControllerDeviceKey::By as u32
     }
 
     #[inline(always)]
     pub fn is_x_button(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kXA as u32
+        key_code == BSOpenVRControllerDeviceKey::Xa as u32
     }
 
     #[inline(always)]
     pub fn is_y_button(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kBY as u32
+        key_code == BSOpenVRControllerDeviceKey::By as u32
     }
 
     #[inline(always)]
     pub fn is_touchpad_click(key_code: u32) -> bool {
-        key_code == BSOpenVRControllerDeviceKey::kTouchpadClick as u32
-            || key_code == BSOpenVRControllerDeviceKey::kTouchpadAlt as u32
+        key_code == BSOpenVRControllerDeviceKey::TouchpadClick as u32
+            || key_code == BSOpenVRControllerDeviceKey::TouchpadAlt as u32
     }
 
     #[inline(always)]
@@ -141,26 +141,26 @@ impl BSOpenVRControllerDevice {
 
     #[inline(always)]
     pub fn is_left_hand(&self) -> bool {
-        self.base.hand == ControllerDeviceHand::kLeft
+        self.base.hand == ControllerDeviceHand::Left
     }
 
     #[inline(always)]
     pub fn is_right_hand(&self) -> bool {
-        self.base.hand == ControllerDeviceHand::kRight
+        self.base.hand == ControllerDeviceHand::Right
     }
 }
 
 #[inline(always)]
 pub fn get_openvr_button_name(key_code: u32) -> &'static str {
     match key_code {
-        x if x == BSOpenVRControllerDeviceKey::kTrigger as u32 => "Trigger",
-        x if x == BSOpenVRControllerDeviceKey::kGrip as u32 => "Grip",
-        x if x == BSOpenVRControllerDeviceKey::kGripAlt as u32 => "Grip Alt",
-        x if x == BSOpenVRControllerDeviceKey::kJoystickTrigger as u32 => "Joystick Click",
-        x if x == BSOpenVRControllerDeviceKey::kTouchpadClick as u32 => "Touchpad Click",
-        x if x == BSOpenVRControllerDeviceKey::kTouchpadAlt as u32 => "Touchpad Alt",
-        x if x == BSOpenVRControllerDeviceKey::kXA as u32 => "A/X",
-        x if x == BSOpenVRControllerDeviceKey::kBY as u32 => "B/Y",
+        x if x == BSOpenVRControllerDeviceKey::Trigger as u32 => "Trigger",
+        x if x == BSOpenVRControllerDeviceKey::Grip as u32 => "Grip",
+        x if x == BSOpenVRControllerDeviceKey::GripAlt as u32 => "Grip Alt",
+        x if x == BSOpenVRControllerDeviceKey::JoystickTrigger as u32 => "Joystick Click",
+        x if x == BSOpenVRControllerDeviceKey::TouchpadClick as u32 => "Touchpad Click",
+        x if x == BSOpenVRControllerDeviceKey::TouchpadAlt as u32 => "Touchpad Alt",
+        x if x == BSOpenVRControllerDeviceKey::Xa as u32 => "A/X",
+        x if x == BSOpenVRControllerDeviceKey::By as u32 => "B/Y",
         _ => {
             if BSOpenVRControllerDevice::is_trigger_button(key_code) {
                 "Trigger"

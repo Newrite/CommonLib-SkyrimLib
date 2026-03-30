@@ -3,10 +3,11 @@ use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_BGSListForm;
 use crate::offsets::offsets_vtable::VTABLE_BGSListForm;
 use crate::re::bs_container::BSContainerForEachResult;
+use crate::re::bs_core_types::FormID;
 use crate::re::bst_array::BSTArray;
 use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
-use crate::re::tes_form::{FormID, TESForm};
+use crate::re::tes_form::TESForm;
 use crate::relocation::{RelocationID, RttiType, VariantID};
 use bitflags::bitflags;
 

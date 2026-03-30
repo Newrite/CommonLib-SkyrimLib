@@ -13,7 +13,9 @@ use crate::relocation::{RelocationID, RttiType, VariantID};
 
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACKAGE_OBJECT_TYPE {
+pub enum PackageObjectType {
+    // TODO: rename remaining all-caps spell-out variants like `ACTI`/`ARMO`
+    // once we decide whether to prefer strict Rust case or preserve editor IDs.
     None = 0,
     ACTI = 1,
     ARMO = 2,
@@ -32,11 +34,11 @@ pub enum PACKAGE_OBJECT_TYPE {
     FOOD = 15,
 }
 
-core_util::impl_enumset_type!(PACKAGE_OBJECT_TYPE => u32);
+core_util::impl_enumset_type!(PackageObjectType => u32);
 
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACKAGE_TYPE {
+pub enum PackageType {
     None = -1,
     Explore = 0,
     Follow = 1,
@@ -85,11 +87,11 @@ pub enum PACKAGE_TYPE {
     Total = 44,
 }
 
-core_util::impl_enumset_type!(PACKAGE_TYPE => u8);
+core_util::impl_enumset_type!(PackageType => u8);
 
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACKAGE_PROCEDURE_TYPE {
+pub enum PackageProcedureType {
     None = -1,
     ExploreTravel = 0,
     ExploreWander = 1,
@@ -142,22 +144,22 @@ pub enum PACKAGE_PROCEDURE_TYPE {
     KeepAnEyeOn = 48,
 }
 
-core_util::impl_enumset_type!(PACKAGE_PROCEDURE_TYPE => u32);
+core_util::impl_enumset_type!(PackageProcedureType => u32);
 
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACK_EVENT_ACTION_TYPE {
+pub enum PackEventActionType {
     Begin = 0,
     End = 1,
     Change = 2,
     Patrol = 3,
 }
 
-core_util::impl_enumset_type!(PACK_EVENT_ACTION_TYPE => u32);
+core_util::impl_enumset_type!(PackEventActionType => u32);
 
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACK_INTERRUPT_TARGET {
+pub enum PackInterruptTarget {
     None = -1,
     Spectator = 0,
     ObserveDead = 1,
@@ -165,12 +167,12 @@ pub enum PACK_INTERRUPT_TARGET {
     Combat = 3,
 }
 
-core_util::impl_enumset_type!(PACK_INTERRUPT_TARGET => u8);
-core_util::impl_enumset_type!(PACK_INTERRUPT_TARGET => u32);
+core_util::impl_enumset_type!(PackInterruptTarget => u8);
+core_util::impl_enumset_type!(PackInterruptTarget => u32);
 
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACKAGE_DATA_GENERAL_FLAG {
+pub enum PackageDataGeneralFlag {
     None = 0,
     OffersServices = 1 << 0,
     MustComplete = 1 << 2,
@@ -190,22 +192,22 @@ pub enum PACKAGE_DATA_GENERAL_FLAG {
     WearSleepOutfit = 1 << 29,
 }
 
-core_util::impl_enumset_type!(PACKAGE_DATA_GENERAL_FLAG => u32);
+core_util::impl_enumset_type!(PackageDataGeneralFlag => u32);
 
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACKAGE_DATA_PREFERRED_SPEED {
+pub enum PackageDataPreferredSpeed {
     Walk = 0,
     Jog = 1,
     Run = 2,
     FastWalk = 3,
 }
 
-core_util::impl_enumset_type!(PACKAGE_DATA_PREFERRED_SPEED => u8);
+core_util::impl_enumset_type!(PackageDataPreferredSpeed => u8);
 
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACKAGE_DATA_INTERRUPT_FLAG {
+pub enum PackageDataInterruptFlag {
     None = 0,
     HellosToPlayer = 1 << 0,
     RandomConversations = 1 << 1,
@@ -218,21 +220,21 @@ pub enum PACKAGE_DATA_INTERRUPT_FLAG {
     WorldInteractions = 1 << 9,
 }
 
-core_util::impl_enumset_type!(PACKAGE_DATA_INTERRUPT_FLAG => u16);
+core_util::impl_enumset_type!(PackageDataInterruptFlag => u16);
 
 #[repr(C)]
 #[derive(Clone, Copy)]
-pub struct PACKAGE_DATA {
-    pub pack_flags: EnumSet<PACKAGE_DATA_GENERAL_FLAG, u32>, // 00
-    pub pack_type: EnumSet<PACKAGE_TYPE, u8>,                // 04
-    pub interrupt_override_type: EnumSet<PACK_INTERRUPT_TARGET, u8>, // 05
-    pub max_speed: EnumSet<PACKAGE_DATA_PREFERRED_SPEED, u8>, // 06
-    pub pad07: u8,                                           // 07
-    pub fo_behavior_flags: EnumSet<PACKAGE_DATA_INTERRUPT_FLAG, u16>, // 08
-    pub package_specific_flags: u16,                         // 0A
+pub struct PackageData {
+    pub pack_flags: EnumSet<PackageDataGeneralFlag, u32>, // 00
+    pub pack_type: EnumSet<PackageType, u8>,              // 04
+    pub interrupt_override_type: EnumSet<PackInterruptTarget, u8>, // 05
+    pub max_speed: EnumSet<PackageDataPreferredSpeed, u8>, // 06
+    pub pad07: u8,                                        // 07
+    pub fo_behavior_flags: EnumSet<PackageDataInterruptFlag, u16>, // 08
+    pub package_specific_flags: u16,                      // 0A
 }
 
-const _: () = assert!(core::mem::size_of::<PACKAGE_DATA>() == 0x0C);
+const _: () = assert!(core::mem::size_of::<PackageData>() == 0x0C);
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -240,9 +242,9 @@ pub union PackageTargetTarget {
     pub handle: ObjectRefHandle,
     pub object: *mut TESForm,
     pub ref_or_obj: *mut TESForm,
-    pub obj_type: EnumSet<PACKAGE_OBJECT_TYPE, u32>,
+    pub obj_type: EnumSet<PackageObjectType, u32>,
     pub alias_id: u32,
-    pub interrupt_targ: EnumSet<PACK_INTERRUPT_TARGET, u32>,
+    pub interrupt_targ: EnumSet<PackInterruptTarget, u32>,
 }
 
 const _: () = assert!(core::mem::size_of::<PackageTargetTarget>() == 0x08);
@@ -262,7 +264,7 @@ const _: () = assert!(core::mem::offset_of!(PackageTarget, target) == 0x08);
 
 #[repr(i8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PACK_SCHED_DATA_DAY_OF_WEEK {
+pub enum PackSchedDataDayOfWeek {
     Any = -1,
     Sunday = 0,
     Monday = 1,
@@ -277,28 +279,28 @@ pub enum PACK_SCHED_DATA_DAY_OF_WEEK {
     TuesdayThursday = 10,
 }
 
-core_util::impl_enumset_type!(PACK_SCHED_DATA_DAY_OF_WEEK => i8);
+core_util::impl_enumset_type!(PackSchedDataDayOfWeek => i8);
 
 #[repr(C)]
 #[derive(Clone, Copy)]
-pub struct PACK_SCHED_DATA {
-    pub month: i8,                                             // 00
-    pub day_of_week: EnumSet<PACK_SCHED_DATA_DAY_OF_WEEK, i8>, // 01
-    pub date: i8,                                              // 02
-    pub hour: i8,                                              // 03
-    pub minute: i8,                                            // 04
-    pub pad05: u8,                                             // 05
-    pub pad06: u8,                                             // 06
-    pub pad07: u8,                                             // 07
-    pub duration: i32,                                         // 08
+pub struct PackSchedData {
+    pub month: i8,                                        // 00
+    pub day_of_week: EnumSet<PackSchedDataDayOfWeek, i8>, // 01
+    pub date: i8,                                         // 02
+    pub hour: i8,                                         // 03
+    pub minute: i8,                                       // 04
+    pub pad05: u8,                                        // 05
+    pub pad06: u8,                                        // 06
+    pub pad07: u8,                                        // 07
+    pub duration: i32,                                    // 08
 }
 
-const _: () = assert!(core::mem::size_of::<PACK_SCHED_DATA>() == 0x0C);
+const _: () = assert!(core::mem::size_of::<PackSchedData>() == 0x0C);
 
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct PackageSchedule {
-    pub ps_data: PACK_SCHED_DATA, // 00
+    pub ps_data: PackSchedData, // 00
 }
 
 const _: () = assert!(core::mem::size_of::<PackageSchedule>() == 0x0C);
@@ -325,10 +327,10 @@ const _: () = assert!(core::mem::size_of::<PackageEventActionTopicData>() == 0x1
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct PackageEventAction {
-    pub idle: *mut TESIdleForm,                      // 00 - INAM
-    pub type_: EnumSet<PACK_EVENT_ACTION_TYPE, u32>, // 08
-    pub pad0c: u32,                                  // 0C
-    pub topic: PackageEventActionTopicData,          // 10 - PDTO
+    pub idle: *mut TESIdleForm,                   // 00 - INAM
+    pub type_: EnumSet<PackEventActionType, u32>, // 08
+    pub pad0c: u32,                               // 0C
+    pub topic: PackageEventActionTopicData,       // 10 - PDTO
 }
 
 const _: () = assert!(core::mem::size_of::<PackageEventAction>() == 0x20);
@@ -353,23 +355,23 @@ bitflags! {
 
 #[repr(C)]
 pub struct TESPackage {
-    pub base: TESForm,                                        // 00
-    pub pack_data: PACKAGE_DATA,                              // 20 - PKDT
-    pub pad2c: u32,                                           // 2C
-    pub data: *mut TESPackageData,                            // 30
-    pub pack_loc: *mut PackageLocation,                       // 38
-    pub pack_targ: *mut PackageTarget,                        // 40
-    pub idle_collection: *mut BGSIdleCollection,              // 48
-    pub pack_sched: PackageSchedule,                          // 50 - PSDT
-    pub pad5c: u32,                                           // 5C
-    pub pack_conditions: TESCondition,                        // 60
-    pub combat_style: *mut TESCombatStyle,                    // 68 - CNAM
-    pub owner_quest: *mut TESQuest,                           // 70 - QNAM
-    pub on_begin: PackageEventAction,                         // 78
-    pub on_end: PackageEventAction,                           // 98
-    pub on_change: PackageEventAction,                        // B8
-    pub procedure_type: EnumSet<PACKAGE_PROCEDURE_TYPE, u32>, // D8
-    pub ref_count: u32,                                       // DC
+    pub base: TESForm,                                      // 00
+    pub pack_data: PackageData,                             // 20 - PKDT
+    pub pad2c: u32,                                         // 2C
+    pub data: *mut TESPackageData,                          // 30
+    pub pack_loc: *mut PackageLocation,                     // 38
+    pub pack_targ: *mut PackageTarget,                      // 40
+    pub idle_collection: *mut BGSIdleCollection,            // 48
+    pub pack_sched: PackageSchedule,                        // 50 - PSDT
+    pub pad5c: u32,                                         // 5C
+    pub pack_conditions: TESCondition,                      // 60
+    pub combat_style: *mut TESCombatStyle,                  // 68 - CNAM
+    pub owner_quest: *mut TESQuest,                         // 70 - QNAM
+    pub on_begin: PackageEventAction,                       // 78
+    pub on_end: PackageEventAction,                         // 98
+    pub on_change: PackageEventAction,                      // B8
+    pub procedure_type: EnumSet<PackageProcedureType, u32>, // D8
+    pub ref_count: u32,                                     // DC
 }
 
 const _: () = assert!(core::mem::size_of::<TESPackage>() == 0xE0);
@@ -493,11 +495,11 @@ impl TESPackage {
     }
 
     crate::relocation_func! {
-        pub fn create_package(procedure_type: PACKAGE_PROCEDURE_TYPE) -> *mut TESPackage => RelocationID::new(28732, 29496)
+        pub fn create_package(procedure_type: PackageProcedureType) -> *mut TESPackage => RelocationID::new(28732, 29496)
     }
 
     crate::relocation_func! {
-        pub fn set_pack_type(&mut self, procedure_type: PACKAGE_PROCEDURE_TYPE) => RelocationID::new(28751, 29525)
+        pub fn set_pack_type(&mut self, procedure_type: PackageProcedureType) => RelocationID::new(28751, 29525)
     }
 
     #[inline]
@@ -536,7 +538,7 @@ pub trait TESPackageExt {
     fn is_actor_at_ref_target(&self, actor: *mut Actor, arg2: i32) -> bool;
     fn is_target_at_location(&self, actor: *mut Actor, arg2: i32) -> bool;
     fn is_package_owner(&self, actor: *mut Actor) -> bool;
-    fn set_pack_type(&mut self, procedure_type: PACKAGE_PROCEDURE_TYPE);
+    fn set_pack_type(&mut self, procedure_type: PackageProcedureType);
 }
 
 impl<T: AsRef<TESPackage> + AsMut<TESPackage>> TESPackageExt for T {
@@ -616,7 +618,7 @@ impl<T: AsRef<TESPackage> + AsMut<TESPackage>> TESPackageExt for T {
         self.as_ref().is_package_owner(actor)
     }
 
-    fn set_pack_type(&mut self, procedure_type: PACKAGE_PROCEDURE_TYPE) {
+    fn set_pack_type(&mut self, procedure_type: PackageProcedureType) {
         TESPackage::set_pack_type(self.as_mut(), procedure_type)
     }
 }

@@ -9,45 +9,45 @@ use crate::relocation::RelocationID;
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMovieViewScaleModeType {
-    kNoScale = 0,
-    kShowAll = 1,
-    kExactFit = 2,
-    kNoBorder = 3,
+    NoScale = 0,
+    ShowAll = 1,
+    ExactFit = 2,
+    NoBorder = 3,
 }
 
 /// C++ `RE::GFxMovieView::AlignType`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMovieViewAlignType {
-    kCenter = 0,
-    kTopCenter = 1,
-    kBottomCenter = 2,
-    kCenterLeft = 3,
-    kCenterRight = 4,
-    kTopLeft = 5,
-    kTopRight = 6,
-    kBottomLeft = 7,
-    kBottomRight = 8,
+    Center = 0,
+    TopCenter = 1,
+    BottomCenter = 2,
+    CenterLeft = 3,
+    CenterRight = 4,
+    TopLeft = 5,
+    TopRight = 6,
+    BottomLeft = 7,
+    BottomRight = 8,
 }
 
 /// C++ `RE::GFxMovieView::HEResult`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMovieViewHEResult {
-    kNotHandled = 0,
-    kHandled = 1,
-    kNoDefaultAction = 2,
-    kCompleted = 3,
+    NotHandled = 0,
+    Handled = 1,
+    NoDefaultAction = 2,
+    Completed = 3,
 }
 
 /// C++ `RE::GFxMovieView::HitTestType`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMovieViewHitTestType {
-    kBounds = 0,
-    kShapes = 1,
-    kButtonEvents = 2,
-    kShapesNoInvisible = 3,
+    Bounds = 0,
+    Shapes = 1,
+    ButtonEvents = 2,
+    ShapesNoInvisible = 3,
 }
 
 /// C++ `RE::GFxMovieView`

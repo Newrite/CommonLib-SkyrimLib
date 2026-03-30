@@ -94,7 +94,7 @@ impl ActorHandle {
     #[inline(always)]
     pub fn get_handle(ptr: *mut Actor) -> ActorHandle {
         let mut out = Self::new();
-        unsafe { Self::get_handle_impl(&mut out, ptr) };
+        Self::get_handle_impl(&mut out, ptr);
         out
     }
 
@@ -192,7 +192,7 @@ impl ProjectileHandle {
     #[inline(always)]
     pub fn get_handle(ptr: *mut Projectile) -> ProjectileHandle {
         let mut out = Self::new();
-        unsafe { Self::get_handle_impl(&mut out, ptr) };
+        Self::get_handle_impl(&mut out, ptr);
         out
     }
 
@@ -288,7 +288,7 @@ impl ObjectRefHandle {
     #[inline(always)]
     pub fn get_handle(ptr: *mut TESObjectREFR) -> ObjectRefHandle {
         let mut out = Self::new();
-        unsafe { Self::get_handle_impl(&mut out, ptr) };
+        Self::get_handle_impl(&mut out, ptr);
         out
     }
 

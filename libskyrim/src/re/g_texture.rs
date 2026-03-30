@@ -92,7 +92,7 @@ const _: () = assert!(core::mem::offset_of!(GTexture, vtable) == 0x0);
 const _: () = assert!(core::mem::offset_of!(GTexture, ref_count) == 0x8);
 
 impl GTexture {
-    pub const kStatType: u32 = GNewOverrideBase::<{ GStatRenderer::kMem as u32 }>::kStatType;
+    pub const STAT_TYPE: u32 = GNewOverrideBase::<{ GStatRenderer::MEM as u32 }>::STAT_TYPE;
 
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x0;

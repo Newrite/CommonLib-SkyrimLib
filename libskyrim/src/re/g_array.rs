@@ -10,7 +10,7 @@ use crate::re::{
 #[repr(C)]
 pub struct GArray<
     T,
-    const SID: u32 = { GStatGroup::kGStat_Default_Mem as u32 },
+    const SID: u32 = { GStatGroup::DEFAULT_MEM as u32 },
     SizePolicy = GArrayDefaultPolicy,
 > {
     pub base: GArrayBase<GArrayData<T, GAllocatorGH<T, SID>, SizePolicy>>, // 00

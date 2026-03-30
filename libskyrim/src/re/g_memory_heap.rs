@@ -43,11 +43,11 @@ core_util::impl_enumset_type!(GMemoryHeapHeapFlags => u32);
 pub struct GMemoryHeapRootHeapParameters;
 
 impl GMemoryHeapRootHeapParameters {
-    pub const kMinAlign: usize = 16;
-    pub const kGranularity: usize = 16 * 1024;
-    pub const kReserve: usize = 16 * 1024;
-    pub const kThreshold: usize = 256 * 1024;
-    pub const kLimit: usize = 0;
+    pub const MIN_ALIGN: usize = 16;
+    pub const GRANULARITY: usize = 16 * 1024;
+    pub const RESERVE: usize = 16 * 1024;
+    pub const THRESHOLD: usize = 256 * 1024;
+    pub const LIMIT: usize = 0;
 }
 
 /// C++ `RE::GMemoryHeap::HeapDesc`
@@ -164,11 +164,11 @@ impl GMemoryHeapRootHeapDesc {
         Self {
             base: GMemoryHeapHeapDesc::new(
                 EnumSet::from_underlying(GMemoryHeapHeapFlags::kNone as u32),
-                GMemoryHeapRootHeapParameters::kMinAlign,
-                GMemoryHeapRootHeapParameters::kGranularity,
-                GMemoryHeapRootHeapParameters::kReserve,
-                GMemoryHeapRootHeapParameters::kThreshold,
-                GMemoryHeapRootHeapParameters::kLimit,
+                GMemoryHeapRootHeapParameters::MIN_ALIGN,
+                GMemoryHeapRootHeapParameters::GRANULARITY,
+                GMemoryHeapRootHeapParameters::RESERVE,
+                GMemoryHeapRootHeapParameters::THRESHOLD,
+                GMemoryHeapRootHeapParameters::LIMIT,
                 GHeapID::kGlobal,
                 0,
             ),

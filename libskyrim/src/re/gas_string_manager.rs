@@ -23,8 +23,7 @@ const _: () = assert!(core::mem::offset_of!(GASString, ref_count) == 0x10);
 /// C++ `RE::GASStringManager`
 #[repr(C)]
 pub struct GASStringManager {
-    pub base:
-        GRefCountBase<GASStringManager, { GFxStatMovieViews::kGFxStatMV_ActionScript_Mem as u32 }>, // 00
+    pub base: GRefCountBase<GASStringManager, { GFxStatMovieViews::ACTION_SCRIPT_MEM as u32 }>, // 00
     pub unk10: GStringHash<GASString>, // 10
     pub heap: *mut GMemoryHeap,        // 18
     pub unk20: u64,                    // 20
@@ -41,7 +40,7 @@ const _: () = assert!(core::mem::offset_of!(GASStringManager, base) == 0x0);
 const _: () = assert!(core::mem::offset_of!(GASStringManager, unk10) == 0x10);
 const _: () = assert!(core::mem::offset_of!(GASStringManager, heap) == 0x18);
 
-inherit!(GASStringManager : GRefCountBase<GASStringManager, { GFxStatMovieViews::kGFxStatMV_ActionScript_Mem as u32 }>, base);
+inherit!(GASStringManager : GRefCountBase<GASStringManager, { GFxStatMovieViews::ACTION_SCRIPT_MEM as u32 }>, base);
 
 impl GASStringManager {
     // override (GRefCountImpl)

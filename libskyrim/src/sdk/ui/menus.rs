@@ -8,7 +8,7 @@ use core::ptr::NonNull;
 use crate::re::{
     BGSLocation, BSFixedString, BSUIMessageData, BSUIMessageDataData, BSUIScaleformData, FaderData,
     FaderMenu, GFxEvent, GFxMovieView, GPtr, IMenu, IUIMessageData, LoadingMenu, LoadingMenuData,
-    MenuOpenCloseEvent, UI, UI_MESSAGE_TYPE, UICreate_t, UIMessageQueue,
+    MenuOpenCloseEvent, UI, UICreateFn, UIMessageQueue, UIMessageType,
 };
 use crate::relocation::RelocationID;
 use crate::sdk::core::{DynamicCastExt, GamePtr, GameRef};
@@ -111,7 +111,7 @@ impl_typed_menu_message_data!(
 pub struct FadeRequest {
     pub min_duration: f32,
     pub fade_duration: f32,
-    pub message_type: UI_MESSAGE_TYPE,
+    pub message_type: UIMessageType,
     pub is_fading_out: bool,
     pub is_black: bool,
     pub pauses_game: bool,
@@ -123,7 +123,7 @@ impl FadeRequest {
         Self {
             min_duration,
             fade_duration,
-            message_type: UI_MESSAGE_TYPE::kShow,
+            message_type: UIMessageType::Show,
             is_fading_out: true,
             is_black: true,
             pauses_game,
@@ -135,7 +135,7 @@ impl FadeRequest {
         Self {
             min_duration: 0.0,
             fade_duration,
-            message_type: UI_MESSAGE_TYPE::kShow,
+            message_type: UIMessageType::Show,
             is_fading_out: false,
             is_black: true,
             pauses_game,
@@ -153,7 +153,7 @@ impl Default for FadeRequest {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct LoadingMenuRequest {
     pub current_location: GamePtr<BGSLocation>,
-    pub message_type: UI_MESSAGE_TYPE,
+    pub message_type: UIMessageType,
     pub show_loading_text: bool,
 }
 
@@ -162,7 +162,7 @@ impl LoadingMenuRequest {
     pub const fn show(current_location: GamePtr<BGSLocation>, show_loading_text: bool) -> Self {
         Self {
             current_location,
-            message_type: UI_MESSAGE_TYPE::kShow,
+            message_type: UIMessageType::Show,
             show_loading_text,
         }
     }
@@ -304,12 +304,12 @@ pub fn is_fader_active() -> bool {
 }
 
 #[inline(always)]
-pub fn register_menu(menu_name: &str, creator: Option<UICreate_t>) {
+pub fn register_menu(menu_name: &str, creator: Option<UICreateFn>) {
     unsafe { ui().with_mut_unchecked(|ui| ui.register(menu_name, creator)) };
 }
 
 #[inline(always)]
-pub fn register_named_menu<M>(creator: Option<UICreate_t>)
+pub fn register_named_menu<M>(creator: Option<UICreateFn>)
 where
     M: NamedMenu,
 {
@@ -322,7 +322,7 @@ pub fn process_commands() {
 }
 
 #[inline(always)]
-pub fn queue_message(menu_name: &str, message_type: UI_MESSAGE_TYPE) {
+pub fn queue_message(menu_name: &str, message_type: UIMessageType) {
     unsafe { queue_message_data_unchecked(menu_name, message_type, core::ptr::null_mut()) };
 }
 
@@ -332,7 +332,7 @@ pub fn queue_message(menu_name: &str, message_type: UI_MESSAGE_TYPE) {
 /// contract.
 pub unsafe fn queue_message_data_unchecked(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     data: *mut IUIMessageData,
 ) {
     let Ok(menu_name) = CString::new(menu_name) else {
@@ -380,7 +380,7 @@ where
 
 pub fn queue_message_with<T>(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     init: impl FnOnce(&mut T),
 ) -> bool
 where
@@ -411,7 +411,7 @@ where
 
 #[inline(always)]
 pub fn queue_named_message_with<M, T>(
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     init: impl FnOnce(&mut T),
 ) -> bool
 where
@@ -423,22 +423,22 @@ where
 
 #[inline(always)]
 pub fn open_menu(menu_name: &str) {
-    queue_message(menu_name, UI_MESSAGE_TYPE::kShow);
+    queue_message(menu_name, UIMessageType::Show);
 }
 
 #[inline(always)]
 pub fn close_menu(menu_name: &str) {
-    queue_message(menu_name, UI_MESSAGE_TYPE::kHide);
+    queue_message(menu_name, UIMessageType::Hide);
 }
 
 #[inline(always)]
 pub fn force_close_menu(menu_name: &str) {
-    queue_message(menu_name, UI_MESSAGE_TYPE::kForceHide);
+    queue_message(menu_name, UIMessageType::ForceHide);
 }
 
 #[inline(always)]
 pub fn reshow_menu(menu_name: &str) {
-    queue_message(menu_name, UI_MESSAGE_TYPE::kReshow);
+    queue_message(menu_name, UIMessageType::Reshow);
 }
 
 #[inline(always)]
@@ -677,7 +677,7 @@ pub fn show_loading_menu(current_location: GamePtr<BGSLocation>, show_loading_te
 }
 
 #[inline(always)]
-pub fn queue_bsui_bool_message(menu_name: &str, message_type: UI_MESSAGE_TYPE, data: bool) -> bool {
+pub fn queue_bsui_bool_message(menu_name: &str, message_type: UIMessageType, data: bool) -> bool {
     let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.data = BSUIMessageDataData { b: data };
     });
@@ -693,7 +693,7 @@ pub fn queue_bsui_bool_message(menu_name: &str, message_type: UI_MESSAGE_TYPE, d
 }
 
 #[inline(always)]
-pub fn queue_bsui_uint_message(menu_name: &str, message_type: UI_MESSAGE_TYPE, data: u32) -> bool {
+pub fn queue_bsui_uint_message(menu_name: &str, message_type: UIMessageType, data: u32) -> bool {
     let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.data = BSUIMessageDataData { u: data };
     });
@@ -711,7 +711,7 @@ pub fn queue_bsui_uint_message(menu_name: &str, message_type: UI_MESSAGE_TYPE, d
 #[inline(always)]
 pub fn queue_bsui_ptr_message(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     data: *mut c_void,
 ) -> bool {
     let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
@@ -731,7 +731,7 @@ pub fn queue_bsui_ptr_message(
 #[inline(always)]
 pub fn queue_bsui_string_message(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     value: &str,
 ) -> bool {
     let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
@@ -751,7 +751,7 @@ pub fn queue_bsui_string_message(
 #[inline(always)]
 pub fn queue_bsui_string_bool_message(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     value: &str,
     data: bool,
 ) -> bool {
@@ -773,7 +773,7 @@ pub fn queue_bsui_string_bool_message(
 #[inline(always)]
 pub fn queue_bsui_string_float_message(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     value: &str,
     data: f32,
 ) -> bool {
@@ -795,7 +795,7 @@ pub fn queue_bsui_string_float_message(
 #[inline(always)]
 pub fn queue_bsui_string_uint_message(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     value: &str,
     data: u32,
 ) -> bool {
@@ -817,7 +817,7 @@ pub fn queue_bsui_string_uint_message(
 #[inline(always)]
 pub fn queue_scaleform_event_message(
     menu_name: &str,
-    message_type: UI_MESSAGE_TYPE,
+    message_type: UIMessageType,
     scaleform_event: *mut GFxEvent,
 ) -> bool {
     let queued = queue_message_with::<BSUIScaleformData>(menu_name, message_type, |msg_data| {

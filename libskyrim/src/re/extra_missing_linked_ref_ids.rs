@@ -4,7 +4,7 @@ use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_ExtraMissingLinkedRefIDs;
 use crate::offsets::offsets_vtable::VTABLE_ExtraMissingLinkedRefIDs;
-use crate::re::tes_form::FormID;
+use crate::re::bs_core_types::FormID;
 use crate::re::{BGSKeyword, BSExtraData, ExtraDataType, ExtraDataTyped, TESForm, TESObjectREFR};
 use crate::relocation::{RttiType, VariantID};
 

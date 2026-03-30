@@ -7,6 +7,7 @@ use crate::re::bgs_keyword_form::BGSKeywordForm;
 use crate::re::bgs_list_form::BGSListForm;
 use crate::re::bs_atomic::{BSReadLockGuard, BSReadWriteLock};
 use crate::re::bs_container::BSContainerForEachResult;
+use crate::re::bs_core_types::FormID;
 use crate::re::form_type::FormType;
 use crate::relocation::{
     RelocationID, RttiType, VariantID, skyrim_cast, skyrim_cast_const, skyrim_cast_mut,
@@ -32,8 +33,6 @@ use crate::re::tes_full_name::TESFullName;
 use crate::re::tes_model::TESModel;
 use crate::re::tes_object_refr::TESObjectREFR;
 
-pub type FormID = u32;
-
 bitflags! {
     /// C++ `RE::TESForm::ChangeFlags`
     #[repr(transparent)]
@@ -48,7 +47,7 @@ bitflags! {
     /// C++ `RE::TESForm::RecordFlags`
     #[repr(transparent)]
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub struct RecordFlags: u32 {
+    pub struct RecordFlag: u32 {
         const DESTRUCTIBLE = 1 << 0;
         const MASTER = 1 << 0;
         const UNLOCKED = 1 << 0;
@@ -143,7 +142,7 @@ const _: () = assert!(core::mem::offset_of!(SkyrimVMPrefix, impl_) == 0x200);
 pub struct TESForm {
     pub base: BaseFormComponent,                          // 00
     pub source_files: TESFileContainer,                   // 08
-    pub form_flags: RecordFlags,                          // 10
+    pub form_flags: RecordFlag,                           // 10
     pub form_id: FormID,                                  // 14
     pub in_game_form_flags: EnumSet<InGameFormFlag, u16>, // 18
     pub form_type: EnumSet<FormType, u8>,                 // 1A
@@ -548,7 +547,7 @@ impl TESForm {
     // РІвЂќР‚РІвЂќР‚РІвЂќР‚ Non-Virtual Accessors and Helpers РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚РІвЂќР‚
 
     #[inline(always)]
-    pub fn get_form_flags(&self) -> RecordFlags {
+    pub fn get_form_flags(&self) -> RecordFlag {
         self.form_flags
     }
 
@@ -625,12 +624,12 @@ impl TESForm {
 
     #[inline(always)]
     pub fn is_deleted(&self) -> bool {
-        self.form_flags.contains(RecordFlags::DELETED)
+        self.form_flags.contains(RecordFlag::DELETED)
     }
 
     #[inline(always)]
     pub fn is_destroyed(&self) -> bool {
-        self.form_flags.contains(RecordFlags::DESTROYED)
+        self.form_flags.contains(RecordFlag::DESTROYED)
     }
 
     #[inline(always)]
@@ -645,12 +644,12 @@ impl TESForm {
 
     #[inline(always)]
     pub fn is_ignored(&self) -> bool {
-        self.form_flags.contains(RecordFlags::IGNORED)
+        self.form_flags.contains(RecordFlag::IGNORED)
     }
 
     #[inline(always)]
     pub fn is_initialized(&self) -> bool {
-        self.form_flags.contains(RecordFlags::INITIALIZED)
+        self.form_flags.contains(RecordFlag::INITIALIZED)
     }
 
     #[inline(always)]
@@ -984,7 +983,7 @@ pub trait TESFormExt {
     fn clear_data_component(&mut self);
     fn copy_component(&mut self, rhs: *mut BaseFormComponent);
     fn get_form_type(&self) -> FormType;
-    fn get_form_flags(&self) -> RecordFlags;
+    fn get_form_flags(&self) -> RecordFlag;
     fn get_form_id(&self) -> FormID;
     fn get_file(&self, idx: i32) -> *mut TESFile;
     fn get_local_form_id(&self) -> FormID;
@@ -1066,7 +1065,7 @@ impl<T: AsRef<TESForm> + AsMut<TESForm>> TESFormExt for T {
         TESForm::get_form_type(self.as_ref())
     }
 
-    fn get_form_flags(&self) -> RecordFlags {
+    fn get_form_flags(&self) -> RecordFlag {
         TESForm::get_form_flags(self.as_ref())
     }
 

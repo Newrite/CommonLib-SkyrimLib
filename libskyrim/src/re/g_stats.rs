@@ -33,8 +33,29 @@ pub enum GStatGroup {
 }
 
 impl GStatGroup {
-    pub const kGStatHeap_Start: Self = Self::kGStatGroup_Core;
-    pub const kGStat_EntryCount: u32 = 512;
+    pub const GROUP_DEFAULT: Self = Self::kGStatGroup_Default;
+    pub const GROUP_CORE: Self = Self::kGStatGroup_Core;
+    pub const GROUP_RENDERER: Self = Self::kGStatGroup_Renderer;
+    pub const GROUP_RENDER_GEN: Self = Self::kGStatGroup_RenderGen;
+    pub const GROUP_GFX_FONT_CACHE: Self = Self::kGStatGroup_GFxFontCache;
+    pub const GROUP_GFX_MOVIE_DATA: Self = Self::kGStatGroup_GFxMovieData;
+    pub const GROUP_GFX_MOVIE_VIEW: Self = Self::kGStatGroup_GFxMovieView;
+    pub const GROUP_GFX_RENDER_CACHE: Self = Self::kGStatGroup_GFxRenderCache;
+    pub const GROUP_GFX_PLAYER: Self = Self::kGStatGroup_GFxPlayer;
+    pub const GROUP_GFX_IME: Self = Self::kGStatGroup_GFxIME;
+    pub const MEM: Self = Self::kGStat_Mem;
+    pub const DEFAULT_MEM: Self = Self::kGStat_Default_Mem;
+    pub const IMAGE_MEM: Self = Self::kGStat_Image_Mem;
+    pub const SOUND_MEM: Self = Self::kGStat_Sound_Mem;
+    pub const STRING_MEM: Self = Self::kGStat_String_Mem;
+    pub const VIDEO_MEM: Self = Self::kGStat_Video_Mem;
+    pub const DEBUG_MEM: Self = Self::kGStat_Debug_Mem;
+    pub const DEBUG_HUD_MEM: Self = Self::kGStat_DebugHUD_Mem;
+    pub const DEBUG_TRACKER_MEM: Self = Self::kGStat_DebugTracker_Mem;
+    pub const STAT_BAG_MEM: Self = Self::kGStat_StatBag_Mem;
+    pub const HEAP_START: Self = Self::kGStatGroup_Core;
+    pub const MAX_ID: Self = Self::kGStat_MaxId;
+    pub const ENTRY_COUNT: u32 = 512;
 }
 
 /// C++ `RE::GStatGroups`
@@ -42,29 +63,29 @@ impl GStatGroup {
 pub struct GStatGroups;
 
 impl GStatGroups {
-    pub const kGStatGroup_Default: GStatGroup = GStatGroup::kGStatGroup_Default;
-    pub const kGStatGroup_Core: GStatGroup = GStatGroup::kGStatGroup_Core;
-    pub const kGStatGroup_Renderer: GStatGroup = GStatGroup::kGStatGroup_Renderer;
-    pub const kGStatGroup_RenderGen: GStatGroup = GStatGroup::kGStatGroup_RenderGen;
-    pub const kGStatGroup_GFxFontCache: GStatGroup = GStatGroup::kGStatGroup_GFxFontCache;
-    pub const kGStatGroup_GFxMovieData: GStatGroup = GStatGroup::kGStatGroup_GFxMovieData;
-    pub const kGStatGroup_GFxMovieView: GStatGroup = GStatGroup::kGStatGroup_GFxMovieView;
-    pub const kGStatGroup_GFxRenderCache: GStatGroup = GStatGroup::kGStatGroup_GFxRenderCache;
-    pub const kGStatGroup_GFxPlayer: GStatGroup = GStatGroup::kGStatGroup_GFxPlayer;
-    pub const kGStatGroup_GFxIME: GStatGroup = GStatGroup::kGStatGroup_GFxIME;
-    pub const kGStat_Mem: GStatGroup = GStatGroup::kGStat_Mem;
-    pub const kGStat_Default_Mem: GStatGroup = GStatGroup::kGStat_Default_Mem;
-    pub const kGStat_Image_Mem: GStatGroup = GStatGroup::kGStat_Image_Mem;
-    pub const kGStat_Sound_Mem: GStatGroup = GStatGroup::kGStat_Sound_Mem;
-    pub const kGStat_String_Mem: GStatGroup = GStatGroup::kGStat_String_Mem;
-    pub const kGStat_Video_Mem: GStatGroup = GStatGroup::kGStat_Video_Mem;
-    pub const kGStat_Debug_Mem: GStatGroup = GStatGroup::kGStat_Debug_Mem;
-    pub const kGStat_DebugHUD_Mem: GStatGroup = GStatGroup::kGStat_DebugHUD_Mem;
-    pub const kGStat_DebugTracker_Mem: GStatGroup = GStatGroup::kGStat_DebugTracker_Mem;
-    pub const kGStat_StatBag_Mem: GStatGroup = GStatGroup::kGStat_StatBag_Mem;
-    pub const kGStatHeap_Start: GStatGroup = GStatGroup::kGStatHeap_Start;
-    pub const kGStat_MaxId: GStatGroup = GStatGroup::kGStat_MaxId;
-    pub const kGStat_EntryCount: u32 = GStatGroup::kGStat_EntryCount;
+    pub const GROUP_DEFAULT: GStatGroup = GStatGroup::GROUP_DEFAULT;
+    pub const GROUP_CORE: GStatGroup = GStatGroup::GROUP_CORE;
+    pub const GROUP_RENDERER: GStatGroup = GStatGroup::GROUP_RENDERER;
+    pub const GROUP_RENDER_GEN: GStatGroup = GStatGroup::GROUP_RENDER_GEN;
+    pub const GROUP_GFX_FONT_CACHE: GStatGroup = GStatGroup::GROUP_GFX_FONT_CACHE;
+    pub const GROUP_GFX_MOVIE_DATA: GStatGroup = GStatGroup::GROUP_GFX_MOVIE_DATA;
+    pub const GROUP_GFX_MOVIE_VIEW: GStatGroup = GStatGroup::GROUP_GFX_MOVIE_VIEW;
+    pub const GROUP_GFX_RENDER_CACHE: GStatGroup = GStatGroup::GROUP_GFX_RENDER_CACHE;
+    pub const GROUP_GFX_PLAYER: GStatGroup = GStatGroup::GROUP_GFX_PLAYER;
+    pub const GROUP_GFX_IME: GStatGroup = GStatGroup::GROUP_GFX_IME;
+    pub const MEM: GStatGroup = GStatGroup::MEM;
+    pub const DEFAULT_MEM: GStatGroup = GStatGroup::DEFAULT_MEM;
+    pub const IMAGE_MEM: GStatGroup = GStatGroup::IMAGE_MEM;
+    pub const SOUND_MEM: GStatGroup = GStatGroup::SOUND_MEM;
+    pub const STRING_MEM: GStatGroup = GStatGroup::STRING_MEM;
+    pub const VIDEO_MEM: GStatGroup = GStatGroup::VIDEO_MEM;
+    pub const DEBUG_MEM: GStatGroup = GStatGroup::DEBUG_MEM;
+    pub const DEBUG_HUD_MEM: GStatGroup = GStatGroup::DEBUG_HUD_MEM;
+    pub const DEBUG_TRACKER_MEM: GStatGroup = GStatGroup::DEBUG_TRACKER_MEM;
+    pub const STAT_BAG_MEM: GStatGroup = GStatGroup::STAT_BAG_MEM;
+    pub const HEAP_START: GStatGroup = GStatGroup::HEAP_START;
+    pub const MAX_ID: GStatGroup = GStatGroup::MAX_ID;
+    pub const ENTRY_COUNT: u32 = GStatGroup::ENTRY_COUNT;
 }
 
 /// C++ `RE::GStatRenderers::GStatRenderer`
@@ -90,26 +111,44 @@ pub enum GStatRenderer {
     kFilterCnt,
 }
 
+impl GStatRenderer {
+    pub const DEFAULT: Self = Self::kDefault;
+    pub const MEM: Self = Self::kMem;
+    pub const VMEM: Self = Self::kVMem;
+    pub const TEXTURE_VMEM: Self = Self::kTextureVMem;
+    pub const BUFFER_VMEM: Self = Self::kBufferVMem;
+    pub const COUNTERS: Self = Self::kCounters;
+    pub const TEXTURE_UPLOAD_CNT: Self = Self::kTextureUploadCnt;
+    pub const TEXTURE_UPDATE_CNT: Self = Self::kTextureUpdateCnt;
+    pub const DP_CNT: Self = Self::kDPCnt;
+    pub const DP_LINE_CNT: Self = Self::kDPLineCnt;
+    pub const DP_TRIANGLE_CNT: Self = Self::kDPTriangleCnt;
+    pub const TRIANGLE_CNT: Self = Self::kTriangleCnt;
+    pub const LINE_CNT: Self = Self::kLineCnt;
+    pub const MASK_CNT: Self = Self::kMaskCnt;
+    pub const FILTER_CNT: Self = Self::kFilterCnt;
+}
+
 /// C++ `RE::GStatRenderers`
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct GStatRenderers;
 
 impl GStatRenderers {
-    pub const kDefault: GStatRenderer = GStatRenderer::kDefault;
-    pub const kMem: GStatRenderer = GStatRenderer::kMem;
-    pub const kVMem: GStatRenderer = GStatRenderer::kVMem;
-    pub const kTextureVMem: GStatRenderer = GStatRenderer::kTextureVMem;
-    pub const kBufferVMem: GStatRenderer = GStatRenderer::kBufferVMem;
-    pub const kCounters: GStatRenderer = GStatRenderer::kCounters;
-    pub const kTextureUploadCnt: GStatRenderer = GStatRenderer::kTextureUploadCnt;
-    pub const kTextureUpdateCnt: GStatRenderer = GStatRenderer::kTextureUpdateCnt;
-    pub const kDPCnt: GStatRenderer = GStatRenderer::kDPCnt;
-    pub const kDPLineCnt: GStatRenderer = GStatRenderer::kDPLineCnt;
-    pub const kDPTriangleCnt: GStatRenderer = GStatRenderer::kDPTriangleCnt;
-    pub const kTriangleCnt: GStatRenderer = GStatRenderer::kTriangleCnt;
-    pub const kLineCnt: GStatRenderer = GStatRenderer::kLineCnt;
-    pub const kMaskCnt: GStatRenderer = GStatRenderer::kMaskCnt;
-    pub const kFilterCnt: GStatRenderer = GStatRenderer::kFilterCnt;
+    pub const DEFAULT: GStatRenderer = GStatRenderer::DEFAULT;
+    pub const MEM: GStatRenderer = GStatRenderer::MEM;
+    pub const VMEM: GStatRenderer = GStatRenderer::VMEM;
+    pub const TEXTURE_VMEM: GStatRenderer = GStatRenderer::TEXTURE_VMEM;
+    pub const BUFFER_VMEM: GStatRenderer = GStatRenderer::BUFFER_VMEM;
+    pub const COUNTERS: GStatRenderer = GStatRenderer::COUNTERS;
+    pub const TEXTURE_UPLOAD_CNT: GStatRenderer = GStatRenderer::TEXTURE_UPLOAD_CNT;
+    pub const TEXTURE_UPDATE_CNT: GStatRenderer = GStatRenderer::TEXTURE_UPDATE_CNT;
+    pub const DP_CNT: GStatRenderer = GStatRenderer::DP_CNT;
+    pub const DP_LINE_CNT: GStatRenderer = GStatRenderer::DP_LINE_CNT;
+    pub const DP_TRIANGLE_CNT: GStatRenderer = GStatRenderer::DP_TRIANGLE_CNT;
+    pub const TRIANGLE_CNT: GStatRenderer = GStatRenderer::TRIANGLE_CNT;
+    pub const LINE_CNT: GStatRenderer = GStatRenderer::LINE_CNT;
+    pub const MASK_CNT: GStatRenderer = GStatRenderer::MASK_CNT;
+    pub const FILTER_CNT: GStatRenderer = GStatRenderer::FILTER_CNT;
 }
 
 /// C++ `RE::GHeapID`

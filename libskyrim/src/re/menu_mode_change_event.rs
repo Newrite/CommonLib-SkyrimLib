@@ -6,9 +6,9 @@ use crate::re::BSFixedString;
 #[repr(i8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum MenuMode {
-    kNone = -1,
-    kHidden = 0,
-    kDisplayed = 1,
+    None = -1,
+    Hidden = 0,
+    Displayed = 1,
 }
 
 core_util::impl_enumset_type!(MenuMode => u8);

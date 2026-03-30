@@ -50,5 +50,5 @@ impl Default for hkpShapeType {
 }
 
 impl hkpShapeType {
-    pub const FirstType: Self = Self::Sphere;
+    pub const FIRST_TYPE: Self = Self::Sphere;
 }

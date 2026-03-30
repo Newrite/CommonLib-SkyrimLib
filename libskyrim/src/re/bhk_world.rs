@@ -22,39 +22,39 @@ pub struct bhkWorld {
     pub unk0020: [u8; 0x320],                                            // 0020
     pub unk0340: [u8; 0x6400],                                           // 0340
     pub unk6740: [u8; 0x5DC0],                                           // 6740
-    pub unkC500: BSTArray<*mut c_void>,                                  // C500
-    pub unkC518: BSTArray<*mut c_void>,                                  // C518
-    pub unkC530: BSTArray<*mut c_void>,                                  // C530
-    pub unkC548: BSTArray<*mut c_void>,                                  // C548
-    pub unkC560: u64,                                                    // C560
-    pub unkC568: u32,                                                    // C568
-    pub unkC56C: f32,                                                    // C56C
+    pub unk_c500: BSTArray<*mut c_void>,                                 // C500
+    pub unk_c518: BSTArray<*mut c_void>,                                 // C518
+    pub unk_c530: BSTArray<*mut c_void>,                                 // C530
+    pub unk_c548: BSTArray<*mut c_void>,                                 // C548
+    pub unk_c560: u64,                                                   // C560
+    pub unk_c568: u32,                                                   // C568
+    pub unk_c56c: f32,                                                   // C56C
     pub constraint_projector: *mut bhkConstraintProjector,               // C570
-    pub unkC578: u64,                                                    // C578
-    pub unkC580: u32,                                                    // C580
-    pub unkC584: f32,                                                    // C584
-    pub unkC588: u64,                                                    // C588
-    pub unkC590: u64,                                                    // C590
+    pub unk_c578: u64,                                                   // C578
+    pub unk_c580: u32,                                                   // C580
+    pub unk_c584: f32,                                                   // C584
+    pub unk_c588: u64,                                                   // C588
+    pub unk_c590: u64,                                                   // C590
     pub world_lock: BSReadWriteLock,                                     // C598
-    pub unkC5A0: BSReadWriteLock,                                        // C5A0
-    pub unkC5A8: u64,                                                    // C5A8
-    pub unkC5B0: hkVector4,                                              // C5B0
-    pub unkC5C0: u64,                                                    // C5C0
+    pub unk_c5a0: BSReadWriteLock,                                       // C5A0
+    pub unk_c5a8: u64,                                                   // C5A8
+    pub unk_c5b0: hkVector4,                                             // C5B0
+    pub unk_c5c0: u64,                                                   // C5C0
     pub acoustic_space_listener: *mut BGSAcousticSpaceListener,          // C5C8
     pub suspend_inactive_agents_util: *mut hkpSuspendInactiveAgentsUtil, // C5D0
-    pub unkC5D8: u32,                                                    // C5D8
-    pub unkC5DC: u32,                                                    // C5DC
-    pub unkC5E0: u32,                                                    // C5E0
-    pub unkC5E4: u32,                                                    // C5E4
-    pub unkC5E8: u32,                                                    // C5E8
-    pub unkC5EC: u32,                                                    // C5EC
+    pub unk_c5d8: u32,                                                   // C5D8
+    pub unk_c5dc: u32,                                                   // C5DC
+    pub unk_c5e0: u32,                                                   // C5E0
+    pub unk_c5e4: u32,                                                   // C5E4
+    pub unk_c5e8: u32,                                                   // C5E8
+    pub unk_c5ec: u32,                                                   // C5EC
     pub tau: f32,                                                        // C5F0
     pub damping: f32,                                                    // C5F4
-    pub unkC5F8: u8,                                                     // C5F8
+    pub unk_c5f8: u8,                                                    // C5F8
     pub toggle_collision: bool,                                          // C5F9
-    pub unkC5FA: u16,                                                    // C5FA
-    pub unkC5FC: u16,                                                    // C5FC
-    pub unkC5FE: u16,                                                    // C5FE
+    pub unk_c5fa: u16,                                                   // C5FA
+    pub unk_c5fc: u16,                                                   // C5FC
+    pub unk_c5fe: u16,                                                   // C5FE
 }
 
 const _: () = assert!(core::mem::size_of::<bhkWorld>() == 0xC600);

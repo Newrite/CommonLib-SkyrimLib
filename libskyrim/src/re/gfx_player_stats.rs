@@ -6,7 +6,7 @@ use crate::re::GStatGroup;
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxStatMovieDatum {
-    kGFxStatMD_Default = GStatGroup::kGStatGroup_GFxMovieData as u32,
+    kGFxStatMD_Default = GStatGroup::GROUP_GFX_MOVIE_DATA as u32,
 
     kGFxStatMD_Mem,
     kGFxStatMD_CharDefs_Mem,
@@ -28,29 +28,26 @@ pub enum GFxStatMovieDatum {
 pub struct GFxStatMovieData;
 
 impl GFxStatMovieData {
-    pub const kGFxStatMD_Default: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Default;
-    pub const kGFxStatMD_Mem: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Mem;
-    pub const kGFxStatMD_CharDefs_Mem: GFxStatMovieDatum =
-        GFxStatMovieDatum::kGFxStatMD_CharDefs_Mem;
-    pub const kGFxStatMD_ShapeData_Mem: GFxStatMovieDatum =
-        GFxStatMovieDatum::kGFxStatMD_ShapeData_Mem;
-    pub const kGFxStatMD_Tags_Mem: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Tags_Mem;
-    pub const kGFxStatMD_Fonts_Mem: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Fonts_Mem;
-    pub const kGFxStatMD_Images_Mem: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Images_Mem;
-    pub const kGFxStatMD_Sounds_Mem: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Sounds_Mem;
-    pub const kGFxStatMD_ActionOps_Mem: GFxStatMovieDatum =
-        GFxStatMovieDatum::kGFxStatMD_ActionOps_Mem;
-    pub const kGFxStatMD_Other_Mem: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Other_Mem;
-    pub const kGFxStatMD_Time: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Time;
-    pub const kGFxStatMD_Load_Tks: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Load_Tks;
-    pub const kGFxStatMD_Bind_Tks: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Bind_Tks;
+    pub const DEFAULT: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Default;
+    pub const MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Mem;
+    pub const CHAR_DEFS_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_CharDefs_Mem;
+    pub const SHAPE_DATA_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_ShapeData_Mem;
+    pub const TAGS_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Tags_Mem;
+    pub const FONTS_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Fonts_Mem;
+    pub const IMAGES_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Images_Mem;
+    pub const SOUNDS_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Sounds_Mem;
+    pub const ACTION_OPS_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_ActionOps_Mem;
+    pub const OTHER_MEM: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Other_Mem;
+    pub const TIME: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Time;
+    pub const LOAD_TKS: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Load_Tks;
+    pub const BIND_TKS: GFxStatMovieDatum = GFxStatMovieDatum::kGFxStatMD_Bind_Tks;
 }
 
 /// C++ `RE::GFxStatMovieViews::GFxStatMovieView`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxStatMovieView {
-    kGFxStatMV_Default = GStatGroup::kGStatGroup_GFxMovieView as u32,
+    kGFxStatMV_Default = GStatGroup::GROUP_GFX_MOVIE_VIEW as u32,
 
     kGFxStatMV_Mem,
     kGFxStatMV_MovieClip_Mem,
@@ -79,40 +76,34 @@ pub enum GFxStatMovieView {
 pub struct GFxStatMovieViews;
 
 impl GFxStatMovieViews {
-    pub const kGFxStatMV_Default: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Default;
-    pub const kGFxStatMV_Mem: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Mem;
-    pub const kGFxStatMV_MovieClip_Mem: GFxStatMovieView =
-        GFxStatMovieView::kGFxStatMV_MovieClip_Mem;
-    pub const kGFxStatMV_ActionScript_Mem: GFxStatMovieView =
-        GFxStatMovieView::kGFxStatMV_ActionScript_Mem;
-    pub const kGFxStatMV_Text_Mem: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Text_Mem;
-    pub const kGFxStatMV_XML_Mem: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_XML_Mem;
-    pub const kGFxStatMV_Other_Mem: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Other_Mem;
-    pub const kGFxStatMV_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Tks;
-    pub const kGFxStatMV_Advance_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Advance_Tks;
-    pub const kGFxStatMV_Action_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Action_Tks;
-    pub const kGFxStatMV_Timeline_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Timeline_Tks;
-    pub const kGFxStatMV_Input_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Input_Tks;
-    pub const kGFxStatMV_Mouse_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Mouse_Tks;
-    pub const kGFxStatMV_ScriptCommunication_Tks: GFxStatMovieView =
+    pub const DEFAULT: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Default;
+    pub const MEM: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Mem;
+    pub const MOVIE_CLIP_MEM: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_MovieClip_Mem;
+    pub const ACTION_SCRIPT_MEM: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_ActionScript_Mem;
+    pub const TEXT_MEM: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Text_Mem;
+    pub const XML_MEM: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_XML_Mem;
+    pub const OTHER_MEM: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Other_Mem;
+    pub const TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Tks;
+    pub const ADVANCE_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Advance_Tks;
+    pub const ACTION_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Action_Tks;
+    pub const TIMELINE_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Timeline_Tks;
+    pub const INPUT_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Input_Tks;
+    pub const MOUSE_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Mouse_Tks;
+    pub const SCRIPT_COMMUNICATION_TKS: GFxStatMovieView =
         GFxStatMovieView::kGFxStatMV_ScriptCommunication_Tks;
-    pub const kGFxStatMV_GetVariable_Tks: GFxStatMovieView =
-        GFxStatMovieView::kGFxStatMV_GetVariable_Tks;
-    pub const kGFxStatMV_SetVariable_Tks: GFxStatMovieView =
-        GFxStatMovieView::kGFxStatMV_SetVariable_Tks;
-    pub const kGFxStatMV_Invoke_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Invoke_Tks;
-    pub const kGFxStatMV_Display_Tks: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Display_Tks;
-    pub const kGFxStatMV_Tessellate_Tks: GFxStatMovieView =
-        GFxStatMovieView::kGFxStatMV_Tessellate_Tks;
-    pub const kGFxStatMV_GradientGen_Tks: GFxStatMovieView =
-        GFxStatMovieView::kGFxStatMV_GradientGen_Tks;
+    pub const GET_VARIABLE_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_GetVariable_Tks;
+    pub const SET_VARIABLE_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_SetVariable_Tks;
+    pub const INVOKE_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Invoke_Tks;
+    pub const DISPLAY_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Display_Tks;
+    pub const TESSELLATE_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_Tessellate_Tks;
+    pub const GRADIENT_GEN_TKS: GFxStatMovieView = GFxStatMovieView::kGFxStatMV_GradientGen_Tks;
 }
 
 /// C++ `RE::GFxStatIMEs::GFxStatIME`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxStatIME {
-    kGFxStatIME_Default = GStatGroup::kGStatGroup_GFxIME as u32,
+    kGFxStatIME_Default = GStatGroup::GROUP_GFX_IME as u32,
     kGFxStatIME_Mem,
 }
 
@@ -121,15 +112,15 @@ pub enum GFxStatIME {
 pub struct GFxStatIMEs;
 
 impl GFxStatIMEs {
-    pub const kGFxStatIME_Default: GFxStatIME = GFxStatIME::kGFxStatIME_Default;
-    pub const kGFxStatIME_Mem: GFxStatIME = GFxStatIME::kGFxStatIME_Mem;
+    pub const DEFAULT: GFxStatIME = GFxStatIME::kGFxStatIME_Default;
+    pub const MEM: GFxStatIME = GFxStatIME::kGFxStatIME_Mem;
 }
 
 /// C++ `RE::GFxStatFontCaches::GFxStatFontCache`
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxStatFontCache {
-    kGFxStatFC_Default = GStatGroup::kGStatGroup_GFxFontCache as u32,
+    kGFxStatFC_Default = GStatGroup::GROUP_GFX_FONT_CACHE as u32,
 
     kGFxStatFC_Mem,
     kGFxStatFC_Batch_Mem,
@@ -142,12 +133,11 @@ pub enum GFxStatFontCache {
 pub struct GFxStatFontCaches;
 
 impl GFxStatFontCaches {
-    pub const kGFxStatFC_Default: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Default;
-    pub const kGFxStatFC_Mem: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Mem;
-    pub const kGFxStatFC_Batch_Mem: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Batch_Mem;
-    pub const kGFxStatFC_GlyphCache_Mem: GFxStatFontCache =
-        GFxStatFontCache::kGFxStatFC_GlyphCache_Mem;
-    pub const kGFxStatFC_Other_Mem: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Other_Mem;
+    pub const DEFAULT: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Default;
+    pub const MEM: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Mem;
+    pub const BATCH_MEM: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Batch_Mem;
+    pub const GLYPH_CACHE_MEM: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_GlyphCache_Mem;
+    pub const OTHER_MEM: GFxStatFontCache = GFxStatFontCache::kGFxStatFC_Other_Mem;
 }
 
 const _: () = assert!(core::mem::size_of::<GFxStatMovieDatum>() == 0x4);

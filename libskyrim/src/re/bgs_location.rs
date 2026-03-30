@@ -8,6 +8,7 @@ use crate::re::bgs_keyword::BGSKeyword;
 use crate::re::bgs_keyword_form::BGSKeywordForm;
 use crate::re::bgs_location_ref_type::BGSLocationRefType;
 use crate::re::bgs_music_type::BGSMusicType;
+use crate::re::bs_core_types::FormID;
 use crate::re::bs_pointer_handle::ObjectRefHandle;
 use crate::re::bst_array::BSTArray;
 use crate::re::bst_hash_map::BSTSet;
@@ -16,7 +17,7 @@ use crate::re::form_traits::FormCastable;
 use crate::re::form_type::FormType;
 use crate::re::queued_promote_location_references_task::QueuedPromoteLocationReferencesTask;
 use crate::re::tes_faction::TESFaction;
-use crate::re::tes_form::{FormID, TESForm};
+use crate::re::tes_form::TESForm;
 use crate::re::tes_full_name::TESFullName;
 use crate::relocation::{RttiType, VariantID};
 

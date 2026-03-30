@@ -10,9 +10,9 @@ use crate::relocation::{RttiType, VariantID};
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum IMessageBoxCallbackMessage {
-    kUnk0 = 0,
-    kUnk1 = 1,
-    kUnk2 = 2,
+    Unk0 = 0,
+    Unk1 = 1,
+    Unk2 = 2,
 }
 
 const _: () = assert!(core::mem::size_of::<IMessageBoxCallbackMessage>() == 0x4);

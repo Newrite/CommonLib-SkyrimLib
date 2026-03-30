@@ -4,7 +4,7 @@ use alloc::vec;
 use core::ffi::c_void;
 use core::marker::PhantomData;
 
-use crate::re::tes_form::FormID as TesFormID;
+use crate::re::bs_core_types::FormID as TesFormID;
 use crate::re::{
     ActiveEffect, BGSBaseAlias, BSFixedString, IObjectHandlePolicy, SkyrimVM, TESForm, VMHandle,
     VMTypeID,

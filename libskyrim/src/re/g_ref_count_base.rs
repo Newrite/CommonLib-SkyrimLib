@@ -19,7 +19,7 @@ const _: () = assert!(core::mem::offset_of!(GRefCountBase<(), 0>, base) == 0x0);
 inherit!(for[T, const STAT: u32] GRefCountBase<T, STAT> : GRefCountBaseStatImpl<GRefCountImpl, STAT>, base);
 
 impl<T, const STAT: u32> GRefCountBase<T, STAT> {
-    pub const kStatType: u32 = STAT;
+    pub const STAT_TYPE: u32 = STAT;
 
     // TODO: `GRefCountBase.h` inherits the `GRefCountBaseStatImpl` heap
     // override semantics. Rust intentionally keeps only the honest layout and

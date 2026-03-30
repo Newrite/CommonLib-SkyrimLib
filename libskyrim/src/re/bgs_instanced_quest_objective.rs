@@ -1,12 +1,12 @@
-use crate::re::quest_objective_states::QUEST_OBJECTIVE_STATE;
+use crate::re::quest_objective_states::QuestObjectiveState;
 use crate::re::tes_quest::BGSQuestObjective;
 
 /// C++ `RE::BGSInstancedQuestObjective`
 #[repr(C)]
 pub struct BGSInstancedQuestObjective {
-    pub objective: *mut BGSQuestObjective,     // 00
-    pub instance_id: u32,                      // 08
-    pub instance_state: QUEST_OBJECTIVE_STATE, // 0C
+    pub objective: *mut BGSQuestObjective,   // 00
+    pub instance_id: u32,                    // 08
+    pub instance_state: QuestObjectiveState, // 0C
 }
 
 const _: () = assert!(core::mem::size_of::<BGSInstancedQuestObjective>() == 0x10);

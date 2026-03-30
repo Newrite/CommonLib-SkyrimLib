@@ -7,8 +7,8 @@ use crate::re::bs_core_types::FormID;
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BGSActorCellEventCellFlag {
-    kEnter = 0,
-    kLeave = 1,
+    Enter = 0,
+    Leave = 1,
 }
 
 core_util::impl_enumset_type!(BGSActorCellEventCellFlag => u32);

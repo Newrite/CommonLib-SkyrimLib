@@ -5,18 +5,18 @@ use crate::offsets::offsets_rtti::RTTI_Script;
 use crate::offsets::offsets_vtable::VTABLE_Script;
 use crate::re::form_traits::FormCastable;
 use crate::re::{
-    BSSimpleList, FormType, SCRIPT_HEADER, SCRIPT_PARAMETER, SCRIPT_REFERENCED_OBJECT, ScriptData,
-    ScriptLocals, ScriptVariable, TESForm, TESObjectREFR, TESQuest,
+    BSSimpleList, FormType, ScriptData, ScriptHeader, ScriptLocals, ScriptParameter,
+    ScriptReferencedObject, ScriptVariable, TESForm, TESObjectREFR, TESQuest,
 };
 use crate::relocation::{Relocation, RelocationID, RttiType, VariantID, VersionedRelocationID};
 use crate::version::RUNTIME_SSE_1_6_1130;
 
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum COMPILER_NAME {
-    kDefaultCompiler = 0,
-    kSystemWindowCompiler = 1,
-    kDialogueCompiler = 2,
+pub enum CompilerName {
+    DefaultCompiler = 0,
+    SystemWindowCompiler = 1,
+    DialogueCompiler = 2,
 }
 
 #[repr(C)]
@@ -50,7 +50,7 @@ impl<T> ScriptParseParameterArg for *const T {}
 impl<T> ScriptParseParameterArg for *mut T {}
 
 type ParseParametersImpl = unsafe extern "C" fn(
-    *const SCRIPT_PARAMETER,
+    *const ScriptParameter,
     *mut ScriptData,
     *mut u32,
     *mut TESObjectREFR,
@@ -68,7 +68,7 @@ pub trait ScriptParseParameterArgs {
     unsafe fn call(
         self,
         func: ParseParametersImpl,
-        param_info: *const SCRIPT_PARAMETER,
+        param_info: *const ScriptParameter,
         script_data: *mut ScriptData,
         opcode_offset_ptr: *mut u32,
         this_obj: *mut TESObjectREFR,
@@ -83,7 +83,7 @@ impl ScriptParseParameterArgs for () {
     unsafe fn call(
         self,
         func: ParseParametersImpl,
-        param_info: *const SCRIPT_PARAMETER,
+        param_info: *const ScriptParameter,
         script_data: *mut ScriptData,
         opcode_offset_ptr: *mut u32,
         this_obj: *mut TESObjectREFR,
@@ -113,7 +113,7 @@ macro_rules! impl_script_parse_parameter_args {
                 unsafe fn call(
                     self,
                     func: ParseParametersImpl,
-                    param_info: *const SCRIPT_PARAMETER,
+                    param_info: *const ScriptParameter,
                     script_data: *mut ScriptData,
                     opcode_offset_ptr: *mut u32,
                     this_obj: *mut TESObjectREFR,
@@ -161,18 +161,18 @@ impl_script_parse_parameter_args!(
 
 #[repr(C)]
 pub struct Script {
-    pub base: TESForm,                                            // 00
-    pub header: SCRIPT_HEADER,                                    // 20
-    pub pad34: u32,                                               // 34
-    pub text: *mut i8,                                            // 38
-    pub data: *mut crate::re::ScriptData,                         // 40
-    pub profiler_timer: f32,                                      // 48
-    pub quest_script_delay: f32,                                  // 4C
-    pub quest_script_get_seconds_buffer: f32,                     // 50
-    pub pad54: u32,                                               // 54
-    pub parent_quest: *mut TESQuest,                              // 58
-    pub ref_objects: BSSimpleList<*mut SCRIPT_REFERENCED_OBJECT>, // 60
-    pub variables: BSSimpleList<*mut ScriptVariable>,             // 70
+    pub base: TESForm,                                          // 00
+    pub header: ScriptHeader,                                   // 20
+    pub pad34: u32,                                             // 34
+    pub text: *mut i8,                                          // 38
+    pub data: *mut crate::re::ScriptData,                       // 40
+    pub profiler_timer: f32,                                    // 48
+    pub quest_script_delay: f32,                                // 4C
+    pub quest_script_get_seconds_buffer: f32,                   // 50
+    pub pad54: u32,                                             // 54
+    pub parent_quest: *mut TESQuest,                            // 58
+    pub ref_objects: BSSimpleList<*mut ScriptReferencedObject>, // 60
+    pub variables: BSSimpleList<*mut ScriptVariable>,           // 70
 }
 
 const _: () = assert!(core::mem::size_of::<Script>() == 0x80);
@@ -209,7 +209,7 @@ impl Script {
     }
 
     #[inline(always)]
-    pub fn compile_and_run(&mut self, target_ref: *mut TESObjectREFR, name: COMPILER_NAME) {
+    pub fn compile_and_run(&mut self, target_ref: *mut TESObjectREFR, name: CompilerName) {
         let mut compiler = ScriptCompiler { pad00: 0 };
         self.compile_and_run_with_compiler(&mut compiler, target_ref, name);
     }
@@ -219,12 +219,12 @@ impl Script {
         &mut self,
         compiler: *mut ScriptCompiler,
         target_ref: *mut TESObjectREFR,
-        name: COMPILER_NAME,
+        name: CompilerName,
     ) {
         type CompileAndRunImpl = unsafe extern "C-unwind" fn(
             *mut Script,
             *mut ScriptCompiler,
-            COMPILER_NAME,
+            CompilerName,
             *mut TESObjectREFR,
         );
 
@@ -242,7 +242,7 @@ impl Script {
 
     #[inline(always)]
     pub fn parse_parameters<A: ScriptParseParameterArgs>(
-        param_info: *const SCRIPT_PARAMETER,
+        param_info: *const ScriptParameter,
         script_data: *mut ScriptData,
         opcode_offset_ptr: &mut u32,
         this_obj: *mut TESObjectREFR,

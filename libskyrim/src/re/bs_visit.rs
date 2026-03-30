@@ -1,7 +1,4 @@
-use crate::re::{
-    BSGeometry, NiAVObject, NiNode, NiNodeExt, NiObject, NiObjectExt, NiPointLight,
-    bhkNiCollisionObject,
-};
+use crate::re::{BSGeometry, NiAVObject, NiNode, NiObject, NiPointLight, bhkNiCollisionObject};
 
 /// C++ `RE::BSVisit::BSVisitControl`
 #[repr(i32)]

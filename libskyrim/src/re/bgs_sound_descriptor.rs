@@ -3,9 +3,10 @@ use core_util::inherit;
 use crate::offsets::offsets_rtti::RTTI_BGSSoundDescriptor;
 use crate::offsets::offsets_vtable::VTABLE_BGSSoundDescriptor;
 use crate::re::bgs_sound_category::BGSSoundCategory;
+use crate::re::bs_core_types::FormID;
 use crate::re::bsi_sound_descriptor::BSISoundDescriptor;
 use crate::re::tes_file::TESFile;
-use crate::re::tes_form::{FormID, TESForm};
+use crate::re::tes_form::TESForm;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
 

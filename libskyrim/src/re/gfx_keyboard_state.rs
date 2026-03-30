@@ -41,14 +41,14 @@ const _: () = assert!(core::mem::size_of::<GFxKeyboardStateKeyQueueKeyRecord>() 
 /// C++ `RE::GFxKeyboardState::KeyQueue`
 #[repr(C)]
 pub struct GFxKeyboardStateKeyQueue {
-    pub buffer: [GFxKeyboardStateKeyQueueKeyRecord; Self::kKeyQueueSize], // 000
-    pub put_idx: u32,                                                     // 640
-    pub get_idx: u32,                                                     // 644
-    pub count: u32,                                                       // 648
+    pub buffer: [GFxKeyboardStateKeyQueueKeyRecord; Self::KEY_QUEUE_SIZE], // 000
+    pub put_idx: u32,                                                      // 640
+    pub get_idx: u32,                                                      // 644
+    pub count: u32,                                                        // 648
 }
 
 impl GFxKeyboardStateKeyQueue {
-    pub const kKeyQueueSize: usize = 100;
+    pub const KEY_QUEUE_SIZE: usize = 100;
 }
 
 const _: () = assert!(core::mem::size_of::<GFxKeyboardStateKeyQueue>() == 0x64C);
@@ -56,20 +56,19 @@ const _: () = assert!(core::mem::size_of::<GFxKeyboardStateKeyQueue>() == 0x64C)
 /// C++ `RE::GFxKeyboardState`
 #[repr(C)]
 pub struct GFxKeyboardState {
-    pub base:
-        GRefCountBaseNTS<GFxKeyboardState, { GFxStatMovieViews::kGFxStatMV_Other_Mem as u32 }>, // 00
-    pub listener: *mut GFxKeyboardStateIListener, // 10
-    pub key_queue: GFxKeyboardStateKeyQueue,      // 18
-    pub keyboard_index: u8,                       // 664
-    pub keymap: [u8; GFxKey::kTotal / 8 + 1],     // 665
-    pub toggled: [bool; 3],                       // 682
-    pub pad685: u8,                               // 685
-    pub pad686: u8,                               // 686
-    pub pad687: u8,                               // 687
+    pub base: GRefCountBaseNTS<GFxKeyboardState, { GFxStatMovieViews::OTHER_MEM as u32 }>, // 00
+    pub listener: *mut GFxKeyboardStateIListener,                                          // 10
+    pub key_queue: GFxKeyboardStateKeyQueue,                                               // 18
+    pub keyboard_index: u8,                                                                // 664
+    pub keymap: [u8; GFxKey::TOTAL / 8 + 1],                                               // 665
+    pub toggled: [bool; 3],                                                                // 682
+    pub pad685: u8,                                                                        // 685
+    pub pad686: u8,                                                                        // 686
+    pub pad687: u8,                                                                        // 687
 }
 
 const _: () = assert!(core::mem::size_of::<GFxKeyboardState>() == 0x688);
 const _: () = assert!(core::mem::offset_of!(GFxKeyboardState, listener) == 0x10);
 const _: () = assert!(core::mem::offset_of!(GFxKeyboardState, key_queue) == 0x18);
 
-inherit!(GFxKeyboardState : GRefCountBaseNTS<GFxKeyboardState, { GFxStatMovieViews::kGFxStatMV_Other_Mem as u32 }>, base);
+inherit!(GFxKeyboardState : GRefCountBaseNTS<GFxKeyboardState, { GFxStatMovieViews::OTHER_MEM as u32 }>, base);

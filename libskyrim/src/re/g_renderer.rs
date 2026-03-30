@@ -6,8 +6,7 @@ use core_util::{EnumSet, inherit};
 
 use crate::re::{
     GColor, GList, GMatrix2D, GMatrix3D, GPointF, GPtrTarget, GRectF, GRefCountBase, GRenderTarget,
-    GRendererEventHandler, GStatBag, GStatRenderer, GTexture, GTextureMapRect, GTextureUpdateRect,
-    GViewport,
+    GRendererEventHandler, GStatBag, GStatRenderer, GTexture, GViewport,
 };
 
 /// C++ `RE::GRenderer::BlendType`
@@ -366,10 +365,10 @@ const _: () = assert!(core::mem::size_of::<GRendererBlurFilterParams>() == 0x44)
 /// C++ `RE::GRenderer`
 #[repr(C)]
 pub struct GRenderer {
-    pub base: GRefCountBase<GRenderer, { GStatRenderer::kMem as u32 }>, // 00
-    pub handlers: GList<GRendererEventHandler>,                         // 10
-    pub s3d_params: GRendererStereoParams,                              // 20
-    pub s3d_display: EnumSet<GRendererStereoDisplay, u32>,              // 34
+    pub base: GRefCountBase<GRenderer, { GStatRenderer::MEM as u32 }>, // 00
+    pub handlers: GList<GRendererEventHandler>,                        // 10
+    pub s3d_params: GRendererStereoParams,                             // 20
+    pub s3d_display: EnumSet<GRendererStereoDisplay, u32>,             // 34
 }
 
 const _: () = assert!(core::mem::size_of::<GRenderer>() == 0x38);
@@ -378,7 +377,7 @@ const _: () = assert!(core::mem::offset_of!(GRenderer, handlers) == 0x10);
 const _: () = assert!(core::mem::offset_of!(GRenderer, s3d_params) == 0x20);
 const _: () = assert!(core::mem::offset_of!(GRenderer, s3d_display) == 0x34);
 
-inherit!(GRenderer : GRefCountBase<GRenderer, { GStatRenderer::kMem as u32 }>, base);
+inherit!(GRenderer : GRefCountBase<GRenderer, { GStatRenderer::MEM as u32 }>, base);
 
 impl GRendererStats {
     #[inline(always)]
@@ -500,18 +499,17 @@ impl Default for GRendererCxform {
 }
 
 impl GRendererCxform {
-    pub const kR: usize = 0;
-    pub const kG: usize = 1;
-    pub const kB: usize = 2;
-    pub const kA: usize = 3;
-    pub const kRGBA: usize = 4;
-    pub const kMult: usize = 0;
-    pub const kAdd: usize = 1;
-    pub const kMultAdd: usize = 2;
+    pub const R: usize = 0;
+    pub const G: usize = 1;
+    pub const B: usize = 2;
+    pub const A: usize = 3;
+    pub const RGBA: usize = 4;
+    pub const MULT: usize = 0;
+    pub const ADD: usize = 1;
+    pub const MULT_ADD: usize = 2;
     pub const IDENTITY: Self = Self {
         matrix: [[1.0, 0.0], [1.0, 0.0], [1.0, 0.0], [1.0, 0.0]],
     };
-    pub const Identity: Self = Self::IDENTITY;
 
     #[inline(always)]
     pub fn set_identity(&mut self) {
@@ -553,15 +551,15 @@ impl Default for GRendererUserData {
 }
 
 impl GRendererVertexXY16iC32 {
-    pub const kVFormat: u32 = GRendererVertexFormat::kXY16iC32 as u32;
+    pub const VERTEX_FORMAT: u32 = GRendererVertexFormat::kXY16iC32 as u32;
 }
 
 impl GRendererVertexXY16iCF32 {
-    pub const kVFormat: u32 = GRendererVertexFormat::kXY16iCF32 as u32;
+    pub const VERTEX_FORMAT: u32 = GRendererVertexFormat::kXY16iCF32 as u32;
 }
 
 impl GRenderer {
-    // override (GRefCountBase<GRenderer, { GStatRenderer::kMem as u32 }>)
+    // override (GRefCountBase<GRenderer, { GStatRenderer::MEM as u32 }>)
     crate::virtual_method! { pub const VFUNC_DTOR: usize = 0x0; pub fn dtor() }
     crate::virtual_method! { pub const VFUNC_GET_RENDER_CAPS: usize = 0x1; pub fn get_render_caps(caps: *mut GRendererRenderCaps) -> bool }
     crate::virtual_method! { pub const VFUNC_CREATE_TEXTURE: usize = 0x2; pub fn create_texture() -> *mut GTexture }

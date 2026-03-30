@@ -7,10 +7,10 @@ use crate::re::{GFxStatMovieData, GMutex, GPtrTarget, GRefCountBase};
 /// C++ `RE::GFxLoadUpdateSync`
 #[repr(C)]
 pub struct GFxLoadUpdateSync {
-    pub base: GRefCountBase<GFxLoadUpdateSync, { GFxStatMovieData::kGFxStatMD_Other_Mem as u32 }>, // 00
-    pub mutex: GMutex,                 // 10
-    pub unk38: *mut core::ffi::c_void, // 38
-    pub unk40: *mut core::ffi::c_void, // 40
+    pub base: GRefCountBase<GFxLoadUpdateSync, { GFxStatMovieData::OTHER_MEM as u32 }>, // 00
+    pub mutex: GMutex,                                                                  // 10
+    pub unk38: *mut core::ffi::c_void,                                                  // 38
+    pub unk40: *mut core::ffi::c_void,                                                  // 40
 }
 
 const _: () = assert!(core::mem::size_of::<GFxLoadUpdateSync>() == 0x48);
@@ -18,7 +18,7 @@ const _: () = assert!(core::mem::offset_of!(GFxLoadUpdateSync, base) == 0x0);
 const _: () = assert!(core::mem::offset_of!(GFxLoadUpdateSync, mutex) == 0x10);
 const _: () = assert!(core::mem::offset_of!(GFxLoadUpdateSync, unk38) == 0x38);
 
-inherit!(GFxLoadUpdateSync : GRefCountBase<GFxLoadUpdateSync, { GFxStatMovieData::kGFxStatMD_Other_Mem as u32 }>, base);
+inherit!(GFxLoadUpdateSync : GRefCountBase<GFxLoadUpdateSync, { GFxStatMovieData::OTHER_MEM as u32 }>, base);
 
 impl GFxLoadUpdateSync {
     // override (GRefCountImpl)

@@ -17,5 +17,5 @@ const _: () = assert!(core::mem::offset_of!(GRefCountBaseWeakSupport<(), 0>, bas
 core_util::inherit!(for[T, const STAT: u32] GRefCountBaseWeakSupport<T, STAT> : GRefCountBaseStatImpl<GRefCountWeakSupportImpl, STAT>, base);
 
 impl<T, const STAT: u32> GRefCountBaseWeakSupport<T, STAT> {
-    pub const kStatType: u32 = STAT;
+    pub const STAT_TYPE: u32 = STAT;
 }

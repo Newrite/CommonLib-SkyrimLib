@@ -343,19 +343,17 @@ impl InventoryChanges {
         drop_ref: *mut TESObjectREFR,
     ) -> ObjectRefHandle {
         let mut out = ObjectRefHandle::new();
-        unsafe {
-            self.remove_item_impl(
-                &mut out,
-                refr,
-                item,
-                count,
-                reason,
-                extra_data_list,
-                move_to_ref,
-                drop_loc,
-                drop_ref,
-            );
-        }
+        self.remove_item_impl(
+            &mut out,
+            refr,
+            item,
+            count,
+            reason,
+            extra_data_list,
+            move_to_ref,
+            drop_loc,
+            drop_ref,
+        );
         out
     }
 

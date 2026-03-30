@@ -8,7 +8,7 @@ use crate::re::bs_visit::{BSVisitControl, traverse_scenegraph_geometries};
 use crate::re::{
     BSFixedString, BSLightingShaderMaterialFacegenTint, BSLightingShaderMaterialHairTint,
     BSShaderMaterialFeature, ColLayer, NiAlphaProperty, NiBound, NiColor, NiCullingProcess, NiNode,
-    NiObject, NiObjectNET, NiPointer, NiRTTI, NiTransform, TESObjectREFR, bhkCollisionObject,
+    NiObject, NiObjectNET, NiPointer, NiTransform, TESObjectREFR, bhkCollisionObject,
     bhkWorldObject, hkpMotionMotionType, hkpRigidBody,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset};

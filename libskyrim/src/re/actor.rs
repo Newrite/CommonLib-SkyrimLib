@@ -5,8 +5,8 @@ use core_util::{EnumSet, inherit};
 
 use crate::offsets::offsets_rtti::{RTTI_Actor, RTTI_Actor__ForEachSpellVisitor};
 use crate::offsets::offsets_vtable::{VTABLE_Actor, VTABLE_Actor__ForEachSpellVisitor};
+use crate::re::bs_core_types::FormID;
 use crate::re::magic_system::CannotCastReason;
-use crate::re::tes_form::FormID;
 use crate::re::{
     ACTOR_LIFE_STATE, ACTOR_LOS_LOCATION, AIProcess, AITimeStamp, ActorHandle, ActorMagicCaster,
     ActorMotionFeedbackData, ActorMotionFeedbackOutput, ActorMover, ActorState, ActorValue,
@@ -20,11 +20,11 @@ use crate::re::{
     HeadPartType, HighProcessData, IAnimationGraphManagerHolder, IAnimationGraphManagerHolderExt,
     IPostAnimationChannelUpdateFunctor, InventoryEntryData, MagicCaster, MagicItem, MagicTarget,
     MiddleHighProcessData, MovementControllerNPC, MovementMessageActorCollision, NiAVObject,
-    NiColor, NiPoint3, NiPointer, NiRef, ObjectRefHandle, PACKAGE_TYPE, PROCESS_TYPE,
-    PackageLocation, PerkEntryVisitor, ProcessLists, SOUL_LEVEL, SpellItem, TESBoundObject,
-    TESFaction, TESForm, TESIdleForm, TESNPC, TESObjectARMA, TESObjectARMO, TESObjectCELL,
-    TESObjectMISC, TESObjectREFR, TESPackage, TESRace, TESShout, TESTopicInfo, TESWordOfPower,
-    TrespassPackage, bhkCharacterController, bhkCharacterMoveFinishEvent,
+    NiColor, NiPoint3, NiPointer, NiRef, ObjectRefHandle, PROCESS_TYPE, PackageLocation,
+    PackageType, PerkEntryVisitor, ProcessLists, SOUL_LEVEL, SpellItem, TESBoundObject, TESFaction,
+    TESForm, TESIdleForm, TESNPC, TESObjectARMA, TESObjectARMO, TESObjectCELL, TESObjectMISC,
+    TESObjectREFR, TESPackage, TESRace, TESShout, TESTopicInfo, TESWordOfPower, TrespassPackage,
+    bhkCharacterController, bhkCharacterMoveFinishEvent,
 };
 use crate::relocation::{RelocationID, RttiType, VariantID, VariantOffset, skyrim_cast};
 use crate::version::RUNTIME_SSE_1_6_629;
@@ -1277,7 +1277,7 @@ impl Actor {
     #[inline(always)]
     pub fn is_alarmed(&self) -> bool {
         self.get_current_package_ref()
-            .map(|package| package.pack_data.pack_type.underlying() == PACKAGE_TYPE::Alarm as u8)
+            .map(|package| package.pack_data.pack_type.underlying() == PackageType::Alarm as u8)
             .unwrap_or(false)
     }
 

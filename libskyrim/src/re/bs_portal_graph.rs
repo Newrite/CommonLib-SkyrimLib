@@ -2,6 +2,7 @@ use core::ffi::c_void;
 
 use crate::offsets::offsets_rtti::{RTTI_BSPortalGraph, RTTI_BSPortalGraphEntry};
 use crate::offsets::offsets_vtable::{VTABLE_BSPortalGraph, VTABLE_BSPortalGraphEntry};
+use crate::re::bs_core_types::FormID;
 use crate::re::bs_multi_bound_room::BSMultiBoundRoom;
 use crate::re::bs_occlusion_shape::BSOcclusionShape;
 use crate::re::bs_portal::BSPortal;
@@ -11,7 +12,6 @@ use crate::re::ni_av_object::NiAVObject;
 use crate::re::ni_ref_object::{NiRef, NiRefObject};
 use crate::re::ni_smart_pointer::NiPointer;
 use crate::re::ni_t_pointer_list::NiTPointerList;
-use crate::re::tes_form::FormID;
 use crate::relocation::{RttiType, VariantID};
 use core_util::inherit;
 

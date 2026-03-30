@@ -20,8 +20,8 @@ use crate::re::DIALOGUE_TYPE_TOTAL;
 use crate::re::FormCastable;
 use crate::re::FormType;
 use crate::re::ObjectRefHandle;
-use crate::re::QUEST_OBJECTIVE_STATE;
 use crate::re::QuestEvent;
+use crate::re::QuestObjectiveState;
 use crate::re::QueuedPromoteQuestTask;
 use crate::re::TESCondition;
 use crate::re::TESFullName;
@@ -264,15 +264,15 @@ impl TESQuestTarget {
 /// C++ `RE::BGSQuestObjective`
 #[repr(C)]
 pub struct BGSQuestObjective {
-    pub display_text: BSFixedString,               // 00
-    pub owner_quest: *mut TESQuest,                // 08
-    pub targets: *mut *mut TESQuestTarget,         // 10
-    pub num_targets: u32,                          // 18
-    pub index: u16,                                // 1C
-    pub initialized: bool,                         // 1E
-    pub state: EnumSet<QUEST_OBJECTIVE_STATE, u8>, // 1F
-    pub flags: EnumSet<QuestObjectiveFlag, u32>,   // 20
-    pub pad24: u32,                                // 24
+    pub display_text: BSFixedString,             // 00
+    pub owner_quest: *mut TESQuest,              // 08
+    pub targets: *mut *mut TESQuestTarget,       // 10
+    pub num_targets: u32,                        // 18
+    pub index: u16,                              // 1C
+    pub initialized: bool,                       // 1E
+    pub state: EnumSet<QuestObjectiveState, u8>, // 1F
+    pub flags: EnumSet<QuestObjectiveFlag, u32>, // 20
+    pub pad24: u32,                              // 24
 }
 
 const _: () = assert!(core::mem::size_of::<BGSQuestObjective>() == 0x28);

@@ -4,6 +4,7 @@ use core_util::inherit;
 
 use crate::re::bgs_addon_node::BGSAddonNode;
 use crate::re::bgs_primitive::BGSPrimitive;
+use crate::re::bs_core_types::FormID;
 use crate::re::bs_pointer_handle::ObjectRefHandle;
 use crate::re::bssimple_list::BSSimpleList;
 use crate::re::bst_array::BSTArray;
@@ -16,7 +17,7 @@ use crate::re::ni_t_array::NiTPrimitiveArray;
 use crate::re::ni_t_list::NiTList;
 use crate::re::tes_bound_object::TESBoundObject;
 use crate::re::tes_file::TESFile;
-use crate::re::tes_form::{FormID, TESForm};
+use crate::re::tes_form::TESForm;
 use crate::re::tes_object_cell::TESObjectCELL;
 use crate::re::tes_object_refr::TESObjectREFR;
 use crate::re::tes_region_data_manager::TESRegionDataManager;
@@ -519,21 +520,19 @@ impl TESDataHandler {
         arg11: bool,
     ) -> ObjectRefHandle {
         let mut out = ObjectRefHandle::new();
-        unsafe {
-            self.create_reference_at_location_impl(
-                &mut out,
-                base,
-                location,
-                rotation,
-                target_cell,
-                self_world_space,
-                already_created_ref,
-                primitive,
-                linked_room_ref_handle,
-                force_persist,
-                arg11,
-            );
-        }
+        self.create_reference_at_location_impl(
+            &mut out,
+            base,
+            location,
+            rotation,
+            target_cell,
+            self_world_space,
+            already_created_ref,
+            primitive,
+            linked_room_ref_handle,
+            force_persist,
+            arg11,
+        );
         out
     }
 

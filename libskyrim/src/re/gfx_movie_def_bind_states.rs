@@ -7,7 +7,7 @@ use crate::re::{GPtrTarget, GRefCountBase, GStatGroup};
 /// C++ `RE::GFxMovieDefBindStates`
 #[repr(C)]
 pub struct GFxMovieDefBindStates {
-    pub base: GRefCountBase<GFxMovieDefBindStates, { GStatGroup::kGStat_Default_Mem as u32 }>, // 00
+    pub base: GRefCountBase<GFxMovieDefBindStates, { GStatGroup::DEFAULT_MEM as u32 }>, // 00
     // TODO: `GFxMovieDefBindStates.h` only forward-declares these helper types at
     // this layer. Restore the named pointer fields once their reusable RE
     // translations exist.
@@ -26,7 +26,7 @@ const _: () = assert!(core::mem::size_of::<GFxMovieDefBindStates>() == 0x58);
 const _: () = assert!(core::mem::offset_of!(GFxMovieDefBindStates, base) == 0x0);
 const _: () = assert!(core::mem::offset_of!(GFxMovieDefBindStates, file_opener) == 0x10);
 
-inherit!(GFxMovieDefBindStates : GRefCountBase<GFxMovieDefBindStates, { GStatGroup::kGStat_Default_Mem as u32 }>, base);
+inherit!(GFxMovieDefBindStates : GRefCountBase<GFxMovieDefBindStates, { GStatGroup::DEFAULT_MEM as u32 }>, base);
 
 impl GPtrTarget for GFxMovieDefBindStates {
     #[inline(always)]

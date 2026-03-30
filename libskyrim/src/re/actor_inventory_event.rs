@@ -1,9 +1,9 @@
-use crate::re::{BIPED_OBJECT, INVENTORY_EVENT};
+use crate::re::{BIPED_OBJECT, InventoryEvent};
 
 /// C++ `RE::ActorInventoryEvent`
 #[repr(C)]
 pub struct ActorInventoryEvent {
-    pub event: INVENTORY_EVENT,    // 00
+    pub event: InventoryEvent,     // 00
     pub equip_index: BIPED_OBJECT, // 04
 }
 

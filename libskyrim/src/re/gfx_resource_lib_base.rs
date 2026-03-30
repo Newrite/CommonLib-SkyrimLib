@@ -7,13 +7,13 @@ use crate::re::{GFxResource, GRefCountBase, GStatGroups};
 /// C++ `RE::GFxResourceLibBase`
 #[repr(C)]
 pub struct GFxResourceLibBase {
-    pub base: GRefCountBase<GFxResourceLibBase, { GStatGroups::kGStat_Default_Mem as u32 }>, // 00
+    pub base: GRefCountBase<GFxResourceLibBase, { GStatGroups::DEFAULT_MEM as u32 }>, // 00
 }
 
 const _: () = assert!(core::mem::size_of::<GFxResourceLibBase>() == 0x10);
 const _: () = assert!(core::mem::offset_of!(GFxResourceLibBase, base) == 0x0);
 
-inherit!(GFxResourceLibBase : GRefCountBase<GFxResourceLibBase, { GStatGroups::kGStat_Default_Mem as u32 }>, base);
+inherit!(GFxResourceLibBase : GRefCountBase<GFxResourceLibBase, { GStatGroups::DEFAULT_MEM as u32 }>, base);
 
 impl GFxResourceLibBase {
     crate::virtual_method! {

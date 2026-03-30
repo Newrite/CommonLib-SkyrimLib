@@ -2,8 +2,6 @@
 
 use core::marker::PhantomData;
 
-use crate::re::GFxLogConstants;
-
 /// C++ `RE::GFxLogBase<Derived>`
 #[repr(C)]
 pub struct GFxLogBase<Derived> {

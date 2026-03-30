@@ -24,14 +24,14 @@ core_util::impl_enumset_type!(GStringHeapType => usize);
 #[repr(usize)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GStringFlagConstant {
-    kReserveIsSizeShift = (core::mem::size_of::<usize>() * 8) - 1,
+    ReserveIsSizeShift = (core::mem::size_of::<usize>() * 8) - 1,
 }
 
 /// C++ `RE::GString::FlagConstants`
 pub struct GStringFlagConstants;
 
 impl GStringFlagConstants {
-    pub const kReserveIsSizeShift: usize = GStringFlagConstant::kReserveIsSizeShift as usize;
+    pub const RESERVE_IS_SIZE_SHIFT: usize = GStringFlagConstant::ReserveIsSizeShift as usize;
 }
 
 /// C++ `RE::GString::DataDesc`
@@ -45,7 +45,7 @@ pub struct GStringDataDesc {
 const _: () = assert!(core::mem::size_of::<GStringDataDesc>() == 0x10);
 
 impl GStringDataDesc {
-    pub const kFullFlag: usize = 1usize << GStringFlagConstants::kReserveIsSizeShift;
+    pub const FULL_FLAG: usize = 1usize << GStringFlagConstants::RESERVE_IS_SIZE_SHIFT;
 
     #[inline(always)]
     pub const fn new() -> Self {
@@ -72,20 +72,20 @@ impl GStringDataDesc {
 
     #[inline(always)]
     pub const fn get_capacity(&self) -> usize {
-        self.capacity & !Self::kFullFlag
+        self.capacity & !Self::FULL_FLAG
     }
 
     #[inline(always)]
     pub const fn is_full(&self) -> bool {
-        (self.capacity & Self::kFullFlag) != 0
+        (self.capacity & Self::FULL_FLAG) != 0
     }
 
     #[inline(always)]
     pub fn set_full(&mut self, set: bool) {
         if set {
-            self.capacity |= Self::kFullFlag;
+            self.capacity |= Self::FULL_FLAG;
         } else {
-            self.capacity &= !Self::kFullFlag;
+            self.capacity &= !Self::FULL_FLAG;
         }
     }
 

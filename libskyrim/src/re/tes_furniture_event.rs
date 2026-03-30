@@ -6,8 +6,8 @@ use crate::re::{NiPointer, TESObjectREFR};
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum FurnitureEventType {
-    kEnter = 0,
-    kExit = 1,
+    Enter = 0,
+    Exit = 1,
 }
 
 core_util::impl_enumset_type!(FurnitureEventType => u32);

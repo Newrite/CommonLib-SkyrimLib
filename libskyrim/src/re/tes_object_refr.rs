@@ -11,9 +11,7 @@ use crate::offsets::offsets_vtable::VTABLE_TESObjectREFR;
 use crate::re::bgs_default_object_manager::BGSDefaultObjectManager;
 use crate::re::item_remove_reason::ITEM_REMOVE_REASON;
 use crate::re::magic_system::CastingSource;
-use crate::re::ni_av_object::NiAVObjectExt;
-use crate::re::ni_object::NiObjectExt;
-use crate::re::tes_form::RecordFlags as TESFormRecordFlags;
+use crate::re::tes_form::RecordFlag as TESFormRecordFlag;
 use crate::re::{
     Actor, ActorCause, BGSAnimationSequencer, BGSArtObject, BGSDecalGroup, BGSDialogueBranch,
     BGSEncounterZone, BGSKeyword, BGSListForm, BGSLocation, BGSScene, BGSWorldLocation,
@@ -769,9 +767,7 @@ impl TESObjectREFR {
         add_actor_to_process_list: bool,
     ) -> ObjectRefHandle {
         let mut out = ObjectRefHandle::new();
-        unsafe {
-            Self::create_reference_impl(&mut out, handle_out, form_type, add_actor_to_process_list);
-        }
+        Self::create_reference_impl(&mut out, handle_out, form_type, add_actor_to_process_list);
         out
     }
 
@@ -2023,7 +2019,7 @@ impl TESObjectREFR {
         } else {
             bits |= TESObjectREFRRecordFlags::COLLISIONS_DISABLED.bits();
         }
-        self.base.form_flags = TESFormRecordFlags::from_bits_retain(bits);
+        self.base.form_flags = TESFormRecordFlag::from_bits_retain(bits);
     }
 
     pub fn set_display_name(&mut self, name: &BSFixedString, force: bool) -> bool {

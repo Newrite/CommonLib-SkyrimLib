@@ -8,8 +8,7 @@ use crate::re::{GASGlobalContext, GFxLogBase, GFxSprite, GFxStatMovieViews, GNew
 #[repr(C)]
 pub struct GASEnvironment {
     pub log_base: GFxLogBase<GASEnvironment>, // 000
-    pub new_override_base:
-        GNewOverrideBase<{ GFxStatMovieViews::kGFxStatMV_ActionScript_Mem as u32 }>, // 008
+    pub new_override_base: GNewOverrideBase<{ GFxStatMovieViews::ACTION_SCRIPT_MEM as u32 }>, // 008
     pub pad008: u64,                          // 008
     pub unk010: *mut core::ffi::c_void,       // 010
     pub unk018: u64,                          // 018
@@ -33,7 +32,7 @@ const _: () = assert!(core::mem::offset_of!(GASEnvironment, sprite) == 0xE8);
 const _: () = assert!(core::mem::offset_of!(GASEnvironment, global_context) == 0xF0);
 
 inherit!(GASEnvironment : GFxLogBase<GASEnvironment>, log_base);
-inherit!(GASEnvironment => GNewOverrideBase<{ GFxStatMovieViews::kGFxStatMV_ActionScript_Mem as u32 }>, new_override_base);
+inherit!(GASEnvironment => GNewOverrideBase<{ GFxStatMovieViews::ACTION_SCRIPT_MEM as u32 }>, new_override_base);
 
 impl GASEnvironment {
     crate::virtual_method! { pub const VFUNC_DTOR: usize = 0x00; pub fn dtor() }

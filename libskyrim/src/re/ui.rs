@@ -5,13 +5,13 @@ use crate::re::{
     BSTTuple, BSTimer, GFxMovieView, GPtr, IMenu, MenuModeChangeEvent, MenuOpenCloseEvent,
 };
 
-pub type UICreate_t = unsafe extern "C" fn() -> *mut IMenu;
+pub type UICreateFn = unsafe extern "C" fn() -> *mut IMenu;
 
 /// C++ `RE::UI::UIMenuEntry`
 #[repr(C)]
 pub struct UIMenuEntry {
     pub menu: GPtr<IMenu>,          // 00
-    pub create: Option<UICreate_t>, // 08
+    pub create: Option<UICreateFn>, // 08
 }
 
 const _: () = assert!(core::mem::size_of::<UIMenuEntry>() == 0x10);
@@ -226,7 +226,7 @@ impl UI {
         self.num_custom_rendering > 0
     }
 
-    pub fn register(&mut self, menu_name: &str, creator: Option<UICreate_t>) {
+    pub fn register(&mut self, menu_name: &str, creator: Option<UICreateFn>) {
         let value = BSTTuple::new(
             BSFixedString::from_str(menu_name),
             UIMenuEntry {

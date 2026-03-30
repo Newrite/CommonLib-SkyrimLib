@@ -2,7 +2,7 @@ use core::ffi::c_void;
 
 use crate::re::{
     BSFixedString, BSGraphicsDepthStencilDepthMode, BSGraphicsTextureAddressMode,
-    BSIntrusiveRefCounted, NiAlphaProperty, NiColorA, NiPointer, NiTexture,
+    BSIntrusiveRefCounted, NiColorA, NiPointer, NiTexture,
 };
 
 pub type BSEffectShaderDataNodeFilterFunction = unsafe extern "C" fn(*const BSFixedString) -> bool;

@@ -5,8 +5,7 @@ use core_util::inherit;
 
 use crate::re::{
     GASGlobalContext, GColor, GFxKeyboardState, GFxMovieDef, GFxMovieDefMemoryContextImpl,
-    GFxMovieView, GFxSprite, GMatrix3D, GMemoryHeap, GPoint3F, GPointF, GRectF, GStatBag,
-    GViewport,
+    GFxMovieView, GFxSprite, GMatrix3D, GMemoryHeap, GRectF, GViewport,
 };
 
 /// C++ `RE::GFxActionPriority`
