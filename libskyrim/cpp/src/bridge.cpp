@@ -17,6 +17,19 @@ namespace
     using native_function_marshall_callback =
         bool (*)(void* ctx, void* base_value, void* vm, std::uint32_t stack_id, void* result_value, const void* frame);
 
+    int bridge_dispatch_unhandled_exception(EXCEPTION_POINTERS* exception) noexcept
+    {
+        // CrashLoggerSSE installs a vectored handler that re-arms the process
+        // unhandled-exception filter. Some SKSE/runtime phases appear to catch
+        // and swallow the original SEH before it becomes truly unhandled, which
+        // produces a silent death. Explicitly forwarding the captured
+        // EXCEPTION_POINTERS through UnhandledExceptionFilter gives external
+        // crash loggers the same top-level crash context they expect from a
+        // real unhandled exception.
+        ::UnhandledExceptionFilter(exception);
+        return EXCEPTION_EXECUTE_HANDLER;
+    }
+
     template <class T>
     [[nodiscard]] bool bridge_emplace_vtable(T* ptr) noexcept
     {
@@ -348,11 +361,17 @@ extern "C" {
     }
 
     void commonlib_raise_seh_exception(std::uint32_t code) noexcept {
-        // Let the normal Windows unhandled-exception pipeline run so external
-        // crash loggers such as CrashLoggerSSE can capture the crash. Forcing a
-        // process kill here short-circuits that pipeline and produces a silent
-        // exit instead of a crash log.
-        ::RaiseException(code, EXCEPTION_NONCONTINUABLE, 0, nullptr);
+        __try {
+            // First trigger a real SEH so any installed vectored handlers run.
+            ::RaiseException(code, EXCEPTION_NONCONTINUABLE, 0, nullptr);
+        } __except (bridge_dispatch_unhandled_exception(GetExceptionInformation())) {
+        }
+
+        // If control still returns here, no top-level crash handler terminated
+        // the process for us. At that point we have already given external
+        // crash loggers a chance to capture the failure, so a hard terminate is
+        // preferable to limping forward in a corrupted state.
+        ::TerminateProcess(::GetCurrentProcess(), code);
     }
 
     // Выделение памяти через движок Скайрима
