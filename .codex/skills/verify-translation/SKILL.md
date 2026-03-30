@@ -64,6 +64,10 @@ preflight when the existing Rust file may already be mostly correct.
 - source-backed smart-pointer construction helpers use the shared ABI-safe
   bridge pattern when needed instead of ad-hoc Rust allocation or permanent raw
   pointer stand-ins
+- relocated, virtual, and hook-facing surfaces do not model non-trivial
+  `BSPointerHandle<T>` descendants (`ActorHandle`, `ObjectRefHandle`,
+  `ProjectileHandle`) by value at the raw ABI boundary; verify hidden
+  out-param or C++ bridge usage instead
 
 ### Visitors and functors
 

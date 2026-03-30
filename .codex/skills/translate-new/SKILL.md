@@ -43,6 +43,9 @@ The `.cpp` is required whenever it exists. Extract all of the following:
 - smart-pointer ownership and construction surfaces such as `make_hkref`,
   `make_nismart`, `make_smart`, smart-pointer out-params, attach/adopt helpers,
   and delete/destructor behavior that constrains Rust-side ownership helpers
+- whether any source-backed relocated or virtual surface returns or accepts a
+  small non-trivial C++ class by value, especially `BSPointerHandle<T>`
+  descendants such as `ActorHandle`, `ObjectRefHandle`, or `ProjectileHandle`
 
 ## Dependency Rules
 
@@ -65,6 +68,11 @@ For each parent or embedded field type:
   and `libskyrim/src/ffi.rs`, then construct the Rust smart pointer through
   `hkRefPtr::try_construct_with(...)`, `NiPointer::try_construct_with(...)`, or
   `BSTSmartPointer::try_construct_with(...)`.
+- If a source-backed function returns or accepts a non-trivial C++ handle type
+  such as `BSPointerHandle<T>` by value, do not model that raw ABI literally in
+  Rust macro signatures even if the type is only 4 bytes wide. Use an honest
+  hidden out-param wrapper or a C++ bridge, then expose a Rust-friendly helper
+  above it.
 
 Never replace a named parent or mixin with `[u8; N]`.
 
@@ -108,6 +116,8 @@ available. Regenerate it.
 - runtime-varying non-address values -> `VariantOffset`
 
 Do not use `VariantID::new(se, ae, 0)` for relocated methods.
+Do not use by-value `ActorHandle` / `ObjectRefHandle` / `ProjectileHandle`
+directly in relocated, virtual, or hook signatures.
 
 ## Cross-Runtime Branching Rules
 

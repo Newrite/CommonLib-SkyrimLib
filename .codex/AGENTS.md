@@ -302,6 +302,32 @@ Translate them once and reuse them by category:
   current honest surface and leave a `// TODO:` comment describing the missing
   source-backed factory/constructor prerequisite.
 
+## MSVC ABI and Handle Model
+
+- Do not treat a C++ type as ABI-trivial just because its Rust layout is small
+  or looks POD-like. On MSVC, non-trivial C++ class semantics can change the
+  call ABI even when the object is only 4 bytes wide.
+- Treat `BSPointerHandle<T>` descendants such as `ActorHandle`,
+  `ObjectRefHandle`, and `ProjectileHandle` as non-trivial C++ types at FFI and
+  relocation boundaries unless source-backed evidence proves otherwise.
+- In particular, do not model these handle types by value in:
+  - `relocation_func!`
+  - `virtual_method!`
+  - `relocated_virtual_method!`
+  - low-level hook macros such as `define_*hook!`
+  - SDK hook attributes such as `#[function_hook]`, `#[call_hook]`,
+    `#[vtable_hook]`, and `#[vcall_hook]`
+- When source-backed code returns or accepts a non-trivial handle by value,
+  prefer one of these patterns:
+  - a hidden out-param Rust wrapper that matches the real MSVC ABI
+  - a C++ bridge entrypoint in `libskyrim/cpp/src/bridge.cpp` plus Rust FFI
+- Public Rust helpers may still expose an ergonomic return-by-value API after
+  the ABI-safe wrapper reconstructs the result on the Rust side. The restriction
+  is on the raw ABI surface, not on the final Rust helper.
+- Apply the same suspicion to other small C++ wrappers with constructors,
+  destructors, copy/move operators, or template smart-handle semantics. Layout
+  equality is not enough to prove by-value ABI compatibility.
+
 ## TODO Comment Policy
 
 Use comment TODOs to preserve honesty when a translation cannot be completed

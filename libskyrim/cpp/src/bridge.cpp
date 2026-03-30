@@ -348,8 +348,11 @@ extern "C" {
     }
 
     void commonlib_raise_seh_exception(std::uint32_t code) noexcept {
+        // Let the normal Windows unhandled-exception pipeline run so external
+        // crash loggers such as CrashLoggerSSE can capture the crash. Forcing a
+        // process kill here short-circuits that pipeline and produces a silent
+        // exit instead of a crash log.
         ::RaiseException(code, EXCEPTION_NONCONTINUABLE, 0, nullptr);
-        ::TerminateProcess(::GetCurrentProcess(), code);
     }
 
     // Выделение памяти через движок Скайрима

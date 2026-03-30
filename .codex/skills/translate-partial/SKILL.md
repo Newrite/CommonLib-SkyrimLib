@@ -42,6 +42,9 @@ Check all of these:
   pointer layer (`NiPointer`, `BSTSmartPointer`, `hkRefPtr`) should be used
 - missing ABI-safe bridge usage for source-backed smart-pointer construction or
   out-param helpers
+- wrong by-value ABI modeling for small non-trivial C++ wrappers such as
+  `BSPointerHandle<T>` descendants (`ActorHandle`, `ObjectRefHandle`,
+  `ProjectileHandle`) in relocated, virtual, or hook-facing surfaces
 - wrong visitor strategy: closure wrapper vs raw ABI visitor vs safe sync adapter
 - wrong event strategy: fixed event base vs runtime cast accessor vs raw sink
   pointer-only API
@@ -65,6 +68,10 @@ Check all of these:
 - pure `.cpp` wrappers around `REL::RelocateVirtual(...)` should prefer
   `relocated_virtual_method!`; mixed shim methods should keep a handwritten body
   and call `relocate_virtual!` only in the forwarding branch
+- if a source-backed method returns or accepts a non-trivial handle type by
+  value, do not preserve that raw ABI shape in a Rust macro signature; use an
+  out-param wrapper or a C++ bridge and keep any ergonomic return-by-value API
+  only above that boundary
 
 ## Layout Rules
 

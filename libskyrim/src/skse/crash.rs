@@ -1,8 +1,6 @@
 use core::fmt::Arguments;
 use core::hint::spin_loop;
 
-use windows_sys::Win32::System::Threading::{GetCurrentProcess, TerminateProcess};
-
 use crate::ffi;
 use crate::skse::log::{self, LogType};
 
@@ -12,9 +10,11 @@ pub const RUST_PANIC_EXCEPTION_CODE: u32 = 0xE000_0001u32;
 pub fn raise_seh_exception(code: u32) -> ! {
     unsafe {
         ffi::commonlib_raise_seh_exception(code);
-        TerminateProcess(GetCurrentProcess(), code);
     }
 
+    // If control somehow returns here, an upstream frame swallowed the exception.
+    // Keep the current thread parked instead of force-killing the process so an
+    // attached debugger can still inspect the bad state.
     loop {
         spin_loop();
     }
