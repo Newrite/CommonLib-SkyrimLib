@@ -4,6 +4,8 @@
 //! In C++ this is `BSPointerHandle<TESObjectREFR>`, which wraps
 //! `BSUntypedPointerHandle<21, 5>` вЂ” a single `u32`.
 
+use core::ffi::c_void;
+
 use crate::re::{Actor, BSHandleRefObject, NiPointer, NiRef, Projectile, TESObjectREFR};
 use crate::relocation::RelocationID;
 
@@ -103,8 +105,31 @@ impl ActorHandle {
         fn get_handle_impl(out: &mut ActorHandle, ptr: *mut Actor) => RelocationID::new(15967, 16212)
     }
 
-    crate::relocation_func! {
-        fn get_smart_pointer(&self, out: &mut NiPointer<Actor>) -> bool => RelocationID::new(12204, 12332)
+    #[inline(always)]
+    pub fn get_smart_pointer(&self, out: &mut NiPointer<Actor>) -> bool {
+        unsafe {
+            crate::ffi::commonlib_actor_handle_get_smart_pointer_const(
+                self as *const Self as *const c_void,
+                out as *mut NiPointer<Actor> as *mut c_void,
+            )
+        }
+    }
+
+    #[inline(always)]
+    pub fn take(&mut self) -> NiPointer<Actor> {
+        let mut out = NiPointer::null();
+        let _ = self.take_smart_pointer(&mut out);
+        out
+    }
+
+    #[inline(always)]
+    pub fn take_smart_pointer(&mut self, out: &mut NiPointer<Actor>) -> bool {
+        unsafe {
+            crate::ffi::commonlib_actor_handle_get_smart_pointer_mut(
+                self as *mut Self as *mut c_void,
+                out as *mut NiPointer<Actor> as *mut c_void,
+            )
+        }
     }
 }
 
@@ -152,8 +177,31 @@ impl ProjectileHandle {
         fn get_handle_impl(out: &mut ProjectileHandle, ptr: *mut Projectile) => RelocationID::new(15967, 16212)
     }
 
-    crate::relocation_func! {
-        fn get_smart_pointer(&self, out: &mut NiPointer<Projectile>) -> bool => RelocationID::new(12204, 12332)
+    #[inline(always)]
+    pub fn get_smart_pointer(&self, out: &mut NiPointer<Projectile>) -> bool {
+        unsafe {
+            crate::ffi::commonlib_projectile_handle_get_smart_pointer_const(
+                self as *const Self as *const c_void,
+                out as *mut NiPointer<Projectile> as *mut c_void,
+            )
+        }
+    }
+
+    #[inline(always)]
+    pub fn take(&mut self) -> NiPointer<Projectile> {
+        let mut out = NiPointer::null();
+        let _ = self.take_smart_pointer(&mut out);
+        out
+    }
+
+    #[inline(always)]
+    pub fn take_smart_pointer(&mut self, out: &mut NiPointer<Projectile>) -> bool {
+        unsafe {
+            crate::ffi::commonlib_projectile_handle_get_smart_pointer_mut(
+                self as *mut Self as *mut c_void,
+                out as *mut NiPointer<Projectile> as *mut c_void,
+            )
+        }
     }
 }
 
@@ -205,8 +253,31 @@ impl ObjectRefHandle {
         fn get_handle_impl(out: &mut ObjectRefHandle, ptr: *mut TESObjectREFR) => RelocationID::new(15967, 16212)
     }
 
-    crate::relocation_func! {
-        fn get_smart_pointer(&self, out: &mut NiPointer<TESObjectREFR>) -> bool => RelocationID::new(12204, 12332)
+    #[inline(always)]
+    pub fn get_smart_pointer(&self, out: &mut NiPointer<TESObjectREFR>) -> bool {
+        unsafe {
+            crate::ffi::commonlib_object_ref_handle_get_smart_pointer_const(
+                self as *const Self as *const c_void,
+                out as *mut NiPointer<TESObjectREFR> as *mut c_void,
+            )
+        }
+    }
+
+    #[inline(always)]
+    pub fn take(&mut self) -> NiPointer<TESObjectREFR> {
+        let mut out = NiPointer::null();
+        let _ = self.take_smart_pointer(&mut out);
+        out
+    }
+
+    #[inline(always)]
+    pub fn take_smart_pointer(&mut self, out: &mut NiPointer<TESObjectREFR>) -> bool {
+        unsafe {
+            crate::ffi::commonlib_object_ref_handle_get_smart_pointer_mut(
+                self as *mut Self as *mut c_void,
+                out as *mut NiPointer<TESObjectREFR> as *mut c_void,
+            )
+        }
     }
 }
 

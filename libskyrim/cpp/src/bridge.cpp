@@ -102,6 +102,30 @@ namespace
         }
     }
 
+    template <class Handle, class Value>
+    [[nodiscard]] bool bridge_handle_get_smart_pointer_const(const void* handle, void* out) noexcept
+    {
+        if (!handle || !out) {
+            return false;
+        }
+
+        return RE::BSPointerHandleManagerInterface<Value>::GetSmartPointer(
+            *static_cast<const Handle*>(handle),
+            *static_cast<RE::NiPointer<Value>*>(out));
+    }
+
+    template <class Handle, class Value>
+    [[nodiscard]] bool bridge_handle_get_smart_pointer_mut(void* handle, void* out) noexcept
+    {
+        if (!handle || !out) {
+            return false;
+        }
+
+        return RE::BSPointerHandleManagerInterface<Value>::GetSmartPointer(
+            *static_cast<Handle*>(handle),
+            *static_cast<RE::NiPointer<Value>*>(out));
+    }
+
     [[nodiscard]] RE::BSEventNotifyControl bridge_notify_control_from_i32(std::int32_t value) noexcept
     {
         return value == static_cast<std::int32_t>(RE::BSEventNotifyControl::kStop) ?
@@ -424,6 +448,16 @@ extern "C" {
         return static_cast<RE::Actor*>(actor)->GetGoldAmount(no_init);
     }
 
+    bool commonlib_actor_handle_get_smart_pointer_const(const void* handle, void* out) noexcept
+    {
+        return bridge_handle_get_smart_pointer_const<RE::ActorHandle, RE::Actor>(handle, out);
+    }
+
+    bool commonlib_actor_handle_get_smart_pointer_mut(void* handle, void* out) noexcept
+    {
+        return bridge_handle_get_smart_pointer_mut<RE::ActorHandle, RE::Actor>(handle, out);
+    }
+
     void commonlib_actor_drop_object(
         void* actor,
         void* out,
@@ -478,6 +512,26 @@ extern "C" {
         }
 
         *typed_out = typed_actor->QLastRiddenMount();
+    }
+
+    bool commonlib_object_ref_handle_get_smart_pointer_const(const void* handle, void* out) noexcept
+    {
+        return bridge_handle_get_smart_pointer_const<RE::ObjectRefHandle, RE::TESObjectREFR>(handle, out);
+    }
+
+    bool commonlib_object_ref_handle_get_smart_pointer_mut(void* handle, void* out) noexcept
+    {
+        return bridge_handle_get_smart_pointer_mut<RE::ObjectRefHandle, RE::TESObjectREFR>(handle, out);
+    }
+
+    bool commonlib_projectile_handle_get_smart_pointer_const(const void* handle, void* out) noexcept
+    {
+        return bridge_handle_get_smart_pointer_const<RE::ProjectileHandle, RE::Projectile>(handle, out);
+    }
+
+    bool commonlib_projectile_handle_get_smart_pointer_mut(void* handle, void* out) noexcept
+    {
+        return bridge_handle_get_smart_pointer_mut<RE::ProjectileHandle, RE::Projectile>(handle, out);
     }
 
     void commonlib_tes_object_refr_remove_item(

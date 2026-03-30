@@ -78,6 +78,30 @@ unsafe extern "C" {
     );
     pub fn commonlib_actor_set_last_ridden_mount(actor: *mut c_void, mount: *const c_void);
     pub fn commonlib_actor_q_last_ridden_mount(actor: *const c_void, out: *mut c_void);
+    pub fn commonlib_actor_handle_get_smart_pointer_const(
+        handle: *const c_void,
+        out: *mut c_void,
+    ) -> bool;
+    pub fn commonlib_actor_handle_get_smart_pointer_mut(
+        handle: *mut c_void,
+        out: *mut c_void,
+    ) -> bool;
+    pub fn commonlib_object_ref_handle_get_smart_pointer_const(
+        handle: *const c_void,
+        out: *mut c_void,
+    ) -> bool;
+    pub fn commonlib_object_ref_handle_get_smart_pointer_mut(
+        handle: *mut c_void,
+        out: *mut c_void,
+    ) -> bool;
+    pub fn commonlib_projectile_handle_get_smart_pointer_const(
+        handle: *const c_void,
+        out: *mut c_void,
+    ) -> bool;
+    pub fn commonlib_projectile_handle_get_smart_pointer_mut(
+        handle: *mut c_void,
+        out: *mut c_void,
+    ) -> bool;
     pub fn commonlib_tes_object_refr_remove_item(
         refr: *mut c_void,
         out: *mut c_void,
