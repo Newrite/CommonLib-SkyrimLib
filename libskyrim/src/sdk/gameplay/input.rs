@@ -211,6 +211,22 @@ impl Drop for TextInputGuard {
 }
 
 #[inline(always)]
+fn is_valid_context(context: INPUT_CONTEXT_ID) -> bool {
+    context != INPUT_CONTEXT_ID::kNone() && context.get() < INPUT_CONTEXT_ID::kTotal()
+}
+
+#[inline(always)]
+fn is_valid_device(device: INPUT_DEVICE) -> bool {
+    let index = device as i32;
+    index >= 0 && (index as u32) < INPUT_DEVICE::total()
+}
+
+#[inline(always)]
+fn has_invalid_control_flag(flags: USER_EVENT_FLAG) -> bool {
+    (flags as u32 & USER_EVENT_FLAG::kInvalid as u32) != 0
+}
+
+#[inline(always)]
 pub fn control_map() -> GameRef<ControlMap> {
     unsafe { GameRef::from_raw(ControlMap::get_singleton()) }
 }
@@ -227,16 +243,43 @@ pub fn user_events() -> GameRef<UserEvents> {
 
 #[inline(always)]
 pub fn push_context(context: INPUT_CONTEXT_ID) {
+    if !is_valid_context(context) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::push_context() ignored invalid context id={}",
+            context.get()
+        );
+        return;
+    }
+
     ControlMap::push_input_context(context);
 }
 
 #[inline(always)]
 pub fn pop_context(context: INPUT_CONTEXT_ID) {
+    if !is_valid_context(context) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::pop_context() ignored invalid context id={}",
+            context.get()
+        );
+        return;
+    }
+
     ControlMap::pop_input_context(context);
 }
 
 #[inline(always)]
 pub fn push_context_scoped(context: INPUT_CONTEXT_ID) -> ContextGuard {
+    if !is_valid_context(context) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::push_context_scoped() ignored invalid context id={}",
+            context.get()
+        );
+        return ContextGuard {
+            context,
+            active: false,
+        };
+    }
+
     push_context(context);
     ContextGuard {
         context,
@@ -267,6 +310,14 @@ pub fn top_context() -> Option<INPUT_CONTEXT_ID> {
 
 #[inline(always)]
 pub fn has_context(context: INPUT_CONTEXT_ID) -> bool {
+    if !is_valid_context(context) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::has_context() queried invalid context id={}",
+            context.get()
+        );
+        return false;
+    }
+
     let control_map = control_map();
     let runtime_data = control_map.runtime_data();
     unsafe { runtime_data.context_priority_stack.as_slice() }.contains(&context)
@@ -426,6 +477,17 @@ pub fn are_controls_enabled(flags: USER_EVENT_FLAG) -> bool {
 
 #[inline(always)]
 pub fn set_control_enabled(flags: USER_EVENT_FLAG, enable: bool, store_state: bool) {
+    if flags == USER_EVENT_FLAG::kNone {
+        return;
+    }
+    if has_invalid_control_flag(flags) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::set_control_enabled() ignored invalid control flags=0x{:08X}",
+            flags as u32
+        );
+        return;
+    }
+
     unsafe {
         control_map().with_mut_unchecked(|control_map| {
             control_map.toggle_controls(flags, enable, store_state)
@@ -439,9 +501,23 @@ pub fn toggle_control(flags: USER_EVENT_FLAG, enable: bool, store_state: bool) {
 }
 
 pub fn set_control_group_enabled(flags: &[USER_EVENT_FLAG], enable: bool, store_state: bool) {
+    if flags.is_empty() {
+        return;
+    }
+
     unsafe {
         control_map().with_mut_unchecked(|control_map| {
             for &flag in flags {
+                if flag == USER_EVENT_FLAG::kNone {
+                    continue;
+                }
+                if has_invalid_control_flag(flag) {
+                    crate::defensive_sdk_warn!(
+                        "sdk::gameplay::input::set_control_group_enabled() skipped invalid control flags=0x{:08X}",
+                        flag as u32
+                    );
+                    continue;
+                }
                 control_map.toggle_controls(flag, enable, store_state);
             }
         })
@@ -533,12 +609,35 @@ pub fn scoped_gameplay_input_suppressed() -> InputStateGuard {
 
 #[inline(always)]
 pub fn mapped_key(event_id: &str, device: INPUT_DEVICE, context: INPUT_CONTEXT_ID) -> Option<u32> {
+    if !is_valid_device(device) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::mapped_key() queried invalid device={}",
+            device as i32
+        );
+        return None;
+    }
+    if !is_valid_context(context) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::mapped_key() queried invalid context id={}",
+            context.get()
+        );
+        return None;
+    }
+
     let key = control_map().get_mapped_key(event_id, device, context);
     (key != ControlMap::kInvalid).then_some(key)
 }
 
 #[inline(always)]
 pub fn button_name_from_user_event(event_id: &str, device: INPUT_DEVICE) -> Option<BSFixedString> {
+    if !is_valid_device(device) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::button_name_from_user_event() queried invalid device={}",
+            device as i32
+        );
+        return None;
+    }
+
     let event_id = BSFixedString::from_str(event_id);
     let mut button_name = BSFixedString::default();
     control_map()
@@ -552,6 +651,21 @@ pub fn user_event_name(
     device: INPUT_DEVICE,
     context: INPUT_CONTEXT_ID,
 ) -> Option<BSFixedString> {
+    if !is_valid_device(device) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::user_event_name() queried invalid device={}",
+            device as i32
+        );
+        return None;
+    }
+    if !is_valid_context(context) {
+        crate::defensive_sdk_warn!(
+            "sdk::gameplay::input::user_event_name() queried invalid context id={}",
+            context.get()
+        );
+        return None;
+    }
+
     control_map()
         .get_user_event_name(button_id, device, context)
         .cloned()

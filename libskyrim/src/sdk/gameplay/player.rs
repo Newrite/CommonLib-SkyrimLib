@@ -20,8 +20,8 @@ pub fn angle() -> NiPoint3 {
 }
 
 #[inline(always)]
-pub fn current_cell() -> GameRef<TESObjectCELL> {
-    unsafe { GameRef::from_raw(singleton().get_parent_cell()) }
+pub fn current_cell() -> GamePtr<TESObjectCELL> {
+    unsafe { GamePtr::from_raw(singleton().get_parent_cell()) }
 }
 
 #[inline(always)]

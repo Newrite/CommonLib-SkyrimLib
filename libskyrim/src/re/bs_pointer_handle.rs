@@ -107,9 +107,21 @@ impl ActorHandle {
 
     #[inline(always)]
     pub fn get_smart_pointer(&self, out: &mut NiPointer<Actor>) -> bool {
+        if !self.has_value() {
+            crate::defensive_sdk_warn!(
+                "ActorHandle::get_smart_pointer() called with an empty handle"
+            );
+            *out = NiPointer::null();
+            return false;
+        }
+
+        // Resolve from a stable stack snapshot instead of passing a pointer into
+        // engine-owned container storage directly. This keeps handle resolution
+        // robust even when callers iterate transient engine arrays.
+        let handle = *self;
         unsafe {
             crate::ffi::commonlib_actor_handle_get_smart_pointer_const(
-                self as *const Self as *const c_void,
+                &handle as *const Self as *const c_void,
                 out as *mut NiPointer<Actor> as *mut c_void,
             )
         }
@@ -124,12 +136,23 @@ impl ActorHandle {
 
     #[inline(always)]
     pub fn take_smart_pointer(&mut self, out: &mut NiPointer<Actor>) -> bool {
-        unsafe {
+        if !self.has_value() {
+            crate::defensive_sdk_warn!(
+                "ActorHandle::take_smart_pointer() called with an empty handle"
+            );
+            *out = NiPointer::null();
+            return false;
+        }
+
+        let mut handle = *self;
+        let resolved = unsafe {
             crate::ffi::commonlib_actor_handle_get_smart_pointer_mut(
-                self as *mut Self as *mut c_void,
+                &mut handle as *mut Self as *mut c_void,
                 out as *mut NiPointer<Actor> as *mut c_void,
             )
-        }
+        };
+        *self = handle;
+        resolved
     }
 }
 
@@ -179,9 +202,18 @@ impl ProjectileHandle {
 
     #[inline(always)]
     pub fn get_smart_pointer(&self, out: &mut NiPointer<Projectile>) -> bool {
+        if !self.has_value() {
+            crate::defensive_sdk_warn!(
+                "ProjectileHandle::get_smart_pointer() called with an empty handle"
+            );
+            *out = NiPointer::null();
+            return false;
+        }
+
+        let handle = *self;
         unsafe {
             crate::ffi::commonlib_projectile_handle_get_smart_pointer_const(
-                self as *const Self as *const c_void,
+                &handle as *const Self as *const c_void,
                 out as *mut NiPointer<Projectile> as *mut c_void,
             )
         }
@@ -196,12 +228,23 @@ impl ProjectileHandle {
 
     #[inline(always)]
     pub fn take_smart_pointer(&mut self, out: &mut NiPointer<Projectile>) -> bool {
-        unsafe {
+        if !self.has_value() {
+            crate::defensive_sdk_warn!(
+                "ProjectileHandle::take_smart_pointer() called with an empty handle"
+            );
+            *out = NiPointer::null();
+            return false;
+        }
+
+        let mut handle = *self;
+        let resolved = unsafe {
             crate::ffi::commonlib_projectile_handle_get_smart_pointer_mut(
-                self as *mut Self as *mut c_void,
+                &mut handle as *mut Self as *mut c_void,
                 out as *mut NiPointer<Projectile> as *mut c_void,
             )
-        }
+        };
+        *self = handle;
+        resolved
     }
 }
 
@@ -255,9 +298,18 @@ impl ObjectRefHandle {
 
     #[inline(always)]
     pub fn get_smart_pointer(&self, out: &mut NiPointer<TESObjectREFR>) -> bool {
+        if !self.has_value() {
+            crate::defensive_sdk_warn!(
+                "ObjectRefHandle::get_smart_pointer() called with an empty handle"
+            );
+            *out = NiPointer::null();
+            return false;
+        }
+
+        let handle = *self;
         unsafe {
             crate::ffi::commonlib_object_ref_handle_get_smart_pointer_const(
-                self as *const Self as *const c_void,
+                &handle as *const Self as *const c_void,
                 out as *mut NiPointer<TESObjectREFR> as *mut c_void,
             )
         }
@@ -272,12 +324,23 @@ impl ObjectRefHandle {
 
     #[inline(always)]
     pub fn take_smart_pointer(&mut self, out: &mut NiPointer<TESObjectREFR>) -> bool {
-        unsafe {
+        if !self.has_value() {
+            crate::defensive_sdk_warn!(
+                "ObjectRefHandle::take_smart_pointer() called with an empty handle"
+            );
+            *out = NiPointer::null();
+            return false;
+        }
+
+        let mut handle = *self;
+        let resolved = unsafe {
             crate::ffi::commonlib_object_ref_handle_get_smart_pointer_mut(
-                self as *mut Self as *mut c_void,
+                &mut handle as *mut Self as *mut c_void,
                 out as *mut NiPointer<TESObjectREFR> as *mut c_void,
             )
-        }
+        };
+        *self = handle;
+        resolved
     }
 }
 

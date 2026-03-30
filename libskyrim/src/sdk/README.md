@@ -37,6 +37,90 @@ That means:
 - advanced or partially translated engine families should not become part of
   the early default user surface
 
+## Defensive SDK Strategy
+
+The SDK is intentionally more defensive than `libskyrim::re`, but that
+defensiveness is not applied uniformly to every kind of engine access.
+
+### Layer Split
+
+Treat the layers as having different jobs:
+
+- `re`
+  strict source-backed ABI/layout/runtime layer
+- `sdk`
+  defensive, intent-oriented helper layer for plugin authors
+
+The SDK should reduce the chance that a slightly mistimed or slightly sloppy
+call site crashes the game, but it must not hide or reinterpret real ABI
+contracts from the low-level layer.
+
+### Singleton Policy
+
+Singleton discovery is treated as a strict contract boundary.
+
+If a canonical engine singleton such as `PlayerCharacter`, `ProcessLists`,
+`ControlMap`, `UI`, or `PlayerCamera` is unavailable, that is considered
+"something is very wrong", not a normal optional branch that should be modeled
+through broad public `try_singleton()` APIs.
+
+In practice this means:
+
+- singleton getters in the SDK may remain strict and return `GameRef<T>`
+- the SDK should not proliferate singleton helper APIs purely to soften that
+  contract
+- defensive behavior belongs around higher-level operations and nullable child
+  fields, not around the singleton contract itself
+
+### Nullable Seams vs Embedded Layout
+
+The SDK must distinguish real nullable engine seams from ordinary embedded
+layout members.
+
+Do not treat embedded bases or aggregates as nullable just because Rust models
+C++ inheritance through members such as `base`, `parent`, or `full_name`.
+Those are structurally present whenever the owning object is valid.
+
+The nullable seams that *should* be modeled defensively are things like:
+
+- child pointers returned by engine getters
+- handles and handle resolution
+- smart-pointer fields that may legitimately be null
+- transient engine arrays and traversal state
+- menu/movie/delegate surfaces that are present only in certain UI states
+
+Short version:
+
+- `embedded layout member != nullable seam`
+
+### Fallback Style
+
+When an SDK helper can fail softly without lying about the engine contract,
+prefer:
+
+- early return for `fn -> ()`
+- `false` for `fn -> bool`
+- null / empty smart-pointer-style results
+- `GamePtr<T>` for nullable stable engine pointers
+- empty collections / no-op traversal where that preserves intent
+
+Do not force everything into `Option<T>` just to be defensive. Use `Option<T>`
+only where the surface is already semantically optional.
+
+### Diagnostics
+
+Defensive SDK guards may emit diagnostics through the feature-gated
+`defensive-sdk-log` feature.
+
+The intended behavior is:
+
+- default builds fail soft without spamming logs
+- `defensive-sdk-log` builds leave warnings/errors when guards reject bad input
+  or skip an operation
+
+This gives plugin authors a low-noise default surface while still making bad
+call patterns diagnosable during development.
+
 The SDK must also tolerate future upstream growth:
 
 - new CommonLibVR translations may enrich `re` without forcing churn in `sdk`

@@ -20,6 +20,10 @@ default = ["se", "ae"]
 # panic-hook diagnostics, and SEH rethrow for crash loggers.
 std = []
 
+# Opt-in warning/error diagnostics for defensive SDK guards that otherwise
+# return safe fallback values.
+defensive-sdk-log = []
+
 # Runtime selection flags.
 se = []
 ae = []

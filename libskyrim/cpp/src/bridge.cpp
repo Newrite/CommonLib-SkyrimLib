@@ -5,6 +5,7 @@
 #include "RE/U/UIMessageQueue.h"
 
 #include <MinHook.h>
+#include <cstring>
 #include <memory>
 #include <new>
 
@@ -109,9 +110,21 @@ namespace
             return false;
         }
 
-        return RE::BSPointerHandleManagerInterface<Value>::GetSmartPointer(
-            *static_cast<const Handle*>(handle),
-            *static_cast<RE::NiPointer<Value>*>(out));
+        auto* typed_out = static_cast<RE::NiPointer<Value>*>(out);
+        std::memset(typed_out, 0, sizeof(*typed_out));
+
+        __try {
+            return RE::BSPointerHandleManagerInterface<Value>::GetSmartPointer(
+                *static_cast<const Handle*>(handle),
+                *typed_out);
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            std::memset(typed_out, 0, sizeof(*typed_out));
+            logger::warn(
+                "Swallowed SEH while resolving const BSPointerHandle<{0}> 0x{1:08X}",
+                typeid(Value).name(),
+                static_cast<const Handle*>(handle)->native_handle());
+            return false;
+        }
     }
 
     template <class Handle, class Value>
@@ -121,9 +134,21 @@ namespace
             return false;
         }
 
-        return RE::BSPointerHandleManagerInterface<Value>::GetSmartPointer(
-            *static_cast<Handle*>(handle),
-            *static_cast<RE::NiPointer<Value>*>(out));
+        auto* typed_out = static_cast<RE::NiPointer<Value>*>(out);
+        std::memset(typed_out, 0, sizeof(*typed_out));
+
+        __try {
+            return RE::BSPointerHandleManagerInterface<Value>::GetSmartPointer(
+                *static_cast<Handle*>(handle),
+                *typed_out);
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            std::memset(typed_out, 0, sizeof(*typed_out));
+            logger::warn(
+                "Swallowed SEH while resolving mutable BSPointerHandle<{0}> 0x{1:08X}",
+                typeid(Value).name(),
+                static_cast<Handle*>(handle)->native_handle());
+            return false;
+        }
     }
 
     [[nodiscard]] RE::BSEventNotifyControl bridge_notify_control_from_i32(std::int32_t value) noexcept

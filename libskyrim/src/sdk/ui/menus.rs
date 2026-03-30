@@ -336,6 +336,9 @@ pub unsafe fn queue_message_data_unchecked(
     data: *mut IUIMessageData,
 ) {
     let Ok(menu_name) = CString::new(menu_name) else {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_message_data_unchecked() rejected menu name with interior NUL"
+        );
         return;
     };
 
@@ -353,10 +356,26 @@ fn create_message_data<T>() -> Option<NonNull<T>>
 where
     T: TypedMenuMessageData,
 {
-    let class_name = CString::new(T::CLASS_NAME).ok()?;
-    NonNull::new(unsafe {
+    let Ok(class_name) = CString::new(T::CLASS_NAME) else {
+        crate::defensive_sdk_error!(
+            "sdk::ui::menus::create_message_data<{}>() rejected class name with interior NUL",
+            core::any::type_name::<T>()
+        );
+        return None;
+    };
+
+    let message_data = NonNull::new(unsafe {
         crate::ffi::commonlib_create_ui_message_data(class_name.as_ptr()).cast()
-    })
+    });
+
+    if message_data.is_none() {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::create_message_data<{}>() failed to allocate engine UI message data",
+            core::any::type_name::<T>()
+        );
+    }
+
+    message_data
 }
 
 pub fn queue_message_with<T>(
@@ -374,6 +393,10 @@ where
     unsafe { init(data.as_mut()) };
 
     let Ok(menu_name) = CString::new(menu_name) else {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_message_with<{}>() rejected menu name with interior NUL",
+            core::any::type_name::<T>()
+        );
         return false;
     };
 
@@ -564,13 +587,21 @@ where
 
 #[inline(always)]
 pub fn queue_fade(request: FadeRequest) -> bool {
-    queue_named_message_with::<FaderMenu, FaderData>(request.message_type, |data| {
+    let queued = queue_named_message_with::<FaderMenu, FaderData>(request.message_type, |data| {
         data.min_duration = request.min_duration;
         data.fade_duration = request.fade_duration;
         data.is_fading_out = request.is_fading_out;
         data.is_black = request.is_black;
         data.pauses_game = request.pauses_game;
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_fade() failed to queue Fader Menu request"
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -622,10 +653,19 @@ pub fn fade_from_black_direct(fade_duration: f32, pauses_game: bool) {
 
 #[inline(always)]
 pub fn queue_loading_menu(request: LoadingMenuRequest) -> bool {
-    queue_named_message_with::<LoadingMenu, LoadingMenuData>(request.message_type, |data| {
-        data.current_location = request.current_location.as_ptr();
-        data.unk18 = request.show_loading_text;
-    })
+    let queued =
+        queue_named_message_with::<LoadingMenu, LoadingMenuData>(request.message_type, |data| {
+            data.current_location = request.current_location.as_ptr();
+            data.unk18 = request.show_loading_text;
+        });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_loading_menu() failed to queue Loading Menu request"
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -638,16 +678,34 @@ pub fn show_loading_menu(current_location: GamePtr<BGSLocation>, show_loading_te
 
 #[inline(always)]
 pub fn queue_bsui_bool_message(menu_name: &str, message_type: UI_MESSAGE_TYPE, data: bool) -> bool {
-    queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.data = BSUIMessageDataData { b: data };
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_bsui_bool_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
 pub fn queue_bsui_uint_message(menu_name: &str, message_type: UI_MESSAGE_TYPE, data: u32) -> bool {
-    queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.data = BSUIMessageDataData { u: data };
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_bsui_uint_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -656,9 +714,18 @@ pub fn queue_bsui_ptr_message(
     message_type: UI_MESSAGE_TYPE,
     data: *mut c_void,
 ) -> bool {
-    queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.data = BSUIMessageDataData { p: data };
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_bsui_ptr_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -667,9 +734,18 @@ pub fn queue_bsui_string_message(
     message_type: UI_MESSAGE_TYPE,
     value: &str,
 ) -> bool {
-    queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.fixed_str = BSFixedString::from_str(value);
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_bsui_string_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -679,10 +755,19 @@ pub fn queue_bsui_string_bool_message(
     value: &str,
     data: bool,
 ) -> bool {
-    queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.fixed_str = BSFixedString::from_str(value);
         msg_data.data = BSUIMessageDataData { b: data };
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_bsui_string_bool_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -692,10 +777,19 @@ pub fn queue_bsui_string_float_message(
     value: &str,
     data: f32,
 ) -> bool {
-    queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.fixed_str = BSFixedString::from_str(value);
         msg_data.data = BSUIMessageDataData { f: data };
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_bsui_string_float_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -705,10 +799,19 @@ pub fn queue_bsui_string_uint_message(
     value: &str,
     data: u32,
 ) -> bool {
-    queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIMessageData>(menu_name, message_type, |msg_data| {
         msg_data.fixed_str = BSFixedString::from_str(value);
         msg_data.data = BSUIMessageDataData { u: data };
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_bsui_string_uint_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }
 
 #[inline(always)]
@@ -717,7 +820,16 @@ pub fn queue_scaleform_event_message(
     message_type: UI_MESSAGE_TYPE,
     scaleform_event: *mut GFxEvent,
 ) -> bool {
-    queue_message_with::<BSUIScaleformData>(menu_name, message_type, |msg_data| {
+    let queued = queue_message_with::<BSUIScaleformData>(menu_name, message_type, |msg_data| {
         msg_data.scaleform_event = scaleform_event;
-    })
+    });
+
+    if !queued {
+        crate::defensive_sdk_warn!(
+            "sdk::ui::menus::queue_scaleform_event_message() failed for menu '{}'",
+            menu_name
+        );
+    }
+
+    queued
 }

@@ -141,24 +141,54 @@ impl MenuSurface {
     #[inline(always)]
     pub fn is_available_c_str(&self, path: &CStr) -> bool {
         let movie = self.movie_view();
-        !movie.is_null() && movie.is_available(path.as_ptr())
+        if movie.is_null() {
+            crate::defensive_sdk_warn!(
+                "sdk::ui::scaleform::MenuSurface::is_available_c_str() skipped because the menu has no GFxMovieView"
+            );
+            false
+        } else {
+            movie.is_available(path.as_ptr())
+        }
     }
 
     #[inline(always)]
     pub fn is_available_str(&self, path: &str) -> Result<bool, NulError> {
-        let path = CString::new(path)?;
+        let path = match CString::new(path) {
+            Ok(path) => path,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::is_available_str() rejected path with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.is_available_c_str(&path))
     }
 
     #[inline(always)]
     pub fn get_variable_c_str(&self, path: &CStr, value: &mut GFxValue) -> bool {
         let movie = self.movie_view();
-        !movie.is_null() && movie.get_variable(value, path.as_ptr())
+        if movie.is_null() {
+            crate::defensive_sdk_warn!(
+                "sdk::ui::scaleform::MenuSurface::get_variable_c_str() skipped because the menu has no GFxMovieView"
+            );
+            false
+        } else {
+            movie.get_variable(value, path.as_ptr())
+        }
     }
 
     #[inline(always)]
     pub fn get_variable_str(&self, path: &str, value: &mut GFxValue) -> Result<bool, NulError> {
-        let path = CString::new(path)?;
+        let path = match CString::new(path) {
+            Ok(path) => path,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::get_variable_str() rejected path with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.get_variable_c_str(&path, value))
     }
 
@@ -170,7 +200,15 @@ impl MenuSurface {
 
     #[inline(always)]
     pub fn variable_str(&self, path: &str) -> Result<Option<GFxValue>, NulError> {
-        let path = CString::new(path)?;
+        let path = match CString::new(path) {
+            Ok(path) => path,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::variable_str() rejected path with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.variable_c_str(&path))
     }
 
@@ -182,7 +220,14 @@ impl MenuSurface {
         set_type: GFxMovieSetVarType,
     ) -> bool {
         let mut movie = self.movie_view();
-        !movie.is_null() && movie.set_variable(path.as_ptr(), value, set_type)
+        if movie.is_null() {
+            crate::defensive_sdk_warn!(
+                "sdk::ui::scaleform::MenuSurface::set_variable_c_str() skipped because the menu has no GFxMovieView"
+            );
+            false
+        } else {
+            movie.set_variable(path.as_ptr(), value, set_type)
+        }
     }
 
     #[inline(always)]
@@ -192,7 +237,15 @@ impl MenuSurface {
         value: &GFxValue,
         set_type: GFxMovieSetVarType,
     ) -> Result<bool, NulError> {
-        let path = CString::new(path)?;
+        let path = match CString::new(path) {
+            Ok(path) => path,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::set_variable_str() rejected path with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.set_variable_c_str(&path, value, set_type))
     }
 
@@ -213,7 +266,15 @@ impl MenuSurface {
         value: bool,
         set_type: GFxMovieSetVarType,
     ) -> Result<bool, NulError> {
-        let path = CString::new(path)?;
+        let path = match CString::new(path) {
+            Ok(path) => path,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::set_variable_bool_str() rejected path with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.set_variable_bool_c_str(&path, value, set_type))
     }
 
@@ -234,7 +295,15 @@ impl MenuSurface {
         value: f64,
         set_type: GFxMovieSetVarType,
     ) -> Result<bool, NulError> {
-        let path = CString::new(path)?;
+        let path = match CString::new(path) {
+            Ok(path) => path,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::set_variable_number_str() rejected path with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.set_variable_number_c_str(&path, value, set_type))
     }
 
@@ -246,13 +315,19 @@ impl MenuSurface {
         args: &[GFxValue],
     ) -> bool {
         let mut movie = self.movie_view();
-        !movie.is_null()
-            && movie.invoke(
+        if movie.is_null() {
+            crate::defensive_sdk_warn!(
+                "sdk::ui::scaleform::MenuSurface::invoke_c_str() skipped because the menu has no GFxMovieView"
+            );
+            false
+        } else {
+            movie.invoke(
                 method_name.as_ptr(),
                 result.map_or(core::ptr::null_mut(), core::ptr::from_mut),
                 args.as_ptr(),
                 args.len() as u32,
             )
+        }
     }
 
     #[inline(always)]
@@ -262,7 +337,15 @@ impl MenuSurface {
         result: Option<&mut GFxValue>,
         args: &[GFxValue],
     ) -> Result<bool, NulError> {
-        let method_name = CString::new(method_name)?;
+        let method_name = match CString::new(method_name) {
+            Ok(method_name) => method_name,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::invoke_str() rejected method name with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.invoke_c_str(&method_name, result, args))
     }
 
@@ -277,7 +360,15 @@ impl MenuSurface {
         method_name: &str,
         result: Option<&mut GFxValue>,
     ) -> Result<bool, NulError> {
-        let method_name = CString::new(method_name)?;
+        let method_name = match CString::new(method_name) {
+            Ok(method_name) => method_name,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::invoke_no_args_str() rejected method name with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.invoke_no_args_c_str(&method_name, result))
     }
 
@@ -285,6 +376,9 @@ impl MenuSurface {
     pub fn invoke_no_return_c_str(&self, method_name: &CStr, args: &[GFxValue]) -> bool {
         let movie = self.movie_view();
         if movie.is_null() {
+            crate::defensive_sdk_warn!(
+                "sdk::ui::scaleform::MenuSurface::invoke_no_return_c_str() skipped because the menu has no GFxMovieView"
+            );
             return false;
         }
 
@@ -298,7 +392,15 @@ impl MenuSurface {
         method_name: &str,
         args: &[GFxValue],
     ) -> Result<bool, NulError> {
-        let method_name = CString::new(method_name)?;
+        let method_name = match CString::new(method_name) {
+            Ok(method_name) => method_name,
+            Err(err) => {
+                crate::defensive_sdk_warn!(
+                    "sdk::ui::scaleform::MenuSurface::invoke_no_return_str() rejected method name with interior NUL"
+                );
+                return Err(err);
+            }
+        };
         Ok(self.invoke_no_return_c_str(&method_name, args))
     }
 }
@@ -335,6 +437,19 @@ pub fn surface(menu_name: &str) -> Option<MenuSurface> {
 }
 
 #[inline(always)]
+fn surface_or_warn(menu_name: &str, caller: &'static str) -> Option<MenuSurface> {
+    let surface = surface(menu_name);
+    if surface.is_none() {
+        crate::defensive_sdk_warn!(
+            "{} skipped because menu '{}' is not open or has no stable UI surface",
+            caller,
+            menu_name
+        );
+    }
+    surface
+}
+
+#[inline(always)]
 pub fn named_surface<M>() -> Option<MenuSurface>
 where
     M: NamedMenu,
@@ -354,7 +469,8 @@ pub fn top_most_surface_default() -> Option<MenuSurface> {
 
 #[inline(always)]
 pub fn is_available(menu_name: &str, path: &str) -> Result<bool, NulError> {
-    surface(menu_name).map_or(Ok(false), |surface| surface.is_available_str(path))
+    surface_or_warn(menu_name, "sdk::ui::scaleform::is_available()")
+        .map_or(Ok(false), |surface| surface.is_available_str(path))
 }
 
 #[inline(always)]
@@ -367,7 +483,8 @@ where
 
 #[inline(always)]
 pub fn variable(menu_name: &str, path: &str) -> Result<Option<GFxValue>, NulError> {
-    surface(menu_name).map_or(Ok(None), |surface| surface.variable_str(path))
+    surface_or_warn(menu_name, "sdk::ui::scaleform::variable()")
+        .map_or(Ok(None), |surface| surface.variable_str(path))
 }
 
 #[inline(always)]
@@ -385,7 +502,7 @@ pub fn set_variable(
     value: &GFxValue,
     set_type: GFxMovieSetVarType,
 ) -> Result<bool, NulError> {
-    surface(menu_name).map_or(Ok(false), |surface| {
+    surface_or_warn(menu_name, "sdk::ui::scaleform::set_variable()").map_or(Ok(false), |surface| {
         surface.set_variable_str(path, value, set_type)
     })
 }
@@ -397,9 +514,10 @@ pub fn set_variable_bool(
     value: bool,
     set_type: GFxMovieSetVarType,
 ) -> Result<bool, NulError> {
-    surface(menu_name).map_or(Ok(false), |surface| {
-        surface.set_variable_bool_str(path, value, set_type)
-    })
+    surface_or_warn(menu_name, "sdk::ui::scaleform::set_variable_bool()")
+        .map_or(Ok(false), |surface| {
+            surface.set_variable_bool_str(path, value, set_type)
+        })
 }
 
 #[inline(always)]
@@ -409,9 +527,10 @@ pub fn set_variable_number(
     value: f64,
     set_type: GFxMovieSetVarType,
 ) -> Result<bool, NulError> {
-    surface(menu_name).map_or(Ok(false), |surface| {
-        surface.set_variable_number_str(path, value, set_type)
-    })
+    surface_or_warn(menu_name, "sdk::ui::scaleform::set_variable_number()")
+        .map_or(Ok(false), |surface| {
+            surface.set_variable_number_str(path, value, set_type)
+        })
 }
 
 #[inline(always)]
@@ -421,7 +540,7 @@ pub fn invoke(
     result: Option<&mut GFxValue>,
     args: &[GFxValue],
 ) -> Result<bool, NulError> {
-    surface(menu_name).map_or(Ok(false), |surface| {
+    surface_or_warn(menu_name, "sdk::ui::scaleform::invoke()").map_or(Ok(false), |surface| {
         surface.invoke_str(method_name, result, args)
     })
 }
@@ -432,9 +551,10 @@ pub fn invoke_no_return(
     method_name: &str,
     args: &[GFxValue],
 ) -> Result<bool, NulError> {
-    surface(menu_name).map_or(Ok(false), |surface| {
-        surface.invoke_no_return_str(method_name, args)
-    })
+    surface_or_warn(menu_name, "sdk::ui::scaleform::invoke_no_return()")
+        .map_or(Ok(false), |surface| {
+            surface.invoke_no_return_str(method_name, args)
+        })
 }
 
 #[inline(always)]

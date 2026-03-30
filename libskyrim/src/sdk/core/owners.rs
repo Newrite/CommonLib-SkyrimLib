@@ -51,6 +51,10 @@ pub trait NativeOwnerCastExt: NativeOwner {
         Self::Target: RttiType,
         U: RttiType,
     {
+        if self.is_null() {
+            return None;
+        }
+
         let raw = self.clone().into_raw();
         let casted = unsafe { skyrim_cast::<Self::Target, U>(raw) };
         if casted.is_null() {

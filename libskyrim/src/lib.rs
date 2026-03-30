@@ -21,6 +21,7 @@ pub mod re;
 pub mod relocation;
 pub mod rex;
 pub mod runtime;
+pub mod safety;
 pub mod sdk;
 pub mod skse;
 pub mod version;

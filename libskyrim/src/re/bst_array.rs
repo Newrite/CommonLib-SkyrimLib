@@ -597,7 +597,17 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
             if len == 0 {
                 &[]
             } else {
-                core::slice::from_raw_parts(self.data(), len)
+                let data = self.data();
+                if data.is_null() {
+                    crate::defensive_sdk_warn!(
+                        "BSTArray<{}>::as_slice observed null data with non-zero len={}",
+                        core::any::type_name::<T>(),
+                        len
+                    );
+                    &[]
+                } else {
+                    core::slice::from_raw_parts(data, len)
+                }
             }
         }
     }
@@ -613,7 +623,17 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
             if len == 0 {
                 &mut []
             } else {
-                core::slice::from_raw_parts_mut(self.data_mut(), len)
+                let data = self.data_mut();
+                if data.is_null() {
+                    crate::defensive_sdk_warn!(
+                        "BSTArray<{}>::as_mut_slice observed null data with non-zero len={}",
+                        core::any::type_name::<T>(),
+                        len
+                    );
+                    &mut []
+                } else {
+                    core::slice::from_raw_parts_mut(data, len)
+                }
             }
         }
     }
@@ -1164,7 +1184,16 @@ impl<T> BSStaticArray<T> {
             if self.is_empty() {
                 &[]
             } else {
-                core::slice::from_raw_parts(self._data, self._size as usize)
+                if self._data.is_null() {
+                    crate::defensive_sdk_warn!(
+                        "BSStaticArray<{}>::as_slice observed null data with non-zero len={}",
+                        core::any::type_name::<T>(),
+                        self._size
+                    );
+                    &[]
+                } else {
+                    core::slice::from_raw_parts(self._data, self._size as usize)
+                }
             }
         }
     }
@@ -1179,7 +1208,16 @@ impl<T> BSStaticArray<T> {
             if self.is_empty() {
                 &mut []
             } else {
-                core::slice::from_raw_parts_mut(self._data, self._size as usize)
+                if self._data.is_null() {
+                    crate::defensive_sdk_warn!(
+                        "BSStaticArray<{}>::as_mut_slice observed null data with non-zero len={}",
+                        core::any::type_name::<T>(),
+                        self._size
+                    );
+                    &mut []
+                } else {
+                    core::slice::from_raw_parts_mut(self._data, self._size as usize)
+                }
             }
         }
     }
@@ -1403,7 +1441,17 @@ impl<T> BSTSmallSharedArray<T> {
             if self.is_empty() {
                 &[]
             } else {
-                core::slice::from_raw_parts(self.data(), self._size as usize)
+                let data = self.data();
+                if data.is_null() {
+                    crate::defensive_sdk_warn!(
+                        "BSTSmallSharedArray<{}>::as_slice observed null data with non-zero len={}",
+                        core::any::type_name::<T>(),
+                        self._size
+                    );
+                    &[]
+                } else {
+                    core::slice::from_raw_parts(data, self._size as usize)
+                }
             }
         }
     }
@@ -1418,7 +1466,17 @@ impl<T> BSTSmallSharedArray<T> {
             if self.is_empty() {
                 &mut []
             } else {
-                core::slice::from_raw_parts_mut(self.data_mut(), self._size as usize)
+                let data = self.data_mut();
+                if data.is_null() {
+                    crate::defensive_sdk_warn!(
+                        "BSTSmallSharedArray<{}>::as_mut_slice observed null data with non-zero len={}",
+                        core::any::type_name::<T>(),
+                        self._size
+                    );
+                    &mut []
+                } else {
+                    core::slice::from_raw_parts_mut(data, self._size as usize)
+                }
             }
         }
     }

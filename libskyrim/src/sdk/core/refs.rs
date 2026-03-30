@@ -253,6 +253,26 @@ impl<T> GamePtr<T> {
         self.as_ref().map(f)
     }
 
+    #[inline(always)]
+    pub fn map<R>(self, f: impl FnOnce(&T) -> R) -> Option<R> {
+        self.with(f)
+    }
+
+    #[inline(always)]
+    pub fn map_or<R>(self, default: R, f: impl FnOnce(&T) -> R) -> R {
+        self.with(f).unwrap_or(default)
+    }
+
+    #[inline(always)]
+    pub fn map_or_else<R>(self, default: impl FnOnce() -> R, f: impl FnOnce(&T) -> R) -> R {
+        self.with(f).unwrap_or_else(default)
+    }
+
+    #[inline(always)]
+    pub fn and_then<U>(self, f: impl FnOnce(&T) -> Option<U>) -> Option<U> {
+        self.as_ref().and_then(f)
+    }
+
     /// # Safety
     /// The caller must ensure no aliasing or other engine invariants are
     /// violated by creating a mutable borrow from this engine pointer.

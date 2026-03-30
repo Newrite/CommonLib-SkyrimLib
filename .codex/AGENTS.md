@@ -102,6 +102,155 @@ When relaxing a literal C++ signature:
 - if there is any real uncertainty, keep the raw/strict method and add the more
   ergonomic helper alongside it instead of narrowing the contract silently
 
+## Layer Model
+
+Treat the repository as three related but different surfaces:
+
+- `libskyrim/src/re/**`
+  Low-level RE and ABI layer. This is where layout, field offsets, inheritance,
+  vtable ownership, relocation semantics, and source-backed engine behavior
+  must stay maximally honest. This layer is allowed to be strict and unsafe
+  where the engine contract is strict and unsafe.
+
+- `libskyrim/src/**` shared support outside `re`
+  Cross-cutting infrastructure such as relocation/runtime helpers, smart
+  pointers, bridges, logging, and small utility layers. This code should
+  preserve ABI/source fidelity while making common safe/ergonomic patterns
+  reusable for both RE translations and SDK helpers.
+
+- `libskyrim/src/sdk/**`
+  High-level gameplay/UI/plugin helper layer. This layer should prefer
+  defensive behavior, lifecycle tolerance, and "do no harm" semantics over
+  letting a slightly wrong call site crash the game.
+
+Do not blur these layers accidentally:
+
+- do not weaken RE fidelity just to make the SDK easier
+- do not expose brittle RE/raw assumptions as the only SDK surface when a safe
+  fallback is source-compatible with the intent of the helper
+- do not push broad "soft failure" behavior down into raw ABI bindings unless
+  the source-backed engine contract itself is tolerant
+
+## SDK Safety Model
+
+The SDK should be designed with near-zero trust in callers and lifecycle
+timing, with one deliberate exception:
+
+- singleton discovery is a strict contract layer
+
+If an engine singleton such as `PlayerCharacter::GetSingleton()` or
+`ProcessLists::GetSingleton()` is unavailable, that is treated as "something is
+very wrong" rather than as a normal branch to build broad public API around.
+Do not proliferate public or private singleton-helper layers such as
+`try_*singleton()` or "helper that soft-checks the singleton for callers" just
+to normalize that state. The singleton contract itself stays strict.
+
+Instead, use this split:
+
+- singleton getters and raw RE accessors stay strict when they represent the
+  canonical engine contract
+- higher-level SDK helper operations should be defensive around timing, null
+  engine pointers, empty handles, transient arrays, missing 3D, bad menu state,
+  and similar misuse or lifecycle hazards
+
+Do not confuse embedded layout members with nullable engine seams:
+
+- fields inherited or exposed through embedded bases/mixins (`inherit!`,
+  explicit `base` members, same-object aggregates, etc.) are structurally part
+  of the object layout and should be treated as present when the owning object
+  itself is valid
+- do not add null checks or `Option`-style softening for such embedded members
+  just because the original C++ inheritance chain has been represented in Rust
+  as a member field
+- only pointer-like, handle-like, smart-pointer-like, singleton-returned, or
+  otherwise source-backed nullable fields/results should be treated as nullable
+  SDK seams
+- in other words: `embedded layout member != nullable seam`
+
+For SDK-facing helpers, prefer these fallback patterns when they preserve the
+intent of the helper:
+
+- `fn -> ()`
+  Early return.
+
+- `fn -> bool`
+  Return `false`.
+
+- pointer-like or smart-pointer-like result
+  Return null / empty.
+
+- `fn -> Option<T>`
+  Return `None` only when the API is already semantically optional for the
+  caller. Do not introduce `Option` solely to make singleton lookup soft.
+
+- field or sub-object access below a valid singleton
+  If the singleton itself is strict but a child field can legitimately be null
+  or temporarily unavailable, prefer a nullable SDK return such as `GamePtr<T>`
+  instead of blindly forcing `GameRef<T>`. Example: current cell/worldspace/
+  location style accessors may legitimately return null even when the player
+  singleton exists.
+
+- integer / scalar status return
+  Return a clear safe sentinel such as `0` or `-1` only when that sentinel is a
+  sensible non-destructive result for the existing API.
+
+- collections / views
+  Prefer empty views/iteration no-ops over UB or crashes when the container is
+  observably invalid in a recoverable way.
+
+Do not silently paper over a bad state when doing so would hide a real engine
+contract violation in the low-level layer. Defensive behavior is for SDK
+helpers, not for laundering ABI mistakes.
+
+## SDK Logging Policy
+
+Defensive SDK guards should be able to emit diagnostics, but diagnostics must
+remain opt-in and low-friction:
+
+- use feature-gated logging helpers such as `defensive-sdk-log`
+- prefer warnings for tolerated bad states and early returns
+- prefer errors only when the helper had to abandon a meaningful operation due
+  to a clearly broken runtime state
+- logging must never become a reason to add `std` or otherwise violate the
+  repository's low-level constraints
+
+The goal is:
+
+- by default, SDK helpers fail soft without spamming
+- with the feature enabled, the same guards leave breadcrumbs about what bad
+  state was detected and which fallback path was taken
+
+## SDK Design Goals
+
+When adding or reviewing SDK helpers, optimize for these goals in order:
+
+1. Do not crash the game because a caller used the helper at a slightly wrong
+   time.
+2. Do not invent fake engine behavior or hide real ABI/layout contracts.
+3. Keep the public SDK surface ergonomic enough that plugin authors do not have
+   to rediscover the same lifecycle hazards.
+4. Prefer no-op, `false`, null, or empty results over panics/UB when the helper
+   cannot complete safely.
+5. Make bad states diagnosable through opt-in logging rather than by forcing
+   every caller into verbose error plumbing.
+
+Examples of good SDK hardening work:
+
+- snapshot transient engine handle/container entries before resolving them
+- bail out of traversal when singleton-backed global state is unavailable
+- refuse to dereference null container storage even if a stale length field is
+  non-zero
+- skip gameplay work while the game is obviously paused/loading when the helper
+  has no safe meaningful action there
+
+Examples of bad SDK hardening work:
+
+- converting every singleton getter into a public `Option` API
+- swallowing RE/ABI bugs inside the raw layer and pretending the contract is
+  naturally optional
+- adding defensive branching that changes source-backed behavior of raw engine
+  wrappers instead of only guarding higher-level helpers
+
 ## Relocation Model
 
 Use relocation types according to their real CommonLib semantics:

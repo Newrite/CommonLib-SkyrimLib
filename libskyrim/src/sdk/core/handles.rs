@@ -60,6 +60,10 @@ pub trait HandleTarget: sealed::Sealed + Sized {
 
     #[inline(always)]
     fn resolve_handle(ptr: *mut Self) -> Option<ResolvedHandle<Self::Handle>> {
+        if ptr.is_null() {
+            return None;
+        }
+
         Self::canonical_handle(ptr).resolve()
     }
 }
@@ -86,6 +90,10 @@ pub trait HandleFamilyTarget: sealed::Sealed + RttiType + Sized {
 
     #[inline(always)]
     fn resolve(ptr: *mut Self) -> Option<Resolved<Self>> {
+        if ptr.is_null() {
+            return None;
+        }
+
         Resolved::from_ptr(ptr)
     }
 }
@@ -168,9 +176,20 @@ where
     }
 
     #[inline(always)]
+    pub fn as_game_ptr(&self) -> GamePtr<O::Target> {
+        unsafe { GamePtr::from_raw(self.as_ptr()) }
+    }
+
+    #[inline(always)]
     pub fn as_ref(&self) -> &O::Target {
         debug_assert!(!self.owner.is_null());
         unsafe { &*self.owner.as_ptr() }
+    }
+
+    #[inline(always)]
+    pub fn as_game_ref(&self) -> GameRef<O::Target> {
+        debug_assert!(!self.owner.is_null());
+        unsafe { GameRef::from_raw(self.as_ptr()) }
     }
 
     #[inline(always)]
@@ -326,6 +345,10 @@ where
 
     #[inline(always)]
     pub fn from_ptr(ptr: *mut T) -> Option<Self> {
+        if ptr.is_null() {
+            return None;
+        }
+
         Self::from_handle(T::canonical_handle(ptr))
     }
 
@@ -385,9 +408,20 @@ where
     }
 
     #[inline(always)]
+    pub fn as_game_ptr(&self) -> GamePtr<T> {
+        unsafe { GamePtr::from_raw(self.as_ptr()) }
+    }
+
+    #[inline(always)]
     pub fn as_ref(&self) -> &T {
         debug_assert!(!self.as_ptr().is_null());
         unsafe { &*self.as_ptr() }
+    }
+
+    #[inline(always)]
+    pub fn as_game_ref(&self) -> GameRef<T> {
+        debug_assert!(!self.as_ptr().is_null());
+        unsafe { GameRef::from_raw(self.as_ptr()) }
     }
 
     #[inline(always)]

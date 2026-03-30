@@ -141,6 +141,7 @@ impl ProcessLists {
             }
 
             for actor_handle in unsafe { (*list).as_slice() } {
+                let actor_handle = *actor_handle;
                 let actor = actor_handle.get();
                 let actor = actor.get();
                 if !actor.is_null() && callback(actor) == BSContainerForEachResult::Stop {
@@ -155,6 +156,7 @@ impl ProcessLists {
         F: FnMut(*mut Actor) -> BSContainerForEachResult,
     {
         for actor_handle in unsafe { self.high_actor_handles.as_slice() } {
+            let actor_handle = *actor_handle;
             let actor = actor_handle.get();
             let actor = actor.get();
             if !actor.is_null() && callback(actor) == BSContainerForEachResult::Stop {
