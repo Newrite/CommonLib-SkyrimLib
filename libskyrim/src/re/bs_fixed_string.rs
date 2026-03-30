@@ -117,8 +117,7 @@ impl Clone for BSFixedString {
 impl Drop for BSFixedString {
     fn drop(&mut self) {
         if !self.data.is_null() {
-            BSStringPoolEntry::release8(self.data);
-            self.data = core::ptr::null();
+            BSStringPoolEntry::release8(&mut self.data);
         }
     }
 }
@@ -261,8 +260,7 @@ impl Clone for BSFixedStringW {
 impl Drop for BSFixedStringW {
     fn drop(&mut self) {
         if !self.data.is_null() {
-            BSStringPoolEntry::release16(self.data);
-            self.data = core::ptr::null();
+            BSStringPoolEntry::release16(&mut self.data);
         }
     }
 }

@@ -7,12 +7,14 @@
 //! - `BSTScatterTable<K, V, ...>` вЂ” the core hash table
 //! - Type aliases: `BSTHashMap`, `BSTSet`, `BSTFixedHashMap`, `BSTScrapHashMap`
 
+use alloc::vec::Vec;
 use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::ptr;
 
 use crate::re::bst_tuple::BSTTuple;
 use crate::re::crc::BSTHash;
+use crate::re::memory_manager;
 use crate::re::scrap_heap::ScrapHeap;
 
 // в”Ђв”Ђв”Ђ Sentinel в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
@@ -133,6 +135,7 @@ impl<V> BSTScatterTableEntry<V> {
     /// Caller must ensure this entry is empty or has been destroyed.
     pub unsafe fn emplace(&mut self, value: V, next: *mut BSTScatterTableEntry<V>) {
         unsafe {
+            self.destroy();
             self.value.as_mut_ptr().write(value);
             self.next = next;
         }
@@ -179,6 +182,7 @@ pub struct BSTScatterTableHeapAllocator {
 }
 
 const _: () = assert!(core::mem::size_of::<BSTScatterTableHeapAllocator>() == 0x10);
+const _: () = assert!(core::mem::offset_of!(BSTScatterTableHeapAllocator, _entries) == 0x08);
 
 impl Default for BSTScatterTableHeapAllocator {
     #[inline(always)]
@@ -235,16 +239,18 @@ pub struct BSTScatterTableScrapAllocator {
 }
 
 const _: () = assert!(core::mem::size_of::<BSTScatterTableScrapAllocator>() == 0x10);
+const _: () = assert!(core::mem::offset_of!(BSTScatterTableScrapAllocator, _allocator) == 0x00);
+const _: () = assert!(core::mem::offset_of!(BSTScatterTableScrapAllocator, _entries) == 0x08);
 
 impl BSTScatterTableScrapAllocator {
     pub fn new() -> Self {
         // Initialize with the current thread's scrap heap, like the C++ default
         let allocator = unsafe {
-            let mgr = crate::ffi::commonlib_memory_manager_get_singleton();
+            let mgr = memory_manager::MemoryManager::get_singleton();
             if mgr.is_null() {
                 ptr::null_mut()
             } else {
-                crate::ffi::commonlib_memory_manager_get_thread_scrap_heap(mgr) as *mut ScrapHeap
+                (*mgr).get_thread_scrap_heap()
             }
         };
         Self {
@@ -276,22 +282,13 @@ unsafe impl BSTScatterTableAllocatorTrait for BSTScatterTableScrapAllocator {
 
     fn allocate_bytes(&mut self, bytes: usize) -> *mut u8 {
         assert!(!self._allocator.is_null());
-        unsafe {
-            crate::ffi::commonlib_scrap_heap_allocate(
-                self._allocator as *mut c_void,
-                bytes,
-                0x10, // alignment = 16, as in the C++ code
-            ) as *mut u8
-        }
+        unsafe { (*self._allocator).allocate(bytes, 0x10) as *mut u8 }
     }
 
     fn deallocate_bytes(&mut self, ptr: *mut u8) {
         assert!(!self._allocator.is_null());
         unsafe {
-            crate::ffi::commonlib_scrap_heap_deallocate(
-                self._allocator as *mut c_void,
-                ptr as *mut c_void,
-            );
+            (*self._allocator).deallocate(ptr as *mut c_void);
         }
     }
 }
@@ -542,6 +539,35 @@ where
         self.size() == 0
     }
 
+    #[inline(always)]
+    pub fn empty(&self) -> bool {
+        self.is_empty()
+    }
+
+    pub fn get(&self, key: &T::Key) -> Option<&T::Value>
+    where
+        T::Key: BSTHash + PartialEq,
+    {
+        let value = self.find(key);
+        if value.is_null() {
+            None
+        } else {
+            Some(unsafe { &*value })
+        }
+    }
+
+    pub fn get_mut(&mut self, key: &T::Key) -> Option<&mut T::Value>
+    where
+        T::Key: BSTHash + PartialEq,
+    {
+        let value = self.find_mut(key);
+        if value.is_null() {
+            None
+        } else {
+            Some(unsafe { &mut *value })
+        }
+    }
+
     /// Looks up a key in the table. Returns a pointer to the value, or null if not found.
     pub fn find(&self, key: &T::Key) -> *const T::Value
     where
@@ -640,9 +666,8 @@ where
                     }
 
                     // Move current entry to free slot
-                    let stolen_value = (*entry).steal();
                     let old_next = (*entry).next;
-                    // Actually entry was stolen so next is null, we need the old chain
+                    let stolen_value = (*entry).steal();
                     (*free).emplace(stolen_value, old_next);
                     (*prev).next = free;
 
@@ -692,8 +717,8 @@ where
                 } else {
                     // Move next entry into current slot
                     let next = (*entry).next;
-                    let next_val = (*next).steal();
                     let next_next = (*next).next;
+                    let next_val = (*next).steal();
                     (*entry).destroy();
                     (*entry).emplace(next_val, next_next);
                 }
@@ -754,6 +779,7 @@ where
 
             let old_cap = self._parent.capacity();
             let old_entries = self.get_entries();
+            let old_size = self.size();
 
             // Calculate new capacity: next power of 2 >= max(count, MIN_SIZE)
             let min = A::MIN_SIZE as u64;
@@ -779,26 +805,51 @@ where
             let new_entries = new_entries_raw as *mut BSTScatterTableEntry<T::Value>;
 
             // Zero-initialize new entries (next = null в†’ all empty)
-            ptr::write_bytes(new_entries, 0, new_cap as usize);
-
-            // Set new capacity
-            self._parent.set_capacity(new_cap);
-            self._parent.set_free(new_cap);
-            self._parent.set_good(0);
-            self._allocator.set_entries(new_entries_raw);
-
-            // Re-insert old entries
-            if !old_entries.is_null() {
+            if !old_entries.is_null() && ptr::eq(new_entries_raw, old_entries as *mut u8) {
                 let old_typed = old_entries as *mut BSTScatterTableEntry<T::Value>;
+                if new_cap > old_cap {
+                    ptr::write_bytes(
+                        old_typed.add(old_cap as usize),
+                        0,
+                        (new_cap - old_cap) as usize,
+                    );
+                }
+
+                let mut todo = Vec::with_capacity(old_size as usize);
                 for i in 0..old_cap {
                     let entry = &mut *old_typed.add(i as usize);
                     if entry.has_value() {
-                        let val = entry.steal();
-                        self.insert(val);
+                        todo.push(entry.steal());
                     }
                 }
-                // Free old storage
-                self._allocator.deallocate_bytes(old_entries as *mut u8);
+
+                self._parent.set_capacity(new_cap);
+                self._parent.set_free(new_cap);
+                self._parent.set_good(0);
+                self._allocator.set_entries(new_entries_raw);
+
+                for value in todo {
+                    debug_assert!(self.insert(value));
+                }
+            } else {
+                ptr::write_bytes(new_entries, 0, new_cap as usize);
+
+                self._parent.set_capacity(new_cap);
+                self._parent.set_free(new_cap);
+                self._parent.set_good(0);
+                self._allocator.set_entries(new_entries_raw);
+
+                if !old_entries.is_null() {
+                    let old_typed = old_entries as *mut BSTScatterTableEntry<T::Value>;
+                    for i in 0..old_cap {
+                        let entry = &mut *old_typed.add(i as usize);
+                        if entry.has_value() {
+                            let val = entry.steal();
+                            debug_assert!(self.insert(val));
+                        }
+                    }
+                    self._allocator.deallocate_bytes(old_entries as *mut u8);
+                }
             }
         }
     }
@@ -911,6 +962,104 @@ where
 
 // в”Ђв”Ђв”Ђ Iterators в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
+impl<T, A, P> Default for BSTScatterTable<T, A, P>
+where
+    T: BSTScatterTableTraits,
+    A: BSTScatterTableAllocatorTrait + Default,
+    P: BSTScatterTableParent + Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<T, A, P> Clone for BSTScatterTable<T, A, P>
+where
+    T: BSTScatterTableTraits,
+    T::Value: Clone,
+    T::Key: BSTHash + PartialEq,
+    A: BSTScatterTableAllocatorTrait + Default,
+    P: BSTScatterTableParent + Default,
+{
+    fn clone(&self) -> Self {
+        let mut clone = Self::new();
+        unsafe {
+            clone.reserve(self.size());
+            for value in self.iter() {
+                debug_assert!(clone.insert(value.clone()));
+            }
+        }
+        clone
+    }
+}
+
+impl<T, A, P> core::iter::FromIterator<T::Value> for BSTScatterTable<T, A, P>
+where
+    T: BSTScatterTableTraits,
+    T::Key: BSTHash + PartialEq,
+    A: BSTScatterTableAllocatorTrait + Default,
+    P: BSTScatterTableParent + Default,
+{
+    fn from_iter<I: IntoIterator<Item = T::Value>>(iter: I) -> Self {
+        let mut table = Self::new();
+        table.extend(iter);
+        table
+    }
+}
+
+impl<T, A, P> Extend<T::Value> for BSTScatterTable<T, A, P>
+where
+    T: BSTScatterTableTraits,
+    T::Key: BSTHash + PartialEq,
+    A: BSTScatterTableAllocatorTrait + Default,
+    P: BSTScatterTableParent + Default,
+{
+    fn extend<I: IntoIterator<Item = T::Value>>(&mut self, iter: I) {
+        let iter = iter.into_iter();
+        let (_, upper) = iter.size_hint();
+        if let Some(upper) = upper {
+            let additional = upper.min(u32::MAX as usize) as u32;
+            unsafe {
+                self.reserve(self.size().saturating_add(additional));
+            }
+        }
+
+        for value in iter {
+            unsafe {
+                let _ = self.insert(value);
+            }
+        }
+    }
+}
+
+impl<'a, T, A, P> IntoIterator for &'a BSTScatterTable<T, A, P>
+where
+    T: BSTScatterTableTraits,
+    A: BSTScatterTableAllocatorTrait + Default,
+    P: BSTScatterTableParent + Default,
+{
+    type Item = &'a T::Value;
+    type IntoIter = BSTScatterTableIter<'a, T::Value>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a, T, A, P> IntoIterator for &'a mut BSTScatterTable<T, A, P>
+where
+    T: BSTScatterTableTraits,
+    A: BSTScatterTableAllocatorTrait + Default,
+    P: BSTScatterTableParent + Default,
+{
+    type Item = &'a mut T::Value;
+    type IntoIter = BSTScatterTableIterMut<'a, T::Value>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
+    }
+}
+
 /// Immutable iterator over scatter table values.
 pub struct BSTScatterTableIter<'a, V> {
     current: *const BSTScatterTableEntry<V>,
@@ -1022,3 +1171,26 @@ pub type BSTStaticHashMap<K, V, const N: u32, const BUF: usize> = BSTScatterTabl
 /// C++ type aliases for unknown key/value.
 pub type UnkKey = usize;
 pub type UnkValue = usize;
+
+type BSTHashMapRepresentative = BSTHashMap<u32, u32>;
+type BSTFixedHashMapRepresentative = BSTFixedHashMap<u32, u32>;
+type BSTScrapHashMapRepresentative = BSTScrapHashMap<u32, u32>;
+type BSTScatterTableRepresentativeEntry = BSTScatterTableEntry<BSTTuple<u32, u32>>;
+type BSTStaticHashMapAllocatorRepresentative = BSTStaticHashMapAllocator<
+    8,
+    { 8 * core::mem::size_of::<BSTScatterTableRepresentativeEntry>() },
+>;
+
+const _: () = assert!(core::mem::size_of::<BSTScatterTableRepresentativeEntry>() == 0x10);
+const _: () = assert!(core::mem::size_of::<BSTHashMapRepresentative>() == 0x30);
+const _: () = assert!(core::mem::offset_of!(BSTHashMapRepresentative, _sentinel) == 0x18);
+const _: () = assert!(core::mem::offset_of!(BSTHashMapRepresentative, _allocator) == 0x20);
+const _: () = assert!(core::mem::size_of::<BSTFixedHashMapRepresentative>() == 0x28);
+const _: () = assert!(core::mem::offset_of!(BSTFixedHashMapRepresentative, _sentinel) == 0x10);
+const _: () = assert!(core::mem::offset_of!(BSTFixedHashMapRepresentative, _allocator) == 0x18);
+const _: () = assert!(core::mem::size_of::<BSTScrapHashMapRepresentative>() == 0x30);
+const _: () = assert!(core::mem::offset_of!(BSTScrapHashMapRepresentative, _sentinel) == 0x18);
+const _: () = assert!(core::mem::offset_of!(BSTScrapHashMapRepresentative, _allocator) == 0x20);
+const _: () = assert!(core::mem::size_of::<BSTStaticHashMapAllocatorRepresentative>() == 0x88);
+const _: () =
+    assert!(core::mem::offset_of!(BSTStaticHashMapAllocatorRepresentative, _entries) == 0x80);

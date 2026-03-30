@@ -1,4 +1,3 @@
-use core::ffi::c_void;
 use core::ptr;
 
 use core_util::inherit;
@@ -95,14 +94,11 @@ impl BSLightingShaderMaterialBase {
 
     #[inline(always)]
     fn thread_scrap_heap() -> *mut ScrapHeap {
-        unsafe {
-            let manager =
-                crate::ffi::commonlib_memory_manager_get_singleton() as *mut MemoryManager;
-            if manager.is_null() {
-                return ptr::null_mut();
-            }
-            crate::ffi::commonlib_memory_manager_get_thread_scrap_heap(manager.cast())
-                as *mut ScrapHeap
+        let manager = MemoryManager::get_singleton();
+        if manager.is_null() {
+            ptr::null_mut()
+        } else {
+            unsafe { (*manager).get_thread_scrap_heap() }
         }
     }
 
@@ -113,14 +109,7 @@ impl BSLightingShaderMaterialBase {
             return ptr::null_mut();
         }
 
-        let material = unsafe {
-            crate::ffi::commonlib_scrap_heap_allocate(
-                heap.cast::<c_void>(),
-                core::mem::size_of::<T>(),
-                8,
-            )
-        }
-        .cast::<T>();
+        let material = unsafe { (*heap).allocate(core::mem::size_of::<T>(), 8) }.cast::<T>();
         if material.is_null() {
             return ptr::null_mut();
         }

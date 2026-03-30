@@ -748,7 +748,7 @@ fn map_option_inner_to_abi(inner: &Type) -> syn::Result<Type> {
     }
 }
 
-fn is_nontrivial_bs_handle_type(ty: &Type) -> bool {
+fn is_nontrivial_cpp_value_type(ty: &Type) -> bool {
     matches!(
         peel_type(ty),
         Type::Path(path)
@@ -756,16 +756,36 @@ fn is_nontrivial_bs_handle_type(ty: &Type) -> bool {
                 ident == "ActorHandle"
                     || ident == "ObjectRefHandle"
                     || ident == "ProjectileHandle"
+                    || ident == "BSString"
+                    || ident == "BSStringT"
+                    || ident == "BSStaticStringT"
+                    || ident == "BSTArray"
+                    || ident == "BSScrapArray"
+                    || ident == "BSTSmallArray"
+                    || ident == "BSStaticArray"
+                    || ident == "BSTSmallSharedArray"
+                    || ident == "BSTScatterTable"
+                    || ident == "BSTHashMap"
+                    || ident == "BSTSet"
+                    || ident == "BSTFixedHashMap"
+                    || ident == "BSTScrapHashMap"
+                    || ident == "BSTStaticHashMap"
+                    || ident == "BSTArrayHeapAllocator"
+                    || ident == "BSTSmallArrayHeapAllocator"
+                    || ident == "BSScrapArrayAllocator"
+                    || ident == "BSTScatterTableHeapAllocator"
+                    || ident == "BSTScatterTableScrapAllocator"
+                    || ident == "BSTStaticHashMapAllocator"
             })
     )
 }
 
 fn ensure_supported_hook_abi_ty(ty: &Type, context: &str) -> syn::Result<()> {
-    if is_nontrivial_bs_handle_type(ty) {
+    if is_nontrivial_cpp_value_type(ty) {
         return Err(syn::Error::new_spanned(
             ty,
             format!(
-                "{context} uses a non-trivial C++ BSPointerHandle type by value; SDK hook attributes do not support this ABI. Use the low-level hook layer with an explicit out-param signature or a C++ bridge instead"
+                "{context} uses a non-trivial C++ value type by value; SDK hook attributes do not support this ABI. Use the low-level hook layer with an explicit out-param signature, pointer/reference ABI, or a C++ bridge instead"
             ),
         ));
     }

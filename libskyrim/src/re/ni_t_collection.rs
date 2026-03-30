@@ -1,6 +1,7 @@
 use core::ffi::{c_char, c_void};
 use core::marker::PhantomData;
 
+use crate::re::memory_manager::MemoryManager;
 use crate::re::ni_allocator::NiMemEventType;
 use crate::re::ni_mem_manager::NiMemManager;
 use crate::re::scrap_heap::ScrapHeap;
@@ -211,23 +212,16 @@ const _: () = assert!(core::mem::size_of::<NiTScrapHeapInterface<*mut c_void>>()
 impl<T> NiTScrapHeapInterface<T> {
     #[inline]
     pub fn allocate(num_elements: usize) -> *mut T {
-        let mgr = unsafe { crate::ffi::commonlib_memory_manager_get_singleton() };
+        let mgr = MemoryManager::get_singleton();
         let allocator = if mgr.is_null() {
             core::ptr::null_mut()
         } else {
-            (unsafe { crate::ffi::commonlib_memory_manager_get_thread_scrap_heap(mgr) })
-                as *mut ScrapHeap
+            unsafe { (*mgr).get_thread_scrap_heap() }
         };
         assert!(!allocator.is_null(), "NiTScrapHeapInterface: no ScrapHeap");
 
         let size = core::mem::size_of::<T>() * num_elements;
-        let mem = unsafe {
-            crate::ffi::commonlib_scrap_heap_allocate(
-                allocator.cast(),
-                size,
-                core::mem::align_of::<*mut c_void>(),
-            )
-        };
+        let mem = unsafe { (*allocator).allocate(size, core::mem::align_of::<*mut c_void>()) };
         assert!(!mem.is_null(), "NiTScrapHeapInterface allocation failed");
         unsafe {
             core::ptr::write_bytes(mem.cast::<u8>(), 0, size);
@@ -241,17 +235,14 @@ impl<T> NiTScrapHeapInterface<T> {
             return;
         }
 
-        let mgr = unsafe { crate::ffi::commonlib_memory_manager_get_singleton() };
+        let mgr = MemoryManager::get_singleton();
         let allocator = if mgr.is_null() {
             core::ptr::null_mut()
         } else {
-            (unsafe { crate::ffi::commonlib_memory_manager_get_thread_scrap_heap(mgr) })
-                as *mut ScrapHeap
+            unsafe { (*mgr).get_thread_scrap_heap() }
         };
         assert!(!allocator.is_null(), "NiTScrapHeapInterface: no ScrapHeap");
 
-        unsafe {
-            crate::ffi::commonlib_scrap_heap_deallocate(allocator.cast(), array.cast());
-        }
+        unsafe { (*allocator).deallocate(array.cast()) };
     }
 }

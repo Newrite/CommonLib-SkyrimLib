@@ -13,9 +13,15 @@ use bytemuck::Zeroable;
 use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::mem::{ManuallyDrop, MaybeUninit};
+use core::ops::{Index, IndexMut};
 use core::ptr;
 
+use crate::offsets::offsets_rtti::RTTI_BSTArrayBase__IAllocatorFunctor;
+use crate::offsets::offsets_vtable::VTABLE_BSTArrayBase__IAllocatorFunctor;
+use crate::re::memory_manager;
 use crate::re::scrap_heap::ScrapHeap;
+use crate::relocation::{RttiType, VariantID};
+use crate::virtual_method;
 
 // в”Ђв”Ђв”Ђ BSTArrayBase в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
@@ -50,6 +56,58 @@ impl BSTArrayBase {
     #[inline(always)]
     pub fn set_size(&mut self, new_size: u32) {
         self.size = new_size;
+    }
+}
+
+impl Default for BSTArrayBase {
+    #[inline(always)]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// C++ `RE::BSTArrayBase::IAllocatorFunctor`.
+#[repr(C)]
+pub struct BSTArrayBaseIAllocatorFunctor {
+    pub vtable: *const usize, // 00
+}
+
+const _: () = assert!(core::mem::size_of::<BSTArrayBaseIAllocatorFunctor>() == 0x8);
+const _: () = assert!(core::mem::offset_of!(BSTArrayBaseIAllocatorFunctor, vtable) == 0x00);
+
+impl RttiType for BSTArrayBaseIAllocatorFunctor {
+    const RTTI: VariantID = RTTI_BSTArrayBase__IAllocatorFunctor;
+}
+
+impl BSTArrayBaseIAllocatorFunctor {
+    pub const RTTI: VariantID = RTTI_BSTArrayBase__IAllocatorFunctor;
+    pub const VTABLE: &'static [crate::relocation::VariantID] =
+        &VTABLE_BSTArrayBase__IAllocatorFunctor;
+
+    virtual_method! {
+        pub const VFUNC_ALLOCATE: usize = 0x00;
+        pub fn allocate(num: u32, elem_size: u32) -> bool
+    }
+
+    virtual_method! {
+        pub const VFUNC_REALLOCATE: usize = 0x01;
+        pub fn reallocate(
+            min_new_size_in_items: u32,
+            front_copy_count: u32,
+            shift_count: u32,
+            back_copy_count: u32,
+            elem_size: u32
+        ) -> bool
+    }
+
+    virtual_method! {
+        pub const VFUNC_DEALLOCATE: usize = 0x02;
+        pub fn deallocate()
+    }
+
+    virtual_method! {
+        pub const VFUNC_DTOR: usize = 0x03;
+        pub fn dtor()
     }
 }
 
@@ -115,7 +173,7 @@ unsafe impl BSTArrayAllocator for BSTArrayHeapAllocator {
         }
         unsafe {
             // RE::malloc в†’ MemoryManager::GetSingleton()->Allocate(size, 0, false)
-            let mem = crate::ffi::commonlib_malloc(size);
+            let mem = memory_manager::malloc(size);
             if mem.is_null() {
                 panic!("BSTArrayHeapAllocator: out of memory");
             }
@@ -128,7 +186,7 @@ unsafe impl BSTArrayAllocator for BSTArrayHeapAllocator {
         if !ptr.is_null() {
             unsafe {
                 // RE::free в†’ MemoryManager::GetSingleton()->Deallocate(ptr, false)
-                crate::ffi::commonlib_free(ptr as *mut c_void);
+                memory_manager::free(ptr as *mut c_void);
             }
         }
     }
@@ -237,7 +295,7 @@ unsafe impl<const N: usize> BSTArrayAllocator for BSTSmallArrayHeapAllocator<N> 
         if size > N {
             // Exceeds inline storage вЂ” allocate from engine heap
             unsafe {
-                let mem = crate::ffi::commonlib_malloc(size);
+                let mem = memory_manager::malloc(size);
                 if mem.is_null() {
                     panic!("BSTSmallArrayHeapAllocator: out of memory");
                 }
@@ -255,7 +313,7 @@ unsafe impl<const N: usize> BSTArrayAllocator for BSTSmallArrayHeapAllocator<N> 
         let local_ptr = unsafe { self._data.local.as_ptr() as *mut u8 };
         if ptr != local_ptr && !ptr.is_null() {
             unsafe {
-                crate::ffi::commonlib_free(ptr as *mut c_void);
+                memory_manager::free(ptr as *mut c_void);
             }
         }
     }
@@ -314,11 +372,9 @@ unsafe impl BSTArrayAllocator for BSScrapArrayAllocator {
         // Lazy-initialize the scrap heap from MemoryManager (mirrors BSTArray.cpp)
         if self._allocator.is_null() {
             unsafe {
-                let mgr = crate::ffi::commonlib_memory_manager_get_singleton();
+                let mgr = memory_manager::MemoryManager::get_singleton();
                 if !mgr.is_null() {
-                    self._allocator =
-                        crate::ffi::commonlib_memory_manager_get_thread_scrap_heap(mgr)
-                            as *mut ScrapHeap;
+                    self._allocator = (*mgr).get_thread_scrap_heap();
                 }
             }
         }
@@ -328,11 +384,7 @@ unsafe impl BSTArrayAllocator for BSScrapArrayAllocator {
         );
 
         unsafe {
-            let mem = crate::ffi::commonlib_scrap_heap_allocate(
-                self._allocator as *mut c_void,
-                size,
-                core::mem::align_of::<*mut u8>(), // alignof(void*)
-            );
+            let mem = (*self._allocator).allocate(size, core::mem::align_of::<*mut u8>());
             assert!(!mem.is_null(), "BSScrapArrayAllocator: allocation failed");
             ptr::write_bytes(mem as *mut u8, 0, size);
             mem as *mut u8
@@ -348,10 +400,7 @@ unsafe impl BSTArrayAllocator for BSScrapArrayAllocator {
             return;
         }
         unsafe {
-            crate::ffi::commonlib_scrap_heap_deallocate(
-                self._allocator as *mut c_void,
-                ptr as *mut c_void,
-            );
+            (*self._allocator).deallocate(ptr as *mut c_void);
         }
     }
 
@@ -376,6 +425,16 @@ pub struct BSTArray<T, A: BSTArrayAllocator = BSTArrayHeapAllocator> {
     base: BSTArrayBase,
     _marker: PhantomData<*mut T>,
 }
+
+const _: () = assert!(core::mem::size_of::<BSTArray<u8, BSTArrayHeapAllocator>>() == 0x18);
+const _: () =
+    assert!(core::mem::offset_of!(BSTArray<u8, BSTArrayHeapAllocator>, allocator) == 0x00);
+const _: () = assert!(core::mem::offset_of!(BSTArray<u8, BSTArrayHeapAllocator>, base) == 0x10);
+const _: () = assert!(core::mem::size_of::<BSTArray<u8, BSScrapArrayAllocator>>() == 0x20);
+const _: () = assert!(core::mem::offset_of!(BSTArray<u8, BSScrapArrayAllocator>, base) == 0x18);
+const _: () = assert!(core::mem::size_of::<BSTArray<u8, BSTSmallArrayHeapAllocator<8>>>() == 0x18);
+const _: () =
+    assert!(core::mem::offset_of!(BSTArray<u8, BSTSmallArrayHeapAllocator<8>>, base) == 0x10);
 
 /// Default capacity for new allocations (Beth default).
 const BST_ARRAY_DF_CAP: u32 = 4;
@@ -407,6 +466,30 @@ impl<T, A: BSTArrayAllocator + Default> BSTArray<T, A> {
     }
 }
 
+impl<T, A: BSTArrayAllocator + Default> Default for BSTArray<T, A> {
+    #[inline(always)]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<T, A> Clone for BSTArray<T, A>
+where
+    T: Clone,
+    A: BSTArrayAllocator + Default,
+{
+    fn clone(&self) -> Self {
+        let mut out = Self::new();
+        out.reserve(self.len());
+        unsafe {
+            for item in self.as_slice() {
+                out.push_back(item.clone());
+            }
+        }
+        out
+    }
+}
+
 impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// Number of elements in the array.
     #[inline(always)]
@@ -414,10 +497,22 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
         self.base.len()
     }
 
+    /// C++ `size()`.
+    #[inline(always)]
+    pub fn size(&self) -> u32 {
+        self.len()
+    }
+
     /// Whether the array is empty.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.base.is_empty()
+    }
+
+    /// C++ `empty()`.
+    #[inline(always)]
+    pub fn empty(&self) -> bool {
+        self.is_empty()
     }
 
     /// Current capacity (in number of elements).
@@ -436,6 +531,58 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     #[inline(always)]
     pub fn data_mut(&mut self) -> *mut T {
         self.allocator.data() as *mut T
+    }
+
+    /// Raw begin iterator.
+    #[inline(always)]
+    pub fn begin(&self) -> *const T {
+        if self.is_empty() {
+            ptr::null()
+        } else {
+            self.data()
+        }
+    }
+
+    /// Raw mutable begin iterator.
+    #[inline(always)]
+    pub fn begin_mut(&mut self) -> *mut T {
+        if self.is_empty() {
+            ptr::null_mut()
+        } else {
+            self.data_mut()
+        }
+    }
+
+    /// Raw end iterator.
+    #[inline(always)]
+    pub fn end(&self) -> *const T {
+        if self.is_empty() {
+            ptr::null()
+        } else {
+            unsafe { self.data().add(self.len() as usize) }
+        }
+    }
+
+    /// Raw mutable end iterator.
+    #[inline(always)]
+    pub fn end_mut(&mut self) -> *mut T {
+        if self.is_empty() {
+            ptr::null_mut()
+        } else {
+            unsafe { self.data_mut().add(self.len() as usize) }
+        }
+    }
+
+    /// Raw const begin iterator.
+    #[inline(always)]
+    pub fn cbegin(&self) -> *const T {
+        self.begin()
+    }
+
+    /// Raw const end iterator.
+    #[inline(always)]
+    pub fn cend(&self) -> *const T {
+        self.end()
     }
 
     /// Returns a slice of the array contents.
@@ -471,6 +618,46 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
         }
     }
 
+    /// Returns the first element.
+    ///
+    /// # Safety
+    /// The caller must ensure the underlying engine memory is valid.
+    #[inline]
+    pub unsafe fn front(&self) -> &T {
+        assert!(!self.is_empty());
+        unsafe { &*self.data() }
+    }
+
+    /// Returns the first element mutably.
+    ///
+    /// # Safety
+    /// The caller must ensure the underlying engine memory is valid.
+    #[inline]
+    pub unsafe fn front_mut(&mut self) -> &mut T {
+        assert!(!self.is_empty());
+        unsafe { &mut *self.data_mut() }
+    }
+
+    /// Returns the last element.
+    ///
+    /// # Safety
+    /// The caller must ensure the underlying engine memory is valid.
+    #[inline]
+    pub unsafe fn back(&self) -> &T {
+        assert!(!self.is_empty());
+        unsafe { &*self.data().add(self.len() as usize - 1) }
+    }
+
+    /// Returns the last element mutably.
+    ///
+    /// # Safety
+    /// The caller must ensure the underlying engine memory is valid.
+    #[inline]
+    pub unsafe fn back_mut(&mut self) -> &mut T {
+        assert!(!self.is_empty());
+        unsafe { &mut *self.data_mut().add(self.len() as usize - 1) }
+    }
+
     /// Reserves capacity for at least `new_cap` elements.
     pub fn reserve(&mut self, new_cap: u32) {
         if new_cap > self.capacity() {
@@ -491,6 +678,14 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// # Safety
     /// The caller must ensure the array data pointer is valid.
     pub unsafe fn push(&mut self, value: T) {
+        let _ = unsafe { self.push_back(value) };
+    }
+
+    /// C++ `push_back`.
+    ///
+    /// # Safety
+    /// The caller must ensure the array data pointer is valid.
+    pub unsafe fn push_back(&mut self, value: T) -> &mut T {
         unsafe {
             if self.len() == self.capacity() {
                 self.grow_capacity();
@@ -499,7 +694,17 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
             self.base.set_size(size + 1);
             let dst = self.data_mut().add(size as usize);
             ptr::write(dst, value);
+            &mut *dst
         }
+    }
+
+    /// C++ `push_front`.
+    ///
+    /// # Safety
+    /// The caller must ensure the array data pointer is valid.
+    #[inline]
+    pub unsafe fn push_front(&mut self, value: T) -> &mut T {
+        unsafe { self.insert(0, value) }
     }
 
     /// Removes and returns the last element.
@@ -507,12 +712,70 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
     /// # Safety
     /// The caller must ensure the array is non-empty and data pointer is valid.
     pub unsafe fn pop(&mut self) -> T {
+        unsafe { self.pop_back() }
+    }
+
+    /// C++ `pop_back`.
+    ///
+    /// # Safety
+    /// The caller must ensure the array is non-empty and data pointer is valid.
+    pub unsafe fn pop_back(&mut self) -> T {
         unsafe {
             assert!(!self.is_empty());
             let new_size = self.len() - 1;
             let val = ptr::read(self.data().add(new_size as usize));
             self.base.set_size(new_size);
             val
+        }
+    }
+
+    /// Inserts an element at `index`, shifting the tail to the right.
+    ///
+    /// # Safety
+    /// The caller must ensure the array data pointer is valid.
+    pub unsafe fn insert(&mut self, index: u32, value: T) -> &mut T {
+        unsafe {
+            assert!(index <= self.len());
+
+            if index == self.len() {
+                return self.push_back(value);
+            }
+
+            if self.len() == self.capacity() {
+                self.grow_capacity();
+            }
+
+            let old_len = self.len();
+            let data = self.data_mut();
+            for i in (index as usize..old_len as usize).rev() {
+                let src = data.add(i);
+                let dst = data.add(i + 1);
+                ptr::write(dst, ptr::read(src));
+            }
+            ptr::write(data.add(index as usize), value);
+            self.base.set_size(old_len + 1);
+            &mut *data.add(index as usize)
+        }
+    }
+
+    /// Removes and returns the element at `index`, shifting the tail left.
+    ///
+    /// # Safety
+    /// The caller must ensure the array data pointer is valid.
+    pub unsafe fn erase(&mut self, index: u32) -> T {
+        unsafe {
+            assert!(index < self.len());
+
+            let old_len = self.len();
+            let data = self.data_mut();
+            let removed = ptr::read(data.add(index as usize));
+            for i in index as usize..old_len as usize - 1 {
+                let src = data.add(i + 1);
+                let dst = data.add(i);
+                ptr::write(dst, ptr::read(src));
+            }
+            self.base.set_size(old_len - 1);
+            removed
         }
     }
 
@@ -550,6 +813,64 @@ impl<T, A: BSTArrayAllocator> BSTArray<T, A> {
             if new_size != self.len() {
                 self.change_size(new_size);
             }
+        }
+    }
+
+    /// C++ `resize(count)` with Rust `Default` construction instead of zero-fill.
+    ///
+    /// # Safety
+    /// The caller must ensure the data pointer remains valid for the array lifetime.
+    pub unsafe fn resize_default(&mut self, new_size: u32)
+    where
+        T: Default,
+    {
+        unsafe {
+            if new_size > self.capacity() {
+                self.grow_capacity_to(new_size);
+            }
+
+            let old_size = self.len();
+            let data = self.data_mut();
+            if new_size > old_size {
+                for i in old_size..new_size {
+                    ptr::write(data.add(i as usize), T::default());
+                }
+            } else if new_size < old_size {
+                for i in new_size..old_size {
+                    ptr::drop_in_place(data.add(i as usize));
+                }
+            }
+
+            self.base.set_size(new_size);
+        }
+    }
+
+    /// C++ `resize(count, value)`.
+    ///
+    /// # Safety
+    /// The caller must ensure the data pointer remains valid for the array lifetime.
+    pub unsafe fn resize_fill(&mut self, new_size: u32, value: &T)
+    where
+        T: Clone,
+    {
+        unsafe {
+            if new_size > self.capacity() {
+                self.grow_capacity_to(new_size);
+            }
+
+            let old_size = self.len();
+            let data = self.data_mut();
+            if new_size > old_size {
+                for i in old_size..new_size {
+                    ptr::write(data.add(i as usize), value.clone());
+                }
+            } else if new_size < old_size {
+                for i in new_size..old_size {
+                    ptr::drop_in_place(data.add(i as usize));
+                }
+            }
+
+            self.base.set_size(new_size);
         }
     }
 
@@ -675,6 +996,43 @@ impl<T, A: BSTArrayAllocator> Drop for BSTArray<T, A> {
     }
 }
 
+impl<T, A: BSTArrayAllocator> Index<usize> for BSTArray<T, A> {
+    type Output = T;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        assert!(index < self.len() as usize);
+        unsafe { &*self.data().add(index) }
+    }
+}
+
+impl<T, A: BSTArrayAllocator> IndexMut<usize> for BSTArray<T, A> {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        assert!(index < self.len() as usize);
+        unsafe { &mut *self.data_mut().add(index) }
+    }
+}
+
+impl<T, A> core::iter::FromIterator<T> for BSTArray<T, A>
+where
+    A: BSTArrayAllocator + Default,
+{
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        let mut out = Self::new();
+        out.extend(iter);
+        out
+    }
+}
+
+impl<T, A: BSTArrayAllocator> Extend<T> for BSTArray<T, A> {
+    fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
+        for value in iter {
+            unsafe {
+                self.push_back(value);
+            }
+        }
+    }
+}
+
 /// Type alias for `BSTArray<T, BSScrapArrayAllocator>`.
 /// C++ `RE::BSScrapArray<T>`.
 pub type BSScrapArray<T> = BSTArray<T, BSScrapArrayAllocator>;
@@ -697,6 +1055,7 @@ pub type BSTSmallArray<T, const N: usize> = BSTArray<T, BSTSmallArrayHeapAllocat
 ///
 /// Layout: `{ _data: *mut T, _size: u32, _pad: u32 }` вЂ” 0x10 bytes.
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct BSStaticArray<T> {
     _data: *mut T, // 0x00
     _size: u32,    // 0x08
@@ -713,10 +1072,22 @@ impl<T> BSStaticArray<T> {
         self._size
     }
 
+    /// C++ `size()`.
+    #[inline(always)]
+    pub fn size(&self) -> u32 {
+        self.len()
+    }
+
     /// Whether the array is empty.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self._size == 0
+    }
+
+    /// C++ `empty()`.
+    #[inline(always)]
+    pub fn empty(&self) -> bool {
+        self.is_empty()
     }
 
     /// Raw pointer to the first element.
@@ -729,6 +1100,58 @@ impl<T> BSStaticArray<T> {
     #[inline(always)]
     pub fn data_mut(&mut self) -> *mut T {
         self._data
+    }
+
+    /// Raw begin iterator.
+    #[inline(always)]
+    pub fn begin(&self) -> *const T {
+        if self.is_empty() {
+            ptr::null()
+        } else {
+            self.data()
+        }
+    }
+
+    /// Raw mutable begin iterator.
+    #[inline(always)]
+    pub fn begin_mut(&mut self) -> *mut T {
+        if self.is_empty() {
+            ptr::null_mut()
+        } else {
+            self.data_mut()
+        }
+    }
+
+    /// Raw end iterator.
+    #[inline(always)]
+    pub fn end(&self) -> *const T {
+        if self.is_empty() {
+            ptr::null()
+        } else {
+            unsafe { self.data().add(self.len() as usize) }
+        }
+    }
+
+    /// Raw mutable end iterator.
+    #[inline(always)]
+    pub fn end_mut(&mut self) -> *mut T {
+        if self.is_empty() {
+            ptr::null_mut()
+        } else {
+            unsafe { self.data_mut().add(self.len() as usize) }
+        }
+    }
+
+    /// Raw const begin iterator.
+    #[inline(always)]
+    pub fn cbegin(&self) -> *const T {
+        self.begin()
+    }
+
+    /// Raw const end iterator.
+    #[inline(always)]
+    pub fn cend(&self) -> *const T {
+        self.end()
     }
 
     /// Returns a slice of the array contents.
@@ -760,6 +1183,72 @@ impl<T> BSStaticArray<T> {
             }
         }
     }
+
+    /// Returns the first element.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn front(&self) -> &T {
+        assert!(!self.is_empty());
+        unsafe { &*self._data }
+    }
+
+    /// Returns the first element mutably.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn front_mut(&mut self) -> &mut T {
+        assert!(!self.is_empty());
+        unsafe { &mut *self._data }
+    }
+
+    /// Returns the last element.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn back(&self) -> &T {
+        assert!(!self.is_empty());
+        unsafe { &*self._data.add(self._size as usize - 1) }
+    }
+
+    /// Returns the last element mutably.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn back_mut(&mut self) -> &mut T {
+        assert!(!self.is_empty());
+        unsafe { &mut *self._data.add(self._size as usize - 1) }
+    }
+}
+
+impl<T> Default for BSStaticArray<T> {
+    fn default() -> Self {
+        Self {
+            _data: ptr::null_mut(),
+            _size: 0,
+            _pad0c: 0,
+        }
+    }
+}
+
+impl<T> Index<usize> for BSStaticArray<T> {
+    type Output = T;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        assert!(index < self._size as usize);
+        unsafe { &*self._data.add(index) }
+    }
+}
+
+impl<T> IndexMut<usize> for BSStaticArray<T> {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        assert!(index < self._size as usize);
+        unsafe { &mut *self._data.add(index) }
+    }
 }
 
 // в”Ђв”Ђв”Ђ BSTSmallSharedArray<T> в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
@@ -782,6 +1271,8 @@ pub struct BSTSmallSharedArray<T> {
     _data: BSTSmallSharedArrayData<T>, // 0x08
 }
 
+const _: () = assert!(core::mem::size_of::<BSTSmallSharedArray<u8>>() == 0x10);
+
 /// Internal union for `BSTSmallSharedArray`.
 #[repr(C)]
 pub union BSTSmallSharedArrayData<T> {
@@ -796,10 +1287,22 @@ impl<T> BSTSmallSharedArray<T> {
         self._size
     }
 
+    /// C++ `size()`.
+    #[inline(always)]
+    pub fn size(&self) -> u32 {
+        self.len()
+    }
+
     /// Whether the array is empty.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self._size == 0
+    }
+
+    /// C++ `empty()`.
+    #[inline(always)]
+    pub fn empty(&self) -> bool {
+        self.is_empty()
     }
 
     /// Returns a pointer to the data.
@@ -807,7 +1310,8 @@ impl<T> BSTSmallSharedArray<T> {
     /// If `size <= 1`, returns the address of the inline local storage.
     ///
     /// # Safety
-    /// Must only be called when the array is non-empty.
+    /// The caller must not dereference the returned pointer unless the pointed-to
+    /// storage is initialized for `size()` elements.
     #[inline]
     pub unsafe fn data(&self) -> *const T {
         unsafe {
@@ -822,7 +1326,8 @@ impl<T> BSTSmallSharedArray<T> {
     /// Returns a mutable pointer to the data.
     ///
     /// # Safety
-    /// Must only be called when the array is non-empty.
+    /// The caller must not dereference the returned pointer unless the pointed-to
+    /// storage is initialized for `size()` elements.
     #[inline]
     pub unsafe fn data_mut(&mut self) -> *mut T {
         unsafe {
@@ -832,6 +1337,60 @@ impl<T> BSTSmallSharedArray<T> {
                 (*self._data.local).as_mut_ptr()
             }
         }
+    }
+
+    /// Raw begin iterator.
+    ///
+    /// # Safety
+    /// Same contract as `data()`.
+    #[inline]
+    pub unsafe fn begin(&self) -> *const T {
+        unsafe { self.data() }
+    }
+
+    /// Raw mutable begin iterator.
+    ///
+    /// # Safety
+    /// Same contract as `data_mut()`.
+    #[inline]
+    pub unsafe fn begin_mut(&mut self) -> *mut T {
+        unsafe { self.data_mut() }
+    }
+
+    /// Raw end iterator.
+    ///
+    /// # Safety
+    /// Same contract as `data()`.
+    #[inline]
+    pub unsafe fn end(&self) -> *const T {
+        unsafe { self.data().add(self._size as usize) }
+    }
+
+    /// Raw mutable end iterator.
+    ///
+    /// # Safety
+    /// Same contract as `data_mut()`.
+    #[inline]
+    pub unsafe fn end_mut(&mut self) -> *mut T {
+        unsafe { self.data_mut().add(self._size as usize) }
+    }
+
+    /// Raw const begin iterator.
+    ///
+    /// # Safety
+    /// Same contract as `data()`.
+    #[inline]
+    pub unsafe fn cbegin(&self) -> *const T {
+        unsafe { self.begin() }
+    }
+
+    /// Raw const end iterator.
+    ///
+    /// # Safety
+    /// Same contract as `data()`.
+    #[inline]
+    pub unsafe fn cend(&self) -> *const T {
+        unsafe { self.end() }
     }
 
     /// Returns a slice of the array contents.
@@ -862,5 +1421,73 @@ impl<T> BSTSmallSharedArray<T> {
                 core::slice::from_raw_parts_mut(self.data_mut(), self._size as usize)
             }
         }
+    }
+
+    /// Returns the first element.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn front(&self) -> &T {
+        assert!(!self.is_empty());
+        unsafe { &*self.data() }
+    }
+
+    /// Returns the first element mutably.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn front_mut(&mut self) -> &mut T {
+        assert!(!self.is_empty());
+        unsafe { &mut *self.data_mut() }
+    }
+
+    /// Returns the last element.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn back(&self) -> &T {
+        assert!(!self.is_empty());
+        unsafe { &*self.data().add(self._size as usize - 1) }
+    }
+
+    /// Returns the last element mutably.
+    ///
+    /// # Safety
+    /// The caller must ensure the pointed-to memory is valid.
+    #[inline]
+    pub unsafe fn back_mut(&mut self) -> &mut T {
+        assert!(!self.is_empty());
+        unsafe { &mut *self.data_mut().add(self._size as usize - 1) }
+    }
+}
+
+impl<T> Default for BSTSmallSharedArray<T> {
+    fn default() -> Self {
+        Self {
+            _size: 0,
+            _pad04: 0,
+            _data: BSTSmallSharedArrayData {
+                local: ManuallyDrop::new(MaybeUninit::uninit()),
+            },
+        }
+    }
+}
+
+impl<T> Index<usize> for BSTSmallSharedArray<T> {
+    type Output = T;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        assert!(index < self._size as usize);
+        unsafe { &*self.data().add(index) }
+    }
+}
+
+impl<T> IndexMut<usize> for BSTSmallSharedArray<T> {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        assert!(index < self._size as usize);
+        unsafe { &mut *self.data_mut().add(index) }
     }
 }

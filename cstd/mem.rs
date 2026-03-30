@@ -2,6 +2,11 @@ use alloc::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
 
 /// Global allocator backed by the CommonLib bridge.
+///
+/// This intentionally stays on the C++ FFI seam instead of calling the Rust
+/// `RE::MemoryManager` wrappers directly: `cstd` is the low-level runtime
+/// support crate, and routing allocation through the bridge avoids pulling the
+/// richer RE translation layer into the allocator bootstrap path.
 pub struct SkyrimAllocator;
 
 unsafe extern "C" {

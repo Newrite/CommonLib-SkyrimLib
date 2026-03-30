@@ -124,6 +124,12 @@ impl<const N: usize, A: BSStringAllocator<N>> BSStringT<N, A> {
     const EMPTY: [c_char; 1] = [0];
 
     #[inline(always)]
+    fn empty_mut_ptr() -> *mut c_char {
+        static mut EMPTY: [c_char; 1] = [0];
+        unsafe { core::ptr::addr_of_mut!(EMPTY[0]) }
+    }
+
+    #[inline(always)]
     const fn max_len() -> u16 {
         N as u16
     }
@@ -140,7 +146,7 @@ impl<const N: usize, A: BSStringAllocator<N>> BSStringT<N, A> {
     #[inline(always)]
     pub fn data_mut(&mut self) -> *mut c_char {
         if self.data.is_null() {
-            Self::EMPTY.as_ptr() as *mut c_char
+            Self::empty_mut_ptr()
         } else {
             self.data
         }

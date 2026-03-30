@@ -1017,6 +1017,106 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
             "ProjectileHandle is a non-trivial C++ BSPointerHandle type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper or a C++ bridge."
         );
     };
+    (BSString) => {
+        compile_error!(
+            "BSString is a non-trivial C++ owning string type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper, pointer/reference ABI, or a C++ bridge."
+        );
+    };
+    (BSStringT<$n:tt, $a:ty>) => {
+        compile_error!(
+            "BSStringT is a non-trivial C++ owning string type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper, pointer/reference ABI, or a C++ bridge."
+        );
+    };
+    (BSStaticStringT<$n:tt>) => {
+        compile_error!(
+            "BSStaticStringT is a non-trivial C++ owning string type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper, pointer/reference ABI, or a C++ bridge."
+        );
+    };
+    (BSTArray<$t:ty, $a:ty>) => {
+        compile_error!(
+            "BSTArray is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSScrapArray<$t:ty>) => {
+        compile_error!(
+            "BSScrapArray is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTSmallArray<$t:ty, $n:tt>) => {
+        compile_error!(
+            "BSTSmallArray is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSStaticArray<$t:ty>) => {
+        compile_error!(
+            "BSStaticArray is a non-trivial C++ container/view type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTSmallSharedArray<$t:ty>) => {
+        compile_error!(
+            "BSTSmallSharedArray is a non-trivial C++ container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTScatterTable<$t:ty, $a:ty, $p:ty>) => {
+        compile_error!(
+            "BSTScatterTable is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTHashMap<$k:ty, $v:ty>) => {
+        compile_error!(
+            "BSTHashMap is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTSet<$k:ty>) => {
+        compile_error!(
+            "BSTSet is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTFixedHashMap<$k:ty, $v:ty>) => {
+        compile_error!(
+            "BSTFixedHashMap is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTScrapHashMap<$k:ty, $v:ty>) => {
+        compile_error!(
+            "BSTScrapHashMap is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTStaticHashMap<$k:ty, $v:ty, $n:tt, $buf:tt>) => {
+        compile_error!(
+            "BSTStaticHashMap is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
+        );
+    };
+    (BSTArrayHeapAllocator) => {
+        compile_error!(
+            "BSTArrayHeapAllocator is a non-trivial C++ allocator type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTSmallArrayHeapAllocator<$n:tt>) => {
+        compile_error!(
+            "BSTSmallArrayHeapAllocator is a non-trivial C++ allocator type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSScrapArrayAllocator) => {
+        compile_error!(
+            "BSScrapArrayAllocator is a non-trivial C++ allocator type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTScatterTableHeapAllocator) => {
+        compile_error!(
+            "BSTScatterTableHeapAllocator is a non-trivial C++ allocator type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTScatterTableScrapAllocator) => {
+        compile_error!(
+            "BSTScatterTableScrapAllocator is a non-trivial C++ allocator type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTStaticHashMapAllocator<$n:tt, $buf:tt>) => {
+        compile_error!(
+            "BSTStaticHashMapAllocator is a non-trivial C++ allocator type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
     (crate::re::ActorHandle) => {
         $crate::__abi_guard_nontrivial_handle_ty!(ActorHandle);
     };
@@ -1034,6 +1134,108 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     };
     (crate::re::bs_pointer_handle::ProjectileHandle) => {
         $crate::__abi_guard_nontrivial_handle_ty!(ProjectileHandle);
+    };
+    (crate::re::BSString) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSString);
+    };
+    (crate::re::BSStringT<$n:tt, $a:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSStringT<$n, $a>);
+    };
+    (crate::re::BSStaticStringT<$n:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSStaticStringT<$n>);
+    };
+    (crate::re::bs_string::BSString) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSString);
+    };
+    (crate::re::bs_string::BSStringT<$n:tt, $a:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSStringT<$n, $a>);
+    };
+    (crate::re::bs_string::BSStaticStringT<$n:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSStaticStringT<$n>);
+    };
+    (crate::re::BSTArray<$t:ty, $a:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTArray<$t, $a>);
+    };
+    (crate::re::BSScrapArray<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSScrapArray<$t>);
+    };
+    (crate::re::BSTSmallArray<$t:ty, $n:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmallArray<$t, $n>);
+    };
+    (crate::re::BSStaticArray<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSStaticArray<$t>);
+    };
+    (crate::re::BSTSmallSharedArray<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmallSharedArray<$t>);
+    };
+    (crate::re::BSTScatterTable<$t:ty, $a:ty, $p:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTScatterTable<$t, $a, $p>);
+    };
+    (crate::re::BSTHashMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTHashMap<$k, $v>);
+    };
+    (crate::re::BSTSet<$k:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSet<$k>);
+    };
+    (crate::re::BSTFixedHashMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTFixedHashMap<$k, $v>);
+    };
+    (crate::re::BSTScrapHashMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTScrapHashMap<$k, $v>);
+    };
+    (crate::re::BSTStaticHashMap<$k:ty, $v:ty, $n:tt, $buf:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTStaticHashMap<$k, $v, $n, $buf>);
+    };
+    (crate::re::bst_array::BSTArray<$t:ty, $a:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTArray<$t, $a>);
+    };
+    (crate::re::bst_array::BSScrapArray<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSScrapArray<$t>);
+    };
+    (crate::re::bst_array::BSTSmallArray<$t:ty, $n:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmallArray<$t, $n>);
+    };
+    (crate::re::bst_array::BSStaticArray<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSStaticArray<$t>);
+    };
+    (crate::re::bst_array::BSTSmallSharedArray<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmallSharedArray<$t>);
+    };
+    (crate::re::bst_array::BSTArrayHeapAllocator) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTArrayHeapAllocator);
+    };
+    (crate::re::bst_array::BSTSmallArrayHeapAllocator<$n:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmallArrayHeapAllocator<$n>);
+    };
+    (crate::re::bst_array::BSScrapArrayAllocator) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSScrapArrayAllocator);
+    };
+    (crate::re::bst_hash_map::BSTScatterTable<$t:ty, $a:ty, $p:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTScatterTable<$t, $a, $p>);
+    };
+    (crate::re::bst_hash_map::BSTHashMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTHashMap<$k, $v>);
+    };
+    (crate::re::bst_hash_map::BSTSet<$k:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSet<$k>);
+    };
+    (crate::re::bst_hash_map::BSTFixedHashMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTFixedHashMap<$k, $v>);
+    };
+    (crate::re::bst_hash_map::BSTScrapHashMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTScrapHashMap<$k, $v>);
+    };
+    (crate::re::bst_hash_map::BSTStaticHashMap<$k:ty, $v:ty, $n:tt, $buf:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTStaticHashMap<$k, $v, $n, $buf>);
+    };
+    (crate::re::bst_hash_map::BSTScatterTableHeapAllocator) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTScatterTableHeapAllocator);
+    };
+    (crate::re::bst_hash_map::BSTScatterTableScrapAllocator) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTScatterTableScrapAllocator);
+    };
+    (crate::re::bst_hash_map::BSTStaticHashMapAllocator<$n:tt, $buf:tt>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTStaticHashMapAllocator<$n, $buf>);
     };
     ($other:ty) => {};
 }
