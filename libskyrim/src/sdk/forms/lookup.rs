@@ -10,7 +10,7 @@ use crate::re::bs_core_types::FormID;
 use crate::re::{FormCastable, FormType, TESDataHandler, TESFile, TESForm};
 use crate::rex::W32::{GetModuleHandleW, GetProcAddress};
 use crate::sdk::core::{GamePtr, GameRef};
-use crate::sdk::forms::PersistentForm;
+use crate::sdk::forms::PersistentFormPtr;
 
 type Po3GetFormEditorId = unsafe extern "C" fn(FormID) -> *const c_char;
 
@@ -299,8 +299,16 @@ pub fn form_from_string_typed<T: FormCastable>(spec: &str) -> GamePtr<T> {
 }
 
 #[inline(always)]
-pub fn form_from_string_persistent<T: FormCastable>(spec: &str) -> PersistentForm<T> {
-    PersistentForm::from_game_ptr(form_from_string_typed::<T>(spec))
+pub fn form_from_string_persistent<T: FormCastable>(spec: &str) -> PersistentFormPtr<T> {
+    PersistentFormPtr::from_game_ptr(form_from_string_typed::<T>(spec))
+}
+
+#[inline(always)]
+pub fn required_form_from_string_persistent<T: FormCastable>(
+    spec: &str,
+    context: &str,
+) -> crate::sdk::forms::PersistentForm<T> {
+    form_from_string_persistent::<T>(spec).require(context)
 }
 
 #[inline]

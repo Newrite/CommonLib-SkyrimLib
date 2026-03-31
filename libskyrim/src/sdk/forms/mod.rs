@@ -6,4 +6,4 @@ pub mod lookup;
 pub mod persistent;
 pub mod settings;
 
-pub use persistent::PersistentForm;
+pub use persistent::{PersistentForm, PersistentFormPtr};
