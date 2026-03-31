@@ -239,6 +239,40 @@ Recommended additions:
 - maybe future optional debug utilities, but not a generic imgui framework in
   the core SDK right now
 
+### 16. Reference traversal tends to split into local scene scans vs rare full-world scans
+
+Observed in:
+
+- `Reflyem`
+- `Acheron`
+- `NewProjectilesTMP`
+
+Repeated patterns:
+
+- `TES::ForEachReferenceInRange(...)` is used as a local scene scan around a
+  center/origin during gameplay logic
+- full `TES::ForEachReference(...)` still appears, but usually for one-shot or
+  specialized workflows rather than frequent background polling
+- projects typically keep the callback short, filter aggressively, and only do
+  heavier logic after a local candidate set has been found
+
+What this means for `sdk`:
+
+- `sdk::gameplay::world` should expose closure-first wrappers for reference
+  traversal, with `in_range` as the primary ergonomic path
+- nullable origin/radius seams should fail soft in SDK space instead of falling
+  back to full-world traversal implicitly
+- snapshot helpers over `ObjectRefHandle` are useful because they shorten the
+  borrow on live engine storage and let plugins perform heavier follow-up work
+  after the traversal
+
+Recommended additions:
+
+- `for_each_reference(...)`
+- `for_each_reference_in_range(...)`
+- pointer-friendly soft-fail variants for nullable origins
+- snapshot / collect helpers built on `ObjectRefHandle` or `Resolved<TESObjectREFR>`
+
 ## Repeated Patterns
 
 ### 1. Exported plugin APIs are still the dominant cross-plugin contract

@@ -288,6 +288,8 @@ sdk/
     combat.rs
     camera.rs
     input.rs
+    navmesh.rs
+    pathing.rs
     quests.rs
 
   events/
@@ -817,6 +819,103 @@ The SDK serialization layer tries to be safer than the usual hand-written
 - unknown records whose IDs are now explicitly owned by the active schema are
   not re-emitted, so one logical record ID does not get written twice with two
   conflicting payloads
+
+## Respawn / Spatial Query Direction
+
+The current SDK and RE stack is now strong enough to support the first serious
+pass of dynamic recovery-point selection, but not yet the final high-level
+ergonomic surface that a plugin like `GhostOfDeath` wants.
+
+What is already usable:
+
+- local world/reference scans through `sdk::gameplay::world`
+- actor snapshots and hostile filtering through `sdk::gameplay::actors`
+- local scene snapshots through `sdk::gameplay::world::snapshot_scene_in_range(...)`
+- point/cell-based local scene snapshots through
+  `sdk::gameplay::world::snapshot_scene_in_cell_range(...)`
+- actor-position and hostile-position collection in a radius through
+  `sdk::gameplay::actors`
+- low-level Havok raycasts, LOS checks, and ground snap helpers through
+  `sdk::advanced::physics`
+- split-ray traversal, hit filtering, and a first bundled
+  `validate_spawn_point(...)` helper through `sdk::advanced::physics`
+- filtered ray / LOS / spawn-validation workflows through
+  `sdk::advanced::physics::RaycastHitFilter`
+- respawn-oriented presets, richer clearance probe bundles, and multi-origin
+  LOS aggregation through `sdk::advanced::physics`
+- nearest-navmesh relocation primitives on `TESObjectREFR`
+- point-based navmesh snapshots and nearest-support queries through
+  `sdk::gameplay::navmesh`
+- conservative same-mesh path-cost / reachability heuristics through
+  `sdk::gameplay::navmesh`
+- hybrid reachability heuristics through `sdk::gameplay::navmesh`, including
+  cross-mesh info-graph approximation via `sdk::gameplay::pathing`
+- available pathing-cell / navmesh-info / loaded-navmesh wrappers through
+  `sdk::gameplay::pathing`, now including concrete `PathingCell` inspection,
+  `ExtraNavMeshPortal` decoding, precomputed navmesh-info path lookup,
+  portal-edge transition descriptors from `BSNavmesh`, and strict `Pathing`
+  singleton wrappers for `GetPathingCell`, closest-point-on-navmesh, loaded /
+  recent cells, location-based connected/potential navmesh queries, `TES`-backed
+  `NavMeshInfoMap` access, mesh-info adjacency helpers, and approximate
+  cross-mesh info-graph path cost
+- source-backed translation helpers through `sdk::gameplay::movement`
+- recovery-oriented candidate evaluation through `sdk::gameplay::spatial`
+- weighted candidate scoring and best-candidate selection through
+  `sdk::gameplay::spatial`
+- navmesh-aware candidate validity and scoring through `sdk::gameplay::spatial`
+- candidate-set evaluation and fallback-tier selection through
+  `sdk::gameplay::spatial`
+- typed tier-rejection diagnostics and reason summaries through
+  `sdk::gameplay::spatial`
+
+What should be added next at the SDK layer:
+
+- stronger navmesh-aware spawn validation beyond the current physics-first
+  `validate_spawn_point(...)` and nearest-support heuristics
+- richer path-cost / reachability heuristics beyond the current conservative
+  triangle-center / navmesh-info graph approximation
+- stronger `sdk::gameplay::spatial` presets and diagnostics on top of the now
+  existing workflow:
+  - reusable respawn-style tier presets
+  - richer selection diagnostics / reason summaries beyond the current typed
+    rejection reports
+  - higher-level candidate-set policies tuned for gameplay respawn flows
+
+These belong in `sdk`, not plugin code, because local spatial reasoning,
+raycast filtering, and candidate validation are now recurring plugin-facing
+workflows rather than one-off mod logic.
+
+### Pathing / Navmesh Constraints
+
+Some tempting engine-side pathing helpers are not currently valid targets for a
+near-term SDK surface.
+
+In particular:
+
+- `BSPathingLOSGridMap`
+- `BSPathingSearchRayCast`
+
+should not currently be treated as authoritative SDK dependencies. In the
+available `CommonLibVR` base they are declaration-only and do not provide a
+source-backed behavioral surface we can honestly port yet.
+
+That means the near-term direction should be:
+
+- prefer the pathing, navmesh-adjacent, and Havok-backed primitives we already
+  have honest coverage for
+- keep `BSPathingLOSGridMap` / `BSPathingSearchRayCast` as future research
+  candidates, not active SDK blockers
+
+What *is* worth translating and exposing when available:
+
+- source-backed movement / translation helpers like `ExtraRefrPath`
+- source-backed movement entrypoints like `TESObjectCELL::AddTranslateObject`
+- richer `BSNavmesh` coverage when a real, source-backed surface is confirmed
+- reusable SDK surfaces over translated navmesh queries such as
+  `sdk::gameplay::navmesh`
+
+The current design goal is practical gameplay-quality spatial validation, not a
+premature full port of Bethesda's higher pathing stack.
 
 ### SKSE-Aware Codecs
 

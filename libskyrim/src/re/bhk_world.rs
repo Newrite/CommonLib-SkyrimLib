@@ -99,7 +99,7 @@ impl bhkWorld {
 
     crate::virtual_method! {
         pub const VFUNC_PICK_OBJECT: usize = 0x33;
-        pub fn pick_object(&mut self, pick_data: *mut bhkPickData) -> bool
+        pub fn pick_object(&mut self, pick_data: &mut bhkPickData) -> bool
     }
 
     crate::virtual_method! {
@@ -137,13 +137,13 @@ impl bhkWorld {
 
     #[inline(always)]
     pub fn pick_object_with(&mut self, pick_data: &mut bhkPickData) -> bool {
-        Self::pick_object(self, pick_data as *mut _)
+        Self::pick_object(self, pick_data)
     }
 }
 
 pub trait bhkWorldExt {
     fn unk_32(&mut self);
-    fn pick_object(&mut self, pick_data: *mut bhkPickData) -> bool;
+    fn pick_object(&mut self, pick_data: &mut bhkPickData) -> bool;
     fn unk_34(&mut self);
     fn unk_35(&mut self);
     fn init_havok(&mut self, scene_object: *mut NiAVObject, root: *mut NiAVObject);
@@ -157,7 +157,7 @@ impl<T: AsMut<bhkWorld>> bhkWorldExt for T {
     }
 
     #[inline(always)]
-    fn pick_object(&mut self, pick_data: *mut bhkPickData) -> bool {
+    fn pick_object(&mut self, pick_data: &mut bhkPickData) -> bool {
         bhkWorld::pick_object(self.as_mut(), pick_data)
     }
 

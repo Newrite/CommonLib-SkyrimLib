@@ -1835,7 +1835,7 @@ impl TESObjectREFR {
                 continue;
             }
 
-            let vertices = unsafe { &(*nav_mesh).vertices };
+            let vertices = unsafe { &(*nav_mesh).navmesh.vertices };
             for vertex in unsafe { vertices.as_slice() } {
                 let linear_distance = self.get_position().get_distance(vertex.location);
                 if linear_distance < shortest_distance && linear_distance >= minimum_offset {

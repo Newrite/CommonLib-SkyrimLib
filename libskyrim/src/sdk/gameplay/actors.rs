@@ -43,6 +43,20 @@ pub fn is_within_radius(actor: &Actor, origin: NiPoint3, radius: f32) -> bool {
 }
 
 #[inline(always)]
+fn is_valid_radius(radius: f32, caller: &'static str) -> bool {
+    if !radius.is_finite() || radius <= 0.0 {
+        crate::defensive_sdk_warn!(
+            "{} ignored non-positive or non-finite radius={}",
+            caller,
+            radius
+        );
+        false
+    } else {
+        true
+    }
+}
+
+#[inline(always)]
 pub fn is_within_player_radius(actor: &Actor, radius: f32) -> bool {
     is_within_radius(actor, player::position(), radius)
 }
@@ -181,6 +195,10 @@ pub fn collect_high_actors_matching(
 }
 
 pub fn collect_nearby_actors(origin: NiPoint3, radius: f32) -> Vec<Resolved<Actor>> {
+    if !is_valid_radius(radius, "sdk::gameplay::actors::collect_nearby_actors()") {
+        return Vec::new();
+    }
+
     collect_loaded_actors_matching(|actor| is_within_radius(actor, origin, radius))
 }
 
@@ -205,9 +223,52 @@ pub fn collect_hostile_actors() -> Vec<Resolved<Actor>> {
 }
 
 pub fn collect_hostile_nearby_actors(origin: NiPoint3, radius: f32) -> Vec<Resolved<Actor>> {
+    if !is_valid_radius(
+        radius,
+        "sdk::gameplay::actors::collect_hostile_nearby_actors()",
+    ) {
+        return Vec::new();
+    }
+
     collect_loaded_actors_matching(|actor| {
         is_hostile_to_player(actor) && is_within_radius(actor, origin, radius)
     })
+}
+
+pub fn collect_actor_positions_in_range(origin: NiPoint3, radius: f32) -> Vec<NiPoint3> {
+    if !is_valid_radius(
+        radius,
+        "sdk::gameplay::actors::collect_actor_positions_in_range()",
+    ) {
+        return Vec::new();
+    }
+
+    let mut positions = Vec::new();
+    let _ = for_each_loaded_actor(|actor| {
+        if is_within_radius(actor, origin, radius) {
+            positions.push(actor.get_position());
+        }
+        ControlFlow::Continue(())
+    });
+    positions
+}
+
+pub fn collect_hostile_positions_in_range(origin: NiPoint3, radius: f32) -> Vec<NiPoint3> {
+    if !is_valid_radius(
+        radius,
+        "sdk::gameplay::actors::collect_hostile_positions_in_range()",
+    ) {
+        return Vec::new();
+    }
+
+    let mut positions = Vec::new();
+    let _ = for_each_loaded_actor(|actor| {
+        if is_hostile_to_player(actor) && is_within_radius(actor, origin, radius) {
+            positions.push(actor.get_position());
+        }
+        ControlFlow::Continue(())
+    });
+    positions
 }
 
 #[inline(always)]

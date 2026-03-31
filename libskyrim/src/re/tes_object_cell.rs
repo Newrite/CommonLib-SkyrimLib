@@ -408,6 +408,11 @@ impl TESObjectCELL {
     }
 
     crate::relocation_func! {
+        pub fn add_translate_object(&mut self, handle: &mut ObjectRefHandle) -> bool
+            => RelocationID::new(19006, 19417)
+    }
+
+    crate::relocation_func! {
         pub fn get_location(&self) -> *mut BGSLocation => RelocationID::new(18474, 18905)
     }
 
