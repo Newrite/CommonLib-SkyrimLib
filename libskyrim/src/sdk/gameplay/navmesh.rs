@@ -5,14 +5,13 @@
 //! heuristics without pretending that we already have a full Bethesda pathing
 //! stack.
 
-use super::pathing;
-
 use alloc::vec;
 use alloc::vec::Vec;
 use core::cmp::Ordering;
 
 use crate::re::{
-    BSNavmeshExt, BSTSmartPointer, NavMesh, NavMeshArray, NiPoint3, TESObjectCELL, TESObjectREFR,
+    BSNavmeshEdgeExtraInfoType, BSNavmeshExt, BSNavmeshTriangleFlag, BSTSmartPointer, NavMesh,
+    NavMeshArray, NiPoint3, TESObjectCELL, TESObjectREFR,
 };
 use crate::sdk::core::{GamePtr, GameRef, snapshot_contiguous_cloned_named};
 
@@ -609,35 +608,190 @@ fn approximate_same_mesh_triangle_path_cost(
     None
 }
 
-fn approximate_cross_mesh_info_graph_path_cost(
+#[inline(always)]
+fn triangle_edge_link_flag(edge_index: usize) -> Option<u16> {
+    Some(match edge_index {
+        0 => BSNavmeshTriangleFlag::Edge0Link as u16,
+        1 => BSNavmeshTriangleFlag::Edge1Link as u16,
+        2 => BSNavmeshTriangleFlag::Edge2Link as u16,
+        _ => return None,
+    })
+}
+
+#[inline(always)]
+fn snapshot_mesh_index_for_navmesh_id(mesh_ids: &[u32], nav_mesh_id: u32) -> Option<usize> {
+    mesh_ids
+        .iter()
+        .position(|candidate| *candidate == nav_mesh_id)
+}
+
+fn approximate_cross_mesh_snapshot_path_cost(
     snapshot: &NavMeshCellSnapshot,
     from_support: NavMeshTriangleSupport,
     to_support: NavMeshTriangleSupport,
 ) -> Option<(f32, u32)> {
-    let from_nav_mesh = snapshot
-        .meshes
-        .get(from_support.mesh_index)
-        .and_then(nav_mesh_ref)?;
-    let to_nav_mesh = snapshot
-        .meshes
-        .get(to_support.mesh_index)
-        .and_then(nav_mesh_ref)?;
-
-    unsafe {
-        pathing::nav_mesh_info_map().with_mut_unchecked(|info_map| {
-            let from_info =
-                pathing::lookup_navmesh_info_for_navmesh(info_map.as_mut(), from_nav_mesh)
-                    .into_option()?;
-            let to_info = pathing::lookup_navmesh_info_for_navmesh(info_map.as_mut(), to_nav_mesh)
-                .into_option()?;
-            let graph_path = pathing::approximate_navmesh_info_graph_path(
-                info_map.as_mut(),
-                from_info.as_ref(),
-                to_info.as_ref(),
-            )?;
-            Some((graph_path.approximate_cost, graph_path.hops))
-        })
+    // Keep runtime reachability on the already-snapshotted cell-local navmesh
+    // graph. The `TES::RUNTIME_DATA2` `NavMeshInfoMap*` seam is only partially
+    // named/source-backed (`unk2A8` in CommonLib headers) and has proven too
+    // fragile for hot gameplay heuristics.
+    if from_support.mesh_index == to_support.mesh_index {
+        return None;
     }
+
+    let mut mesh_ids = Vec::with_capacity(snapshot.meshes.len());
+    let mut mesh_offsets = Vec::with_capacity(snapshot.meshes.len());
+    let mut mesh_triangle_counts = Vec::with_capacity(snapshot.meshes.len());
+    let mut triangle_centers = Vec::new();
+    let mut node_to_triangle = Vec::new();
+
+    for (mesh_index, nav_mesh) in snapshot.meshes.iter().enumerate() {
+        let nav_mesh = nav_mesh_ref(nav_mesh)?;
+        let triangle_count = nav_mesh.triangle_count();
+
+        mesh_ids.push(nav_mesh.base.get_form_id());
+        mesh_offsets.push(triangle_centers.len());
+        mesh_triangle_counts.push(triangle_count);
+
+        for triangle_index in 0..triangle_count {
+            triangle_centers.push(nav_mesh.triangle_center(triangle_index)?);
+            node_to_triangle.push((mesh_index, triangle_index));
+        }
+    }
+
+    let from_offset = *mesh_offsets.get(from_support.mesh_index)?;
+    let to_offset = *mesh_offsets.get(to_support.mesh_index)?;
+    if from_support.triangle_index >= *mesh_triangle_counts.get(from_support.mesh_index)?
+        || to_support.triangle_index >= *mesh_triangle_counts.get(to_support.mesh_index)?
+    {
+        return None;
+    }
+
+    let start_node = from_offset.checked_add(from_support.triangle_index)?;
+    let goal_node = to_offset.checked_add(to_support.triangle_index)?;
+    if start_node >= triangle_centers.len() || goal_node >= triangle_centers.len() {
+        return None;
+    }
+
+    let mut distances = vec![f32::INFINITY; triangle_centers.len()];
+    let mut hops = vec![u32::MAX; triangle_centers.len()];
+    let mut visited = vec![false; triangle_centers.len()];
+    distances[start_node] = 0.0;
+    hops[start_node] = 0;
+
+    loop {
+        let mut next: Option<(usize, f32)> = None;
+        for (index, distance) in distances.iter().copied().enumerate() {
+            if visited[index] {
+                continue;
+            }
+
+            match next {
+                Some((_, best_distance))
+                    if best_distance
+                        .partial_cmp(&distance)
+                        .unwrap_or(Ordering::Equal)
+                        != Ordering::Greater => {}
+                _ => next = Some((index, distance)),
+            }
+        }
+
+        let Some(current) = next.map(|(index, _)| index) else {
+            break;
+        };
+
+        if !distances[current].is_finite() {
+            break;
+        }
+
+        if current == goal_node {
+            return Some((distances[current], hops[current]));
+        }
+
+        visited[current] = true;
+        let (mesh_index, triangle_index) = *node_to_triangle.get(current)?;
+        let Some(nav_mesh) = snapshot.meshes.get(mesh_index).and_then(nav_mesh_ref) else {
+            continue;
+        };
+        let Some(triangle) = nav_mesh.triangle(triangle_index) else {
+            continue;
+        };
+
+        for neighbor in triangle.triangles {
+            if neighbor == NAVMESH_TRIANGLE_NONE {
+                continue;
+            }
+
+            let neighbor_triangle = neighbor as usize;
+            if neighbor_triangle >= mesh_triangle_counts[mesh_index] {
+                continue;
+            }
+
+            let Some(neighbor_node) = mesh_offsets[mesh_index].checked_add(neighbor_triangle)
+            else {
+                continue;
+            };
+            if neighbor_node >= triangle_centers.len() || visited[neighbor_node] {
+                continue;
+            }
+
+            let edge_cost = triangle_centers[current].get_distance(triangle_centers[neighbor_node]);
+            let next_cost = distances[current] + edge_cost;
+            if next_cost < distances[neighbor_node] {
+                distances[neighbor_node] = next_cost;
+                hops[neighbor_node] = hops[current].saturating_add(1);
+            }
+        }
+
+        let edge_infos = nav_mesh.extra_edge_info_slice();
+        let flat_edge_base = triangle_index.saturating_mul(3);
+        for edge_index in 0..3 {
+            let Some(edge_flag) = triangle_edge_link_flag(edge_index) else {
+                continue;
+            };
+            if !triangle.triangle_flags.all_underlying(edge_flag) {
+                continue;
+            }
+
+            let Some(extra_info) = edge_infos.get(flat_edge_base + edge_index) else {
+                continue;
+            };
+            if !extra_info
+                .type_
+                .all_underlying(BSNavmeshEdgeExtraInfoType::Portal as u32)
+            {
+                continue;
+            }
+
+            let Some(destination_mesh_index) =
+                snapshot_mesh_index_for_navmesh_id(&mesh_ids, extra_info.portal.other_mesh_id)
+            else {
+                continue;
+            };
+            let destination_triangle = extra_info.portal.triangle as usize;
+            if destination_triangle >= mesh_triangle_counts[destination_mesh_index] {
+                continue;
+            }
+
+            let Some(destination_node) =
+                mesh_offsets[destination_mesh_index].checked_add(destination_triangle)
+            else {
+                continue;
+            };
+            if destination_node >= triangle_centers.len() || visited[destination_node] {
+                continue;
+            }
+
+            let edge_cost =
+                triangle_centers[current].get_distance(triangle_centers[destination_node]);
+            let next_cost = distances[current] + edge_cost;
+            if next_cost < distances[destination_node] {
+                distances[destination_node] = next_cost;
+                hops[destination_node] = hops[current].saturating_add(1);
+            }
+        }
+    }
+
+    None
 }
 
 pub fn evaluate_reachability_in_cell(
@@ -715,7 +869,7 @@ pub fn evaluate_reachability_in_cell(
             }
         }
         (Some(from_support), Some(to_support)) if options.allow_cross_mesh_graph => {
-            match approximate_cross_mesh_info_graph_path_cost(&snapshot, from_support, to_support) {
+            match approximate_cross_mesh_snapshot_path_cost(&snapshot, from_support, to_support) {
                 Some((graph_cost, hops)) => (
                     Some(from_support.distance + graph_cost + to_support.distance),
                     None,
