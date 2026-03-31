@@ -1,6 +1,7 @@
 #![allow(non_camel_case_types)]
 
 /// C++ `RE::PROCESS_TYPE`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum PROCESS_TYPE {

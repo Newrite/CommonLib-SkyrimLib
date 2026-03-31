@@ -55,7 +55,7 @@ impl<'a> InputEvents<'a> {
 
     #[inline(always)]
     pub fn devices(&self) -> impl Iterator<Item = crate::re::INPUT_DEVICE> + '_ {
-        self.iter().map(InputEvent::get_device)
+        self.iter().filter_map(InputEvent::try_get_device)
     }
 
     #[inline(always)]
@@ -134,37 +134,37 @@ impl<'a> InputEvents<'a> {
     #[inline(always)]
     pub fn keyboard(&self) -> impl Iterator<Item = &InputEvent> + '_ {
         self.iter()
-            .filter(|event| event.get_device() == crate::re::INPUT_DEVICE::kKeyboard)
+            .filter(|event| event.try_get_device() == Some(crate::re::INPUT_DEVICE::kKeyboard))
     }
 
     #[inline(always)]
     pub fn keyboard_mut(&mut self) -> impl Iterator<Item = &mut InputEvent> + '_ {
         self.iter_mut()
-            .filter(|event| event.get_device() == crate::re::INPUT_DEVICE::kKeyboard)
+            .filter(|event| event.try_get_device() == Some(crate::re::INPUT_DEVICE::kKeyboard))
     }
 
     #[inline(always)]
     pub fn mouse(&self) -> impl Iterator<Item = &InputEvent> + '_ {
         self.iter()
-            .filter(|event| event.get_device() == crate::re::INPUT_DEVICE::kMouse)
+            .filter(|event| event.try_get_device() == Some(crate::re::INPUT_DEVICE::kMouse))
     }
 
     #[inline(always)]
     pub fn mouse_mut(&mut self) -> impl Iterator<Item = &mut InputEvent> + '_ {
         self.iter_mut()
-            .filter(|event| event.get_device() == crate::re::INPUT_DEVICE::kMouse)
+            .filter(|event| event.try_get_device() == Some(crate::re::INPUT_DEVICE::kMouse))
     }
 
     #[inline(always)]
     pub fn gamepad(&self) -> impl Iterator<Item = &InputEvent> + '_ {
         self.iter()
-            .filter(|event| event.get_device() == crate::re::INPUT_DEVICE::kGamepad)
+            .filter(|event| event.try_get_device() == Some(crate::re::INPUT_DEVICE::kGamepad))
     }
 
     #[inline(always)]
     pub fn gamepad_mut(&mut self) -> impl Iterator<Item = &mut InputEvent> + '_ {
         self.iter_mut()
-            .filter(|event| event.get_device() == crate::re::INPUT_DEVICE::kGamepad)
+            .filter(|event| event.try_get_device() == Some(crate::re::INPUT_DEVICE::kGamepad))
     }
 }
 

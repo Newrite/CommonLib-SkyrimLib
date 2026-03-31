@@ -227,6 +227,9 @@ Apply stronger rules to the second group:
 
 - validate nullable pointer-like inputs before the native call
 - prefer `false` / `None` / early return for semantically nullable inputs
+- when `re` exposes an open seam via `*_storage()` / `try_*()`, SDK and SKSE
+  helper layers should use that safe seam directly instead of relying on a
+  lossy `get_*()` convenience accessor
 - warn through `defensive-sdk-log` when a bad input or unsafe phase causes a
   soft failure
 - snapshot transient engine containers before doing substantial follow-up work
@@ -621,6 +624,69 @@ instead of copying a one-off helper into each RE file.
 - `REX::EnumSet<E, U>` and `stl::enumeration<E, U>` map to
   `core_util::EnumSet<E, U>`.
 - Use `bitflags!` only for real bitmasks with power-of-two values.
+
+### Open Enum Seams
+
+Do not assume every translated C++ enum should be represented as a closed Rust
+enum at every read boundary.
+
+Distinguish between:
+
+- closed enum surfaces
+  - parameters we send into the engine
+  - named constants or source-backed exhaustive states
+  - fields/results where the value set is genuinely closed for that read path
+- open enum seams
+  - raw bitfields
+  - engine-authored integer storage
+  - native return values whose integer domain may be wider than our current
+    translated variants, sparse, modded, or incompletely reversed
+
+For open seams:
+
+- do not decode with `core::mem::transmute`
+- prefer a raw/storage accessor returning `core_util::Enum<E, U>`
+- add `TryFrom<U>` only for the seam enums that actually need typed decoding
+- expose typed helpers like `try_*()` and, only when there is an honest
+  sentinel, a lossy convenience getter on top
+- when the seam comes from a native or virtual method return value, prefer a
+  raw `*_raw()` method plus `*_storage()` / `try_*()` / optional lossy
+  `get_*()` wrapper rather than exposing the method itself as a closed Rust
+  enum return
+
+Prefer the shared enum attribute over local `from_raw(...)` helpers when
+possible:
+
+- `#[libskyrim_macros::open_enum]`
+- `#[libskyrim_macros::open_enum(ignore(HelperVariant, ...))]`
+  - attach it directly to seam enums with an integer `#[repr(...)]`
+  - it auto-generates `EnumSetType<repr>` plus `TryFrom<repr>`
+  - it uses a contiguous transmute-backed decoder only when every value in the
+    closed range is present
+  - otherwise it generates a sparse `match` decoder
+  - use it only when the enum variants are genuine decoded values, not when the
+    enum also embeds helper constants such as masks, shifts, aliases, or other
+    non-value sentinels
+  - for mixed Scaleform/GFx enums, prefer `ignore(...)` when only a few helper
+    variants need to be excluded from typed decoding
+
+Keep the lower-level macro helpers as fallback when the attribute cannot infer
+the intended mapping cleanly:
+
+- contiguous value ranges:
+  - `core_util::impl_enum_try_from_contiguous!(EnumTy => StorageTy, MinVariant, MaxVariant)`
+- sparse known mappings:
+  - `core_util::impl_enum_try_from_sparse!(EnumTy => StorageTy { raw => Variant, ... })`
+
+Preferred pattern:
+
+- `*_storage() -> Enum<E, U>`
+- `try_*() -> Option<E>`
+- `get_*()` or `*_or(default)` only when a fallback does not lie about the raw
+  engine contract
+
+Do not mass-refactor all enums in `re` into raw wrappers. Refactor the decode
+sites, not the entire enum catalog.
 
 ## Workflow Map
 

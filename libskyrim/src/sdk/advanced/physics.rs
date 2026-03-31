@@ -1058,7 +1058,7 @@ fn raycast_hit_from_output(
     let collision_layer = if root_collidable.is_null() {
         None
     } else {
-        Some(unsafe { (*root_collidable).get_collision_layer() })
+        unsafe { (*root_collidable).try_get_collision_layer() }
     };
 
     let (reference, object) = if root_collidable.is_null() {

@@ -1,4 +1,4 @@
-use core_util::EnumSet;
+use core_util::{Enum, EnumSet};
 
 use crate::core_util::inherit;
 use crate::offsets::offsets_nirtti::NiRTTI_BSShaderProperty;
@@ -416,7 +416,23 @@ impl BSShaderProperty {
 
     crate::virtual_method! {
         pub const VFUNC_GET_MATERIAL_TYPE: usize = 0x3E;
-        pub fn get_material_type(&mut self) -> BSShaderMaterialType
+        pub fn get_material_type_raw(&mut self) -> i32
+    }
+
+    #[inline(always)]
+    pub fn material_type_storage(&mut self) -> Enum<BSShaderMaterialType, i32> {
+        Enum::from_underlying(self.get_material_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_material_type(&mut self) -> Option<BSShaderMaterialType> {
+        self.material_type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_material_type(&mut self) -> BSShaderMaterialType {
+        self.try_get_material_type()
+            .unwrap_or(BSShaderMaterialType::Base)
     }
 
     #[inline(always)]
@@ -505,6 +521,8 @@ pub trait BSShaderPropertyExt {
     fn unk_3b(&mut self);
     fn unk_3c(&mut self);
     fn determine_utility_shader_decl(&mut self) -> u32;
+    fn material_type_storage(&mut self) -> Enum<BSShaderMaterialType, i32>;
+    fn try_get_material_type(&mut self) -> Option<BSShaderMaterialType>;
     fn get_material_type(&mut self) -> BSShaderMaterialType;
     fn get_base_material(&self) -> *mut BSShaderMaterial;
     fn invalidate_material(&mut self) -> bool;
@@ -662,6 +680,16 @@ impl<T: AsRef<BSShaderProperty> + AsMut<BSShaderProperty>> BSShaderPropertyExt f
     #[inline(always)]
     fn determine_utility_shader_decl(&mut self) -> u32 {
         BSShaderProperty::determine_utility_shader_decl(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn material_type_storage(&mut self) -> Enum<BSShaderMaterialType, i32> {
+        BSShaderProperty::material_type_storage(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn try_get_material_type(&mut self) -> Option<BSShaderMaterialType> {
+        BSShaderProperty::try_get_material_type(self.as_mut())
     }
 
     #[inline(always)]

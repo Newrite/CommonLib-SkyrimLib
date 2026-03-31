@@ -157,7 +157,23 @@ impl BSLightingShaderProperty {
 
     crate::virtual_method! {
         pub const VFUNC_GET_MATERIAL_TYPE: usize = 0x3E;
-        pub fn get_material_type(&mut self) -> BSShaderMaterialType
+        pub fn get_material_type_raw(&mut self) -> i32
+    }
+
+    #[inline(always)]
+    pub fn material_type_storage(&mut self) -> core_util::Enum<BSShaderMaterialType, i32> {
+        core_util::Enum::from_underlying(self.get_material_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_material_type(&mut self) -> Option<BSShaderMaterialType> {
+        self.material_type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_material_type(&mut self) -> BSShaderMaterialType {
+        self.try_get_material_type()
+            .unwrap_or(BSShaderMaterialType::Base)
     }
 
     #[inline(always)]

@@ -1,8 +1,10 @@
 #![allow(non_camel_case_types)]
 
 use core::ffi::{c_char, c_void};
+use core_util::Enum;
 
 /// C++ `RE::GFxResourceKey::KeyType`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxResourceKeyKeyType {
@@ -25,10 +27,26 @@ impl GFxResourceKeyKeyInterface {
     crate::virtual_method! { pub const VFUNC_DTOR: usize = 0x00; pub fn dtor() }
     crate::virtual_method! { pub const VFUNC_ADD_REF: usize = 0x01; pub fn add_ref(data: *mut c_void) }
     crate::virtual_method! { pub const VFUNC_RELEASE: usize = 0x02; pub fn release(data: *mut c_void) }
-    crate::virtual_method! { pub const VFUNC_GET_KEY_TYPE: usize = 0x03; pub fn get_key_type(data: *mut c_void) -> GFxResourceKeyKeyType }
+    crate::virtual_method! { pub const VFUNC_GET_KEY_TYPE: usize = 0x03; pub fn get_key_type_raw(data: *mut c_void) -> u32 }
     crate::virtual_method! { pub const VFUNC_GET_HASH_CODE: usize = 0x04; pub fn get_hash_code(data: *mut c_void) -> usize }
     crate::virtual_method! { pub const VFUNC_KEY_EQUALS: usize = 0x05; pub fn key_equals(data: *mut c_void, other: &GFxResourceKey) -> bool }
     crate::virtual_method! { pub const VFUNC_GET_FILE_URL: usize = 0x06; pub fn get_file_url(data: *mut c_void) -> *const c_char }
+
+    #[inline(always)]
+    pub fn key_type_storage(&self, data: *mut c_void) -> Enum<GFxResourceKeyKeyType, u32> {
+        Enum::from_underlying(self.get_key_type_raw(data))
+    }
+
+    #[inline(always)]
+    pub fn try_get_key_type(&self, data: *mut c_void) -> Option<GFxResourceKeyKeyType> {
+        self.key_type_storage(data).get()
+    }
+
+    #[inline(always)]
+    pub fn get_key_type(&self, data: *mut c_void) -> GFxResourceKeyKeyType {
+        self.try_get_key_type(data)
+            .unwrap_or(GFxResourceKeyKeyType::kNone)
+    }
 }
 
 /// C++ `RE::GFxResourceKey`

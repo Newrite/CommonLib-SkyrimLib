@@ -1,6 +1,7 @@
 #![allow(non_camel_case_types)]
 
 use crate::re::{ColLayer, hkAabbUint32, hkpCdBody, hkpShapeKey, hkpTypedBroadPhaseHandle};
+use core_util::Enum;
 
 /// C++ `RE::hkpCollidable::BelongsTo`
 #[repr(u32)]
@@ -90,10 +91,20 @@ impl AsMut<hkpCollidable> for hkpCollidable {
 
 impl hkpCollidable {
     #[inline(always)]
-    pub fn get_collision_layer(&self) -> ColLayer {
+    pub const fn collision_layer_storage(&self) -> Enum<ColLayer, i32> {
         self.broad_phase_handle
             .collision_filter_info
-            .get_collision_layer()
+            .collision_layer_storage()
+    }
+
+    #[inline(always)]
+    pub fn try_get_collision_layer(&self) -> Option<ColLayer> {
+        self.collision_layer_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_collision_layer(&self) -> ColLayer {
+        self.try_get_collision_layer().unwrap_or(ColLayer::Invalid)
     }
 
     #[inline(always)]
@@ -109,12 +120,24 @@ impl hkpCollidable {
 }
 
 pub trait hkpCollidableExt {
+    fn collision_layer_storage(&self) -> Enum<ColLayer, i32>;
+    fn try_get_collision_layer(&self) -> Option<ColLayer>;
     fn get_collision_layer(&self) -> ColLayer;
     fn get_owner(&self) -> *mut core::ffi::c_void;
     fn get_owner_as<T>(&self) -> *mut T;
 }
 
 impl<T: AsRef<hkpCollidable>> hkpCollidableExt for T {
+    #[inline(always)]
+    fn collision_layer_storage(&self) -> Enum<ColLayer, i32> {
+        hkpCollidable::collision_layer_storage(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn try_get_collision_layer(&self) -> Option<ColLayer> {
+        hkpCollidable::try_get_collision_layer(self.as_ref())
+    }
+
     #[inline(always)]
     fn get_collision_layer(&self) -> ColLayer {
         hkpCollidable::get_collision_layer(self.as_ref())

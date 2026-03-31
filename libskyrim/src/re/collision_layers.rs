@@ -1,4 +1,5 @@
 /// C++ `RE::COL_LAYER`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ColLayer {
@@ -58,5 +59,3 @@ pub enum ColLayer {
     Unused7 = 53,
     Invalid = 54,
 }
-
-core_util::impl_enumset_type!(ColLayer => i32);

@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use core_util::{EnumSet, inherit};
 
 use crate::offsets::offsets_rtti::{RTTI_MagicCaster, RTTI_MagicCaster__PostCreationCallback};
@@ -27,6 +29,7 @@ use crate::relocation::{RelocationID, RttiType, VariantID};
 use crate::virtual_method;
 
 /// C++ `RE::MagicCaster::State`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum MagicCasterState {
@@ -142,7 +145,7 @@ impl MagicCaster {
     virtual_method! { pub const VFUNC_DESELECT_SPELL_IMPL: usize = 0x12; pub fn deselect_spell_impl() }
     virtual_method! { pub const VFUNC_SET_SKIP_CHECK_CAST: usize = 0x13; pub fn set_skip_check_cast() }
     virtual_method! { pub const VFUNC_SET_CASTING_TIMER_FOR_CHARGE: usize = 0x14; pub fn set_casting_timer_for_charge() }
-    virtual_method! { pub const VFUNC_GET_CASTING_SOURCE: usize = 0x15; pub fn get_casting_source() -> CastingSource }
+    virtual_method! { pub const VFUNC_GET_CASTING_SOURCE: usize = 0x15; pub fn get_casting_source_raw() -> i32 }
     virtual_method! { pub const VFUNC_GET_IS_DUAL_CASTING: usize = 0x16; pub fn get_is_dual_casting() -> bool }
     virtual_method! { pub const VFUNC_SET_DUAL_CASTING: usize = 0x17; pub fn set_dual_casting(set: bool) }
     virtual_method! { pub const VFUNC_SAVE_GAME: usize = 0x18; pub fn save_game(buf: *mut BGSSaveGameBuffer) }
@@ -177,6 +180,21 @@ impl MagicCaster {
 
     crate::relocation_func! {
         pub fn set_current_spell(&mut self, item: *mut MagicItem) => RelocationID::new(33644, 34422)
+    }
+
+    #[inline(always)]
+    pub fn casting_source_storage(&self) -> Enum<CastingSource, i32> {
+        Enum::from_underlying(self.get_casting_source_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_casting_source(&self) -> Option<CastingSource> {
+        self.casting_source_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_casting_source(&self) -> CastingSource {
+        self.try_get_casting_source().unwrap_or(CastingSource::None)
     }
 
     #[inline]

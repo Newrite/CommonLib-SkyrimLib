@@ -1,6 +1,8 @@
 use crate::re::collision_layers::ColLayer;
+use core_util::Enum;
 
 /// C++ `RE::BIPED_PART`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BipedPart {
@@ -35,8 +37,6 @@ pub enum BipedPart {
     AddonArm = 28,
 }
 
-core_util::impl_enumset_type!(BipedPart => u32);
-
 /// C++ `RE::CFilter::Flags`
 pub struct CFilterFlags;
 
@@ -60,13 +60,33 @@ const _: () = assert!(core::mem::offset_of!(CFilter, filter) == 0x0);
 
 impl CFilter {
     #[inline(always)]
+    pub const fn collision_layer_storage(&self) -> Enum<ColLayer, i32> {
+        Enum::from_underlying((self.filter & CFilterFlags::LAYER_MASK) as i32)
+    }
+
+    #[inline(always)]
     pub fn get_collision_layer(&self) -> ColLayer {
-        unsafe { core::mem::transmute((self.filter & CFilterFlags::LAYER_MASK) as i32) }
+        self.try_get_collision_layer().unwrap_or(ColLayer::Invalid)
+    }
+
+    #[inline(always)]
+    pub fn try_get_collision_layer(&self) -> Option<ColLayer> {
+        self.collision_layer_storage().get()
+    }
+
+    #[inline(always)]
+    pub const fn biped_part_storage(&self) -> Enum<BipedPart, u32> {
+        Enum::from_underlying((self.filter >> 8) & CFilterFlags::PART_MASK)
     }
 
     #[inline(always)]
     pub fn get_biped_part(&self) -> BipedPart {
-        unsafe { core::mem::transmute((self.filter >> 8) & CFilterFlags::PART_MASK) }
+        self.try_get_biped_part().unwrap_or(BipedPart::Other)
+    }
+
+    #[inline(always)]
+    pub fn try_get_biped_part(&self) -> Option<BipedPart> {
+        self.biped_part_storage().get()
     }
 
     #[inline(always)]

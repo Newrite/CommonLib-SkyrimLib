@@ -4,8 +4,10 @@ use crate::offsets::offsets_rtti::RTTI_NiAlphaProperty;
 use crate::offsets::offsets_vtable::VTABLE_NiAlphaProperty;
 use crate::re::{NiProperty, NiPropertyType, NiRTTI};
 use crate::relocation::{RttiType, VariantID};
+use core_util::Enum;
 
 /// C++ `RE::NiAlphaProperty::AlphaFunction`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum NiAlphaPropertyAlphaFunction {
@@ -23,6 +25,7 @@ pub enum NiAlphaPropertyAlphaFunction {
 }
 
 /// C++ `RE::NiAlphaProperty::TestFunction`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum NiAlphaPropertyTestFunction {
@@ -86,7 +89,22 @@ impl NiAlphaProperty {
 
     crate::virtual_method! {
         pub const VFUNC_GET_TYPE: usize = 0x25;
-        pub fn get_type() -> NiPropertyType
+        pub fn get_type_raw() -> i32
+    }
+
+    #[inline(always)]
+    pub fn type_storage(&self) -> Enum<NiPropertyType, i32> {
+        Enum::from_underlying(self.get_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_type(&self) -> Option<NiPropertyType> {
+        self.type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_type(&self) -> NiPropertyType {
+        self.try_get_type().unwrap_or(NiPropertyType::Alpha)
     }
 
     #[inline(always)]
@@ -100,13 +118,35 @@ impl NiAlphaProperty {
     }
 
     #[inline(always)]
+    pub const fn dest_blend_mode_storage(&self) -> Enum<NiAlphaPropertyAlphaFunction, i32> {
+        Enum::from_underlying(((self.alpha_flags >> 5) & 15) as i32)
+    }
+
+    #[inline(always)]
+    pub fn try_get_dest_blend_mode(&self) -> Option<NiAlphaPropertyAlphaFunction> {
+        self.dest_blend_mode_storage().get()
+    }
+
+    #[inline(always)]
     pub fn get_dest_blend_mode(&self) -> NiAlphaPropertyAlphaFunction {
-        unsafe { core::mem::transmute(((self.alpha_flags >> 5) & 15) as i32) }
+        self.try_get_dest_blend_mode()
+            .unwrap_or(NiAlphaPropertyAlphaFunction::One)
+    }
+
+    #[inline(always)]
+    pub const fn src_blend_mode_storage(&self) -> Enum<NiAlphaPropertyAlphaFunction, i32> {
+        Enum::from_underlying(((self.alpha_flags >> 1) & 15) as i32)
+    }
+
+    #[inline(always)]
+    pub fn try_get_src_blend_mode(&self) -> Option<NiAlphaPropertyAlphaFunction> {
+        self.src_blend_mode_storage().get()
     }
 
     #[inline(always)]
     pub fn get_src_blend_mode(&self) -> NiAlphaPropertyAlphaFunction {
-        unsafe { core::mem::transmute(((self.alpha_flags >> 1) & 15) as i32) }
+        self.try_get_src_blend_mode()
+            .unwrap_or(NiAlphaPropertyAlphaFunction::One)
     }
 
     #[inline(always)]

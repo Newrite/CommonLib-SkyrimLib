@@ -1,12 +1,14 @@
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
+use std::collections::{BTreeMap, BTreeSet};
 use syn::parse::Parser;
 use syn::punctuated::Punctuated;
 use syn::{
-    Data, DeriveInput, Expr, ExprCall, ExprPath, Fields, FnArg, GenericArgument, GenericParam,
-    Ident, ItemFn, LitStr, Meta, Pat, PatIdent, Path, PathArguments, ReturnType, Token, Type,
-    TypeGroup, TypeParen, TypePath, Visibility, parse_macro_input, parse_quote,
+    BinOp, Data, DeriveInput, Expr, ExprBinary, ExprCall, ExprCast, ExprGroup, ExprLit, ExprParen,
+    ExprPath, ExprUnary, Fields, FnArg, GenericArgument, GenericParam, Ident, ItemEnum, ItemFn,
+    Lit, LitInt, LitStr, Meta, Pat, PatIdent, Path, PathArguments, ReturnType, Token, Type,
+    TypeGroup, TypeParen, TypePath, UnOp, Visibility, parse_macro_input, parse_quote,
 };
 
 #[proc_macro_attribute]
@@ -68,12 +70,360 @@ pub fn derive_cosave(input: TokenStream) -> TokenStream {
     }
 }
 
+#[proc_macro_attribute]
+pub fn open_enum(attr: TokenStream, item: TokenStream) -> TokenStream {
+    let attr_ts = TokenStream2::from(attr);
+    let item_enum = parse_macro_input!(item as ItemEnum);
+    match expand_open_enum(attr_ts, item_enum) {
+        Ok(tokens) => tokens.into(),
+        Err(err) => err.into_compile_error().into(),
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum HookKind {
     Function,
     Call,
     Vtable,
     Vcall,
+}
+
+fn expand_open_enum(attr: TokenStream2, item: ItemEnum) -> syn::Result<TokenStream2> {
+    let config = parse_open_enum_config(attr)?;
+
+    let repr_ty = parse_open_enum_repr(&item)?;
+    let discriminants = collect_open_enum_discriminants(&item)?;
+    let enum_ident = &item.ident;
+    let enum_item = &item;
+    let try_from_impl = build_open_enum_try_from(
+        enum_ident,
+        &repr_ty,
+        &discriminants,
+        &config.ignored_variants,
+    )?;
+
+    Ok(quote! {
+        #enum_item
+
+        impl ::core_util::EnumSetType<#repr_ty> for #enum_ident {
+            #[inline(always)]
+            fn to_underlying(self) -> #repr_ty {
+                self as #repr_ty
+            }
+        }
+
+        #try_from_impl
+    })
+}
+
+#[derive(Default)]
+struct OpenEnumConfig {
+    ignored_variants: BTreeSet<String>,
+}
+
+fn parse_open_enum_config(attr: TokenStream2) -> syn::Result<OpenEnumConfig> {
+    let mut config = OpenEnumConfig::default();
+    if attr.is_empty() {
+        return Ok(config);
+    }
+
+    let metas = Punctuated::<Meta, Token![,]>::parse_terminated.parse2(attr)?;
+    for meta in metas {
+        match meta {
+            Meta::List(list) if list.path.is_ident("ignore") => {
+                let paths =
+                    list.parse_args_with(Punctuated::<Path, Token![,]>::parse_terminated)?;
+                for path in paths {
+                    let ident = path.get_ident().ok_or_else(|| {
+                        syn::Error::new_spanned(
+                            &path,
+                            "`ignore(...)` entries in `#[open_enum]` must be simple identifiers",
+                        )
+                    })?;
+                    config.ignored_variants.insert(ident.to_string());
+                }
+            }
+            other => {
+                return Err(syn::Error::new_spanned(
+                    other,
+                    "unsupported `#[open_enum(...)]` argument; expected `ignore(...)`",
+                ));
+            }
+        }
+    }
+
+    Ok(config)
+}
+
+fn parse_open_enum_repr(item: &ItemEnum) -> syn::Result<Type> {
+    for attr in &item.attrs {
+        if !attr.path().is_ident("repr") {
+            continue;
+        }
+
+        let reprs = attr.parse_args_with(Punctuated::<Path, Token![,]>::parse_terminated)?;
+        for repr in reprs {
+            if let Some(ident) = repr.get_ident() {
+                match ident.to_string().as_str() {
+                    "i8" | "i16" | "i32" | "i64" | "i128" | "isize" | "u8" | "u16" | "u32"
+                    | "u64" | "u128" | "usize" => {
+                        let repr_ty: Type = syn::parse2(quote!(#repr))?;
+                        return Ok(repr_ty);
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    Err(syn::Error::new_spanned(
+        &item.ident,
+        "`#[open_enum]` requires an integer `#[repr(...)]` on the enum",
+    ))
+}
+
+fn collect_open_enum_discriminants(item: &ItemEnum) -> syn::Result<Vec<(Ident, i128)>> {
+    let mut known = BTreeMap::<String, i128>::new();
+    let mut values = Vec::with_capacity(item.variants.len());
+    let mut next_implicit = 0i128;
+
+    for variant in &item.variants {
+        if !matches!(variant.fields, Fields::Unit) {
+            return Err(syn::Error::new_spanned(
+                variant,
+                "`#[open_enum]` supports fieldless enums only",
+            ));
+        }
+
+        let value = match &variant.discriminant {
+            Some((_, expr)) => evaluate_open_enum_expr(expr, &known)?,
+            None => next_implicit,
+        };
+
+        if known.insert(variant.ident.to_string(), value).is_some() {
+            return Err(syn::Error::new_spanned(
+                &variant.ident,
+                "duplicate enum variant name in `#[open_enum]` expansion",
+            ));
+        }
+
+        values.push((variant.ident.clone(), value));
+        next_implicit = value
+            .checked_add(1)
+            .ok_or_else(|| syn::Error::new_spanned(&variant.ident, "enum discriminant overflow"))?;
+    }
+
+    Ok(values)
+}
+
+fn evaluate_open_enum_expr(expr: &Expr, known: &BTreeMap<String, i128>) -> syn::Result<i128> {
+    match expr {
+        Expr::Lit(ExprLit {
+            lit: Lit::Int(lit), ..
+        }) => parse_open_enum_lit_int(lit),
+        Expr::Unary(ExprUnary { op, expr, .. }) => match op {
+            UnOp::Neg(_) => evaluate_open_enum_expr(expr, known)?
+                .checked_neg()
+                .ok_or_else(|| syn::Error::new_spanned(expr, "enum discriminant overflow")),
+            UnOp::Not(_) => Ok(!evaluate_open_enum_expr(expr, known)?),
+            _ => Err(syn::Error::new_spanned(
+                op,
+                "unsupported unary operator in `#[open_enum]` discriminant",
+            )),
+        },
+        Expr::Paren(ExprParen { expr, .. })
+        | Expr::Group(ExprGroup { expr, .. })
+        | Expr::Cast(ExprCast { expr, .. }) => evaluate_open_enum_expr(expr, known),
+        Expr::Binary(ExprBinary {
+            left, op, right, ..
+        }) => {
+            let left_value = evaluate_open_enum_expr(left, known)?;
+            let right_value = evaluate_open_enum_expr(right, known)?;
+            evaluate_open_enum_binary(expr, left_value, op, right_value)
+        }
+        Expr::Path(ExprPath { path, .. }) => {
+            let ident = path.segments.last().ok_or_else(|| {
+                syn::Error::new_spanned(path, "empty path in `#[open_enum]` discriminant")
+            })?;
+            known.get(&ident.ident.to_string()).copied().ok_or_else(|| {
+                syn::Error::new_spanned(
+                    path,
+                    "unsupported path in `#[open_enum]` discriminant; only previously-defined variants are supported",
+                )
+            })
+        }
+        _ => Err(syn::Error::new_spanned(
+            expr,
+            "unsupported expression in `#[open_enum]` discriminant",
+        )),
+    }
+}
+
+fn evaluate_open_enum_binary(
+    expr: &Expr,
+    left: i128,
+    op: &BinOp,
+    right: i128,
+) -> syn::Result<i128> {
+    let value = match op {
+        BinOp::Add(_) => left.checked_add(right),
+        BinOp::Sub(_) => left.checked_sub(right),
+        BinOp::Mul(_) => left.checked_mul(right),
+        BinOp::Div(_) => left.checked_div(right),
+        BinOp::Rem(_) => left.checked_rem(right),
+        BinOp::BitXor(_) => Some(left ^ right),
+        BinOp::BitAnd(_) => Some(left & right),
+        BinOp::BitOr(_) => Some(left | right),
+        BinOp::Shl(_) => {
+            let shift = u32::try_from(right).ok();
+            shift.and_then(|shift| left.checked_shl(shift))
+        }
+        BinOp::Shr(_) => {
+            let shift = u32::try_from(right).ok();
+            shift.and_then(|shift| left.checked_shr(shift))
+        }
+        _ => {
+            return Err(syn::Error::new_spanned(
+                op,
+                "unsupported binary operator in `#[open_enum]` discriminant",
+            ));
+        }
+    };
+
+    value.ok_or_else(|| syn::Error::new_spanned(expr, "enum discriminant overflow"))
+}
+
+fn parse_open_enum_lit_int(lit: &LitInt) -> syn::Result<i128> {
+    let suffix = lit.suffix();
+    let mut raw = lit.to_string();
+    if !suffix.is_empty() {
+        raw.truncate(raw.len() - suffix.len());
+    }
+
+    let raw = raw.replace('_', "");
+    let (radix, digits) = if let Some(rest) = raw.strip_prefix("0x") {
+        (16, rest)
+    } else if let Some(rest) = raw.strip_prefix("0X") {
+        (16, rest)
+    } else if let Some(rest) = raw.strip_prefix("0o") {
+        (8, rest)
+    } else if let Some(rest) = raw.strip_prefix("0O") {
+        (8, rest)
+    } else if let Some(rest) = raw.strip_prefix("0b") {
+        (2, rest)
+    } else if let Some(rest) = raw.strip_prefix("0B") {
+        (2, rest)
+    } else {
+        (10, raw.as_str())
+    };
+
+    i128::from_str_radix(digits, radix).map_err(|_| {
+        syn::Error::new_spanned(lit, "failed to parse integer literal in `#[open_enum]`")
+    })
+}
+
+fn build_open_enum_try_from(
+    enum_ident: &Ident,
+    repr_ty: &Type,
+    discriminants: &[(Ident, i128)],
+    ignored_variants: &BTreeSet<String>,
+) -> syn::Result<TokenStream2> {
+    if discriminants.is_empty() {
+        return Err(syn::Error::new_spanned(
+            enum_ident,
+            "`#[open_enum]` requires at least one enum variant",
+        ));
+    }
+
+    let mut sorted_values = Vec::with_capacity(discriminants.len());
+    let mut sparse_arms = Vec::with_capacity(discriminants.len());
+    let mut seen_values = BTreeMap::<i128, Ident>::new();
+
+    for (variant_ident, value) in discriminants {
+        if ignored_variants.contains(&variant_ident.to_string()) {
+            continue;
+        }
+
+        if let Some(previous) = seen_values.insert(*value, variant_ident.clone()) {
+            return Err(syn::Error::new_spanned(
+                variant_ident,
+                format!(
+                    "`#[open_enum]` does not support duplicate discriminants: `{}` and `{}` both map to {}",
+                    previous, variant_ident, value
+                ),
+            ));
+        }
+        sorted_values.push(*value);
+        let pattern = open_enum_pattern_literal(*value);
+        sparse_arms.push(quote! { #pattern => Ok(Self::#variant_ident), });
+    }
+
+    if sorted_values.is_empty() {
+        return Err(syn::Error::new_spanned(
+            enum_ident,
+            "`#[open_enum]` ignored every enum variant; at least one decoded value variant must remain",
+        ));
+    }
+
+    sorted_values.sort_unstable();
+    let is_contiguous = sorted_values
+        .windows(2)
+        .all(|window| window[1] == window[0] + 1);
+
+    if is_contiguous {
+        let min_value = sorted_values[0];
+        let max_value = *sorted_values.last().unwrap();
+        let min_expr = open_enum_typed_literal(min_value, repr_ty);
+        let max_expr = open_enum_typed_literal(max_value, repr_ty);
+        Ok(quote! {
+            impl ::core::convert::TryFrom<#repr_ty> for #enum_ident {
+                type Error = ();
+
+                #[inline(always)]
+                fn try_from(value: #repr_ty) -> Result<Self, Self::Error> {
+                    if value < #min_expr || value > #max_expr {
+                        return Err(());
+                    }
+
+                    Ok(unsafe { ::core::mem::transmute::<#repr_ty, Self>(value) })
+                }
+            }
+        })
+    } else {
+        Ok(quote! {
+            impl ::core::convert::TryFrom<#repr_ty> for #enum_ident {
+                type Error = ();
+
+                #[inline(always)]
+                fn try_from(value: #repr_ty) -> Result<Self, Self::Error> {
+                    match value {
+                        #(#sparse_arms)*
+                        _ => Err(()),
+                    }
+                }
+            }
+        })
+    }
+}
+
+fn open_enum_pattern_literal(value: i128) -> TokenStream2 {
+    if value < 0 {
+        let magnitude = proc_macro2::Literal::i128_unsuffixed(-value);
+        quote! { -#magnitude }
+    } else {
+        let literal = proc_macro2::Literal::i128_unsuffixed(value);
+        quote! { #literal }
+    }
+}
+
+fn open_enum_typed_literal(value: i128, repr_ty: &Type) -> TokenStream2 {
+    if value < 0 {
+        let magnitude = proc_macro2::Literal::i128_unsuffixed(-value);
+        quote! { (-(#magnitude) as #repr_ty) }
+    } else {
+        let literal = proc_macro2::Literal::i128_unsuffixed(value);
+        quote! { (#literal as #repr_ty) }
+    }
 }
 
 #[derive(Clone)]

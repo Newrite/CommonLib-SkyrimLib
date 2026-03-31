@@ -274,9 +274,10 @@ impl BSInputDeviceManager {
     #[inline(always)]
     pub fn create_input_devices(&mut self) {
         for i in 0..self.devices.len() {
-            let device = BSInputDeviceFactory::create_input_device(unsafe {
-                core::mem::transmute(i as i32)
-            });
+            let Ok(device_type) = INPUT_DEVICE::try_from(i as i32) else {
+                continue;
+            };
+            let device = BSInputDeviceFactory::create_input_device(device_type);
             self.devices[i] = device;
             if !device.is_null() {
                 unsafe {

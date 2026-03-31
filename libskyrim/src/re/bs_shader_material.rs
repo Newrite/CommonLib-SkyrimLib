@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_BSShaderMaterial;
@@ -6,6 +8,7 @@ use crate::re::{BSIntrusiveRefCounted, NiPoint2};
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::BSShaderMaterial::Feature`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSShaderMaterialFeature {
@@ -32,6 +35,7 @@ pub enum BSShaderMaterialFeature {
 }
 
 /// C++ `RE::BSShaderMaterial::Type`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSShaderMaterialType {
@@ -99,12 +103,43 @@ impl BSShaderMaterial {
 
     crate::virtual_method! {
         pub const VFUNC_GET_FEATURE: usize = 0x06;
-        pub fn get_feature(&self) -> BSShaderMaterialFeature
+        pub fn get_feature_raw(&self) -> i32
     }
 
     crate::virtual_method! {
         pub const VFUNC_GET_TYPE: usize = 0x07;
-        pub fn get_type(&self) -> BSShaderMaterialType
+        pub fn get_type_raw(&self) -> i32
+    }
+
+    #[inline(always)]
+    pub fn feature_storage(&self) -> Enum<BSShaderMaterialFeature, i32> {
+        Enum::from_underlying(self.get_feature_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_feature(&self) -> Option<BSShaderMaterialFeature> {
+        self.feature_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_feature(&self) -> BSShaderMaterialFeature {
+        self.try_get_feature()
+            .unwrap_or(BSShaderMaterialFeature::None)
+    }
+
+    #[inline(always)]
+    pub fn type_storage(&self) -> Enum<BSShaderMaterialType, i32> {
+        Enum::from_underlying(self.get_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_type(&self) -> Option<BSShaderMaterialType> {
+        self.type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_type(&self) -> BSShaderMaterialType {
+        self.try_get_type().unwrap_or(BSShaderMaterialType::Base)
     }
 }
 
@@ -115,7 +150,11 @@ pub trait BSShaderMaterialExt {
     fn do_is_copy(&self, that: *mut BSShaderMaterial) -> bool;
     fn compute_crc32(&mut self, src_hash: u32) -> u32;
     fn get_default(&self) -> *mut BSShaderMaterial;
+    fn feature_storage(&self) -> Enum<BSShaderMaterialFeature, i32>;
+    fn try_get_feature(&self) -> Option<BSShaderMaterialFeature>;
     fn get_feature(&self) -> BSShaderMaterialFeature;
+    fn type_storage(&self) -> Enum<BSShaderMaterialType, i32>;
+    fn try_get_type(&self) -> Option<BSShaderMaterialType>;
     fn get_type(&self) -> BSShaderMaterialType;
 }
 
@@ -151,8 +190,28 @@ impl<T: AsRef<BSShaderMaterial> + AsMut<BSShaderMaterial>> BSShaderMaterialExt f
     }
 
     #[inline(always)]
+    fn feature_storage(&self) -> Enum<BSShaderMaterialFeature, i32> {
+        self.as_ref().feature_storage()
+    }
+
+    #[inline(always)]
+    fn try_get_feature(&self) -> Option<BSShaderMaterialFeature> {
+        self.as_ref().try_get_feature()
+    }
+
+    #[inline(always)]
     fn get_feature(&self) -> BSShaderMaterialFeature {
         self.as_ref().get_feature()
+    }
+
+    #[inline(always)]
+    fn type_storage(&self) -> Enum<BSShaderMaterialType, i32> {
+        self.as_ref().type_storage()
+    }
+
+    #[inline(always)]
+    fn try_get_type(&self) -> Option<BSShaderMaterialType> {
+        self.as_ref().try_get_type()
     }
 
     #[inline(always)]

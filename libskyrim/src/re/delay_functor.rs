@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 
+use core_util::Enum;
 use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_SkyrimScript__DelayFunctor;
@@ -11,6 +12,7 @@ use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
 
 /// C++ `RE::SkyrimScript::DelayFunctor::FunctorType`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum DelayFunctorType {
@@ -92,12 +94,27 @@ impl DelayFunctor {
 
     virtual_method! {
         pub const VFUNC_GET_TYPE: usize = 0x05;
-        pub fn get_type(&self) -> DelayFunctorType
+        pub fn get_type_raw(&self) -> i32
     }
 
     virtual_method! {
         pub const VFUNC_LOAD_IMPL: usize = 0x06;
         pub fn load_impl(&mut self, storage: &BSStorage, arg2: u32, arg3: &mut bool) -> bool
+    }
+
+    #[inline(always)]
+    pub fn type_storage(&self) -> Enum<DelayFunctorType, i32> {
+        Enum::from_underlying(self.get_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_type(&self) -> Option<DelayFunctorType> {
+        self.type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_type(&self) -> DelayFunctorType {
+        self.try_get_type().unwrap_or(DelayFunctorType::kMoveTo)
     }
 }
 
@@ -107,6 +124,8 @@ pub trait DelayFunctorExt {
     fn is_latent(&self) -> bool;
     fn wants_requeue(&self) -> bool;
     fn save_impl(&self, storage: &mut BSStorage) -> bool;
+    fn type_storage(&self) -> Enum<DelayFunctorType, i32>;
+    fn try_get_type(&self) -> Option<DelayFunctorType>;
     fn get_type(&self) -> DelayFunctorType;
     fn load_impl(&mut self, storage: &BSStorage, arg2: u32, arg3: &mut bool) -> bool;
 }
@@ -138,6 +157,16 @@ where
     #[inline(always)]
     fn save_impl(&self, storage: &mut BSStorage) -> bool {
         DelayFunctor::save_impl(self.as_ref(), storage)
+    }
+
+    #[inline(always)]
+    fn type_storage(&self) -> Enum<DelayFunctorType, i32> {
+        DelayFunctor::type_storage(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn try_get_type(&self) -> Option<DelayFunctorType> {
+        DelayFunctor::try_get_type(self.as_ref())
     }
 
     #[inline(always)]

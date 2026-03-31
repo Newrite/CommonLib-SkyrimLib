@@ -108,7 +108,7 @@ pub fn sce_pad_offset_to_xinput(key_mask: u32) -> u32 {
 pub fn gamepad_mask_to_keycode(mut key_mask: u32) -> u32 {
     let control_map = ControlMap::get_singleton();
     if let Some(control_map) = unsafe { control_map.as_ref() } {
-        if control_map.get_game_pad_type() == PC_GAMEPAD_TYPE::kOrbis {
+        if control_map.try_get_game_pad_type() == Some(PC_GAMEPAD_TYPE::kOrbis) {
             key_mask = sce_pad_offset_to_xinput(key_mask);
         }
     }
@@ -158,7 +158,7 @@ pub fn gamepad_keycode_to_mask(key_code: u32) -> u32 {
 
     let control_map = ControlMap::get_singleton();
     if let Some(control_map) = unsafe { control_map.as_ref() } {
-        if control_map.get_game_pad_type() == PC_GAMEPAD_TYPE::kOrbis {
+        if control_map.try_get_game_pad_type() == Some(PC_GAMEPAD_TYPE::kOrbis) {
             key_mask = xinput_to_sce_pad_offset(key_mask);
         }
     }

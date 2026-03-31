@@ -6,6 +6,7 @@
 pub struct INPUT_DEVICES;
 
 /// C++ `RE::INPUT_DEVICES::INPUT_DEVICE`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum INPUT_DEVICE {

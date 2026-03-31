@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use core_util::inherit;
 
 use crate::offsets::offsets_rtti::RTTI_BSScript__IFunction;
@@ -13,6 +15,7 @@ use crate::re::virtual_machine::VirtualMachine;
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::BSScript::IFunction::FunctionType`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum FunctionType {
@@ -24,6 +27,7 @@ pub enum FunctionType {
 core_util::impl_enumset_type!(FunctionType => u16);
 
 /// C++ `RE::BSScript::IFunction::CallResult`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum CallResult {
@@ -92,10 +96,10 @@ impl IFunction {
     crate::virtual_method! { pub const VFUNC_GET_IS_NATIVE: usize = 0x08; pub fn get_is_native() -> bool }
     crate::virtual_method! { pub const VFUNC_GET_IS_STATIC: usize = 0x09; pub fn get_is_static() -> bool }
     crate::virtual_method! { pub const VFUNC_GET_IS_EMPTY: usize = 0x0A; pub fn get_is_empty() -> bool }
-    crate::virtual_method! { pub const VFUNC_GET_FUNCTION_TYPE: usize = 0x0B; pub fn get_function_type() -> FunctionType }
+    crate::virtual_method! { pub const VFUNC_GET_FUNCTION_TYPE: usize = 0x0B; pub fn get_function_type_raw() -> u32 }
     crate::virtual_method! { pub const VFUNC_GET_USER_FLAGS: usize = 0x0C; pub fn get_user_flags() -> u32 }
     crate::virtual_method! { pub const VFUNC_INSERT_LOCALS: usize = 0x0E; pub fn insert_locals(&mut self, frame: *mut StackFrame) }
-    crate::virtual_method! { pub const VFUNC_CALL: usize = 0x0F; pub fn call(&mut self, stack: &BSTSmartPointer<Stack>, logger: *mut ErrorLogger, vm: *mut VirtualMachine, arg4: bool) -> CallResult }
+    crate::virtual_method! { pub const VFUNC_CALL: usize = 0x0F; pub fn call_raw(&mut self, stack: &BSTSmartPointer<Stack>, logger: *mut ErrorLogger, vm: *mut VirtualMachine, arg4: bool) -> u32 }
     crate::virtual_method! { pub const VFUNC_TRANSLATE_IP_TO_LINE_NUMBER: usize = 0x11; pub fn translate_ip_to_line_number(index_ptr: u32, line_number_out: &mut u32) -> bool }
     crate::virtual_method! { pub const VFUNC_GET_VAR_NAME_FOR_STACK_INDEX: usize = 0x12; pub fn get_var_name_for_stack_index(idx: u32, name_out: &mut BSFixedString) -> bool }
     crate::virtual_method! { pub const VFUNC_CAN_BE_CALLED_FROM_TASKLETS: usize = 0x13; pub fn can_be_called_from_tasklets() -> bool }
@@ -145,5 +149,54 @@ impl IFunction {
             )
         };
         unsafe { &*func(self) }
+    }
+
+    #[inline(always)]
+    pub fn function_type_storage(&self) -> Enum<FunctionType, u32> {
+        Enum::from_underlying(self.get_function_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_function_type(&self) -> Option<FunctionType> {
+        self.function_type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_function_type(&self) -> FunctionType {
+        self.try_get_function_type().unwrap_or(FunctionType::Normal)
+    }
+
+    #[inline(always)]
+    pub fn call_result_storage(
+        &mut self,
+        stack: &BSTSmartPointer<Stack>,
+        logger: *mut ErrorLogger,
+        vm: *mut VirtualMachine,
+        arg4: bool,
+    ) -> Enum<CallResult, u32> {
+        Enum::from_underlying(self.call_raw(stack, logger, vm, arg4))
+    }
+
+    #[inline(always)]
+    pub fn try_call(
+        &mut self,
+        stack: &BSTSmartPointer<Stack>,
+        logger: *mut ErrorLogger,
+        vm: *mut VirtualMachine,
+        arg4: bool,
+    ) -> Option<CallResult> {
+        self.call_result_storage(stack, logger, vm, arg4).get()
+    }
+
+    #[inline(always)]
+    pub fn call(
+        &mut self,
+        stack: &BSTSmartPointer<Stack>,
+        logger: *mut ErrorLogger,
+        vm: *mut VirtualMachine,
+        arg4: bool,
+    ) -> CallResult {
+        self.try_call(stack, logger, vm, arg4)
+            .unwrap_or(CallResult::FailedAbort)
     }
 }

@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use crate::core_util::inherit;
 use crate::offsets::offsets_nirtti::NiRTTI_NiProperty;
 use crate::offsets::offsets_rtti::RTTI_NiProperty;
@@ -6,6 +8,7 @@ use crate::re::{NiObjectNET, NiRTTI};
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::NiProperty::Type`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum NiPropertyType {
@@ -52,7 +55,22 @@ impl NiProperty {
 
     crate::virtual_method! {
         pub const VFUNC_GET_TYPE: usize = 0x25;
-        pub fn get_type() -> NiPropertyType
+        pub fn get_type_raw() -> i32
+    }
+
+    #[inline(always)]
+    pub fn type_storage(&self) -> Enum<NiPropertyType, i32> {
+        Enum::from_underlying(self.get_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_type(&self) -> Option<NiPropertyType> {
+        self.type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_type(&self) -> NiPropertyType {
+        self.try_get_type().unwrap_or(NiPropertyType::Alpha)
     }
 
     crate::virtual_method! {
@@ -77,6 +95,8 @@ impl AsMut<NiProperty> for NiProperty {
 
 pub trait NiPropertyExt {
     fn get_rtti(&self) -> *const NiRTTI;
+    fn type_storage(&self) -> Enum<NiPropertyType, i32>;
+    fn try_get_type(&self) -> Option<NiPropertyType>;
     fn get_type(&self) -> NiPropertyType;
     fn update(&mut self, time: f32);
 }
@@ -85,6 +105,16 @@ impl<T: AsRef<NiProperty> + AsMut<NiProperty>> NiPropertyExt for T {
     #[inline(always)]
     fn get_rtti(&self) -> *const NiRTTI {
         NiProperty::get_rtti(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn type_storage(&self) -> Enum<NiPropertyType, i32> {
+        NiProperty::type_storage(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn try_get_type(&self) -> Option<NiPropertyType> {
+        NiProperty::try_get_type(self.as_ref())
     }
 
     #[inline(always)]

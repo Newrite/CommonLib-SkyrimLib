@@ -1,6 +1,6 @@
 #![allow(non_camel_case_types, non_upper_case_globals)]
 
-use core_util::EnumSet;
+use core_util::{Enum, EnumSet};
 
 use crate::re::bst_singleton::BSTSingletonSDM;
 use crate::re::{
@@ -207,8 +207,19 @@ impl ControlMap {
     }
 
     #[inline(always)]
+    pub fn game_pad_type_storage(&self) -> Enum<PC_GAMEPAD_TYPE, u32> {
+        Enum::from_underlying(self.runtime_data().game_pad_map_type.underlying())
+    }
+
+    #[inline(always)]
+    pub fn try_get_game_pad_type(&self) -> Option<PC_GAMEPAD_TYPE> {
+        self.game_pad_type_storage().get()
+    }
+
+    #[inline(always)]
     pub fn get_game_pad_type(&self) -> PC_GAMEPAD_TYPE {
-        unsafe { core::mem::transmute(self.runtime_data().game_pad_map_type.underlying()) }
+        self.try_get_game_pad_type()
+            .unwrap_or(PC_GAMEPAD_TYPE::kDirectX)
     }
 
     #[inline(always)]

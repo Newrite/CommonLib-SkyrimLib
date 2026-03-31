@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use crate::re::{
     BSTEventSink, BSTEventSource, NiNode, NiPointer, NiTransform, VRDeviceConnectionChange,
     VROverlayChange, VRResetHMDHeight,
@@ -6,6 +8,7 @@ use crate::relocation::{RttiType, VariantID};
 use crate::rex::openvr::vr;
 
 /// C++ `RE::BSVRInterface::HMDDeviceType`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSVRInterfaceHMDDeviceType {
@@ -32,6 +35,7 @@ impl BSVRInterfaceHand {
 const _: () = assert!(core::mem::size_of::<BSVRInterfaceHand>() == 0x4);
 
 /// C++ `RE::BSVRInterface::Unk118::PoseTransform::TrackingStatus`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BSVRInterfaceTrackingStatus {
@@ -46,9 +50,9 @@ const _: () = assert!(core::mem::size_of::<BSVRInterfaceTrackingStatus>() == 0x4
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct BSVRInterfacePoseTransform {
-    pub pose_status: BSVRInterfaceTrackingStatus, // 00
-    pub render_pose_transform: NiTransform,       // 04
-    pub game_pose_transform: NiTransform,         // 38
+    pub pose_status: Enum<BSVRInterfaceTrackingStatus, u32>, // 00
+    pub render_pose_transform: NiTransform,                  // 04
+    pub game_pose_transform: NiTransform,                    // 38
 }
 
 const _: () = assert!(core::mem::size_of::<BSVRInterfacePoseTransform>() == 0x6C);
@@ -57,6 +61,24 @@ const _: () =
     assert!(core::mem::offset_of!(BSVRInterfacePoseTransform, render_pose_transform) == 0x04);
 const _: () =
     assert!(core::mem::offset_of!(BSVRInterfacePoseTransform, game_pose_transform) == 0x38);
+
+impl BSVRInterfacePoseTransform {
+    #[inline(always)]
+    pub const fn tracking_status_storage(&self) -> Enum<BSVRInterfaceTrackingStatus, u32> {
+        self.pose_status
+    }
+
+    #[inline(always)]
+    pub fn try_get_tracking_status(&self) -> Option<BSVRInterfaceTrackingStatus> {
+        self.tracking_status_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_tracking_status(&self) -> BSVRInterfaceTrackingStatus {
+        self.try_get_tracking_status()
+            .unwrap_or(BSVRInterfaceTrackingStatus::NotRunning)
+    }
+}
 
 /// C++ `RE::BSVRInterface::Unk118`
 #[repr(C)]
@@ -296,7 +318,7 @@ impl BSVRInterface {
 
     crate::virtual_method! {
         pub const VFUNC_GET_HMD_DEVICE_TYPE: usize = 0x16;
-        pub fn get_hmd_device_type(&mut self) -> BSVRInterfaceHMDDeviceType
+        pub fn get_hmd_device_type_raw(&mut self) -> u32
     }
 
     crate::virtual_method! {
@@ -354,6 +376,22 @@ impl BSVRInterface {
         sink: *mut BSTEventSink<VRResetHMDHeight>,
     ) {
         unsafe { self.vr_reset_hmd_height_source.remove_event_sink(sink) }
+    }
+
+    #[inline(always)]
+    pub fn hmd_device_type_storage(&mut self) -> Enum<BSVRInterfaceHMDDeviceType, u32> {
+        Enum::from_underlying(self.get_hmd_device_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_hmd_device_type(&mut self) -> Option<BSVRInterfaceHMDDeviceType> {
+        self.hmd_device_type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_hmd_device_type(&mut self) -> BSVRInterfaceHMDDeviceType {
+        self.try_get_hmd_device_type()
+            .unwrap_or(BSVRInterfaceHMDDeviceType::Lighthouse)
     }
 }
 
@@ -414,6 +452,8 @@ pub trait BSVRInterfaceExt {
         hand: BSVRInterfaceHand,
     ) -> *mut NiPointer<NiNode>;
     fn unk_15(&mut self);
+    fn hmd_device_type_storage(&mut self) -> Enum<BSVRInterfaceHMDDeviceType, u32>;
+    fn try_get_hmd_device_type(&mut self) -> Option<BSVRInterfaceHMDDeviceType>;
     fn get_hmd_device_type(&mut self) -> BSVRInterfaceHMDDeviceType;
     fn create_controller_node(
         &mut self,
@@ -580,6 +620,16 @@ where
     #[inline(always)]
     fn unk_15(&mut self) {
         BSVRInterface::unk_15(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn hmd_device_type_storage(&mut self) -> Enum<BSVRInterfaceHMDDeviceType, u32> {
+        BSVRInterface::hmd_device_type_storage(self.as_mut())
+    }
+
+    #[inline(always)]
+    fn try_get_hmd_device_type(&mut self) -> Option<BSVRInterfaceHMDDeviceType> {
+        BSVRInterface::try_get_hmd_device_type(self.as_mut())
     }
 
     #[inline(always)]

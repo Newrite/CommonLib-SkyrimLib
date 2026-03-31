@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use crate::offsets::offsets_rtti::RTTI_BSExtraData;
 use crate::offsets::offsets_vtable::VTABLE_BSExtraData;
 use crate::re::ExtraDataType;
@@ -50,7 +52,7 @@ impl BSExtraData {
 
     virtual_method! {
         pub const VFUNC_GET_TYPE: usize = 0x01;
-        pub fn get_type() -> ExtraDataType
+        pub fn get_type_raw() -> i32
     }
 
     virtual_method! {
@@ -73,6 +75,21 @@ impl BSExtraData {
     pub fn create_typed<T>(vtable: usize) -> *mut T {
         Self::create(core::mem::size_of::<T>(), vtable).cast::<T>()
     }
+
+    #[inline(always)]
+    pub fn type_storage(&self) -> Enum<ExtraDataType, i32> {
+        Enum::from_underlying(self.get_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_type(&self) -> Option<ExtraDataType> {
+        self.type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_type(&self) -> ExtraDataType {
+        self.try_get_type().unwrap_or(ExtraDataType::None)
+    }
 }
 
 impl PartialEq for BSExtraData {
@@ -92,7 +109,7 @@ impl core::cmp::PartialOrd for BSExtraData {
 impl BSExtraData {
     #[inline(always)]
     pub fn ne(&self, rhs: &BSExtraData) -> bool {
-        if self.get_type() != rhs.get_type() {
+        if self.type_storage().underlying() != rhs.type_storage().underlying() {
             true
         } else {
             self.is_not_equal(rhs as *const BSExtraData)
@@ -101,11 +118,21 @@ impl BSExtraData {
 }
 
 pub trait BSExtraDataExt {
+    fn type_storage(&self) -> Enum<ExtraDataType, i32>;
+    fn try_get_type(&self) -> Option<ExtraDataType>;
     fn get_type(&self) -> ExtraDataType;
     fn is_not_equal(&self, rhs: *const BSExtraData) -> bool;
 }
 
 impl<T: AsRef<BSExtraData>> BSExtraDataExt for T {
+    fn type_storage(&self) -> Enum<ExtraDataType, i32> {
+        self.as_ref().type_storage()
+    }
+
+    fn try_get_type(&self) -> Option<ExtraDataType> {
+        self.as_ref().try_get_type()
+    }
+
     fn get_type(&self) -> ExtraDataType {
         self.as_ref().get_type()
     }

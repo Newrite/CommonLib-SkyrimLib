@@ -1,4 +1,5 @@
 /// C++ `RE::ExtraDataType`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ExtraDataType {

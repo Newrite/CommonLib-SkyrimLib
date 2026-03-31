@@ -3,7 +3,7 @@
 use crate::ffi::commonlib_gfx_resource_delete;
 use core::sync::atomic::{AtomicI32, Ordering};
 
-use core_util::inherit;
+use core_util::{Enum, inherit};
 
 use crate::re::{
     GAtomicInt, GFxResourceKey, GFxResourceLibBase, GFxResourceReport, GNewOverrideBase,
@@ -11,6 +11,7 @@ use crate::re::{
 };
 
 /// C++ `RE::GFxResource::ResourceType`
+#[libskyrim_macros::open_enum(ignore(kTypeCode_Mask, kTypeCode_Shift))]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxResourceResourceType {
@@ -35,6 +36,7 @@ impl GFxResourceResourceType {
 }
 
 /// C++ `RE::GFxResource::ResourceUse`
+#[libskyrim_macros::open_enum(ignore(kTypeCode_Mask))]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxResourceResourceUse {
@@ -136,13 +138,35 @@ impl GFxResource {
     }
 
     #[inline(always)]
+    pub fn resource_type_storage(&self) -> Enum<GFxResourceResourceType, u32> {
+        Enum::from_underlying(self.get_resource_type_code() >> 8)
+    }
+
+    #[inline(always)]
     pub fn get_resource_type(&self) -> GFxResourceResourceType {
-        unsafe { core::mem::transmute((self.get_resource_type_code() >> 8) as u32) }
+        self.try_get_resource_type()
+            .unwrap_or(GFxResourceResourceType::kNone)
+    }
+
+    #[inline(always)]
+    pub fn try_get_resource_type(&self) -> Option<GFxResourceResourceType> {
+        self.resource_type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn resource_use_storage(&self) -> Enum<GFxResourceResourceUse, u32> {
+        Enum::from_underlying(self.get_resource_type_code() & 0xFF)
     }
 
     #[inline(always)]
     pub fn get_resource_use(&self) -> GFxResourceResourceUse {
-        unsafe { core::mem::transmute(self.get_resource_type_code() & 0xFF) }
+        self.try_get_resource_use()
+            .unwrap_or(GFxResourceResourceUse::kNone)
+    }
+
+    #[inline(always)]
+    pub fn try_get_resource_use(&self) -> Option<GFxResourceResourceUse> {
+        self.resource_use_storage().get()
     }
 }
 
@@ -223,13 +247,33 @@ pub trait GFxResourceExt: AsRef<GFxResource> + AsMut<GFxResource> {
     }
 
     #[inline(always)]
+    fn resource_type_storage(&self) -> Enum<GFxResourceResourceType, u32> {
+        self.as_ref().resource_type_storage()
+    }
+
+    #[inline(always)]
     fn get_resource_type(&self) -> GFxResourceResourceType {
         self.as_ref().get_resource_type()
     }
 
     #[inline(always)]
+    fn try_get_resource_type(&self) -> Option<GFxResourceResourceType> {
+        self.as_ref().try_get_resource_type()
+    }
+
+    #[inline(always)]
+    fn resource_use_storage(&self) -> Enum<GFxResourceResourceUse, u32> {
+        self.as_ref().resource_use_storage()
+    }
+
+    #[inline(always)]
     fn get_resource_use(&self) -> GFxResourceResourceUse {
         self.as_ref().get_resource_use()
+    }
+
+    #[inline(always)]
+    fn try_get_resource_use(&self) -> Option<GFxResourceResourceUse> {
+        self.as_ref().try_get_resource_use()
     }
 }
 

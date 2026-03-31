@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 
+use core_util::Enum;
 use core_util::inherit;
 
 use crate::re::{
@@ -7,6 +8,7 @@ use crate::re::{
 };
 
 /// C++ `RE::GFxMovie::PlayState`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMoviePlayState {
@@ -54,7 +56,7 @@ impl GFxMovie {
     crate::virtual_method! { pub const VFUNC_GOTO_FRAME: usize = 0x04; pub fn goto_frame(frame_number: u32) }
     crate::virtual_method! { pub const VFUNC_GOTO_LABELED_FRAME: usize = 0x05; pub fn goto_labeled_frame(label: *const i8, offset: i32) -> bool }
     crate::virtual_method! { pub const VFUNC_SET_PLAY_STATE: usize = 0x06; pub fn set_play_state(state: GFxMoviePlayState) }
-    crate::virtual_method! { pub const VFUNC_GET_PLAY_STATE: usize = 0x07; pub fn get_play_state() -> GFxMoviePlayState }
+    crate::virtual_method! { pub const VFUNC_GET_PLAY_STATE: usize = 0x07; pub fn get_play_state_raw() -> u32 }
     crate::virtual_method! { pub const VFUNC_SET_VISIBLE: usize = 0x08; pub fn set_visible(visible: bool) }
     crate::virtual_method! { pub const VFUNC_GET_VISIBLE: usize = 0x09; pub fn get_visible() -> bool }
     crate::virtual_method! { pub const VFUNC_IS_AVAILABLE: usize = 0x0A; pub fn is_available(path_to_var: *const i8) -> bool }
@@ -86,6 +88,22 @@ impl GFxMovie {
     #[inline(always)]
     pub fn get_frame_rate(&self) -> f32 {
         unsafe { (*self.get_movie_def()).get_frame_rate() }
+    }
+
+    #[inline(always)]
+    pub fn play_state_storage(&self) -> Enum<GFxMoviePlayState, u32> {
+        Enum::from_underlying(self.get_play_state_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_play_state(&self) -> Option<GFxMoviePlayState> {
+        self.play_state_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_play_state(&self) -> GFxMoviePlayState {
+        self.try_get_play_state()
+            .unwrap_or(GFxMoviePlayState::kPlaying)
     }
 
     #[inline(always)]
@@ -241,6 +259,16 @@ pub trait GFxMovieExt: AsRef<GFxMovie> + AsMut<GFxMovie> {
     #[inline(always)]
     fn set_play_state(&mut self, state: GFxMoviePlayState) {
         self.as_mut().set_play_state(state)
+    }
+
+    #[inline(always)]
+    fn play_state_storage(&self) -> Enum<GFxMoviePlayState, u32> {
+        self.as_ref().play_state_storage()
+    }
+
+    #[inline(always)]
+    fn try_get_play_state(&self) -> Option<GFxMoviePlayState> {
+        self.as_ref().try_get_play_state()
     }
 
     #[inline(always)]

@@ -6,8 +6,10 @@ use crate::offsets::offsets_vtable::VTABLE_ActorState;
 use crate::re::IMovementState;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use core_util::Enum;
 
 /// C++ `RE::ACTOR_LIFE_STATE`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ACTOR_LIFE_STATE {
@@ -22,15 +24,8 @@ pub enum ACTOR_LIFE_STATE {
     Bleedout = 8,
 }
 
-impl ACTOR_LIFE_STATE {
-    #[inline(always)]
-    fn from_raw(value: u32) -> Self {
-        debug_assert!(value <= 8);
-        unsafe { core::mem::transmute(value) }
-    }
-}
-
 /// C++ `RE::ATTACK_STATE_ENUM`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ATTACK_STATE_ENUM {
@@ -53,15 +48,8 @@ pub enum ATTACK_STATE_ENUM {
     Fired = 17,
 }
 
-impl ATTACK_STATE_ENUM {
-    #[inline(always)]
-    fn from_raw(value: u32) -> Self {
-        debug_assert!(matches!(value, 0..=6 | 8..=17));
-        unsafe { core::mem::transmute(value) }
-    }
-}
-
 /// C++ `RE::FLY_STATE`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum FLY_STATE {
@@ -74,15 +62,8 @@ pub enum FLY_STATE {
     Action = 6,
 }
 
-impl FLY_STATE {
-    #[inline(always)]
-    fn from_raw(value: u32) -> Self {
-        debug_assert!(value <= 6);
-        unsafe { core::mem::transmute(value) }
-    }
-}
-
 /// C++ `RE::KNOCK_STATE_ENUM`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum KNOCK_STATE_ENUM {
@@ -97,15 +78,8 @@ pub enum KNOCK_STATE_ENUM {
     WaitForTaskQueue = 8,
 }
 
-impl KNOCK_STATE_ENUM {
-    #[inline(always)]
-    fn from_raw(value: u32) -> Self {
-        debug_assert!(value <= 8);
-        unsafe { core::mem::transmute(value) }
-    }
-}
-
 /// C++ `RE::SIT_SLEEP_STATE`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum SIT_SLEEP_STATE {
@@ -122,15 +96,10 @@ pub enum SIT_SLEEP_STATE {
 
 impl SIT_SLEEP_STATE {
     pub const RIDING_MOUNT: Self = Self::IsSitting;
-
-    #[inline(always)]
-    fn from_raw(value: u32) -> Self {
-        debug_assert!(value <= 8);
-        unsafe { core::mem::transmute(value) }
-    }
 }
 
 /// C++ `RE::WEAPON_STATE`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WEAPON_STATE {
@@ -140,14 +109,6 @@ pub enum WEAPON_STATE {
     Drawn = 3,
     WantToSheathe = 4,
     Sheathing = 5,
-}
-
-impl WEAPON_STATE {
-    #[inline(always)]
-    fn from_raw(value: u32) -> Self {
-        debug_assert!(value <= 5);
-        unsafe { core::mem::transmute(value) }
-    }
 }
 
 /// C++ `RE::ActorState::ActorState1`
@@ -229,28 +190,81 @@ impl ActorState1 {
     }
 
     #[inline(always)]
+    pub const fn sit_sleep_state_storage(&self) -> Enum<SIT_SLEEP_STATE, u32> {
+        Enum::from_underlying(Self::get_bits(self.bits, 14, 4))
+    }
+
+    #[inline(always)]
+    pub fn try_get_sit_sleep_state(&self) -> Option<SIT_SLEEP_STATE> {
+        self.sit_sleep_state_storage().get()
+    }
+
+    #[inline(always)]
     pub fn sit_sleep_state(&self) -> SIT_SLEEP_STATE {
-        SIT_SLEEP_STATE::from_raw(Self::get_bits(self.bits, 14, 4))
+        self.try_get_sit_sleep_state()
+            .unwrap_or(SIT_SLEEP_STATE::Normal)
+    }
+
+    #[inline(always)]
+    pub const fn fly_state_storage(&self) -> Enum<FLY_STATE, u32> {
+        Enum::from_underlying(Self::get_bits(self.bits, 18, 3))
+    }
+
+    #[inline(always)]
+    pub fn try_get_fly_state(&self) -> Option<FLY_STATE> {
+        self.fly_state_storage().get()
     }
 
     #[inline(always)]
     pub fn fly_state(&self) -> FLY_STATE {
-        FLY_STATE::from_raw(Self::get_bits(self.bits, 18, 3))
+        self.try_get_fly_state().unwrap_or(FLY_STATE::None)
+    }
+
+    #[inline(always)]
+    pub const fn life_state_storage(&self) -> Enum<ACTOR_LIFE_STATE, u32> {
+        Enum::from_underlying(Self::get_bits(self.bits, 21, 4))
+    }
+
+    #[inline(always)]
+    pub fn try_get_life_state(&self) -> Option<ACTOR_LIFE_STATE> {
+        self.life_state_storage().get()
     }
 
     #[inline(always)]
     pub fn life_state(&self) -> ACTOR_LIFE_STATE {
-        ACTOR_LIFE_STATE::from_raw(Self::get_bits(self.bits, 21, 4))
+        self.try_get_life_state().unwrap_or(ACTOR_LIFE_STATE::Alive)
+    }
+
+    #[inline(always)]
+    pub const fn knock_state_storage(&self) -> Enum<KNOCK_STATE_ENUM, u32> {
+        Enum::from_underlying(Self::get_bits(self.bits, 25, 3))
+    }
+
+    #[inline(always)]
+    pub fn try_get_knock_state(&self) -> Option<KNOCK_STATE_ENUM> {
+        self.knock_state_storage().get()
     }
 
     #[inline(always)]
     pub fn knock_state(&self) -> KNOCK_STATE_ENUM {
-        KNOCK_STATE_ENUM::from_raw(Self::get_bits(self.bits, 25, 3))
+        self.try_get_knock_state()
+            .unwrap_or(KNOCK_STATE_ENUM::Normal)
+    }
+
+    #[inline(always)]
+    pub const fn melee_attack_state_storage(&self) -> Enum<ATTACK_STATE_ENUM, u32> {
+        Enum::from_underlying(Self::get_bits(self.bits, 28, 4))
+    }
+
+    #[inline(always)]
+    pub fn try_get_melee_attack_state(&self) -> Option<ATTACK_STATE_ENUM> {
+        self.melee_attack_state_storage().get()
     }
 
     #[inline(always)]
     pub fn melee_attack_state(&self) -> ATTACK_STATE_ENUM {
-        ATTACK_STATE_ENUM::from_raw(Self::get_bits(self.bits, 28, 4))
+        self.try_get_melee_attack_state()
+            .unwrap_or(ATTACK_STATE_ENUM::None)
     }
 }
 
@@ -303,8 +317,19 @@ impl ActorState2 {
     }
 
     #[inline(always)]
+    pub const fn weapon_state_storage(&self) -> Enum<WEAPON_STATE, u32> {
+        Enum::from_underlying(Self::get_bits(self.bits, 5, 3))
+    }
+
+    #[inline(always)]
+    pub fn try_get_weapon_state(&self) -> Option<WEAPON_STATE> {
+        self.weapon_state_storage().get()
+    }
+
+    #[inline(always)]
     pub fn weapon_state(&self) -> WEAPON_STATE {
-        WEAPON_STATE::from_raw(Self::get_bits(self.bits, 5, 3))
+        self.try_get_weapon_state()
+            .unwrap_or(WEAPON_STATE::Sheathed)
     }
 
     #[inline(always)]

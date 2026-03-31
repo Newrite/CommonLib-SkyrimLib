@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use crate::ffi::{commonlib_gfx_movie_view_add_ref, commonlib_gfx_movie_view_release};
 use crate::re::{
     GColor, GFxEvent, GFxMovie, GFxMovieDefMemoryContext, GFxStateBag, GFxValue, GMatrix3D,
@@ -6,6 +8,7 @@ use crate::re::{
 use crate::relocation::RelocationID;
 
 /// C++ `RE::GFxMovieView::ScaleModeType`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMovieViewScaleModeType {
@@ -16,6 +19,7 @@ pub enum GFxMovieViewScaleModeType {
 }
 
 /// C++ `RE::GFxMovieView::AlignType`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMovieViewAlignType {
@@ -31,6 +35,7 @@ pub enum GFxMovieViewAlignType {
 }
 
 /// C++ `RE::GFxMovieView::HEResult`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxMovieViewHEResult {
@@ -69,9 +74,9 @@ impl GFxMovieView {
     crate::virtual_method! { pub const VFUNC_SET_VIEWPORT: usize = 0x19; pub fn set_viewport(view_desc: &GViewport) }
     crate::virtual_method! { pub const VFUNC_GET_VIEWPORT: usize = 0x1A; pub fn get_viewport(view_desc: *mut GViewport) }
     crate::virtual_method! { pub const VFUNC_SET_VIEW_SCALE_MODE: usize = 0x1B; pub fn set_view_scale_mode(mode: GFxMovieViewScaleModeType) }
-    crate::virtual_method! { pub const VFUNC_GET_VIEW_SCALE_MODE: usize = 0x1C; pub fn get_view_scale_mode() -> GFxMovieViewScaleModeType }
+    crate::virtual_method! { pub const VFUNC_GET_VIEW_SCALE_MODE: usize = 0x1C; pub fn get_view_scale_mode_raw() -> u32 }
     crate::virtual_method! { pub const VFUNC_SET_VIEW_ALIGNMENT: usize = 0x1D; pub fn set_view_alignment(alignment: GFxMovieViewAlignType) }
-    crate::virtual_method! { pub const VFUNC_GET_VIEW_ALIGNMENT: usize = 0x1E; pub fn get_view_alignment() -> GFxMovieViewAlignType }
+    crate::virtual_method! { pub const VFUNC_GET_VIEW_ALIGNMENT: usize = 0x1E; pub fn get_view_alignment_raw() -> u32 }
     crate::virtual_method! { pub const VFUNC_GET_VISIBLE_FRAME_RECT: usize = 0x1F; pub fn get_visible_frame_rect() -> GRectF }
     crate::virtual_method! { pub const VFUNC_SET_PERSPECTIVE_3D: usize = 0x20; pub fn set_perspective_3d(proj_mat: &GMatrix3D) }
     crate::virtual_method! { pub const VFUNC_SET_VIEW_3D: usize = 0x21; pub fn set_view_3d(view_mat: &GMatrix3D) }
@@ -86,7 +91,7 @@ impl GFxMovieView {
     crate::virtual_method! { pub const VFUNC_SET_BACKGROUND_COLOR: usize = 0x2A; pub fn set_background_color(bg_color: GColor) }
     crate::virtual_method! { pub const VFUNC_SET_BACKGROUND_ALPHA: usize = 0x2B; pub fn set_background_alpha(alpha: f32) }
     crate::virtual_method! { pub const VFUNC_GET_BACKGROUND_ALPHA: usize = 0x2C; pub fn get_background_alpha() -> f32 }
-    crate::virtual_method! { pub const VFUNC_HANDLE_EVENT: usize = 0x2D; pub fn handle_event(event: &GFxEvent) -> GFxMovieViewHEResult }
+    crate::virtual_method! { pub const VFUNC_HANDLE_EVENT: usize = 0x2D; pub fn handle_event_raw(event: &GFxEvent) -> u32 }
     crate::virtual_method! { pub const VFUNC_GET_MOUSE_STATE: usize = 0x2E; pub fn get_mouse_state(mouse_index: u32, x: *mut f32, y: *mut f32, buttons: *mut u32) }
     crate::virtual_method! { pub const VFUNC_NOTIFY_MOUSE_STATE: usize = 0x2F; pub fn notify_mouse_state(x: f32, y: f32, buttons: u32, mouse_index: u32) }
     crate::virtual_method! { pub const VFUNC_HIT_TEST: usize = 0x30; pub fn hit_test(x: f32, y: f32, test_cond: GFxMovieViewHitTestType, controller_idx: u32) -> bool }
@@ -136,6 +141,54 @@ impl GFxMovieView {
 
     crate::relocation_func! {
         pub fn invoke_no_return(&self, method_name: *const i8, args: *const GFxValue, num_args: u32) => RelocationID::new(80547, 82665)
+    }
+
+    #[inline(always)]
+    pub fn view_scale_mode_storage(&self) -> Enum<GFxMovieViewScaleModeType, u32> {
+        Enum::from_underlying(self.get_view_scale_mode_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_view_scale_mode(&self) -> Option<GFxMovieViewScaleModeType> {
+        self.view_scale_mode_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_view_scale_mode(&self) -> GFxMovieViewScaleModeType {
+        self.try_get_view_scale_mode()
+            .unwrap_or(GFxMovieViewScaleModeType::NoScale)
+    }
+
+    #[inline(always)]
+    pub fn view_alignment_storage(&self) -> Enum<GFxMovieViewAlignType, u32> {
+        Enum::from_underlying(self.get_view_alignment_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_view_alignment(&self) -> Option<GFxMovieViewAlignType> {
+        self.view_alignment_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_view_alignment(&self) -> GFxMovieViewAlignType {
+        self.try_get_view_alignment()
+            .unwrap_or(GFxMovieViewAlignType::Center)
+    }
+
+    #[inline(always)]
+    pub fn handle_event_storage(&mut self, event: &GFxEvent) -> Enum<GFxMovieViewHEResult, u32> {
+        Enum::from_underlying(self.handle_event_raw(event))
+    }
+
+    #[inline(always)]
+    pub fn try_handle_event(&mut self, event: &GFxEvent) -> Option<GFxMovieViewHEResult> {
+        self.handle_event_storage(event).get()
+    }
+
+    #[inline(always)]
+    pub fn handle_event(&mut self, event: &GFxEvent) -> GFxMovieViewHEResult {
+        self.try_handle_event(event)
+            .unwrap_or(GFxMovieViewHEResult::NotHandled)
     }
 }
 

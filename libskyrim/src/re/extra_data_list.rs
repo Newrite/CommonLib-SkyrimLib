@@ -303,7 +303,7 @@ impl ExtraDataList {
         }
 
         let mut removed = false;
-        while !(*head).is_null() && unsafe { (**head).get_type() == ty } {
+        while !(*head).is_null() && unsafe { (**head).type_storage().underlying() == ty as i32 } {
             let tmp = *head;
             unsafe {
                 *head = (*tmp).next;
@@ -320,7 +320,7 @@ impl ExtraDataList {
         };
         while !cur.is_null() {
             unsafe {
-                if (*cur).get_type() == ty {
+                if (*cur).type_storage().underlying() == ty as i32 {
                     (*prev).next = (*cur).next;
                     let tmp = cur;
                     cur = prev;
@@ -671,7 +671,7 @@ impl ExtraDataList {
         let mut iter = self.extra_data.get_data();
         while !iter.is_null() {
             unsafe {
-                if (*iter).get_type() == ty {
+                if (*iter).type_storage().underlying() == ty as i32 {
                     return iter;
                 }
                 iter = (*iter).next;

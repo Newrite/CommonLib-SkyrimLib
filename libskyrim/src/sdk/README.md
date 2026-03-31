@@ -126,6 +126,9 @@ The second group must be treated more strictly:
 - validate nullable pointer-like inputs before making the native call
 - prefer `false`, `None`, null/empty, or early return for semantically
   nullable inputs instead of blindly forwarding them
+- when `re` exposes a raw/storage seam plus `try_*()` interpretation, SDK code
+  should call that safe seam directly instead of using lossy `get_*()`
+  convenience accessors
 - emit `defensive-sdk-log` warnings when a soft failure rejects bad input or an
   unsafe lifecycle phase
 - snapshot transient engine arrays/handle lists before doing substantial

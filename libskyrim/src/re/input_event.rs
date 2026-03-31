@@ -1,6 +1,6 @@
 #![allow(non_camel_case_types)]
 
-use core_util::EnumSet;
+use core_util::{Enum, EnumSet};
 
 use crate::offsets::offsets_rtti::RTTI_InputEvent;
 use crate::offsets::offsets_vtable::VTABLE_InputEvent;
@@ -10,6 +10,7 @@ use crate::re::{
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::INPUT_EVENT_TYPE`
+#[libskyrim_macros::open_enum]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum INPUT_EVENT_TYPE {
@@ -20,8 +21,6 @@ pub enum INPUT_EVENT_TYPE {
     kDeviceConnect = 4,
     kKinect = 5,
 }
-
-core_util::impl_enumset_type!(INPUT_EVENT_TYPE => u32);
 
 /// C++ `RE::InputEvent`
 #[repr(C)]
@@ -56,36 +55,57 @@ impl InputEvent {
     }
 
     #[inline(always)]
+    pub const fn event_type_storage(&self) -> Enum<INPUT_EVENT_TYPE, u32> {
+        Enum::from_underlying(self.event_type.underlying())
+    }
+
+    #[inline(always)]
+    pub fn try_get_event_type(&self) -> Option<INPUT_EVENT_TYPE> {
+        self.event_type_storage().get()
+    }
+
+    #[inline(always)]
     pub fn get_event_type(&self) -> INPUT_EVENT_TYPE {
-        unsafe { core::mem::transmute(self.event_type.underlying()) }
+        self.try_get_event_type()
+            .unwrap_or(INPUT_EVENT_TYPE::kButton)
+    }
+
+    #[inline(always)]
+    pub const fn device_storage(&self) -> Enum<INPUT_DEVICE, i32> {
+        Enum::from_underlying(self.device.underlying() as i32)
+    }
+
+    #[inline(always)]
+    pub fn try_get_device(&self) -> Option<INPUT_DEVICE> {
+        self.device_storage().get()
     }
 
     #[inline(always)]
     pub fn get_device(&self) -> INPUT_DEVICE {
-        unsafe { core::mem::transmute(self.device.underlying() as i32) }
+        self.try_get_device().unwrap_or(INPUT_DEVICE::kNone)
     }
 
     #[inline(always)]
     pub fn as_button_event(&self) -> Option<&ButtonEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kButton)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kButton))
             .then(|| unsafe { &*(self as *const Self).cast() })
     }
 
     #[inline(always)]
     pub fn as_button_event_mut(&mut self) -> Option<&mut ButtonEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kButton)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kButton))
             .then(|| unsafe { &mut *(self as *mut Self).cast() })
     }
 
     #[inline(always)]
     pub fn as_char_event(&self) -> Option<&CharEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kChar)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kChar))
             .then(|| unsafe { &*(self as *const Self).cast() })
     }
 
     #[inline(always)]
     pub fn as_char_event_mut(&mut self) -> Option<&mut CharEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kChar)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kChar))
             .then(|| unsafe { &mut *(self as *mut Self).cast() })
     }
 
@@ -103,33 +123,37 @@ impl InputEvent {
 
     #[inline(always)]
     pub fn as_mouse_move_event(&self) -> Option<&MouseMoveEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kMouseMove)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kMouseMove))
             .then(|| unsafe { &*(self as *const Self).cast() })
     }
 
     #[inline(always)]
     pub fn as_mouse_move_event_mut(&mut self) -> Option<&mut MouseMoveEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kMouseMove)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kMouseMove))
             .then(|| unsafe { &mut *(self as *mut Self).cast() })
     }
 
     #[inline(always)]
     pub fn as_thumbstick_event(&self) -> Option<&ThumbstickEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kThumbstick)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kThumbstick))
             .then(|| unsafe { &*(self as *const Self).cast() })
     }
 
     #[inline(always)]
     pub fn as_thumbstick_event_mut(&mut self) -> Option<&mut ThumbstickEvent> {
-        (self.get_event_type() == INPUT_EVENT_TYPE::kThumbstick)
+        (self.try_get_event_type() == Some(INPUT_EVENT_TYPE::kThumbstick))
             .then(|| unsafe { &mut *(self as *mut Self).cast() })
     }
 }
 
 pub trait InputEventExt {
+    fn event_type_storage(&self) -> Enum<INPUT_EVENT_TYPE, u32>;
     fn has_id_code(&self) -> bool;
     fn q_user_event(&self) -> *const BSFixedString;
+    fn try_get_event_type(&self) -> Option<INPUT_EVENT_TYPE>;
     fn get_event_type(&self) -> INPUT_EVENT_TYPE;
+    fn device_storage(&self) -> Enum<INPUT_DEVICE, i32>;
+    fn try_get_device(&self) -> Option<INPUT_DEVICE>;
     fn get_device(&self) -> INPUT_DEVICE;
     fn as_button_event(&self) -> Option<&ButtonEvent>;
     fn as_button_event_mut(&mut self) -> Option<&mut ButtonEvent>;
@@ -155,8 +179,28 @@ impl<T: AsRef<InputEvent> + AsMut<InputEvent>> InputEventExt for T {
     }
 
     #[inline(always)]
+    fn event_type_storage(&self) -> Enum<INPUT_EVENT_TYPE, u32> {
+        InputEvent::event_type_storage(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn try_get_event_type(&self) -> Option<INPUT_EVENT_TYPE> {
+        InputEvent::try_get_event_type(self.as_ref())
+    }
+
+    #[inline(always)]
     fn get_event_type(&self) -> INPUT_EVENT_TYPE {
         InputEvent::get_event_type(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn device_storage(&self) -> Enum<INPUT_DEVICE, i32> {
+        InputEvent::device_storage(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn try_get_device(&self) -> Option<INPUT_DEVICE> {
+        InputEvent::try_get_device(self.as_ref())
     }
 
     #[inline(always)]

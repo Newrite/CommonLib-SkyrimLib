@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use core::ptr;
 
 use crate::re::{
@@ -37,7 +39,7 @@ pub struct BSOpenVR {
     pub unk338: u64,                                                     // 338
     pub unk340: [u64; 9],                                                // 340
     pub controller_nodes: [NiPointer<NiNode>; BSVRInterfaceHand::TOTAL], // 388
-    pub hmd_device_type: BSVRInterfaceHMDDeviceType,                     // 398
+    pub hmd_device_type: Enum<BSVRInterfaceHMDDeviceType, u32>,          // 398
     pub eye_to_head_transform: [NiTransform; 2],                         // 39C
     pub pad404: u32,                                                     // 404
 }
@@ -198,5 +200,21 @@ impl BSOpenVR {
         // in this repository. Keep returning null until `rex::openvr` gains
         // that exact source-backed C-string constant instead of guessing it.
         ptr::null_mut()
+    }
+
+    #[inline(always)]
+    pub const fn hmd_device_type_storage(&self) -> Enum<BSVRInterfaceHMDDeviceType, u32> {
+        self.hmd_device_type
+    }
+
+    #[inline(always)]
+    pub fn try_get_hmd_device_type(&self) -> Option<BSVRInterfaceHMDDeviceType> {
+        self.hmd_device_type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_hmd_device_type(&self) -> BSVRInterfaceHMDDeviceType {
+        self.try_get_hmd_device_type()
+            .unwrap_or(BSVRInterfaceHMDDeviceType::Lighthouse)
     }
 }

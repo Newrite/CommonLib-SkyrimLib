@@ -3,7 +3,7 @@
 use core::ffi::{CStr, c_char, c_void};
 use core::marker::PhantomData;
 
-use core_util::EnumSet;
+use core_util::{Enum, EnumSet};
 
 use crate::re::{
     GColor, GFxMovieRoot, GFxStatMovieViews, GMatrix2D, GMatrix3D, GNewOverrideBase,
@@ -18,6 +18,7 @@ unsafe extern "C" {
 }
 
 /// C++ `RE::GFxValue::ValueType`
+#[libskyrim_macros::open_enum(ignore(kManagedBit, kConvertBit, kValueMask, kTypeMask))]
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GFxValueValueType {
@@ -39,9 +40,6 @@ pub enum GFxValueValueType {
     kConvertString = (1 << 7) | 0x04,
     kConvertStringW = (1 << 7) | 0x05,
 }
-
-core_util::impl_enumset_type!(GFxValueValueType => u32);
-
 /// C++ `RE::GFxValue::DisplayInfo::Flag`
 #[repr(u16)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -878,8 +876,18 @@ impl GFxValue {
     }
 
     #[inline(always)]
+    pub fn value_type_storage(&self) -> Enum<GFxValueValueType, u32> {
+        Enum::from_underlying(self.type_.underlying() & (GFxValueValueType::kTypeMask as u32))
+    }
+
+    #[inline(always)]
+    pub fn try_get_type(&self) -> Option<GFxValueValueType> {
+        self.value_type_storage().get()
+    }
+
+    #[inline(always)]
     pub fn get_type(&self) -> GFxValueValueType {
-        Self::value_type_from_bits(self.type_.underlying() & (GFxValueValueType::kTypeMask as u32))
+        self.try_get_type().unwrap_or(GFxValueValueType::kUndefined)
     }
 
     #[inline(always)]
@@ -1439,29 +1447,5 @@ impl GFxValue {
     #[inline(always)]
     fn round_to_isize(value: f64) -> isize {
         unsafe { round(value) as isize }
-    }
-
-    #[inline(always)]
-    fn value_type_from_bits(bits: u32) -> GFxValueValueType {
-        match bits {
-            x if x == GFxValueValueType::kUndefined as u32 => GFxValueValueType::kUndefined,
-            x if x == GFxValueValueType::kNull as u32 => GFxValueValueType::kNull,
-            x if x == GFxValueValueType::kBoolean as u32 => GFxValueValueType::kBoolean,
-            x if x == GFxValueValueType::kNumber as u32 => GFxValueValueType::kNumber,
-            x if x == GFxValueValueType::kString as u32 => GFxValueValueType::kString,
-            x if x == GFxValueValueType::kStringW as u32 => GFxValueValueType::kStringW,
-            x if x == GFxValueValueType::kObject as u32 => GFxValueValueType::kObject,
-            x if x == GFxValueValueType::kArray as u32 => GFxValueValueType::kArray,
-            x if x == GFxValueValueType::kDisplayObject as u32 => GFxValueValueType::kDisplayObject,
-            x if x == GFxValueValueType::kConvertBoolean as u32 => {
-                GFxValueValueType::kConvertBoolean
-            }
-            x if x == GFxValueValueType::kConvertNumber as u32 => GFxValueValueType::kConvertNumber,
-            x if x == GFxValueValueType::kConvertString as u32 => GFxValueValueType::kConvertString,
-            x if x == GFxValueValueType::kConvertStringW as u32 => {
-                GFxValueValueType::kConvertStringW
-            }
-            _ => unreachable!("invalid GFxValue::ValueType bits: {bits:#x}"),
-        }
     }
 }

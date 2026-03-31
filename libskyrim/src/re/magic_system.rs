@@ -22,6 +22,7 @@ pub enum CannotCastReason {
 }
 
 /// C++ `RE::MagicSystem::CastingSource`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum CastingSource {

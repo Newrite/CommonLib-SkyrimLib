@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 
+use core_util::Enum;
 use core_util::{EnumSet, inherit};
 
 use crate::ffi::{commonlib_imenu_add_ref, commonlib_imenu_release};
@@ -50,6 +51,7 @@ pub enum UI_MENU_FLAGS {
 core_util::impl_enumset_type!(UI_MENU_FLAGS => u32);
 
 /// C++ `RE::UI_MESSAGE_RESULTS`
+#[libskyrim_macros::open_enum]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UI_MESSAGE_RESULTS {
@@ -157,7 +159,7 @@ impl IMenu {
     // add
     virtual_method! { pub const VFUNC_POST_CREATE: usize = 0x2; pub fn post_create() }
     virtual_method! { pub const VFUNC_UNK_03: usize = 0x3; pub fn unk_03() }
-    virtual_method! { pub const VFUNC_PROCESS_MESSAGE: usize = 0x4; pub fn process_message(message: &mut UIMessage) -> UI_MESSAGE_RESULTS }
+    virtual_method! { pub const VFUNC_PROCESS_MESSAGE: usize = 0x4; pub fn process_message_raw(message: &mut UIMessage) -> i32 }
     virtual_method! { pub const VFUNC_ADVANCE_MOVIE: usize = 0x5; pub fn advance_movie(interval: f32, current_time: u32) }
     virtual_method! { pub const VFUNC_POST_DISPLAY: usize = 0x6; pub fn post_display() }
     virtual_method! { pub const VFUNC_PRE_DISPLAY: usize = 0x7; pub fn pre_display() }
@@ -325,6 +327,25 @@ impl IMenu {
     #[inline(always)]
     pub fn uses_movement_to_direction(&self) -> bool {
         self.menu_flags.all(UI_MENU_FLAGS::kUsesMovementToDirection)
+    }
+
+    #[inline(always)]
+    pub fn process_message_storage(
+        &mut self,
+        message: &mut UIMessage,
+    ) -> Enum<UI_MESSAGE_RESULTS, i32> {
+        Enum::from_underlying(self.process_message_raw(message))
+    }
+
+    #[inline(always)]
+    pub fn try_process_message(&mut self, message: &mut UIMessage) -> Option<UI_MESSAGE_RESULTS> {
+        self.process_message_storage(message).get()
+    }
+
+    #[inline(always)]
+    pub fn process_message(&mut self, message: &mut UIMessage) -> UI_MESSAGE_RESULTS {
+        self.try_process_message(message)
+            .unwrap_or(UI_MESSAGE_RESULTS::kIgnore)
     }
 }
 

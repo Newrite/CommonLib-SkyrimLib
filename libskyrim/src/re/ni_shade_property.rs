@@ -1,3 +1,5 @@
+use core_util::Enum;
+
 use crate::core_util::inherit;
 use crate::offsets::offsets_nirtti::NiRTTI_NiShadeProperty;
 use crate::offsets::offsets_rtti::RTTI_NiShadeProperty;
@@ -44,7 +46,22 @@ impl NiShadeProperty {
 
     crate::virtual_method! {
         pub const VFUNC_GET_TYPE: usize = 0x25;
-        pub fn get_type() -> NiPropertyType
+        pub fn get_type_raw() -> i32
+    }
+
+    #[inline(always)]
+    pub fn type_storage(&self) -> Enum<NiPropertyType, i32> {
+        Enum::from_underlying(self.get_type_raw())
+    }
+
+    #[inline(always)]
+    pub fn try_get_type(&self) -> Option<NiPropertyType> {
+        self.type_storage().get()
+    }
+
+    #[inline(always)]
+    pub fn get_type(&self) -> NiPropertyType {
+        self.try_get_type().unwrap_or(NiPropertyType::Shade)
     }
 
     crate::virtual_method! {
@@ -79,6 +96,8 @@ impl AsMut<NiShadeProperty> for NiShadeProperty {
 
 pub trait NiShadePropertyExt {
     fn get_rtti(&self) -> *const NiRTTI;
+    fn type_storage(&self) -> Enum<NiPropertyType, i32>;
+    fn try_get_type(&self) -> Option<NiPropertyType>;
     fn get_type(&self) -> NiPropertyType;
     fn setup_geometry(&mut self, geometry: *mut BSGeometry) -> bool;
     fn finish_setup_geometry(&mut self, geometry: *mut BSGeometry) -> bool;
@@ -89,6 +108,16 @@ impl<T: AsRef<NiShadeProperty> + AsMut<NiShadeProperty>> NiShadePropertyExt for 
     #[inline(always)]
     fn get_rtti(&self) -> *const NiRTTI {
         NiShadeProperty::get_rtti(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn type_storage(&self) -> Enum<NiPropertyType, i32> {
+        NiShadeProperty::type_storage(self.as_ref())
+    }
+
+    #[inline(always)]
+    fn try_get_type(&self) -> Option<NiPropertyType> {
+        NiShadeProperty::try_get_type(self.as_ref())
     }
 
     #[inline(always)]

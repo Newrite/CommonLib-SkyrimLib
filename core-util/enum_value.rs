@@ -38,6 +38,59 @@ where
     {
         E::try_from(self.value).ok()
     }
+
+    #[inline(always)]
+    pub fn is_known(self) -> bool
+    where
+        E: TryFrom<U>,
+    {
+        self.get().is_some()
+    }
+
+    #[inline(always)]
+    pub fn get_or(self, default: E) -> E
+    where
+        E: TryFrom<U>,
+    {
+        self.get().unwrap_or(default)
+    }
+
+    #[inline(always)]
+    pub fn get_or_else<F>(self, default: F) -> E
+    where
+        E: TryFrom<U>,
+        F: FnOnce(U) -> E,
+    {
+        match self.get() {
+            Some(value) => value,
+            None => default(self.value),
+        }
+    }
+
+    #[inline(always)]
+    pub fn map_or<T, F>(self, default: T, f: F) -> T
+    where
+        E: TryFrom<U>,
+        F: FnOnce(E) -> T,
+    {
+        match self.get() {
+            Some(value) => f(value),
+            None => default,
+        }
+    }
+
+    #[inline(always)]
+    pub fn map_or_else<T, D, F>(self, default: D, f: F) -> T
+    where
+        E: TryFrom<U>,
+        D: FnOnce(U) -> T,
+        F: FnOnce(E) -> T,
+    {
+        match self.get() {
+            Some(value) => f(value),
+            None => default(self.value),
+        }
+    }
 }
 
 impl<E, U> Default for Enum<E, U>
@@ -89,6 +142,19 @@ where
     }
 }
 
+impl<E, U> TryFrom<Enum<E, U>> for E
+where
+    E: TryFrom<U>,
+    U: EnumSetInteger,
+{
+    type Error = E::Error;
+
+    #[inline(always)]
+    fn try_from(value: Enum<E, U>) -> Result<Self, Self::Error> {
+        E::try_from(value.underlying())
+    }
+}
+
 #[macro_export]
 macro_rules! impl_enum_type {
     ($enum_ty:ty => $storage_ty:ty) => {
@@ -96,6 +162,43 @@ macro_rules! impl_enum_type {
             #[inline(always)]
             fn to_underlying(self) -> $storage_ty {
                 self as $storage_ty
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! impl_enum_try_from_contiguous {
+    ($enum_ty:ty => $storage_ty:ty, $min:path, $max:path) => {
+        impl core::convert::TryFrom<$storage_ty> for $enum_ty {
+            type Error = ();
+
+            #[inline(always)]
+            fn try_from(value: $storage_ty) -> Result<Self, Self::Error> {
+                let min = $min as $storage_ty;
+                let max = $max as $storage_ty;
+                if value < min || value > max {
+                    return Err(());
+                }
+
+                Ok(unsafe { core::mem::transmute::<$storage_ty, Self>(value) })
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! impl_enum_try_from_sparse {
+    ($enum_ty:ty => $storage_ty:ty { $($raw:expr => $variant:path),+ $(,)? }) => {
+        impl core::convert::TryFrom<$storage_ty> for $enum_ty {
+            type Error = ();
+
+            #[inline(always)]
+            fn try_from(value: $storage_ty) -> Result<Self, Self::Error> {
+                match value {
+                    $($raw => Ok($variant),)+
+                    _ => Err(()),
+                }
             }
         }
     };
@@ -129,6 +232,22 @@ mod tests {
     crate::impl_enum_type!(TestValue => i32);
     crate::impl_enum_type!(TestValue => u8);
 
+    crate::impl_enum_try_from_contiguous!(TestValue => u8, TestValue::Zero, TestValue::Two);
+
+    #[repr(u8)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    enum SparseValue {
+        Zero = 0,
+        Five = 5,
+        Nine = 9,
+    }
+
+    crate::impl_enum_try_from_sparse!(SparseValue => u8 {
+        0 => SparseValue::Zero,
+        5 => SparseValue::Five,
+        9 => SparseValue::Nine,
+    });
+
     #[test]
     fn stores_exact_underlying_value() {
         let value = Enum::<TestValue, i32>::from(TestValue::Two);
@@ -142,5 +261,17 @@ mod tests {
         value.set(TestValue::One);
         assert_eq!(value.underlying(), 1u8);
         assert_eq!(value.get(), Some(TestValue::One));
+    }
+
+    #[test]
+    fn contiguous_try_from_rejects_out_of_range_values() {
+        assert_eq!(TestValue::try_from(2u8), Ok(TestValue::Two));
+        assert_eq!(TestValue::try_from(3u8), Err(()));
+    }
+
+    #[test]
+    fn sparse_try_from_accepts_only_declared_values() {
+        assert_eq!(SparseValue::try_from(5u8), Ok(SparseValue::Five));
+        assert_eq!(SparseValue::try_from(6u8), Err(()));
     }
 }
