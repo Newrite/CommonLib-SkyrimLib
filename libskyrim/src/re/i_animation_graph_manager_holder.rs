@@ -1,5 +1,4 @@
 use alloc::ffi::CString;
-use core::ffi::c_void;
 
 use crate::offsets::offsets_rtti::RTTI_IAnimationGraphManagerHolder;
 use crate::offsets::offsets_vtable::VTABLE_IAnimationGraphManagerHolder;
@@ -56,12 +55,8 @@ impl IAnimationGraphManagerHolder {
             return false;
         };
 
-        unsafe {
-            crate::ffi::commonlib_notify_animation_graph(
-                (self as *mut Self).cast::<c_void>(),
-                event_name.as_ptr(),
-            )
-        }
+        let event_name = BSFixedString::new(event_name.as_ptr());
+        self.notify_animation_graph(&event_name)
     }
 
     crate::virtual_method! {

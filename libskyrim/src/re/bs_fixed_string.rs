@@ -1,13 +1,10 @@
-use crate::relocation::RelocationID;
 use core::ffi::{CStr, c_char};
 use core::fmt;
 use core::ops::Deref;
 
 use bytemuck::Zeroable;
 
-use crate::re::bs_string_pool::BSStringPoolEntry;
-use crate::re::crc::{BSTHash, generate_crc32};
-use crate::relocation_func;
+use crate::re::crc::BSTHash;
 
 /// C++ `RE::BSFixedString` (aliases: `BSFixedStringCI` in some cases)
 #[repr(transparent)]
@@ -19,11 +16,6 @@ pub struct BSFixedString {
 const _: () = assert!(core::mem::size_of::<BSFixedString>() == 0x8);
 
 impl BSFixedString {
-    // C++ `RE::BSFixedString::ctor8`
-    relocation_func! {
-        pub fn ctor8(this: *mut BSFixedString, string: *const c_char) -> *mut BSFixedString => RelocationID::new(67819, 69161)
-    }
-
     /// Creates an empty string (pointer is null)
     #[inline(always)]
     pub const fn empty() -> Self {
@@ -35,8 +27,11 @@ impl BSFixedString {
     /// Creates a new `BSFixedString` from a C string pointer.
     pub fn new(string: *const c_char) -> Self {
         let mut fixed_str = Self::empty();
-        if !string.is_null() {
-            Self::ctor8(&mut fixed_str as *mut _, string);
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_ctor8(
+                core::ptr::from_mut(&mut fixed_str).cast(),
+                string,
+            );
         }
         fixed_str
     }
@@ -50,24 +45,8 @@ impl BSFixedString {
     }
 
     #[inline(always)]
-    fn get_proxy(&self) -> *const BSStringPoolEntry {
-        if self.data.is_null() {
-            core::ptr::null()
-        } else {
-            // The Entry header sits exactly one unit (sizeof(BSStringPoolEntry) = 0x18)
-            // behind the actual string data pointer in memory.
-            unsafe { (self.data as *const BSStringPoolEntry).sub(1) }
-        }
-    }
-
-    #[inline(always)]
     pub fn len(&self) -> u32 {
-        let proxy = self.get_proxy();
-        if proxy.is_null() {
-            0
-        } else {
-            unsafe { (*proxy).length() }
-        }
+        unsafe { crate::ffi::commonlib_bs_fixed_string_size(core::ptr::from_ref(self).cast()) }
     }
 
     #[inline(always)]
@@ -82,10 +61,13 @@ impl BSFixedString {
 
     #[inline(always)]
     pub fn as_c_str(&self) -> Option<&CStr> {
-        if self.data.is_null() {
+        let data = unsafe {
+            crate::ffi::commonlib_bs_fixed_string_c_str(core::ptr::from_ref(self).cast())
+        };
+        if data.is_null() {
             None
         } else {
-            Some(unsafe { CStr::from_ptr(self.data) })
+            Some(unsafe { CStr::from_ptr(data) })
         }
     }
 
@@ -106,18 +88,21 @@ impl Default for BSFixedString {
 
 impl Clone for BSFixedString {
     fn clone(&self) -> Self {
-        let proxy = self.get_proxy();
-        if !proxy.is_null() {
-            unsafe { (*proxy).acquire() };
+        let mut cloned = Self::empty();
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_copy(
+                core::ptr::from_mut(&mut cloned).cast(),
+                core::ptr::from_ref(self).cast(),
+            );
         }
-        Self { data: self.data }
+        cloned
     }
 }
 
 impl Drop for BSFixedString {
     fn drop(&mut self) {
-        if !self.data.is_null() {
-            BSStringPoolEntry::release8(&mut self.data);
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_destroy(core::ptr::from_mut(self).cast());
         }
     }
 }
@@ -140,10 +125,13 @@ impl PartialEq for BSFixedString {
         if self.data == other.data {
             return true;
         }
-        if self.is_empty() && other.is_empty() {
-            return true;
+
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_eq(
+                core::ptr::from_ref(self).cast(),
+                core::ptr::from_ref(other).cast(),
+            )
         }
-        false // Since they are interned, pointer equality implies string equality.
     }
 }
 
@@ -152,13 +140,7 @@ impl Eq for BSFixedString {}
 impl BSTHash for BSFixedString {
     #[inline]
     fn bst_hash(&self) -> u32 {
-        let bytes = unsafe {
-            core::slice::from_raw_parts(
-                &self.data as *const *const c_char as *const u8,
-                core::mem::size_of::<*const c_char>(),
-            )
-        };
-        generate_crc32(bytes)
+        unsafe { crate::ffi::commonlib_bs_fixed_string_hash(core::ptr::from_ref(self).cast()) }
     }
 }
 
@@ -192,10 +174,6 @@ pub struct BSFixedStringW {
 const _: () = assert!(core::mem::size_of::<BSFixedStringW>() == 0x8);
 
 impl BSFixedStringW {
-    relocation_func! {
-        pub fn ctor16(this: *mut BSFixedStringW, string: *const u16) -> *mut BSFixedStringW => RelocationID::new(67834, 69176)
-    }
-
     #[inline(always)]
     pub const fn empty() -> Self {
         Self {
@@ -205,29 +183,18 @@ impl BSFixedStringW {
 
     pub fn new(string: *const u16) -> Self {
         let mut fixed_str = Self::empty();
-        if !string.is_null() {
-            Self::ctor16(&mut fixed_str as *mut _, string);
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_ctor16(
+                core::ptr::from_mut(&mut fixed_str).cast(),
+                string,
+            );
         }
         fixed_str
     }
 
     #[inline(always)]
-    fn get_proxy(&self) -> *const BSStringPoolEntry {
-        if self.data.is_null() {
-            core::ptr::null()
-        } else {
-            unsafe { (self.data as *const BSStringPoolEntry).sub(1) }
-        }
-    }
-
-    #[inline(always)]
     pub fn len(&self) -> u32 {
-        let proxy = self.get_proxy();
-        if proxy.is_null() {
-            0
-        } else {
-            unsafe { (*proxy).length() }
-        }
+        unsafe { crate::ffi::commonlib_bs_fixed_string_w_size(core::ptr::from_ref(self).cast()) }
     }
 
     #[inline(always)]
@@ -249,18 +216,21 @@ impl Default for BSFixedStringW {
 
 impl Clone for BSFixedStringW {
     fn clone(&self) -> Self {
-        let proxy = self.get_proxy();
-        if !proxy.is_null() {
-            unsafe { (*proxy).acquire() };
+        let mut cloned = Self::empty();
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_w_copy(
+                core::ptr::from_mut(&mut cloned).cast(),
+                core::ptr::from_ref(self).cast(),
+            );
         }
-        Self { data: self.data }
+        cloned
     }
 }
 
 impl Drop for BSFixedStringW {
     fn drop(&mut self) {
-        if !self.data.is_null() {
-            BSStringPoolEntry::release16(&mut self.data);
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_w_destroy(core::ptr::from_mut(self).cast());
         }
     }
 }
@@ -270,11 +240,21 @@ impl PartialEq for BSFixedStringW {
         if self.data == other.data {
             return true;
         }
-        if self.is_empty() && other.is_empty() {
-            return true;
+
+        unsafe {
+            crate::ffi::commonlib_bs_fixed_string_w_eq(
+                core::ptr::from_ref(self).cast(),
+                core::ptr::from_ref(other).cast(),
+            )
         }
-        false
     }
 }
 
 impl Eq for BSFixedStringW {}
+
+impl BSTHash for BSFixedStringW {
+    #[inline]
+    fn bst_hash(&self) -> u32 {
+        unsafe { crate::ffi::commonlib_bs_fixed_string_w_hash(core::ptr::from_ref(self).cast()) }
+    }
+}

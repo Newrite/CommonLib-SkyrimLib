@@ -1,6 +1,11 @@
 #include "PCH.h"
 
+#include "RE/B/BSFixedString.h"
+#include "RE/B/BSStringPool.h"
 #include "RE/I/IAnimationGraphManagerHolder.h"
+#include "RE/N/NiControllerManager.h"
+#include "RE/T/TESForm.h"
+#include "RE/U/UI.h"
 #include "RE/U/UIMessageDataFactory.h"
 #include "RE/U/UIMessageQueue.h"
 
@@ -647,6 +652,156 @@ extern "C" {
         return RE::BGSAttackData::Create();
     }
 
+    void commonlib_bs_fixed_string_ctor8(void* out, const char* string) noexcept {
+        if (!out) {
+            return;
+        }
+
+        auto* fixed = static_cast<RE::BSFixedString*>(out);
+        if (string) {
+            std::construct_at(fixed, string);
+        } else {
+            std::construct_at(fixed);
+        }
+    }
+
+    void commonlib_bs_fixed_string_copy(void* out, const void* src) noexcept {
+        if (!out) {
+            return;
+        }
+
+        auto* fixed = static_cast<RE::BSFixedString*>(out);
+        if (src) {
+            std::construct_at(fixed, *static_cast<const RE::BSFixedString*>(src));
+        } else {
+            std::construct_at(fixed);
+        }
+    }
+
+    void commonlib_bs_fixed_string_destroy(void* string) noexcept {
+        if (!string) {
+            return;
+        }
+
+        std::destroy_at(static_cast<RE::BSFixedString*>(string));
+    }
+
+    std::uint32_t commonlib_bs_fixed_string_size(const void* string) noexcept {
+        if (!string) {
+            return 0;
+        }
+
+        return static_cast<const RE::BSFixedString*>(string)->size();
+    }
+
+    const char* commonlib_bs_fixed_string_c_str(const void* string) noexcept {
+        if (!string) {
+            return "";
+        }
+
+        return static_cast<const RE::BSFixedString*>(string)->c_str();
+    }
+
+    bool commonlib_bs_fixed_string_eq(const void* lhs, const void* rhs) noexcept {
+        if (!lhs || !rhs) {
+            return lhs == rhs;
+        }
+
+        return *static_cast<const RE::BSFixedString*>(lhs) ==
+               *static_cast<const RE::BSFixedString*>(rhs);
+    }
+
+    std::uint32_t commonlib_bs_fixed_string_hash(const void* string) noexcept {
+        if (!string) {
+            return 0;
+        }
+
+        return RE::BSCRC32_<RE::BSFixedString>()(*static_cast<const RE::BSFixedString*>(string));
+    }
+
+    void commonlib_bs_fixed_string_ctor16(void* out, const wchar_t* string) noexcept {
+        if (!out) {
+            return;
+        }
+
+        auto* fixed = static_cast<RE::BSFixedStringW*>(out);
+        if (string) {
+            std::construct_at(fixed, string);
+        } else {
+            std::construct_at(fixed);
+        }
+    }
+
+    void commonlib_bs_fixed_string_w_copy(void* out, const void* src) noexcept {
+        if (!out) {
+            return;
+        }
+
+        auto* fixed = static_cast<RE::BSFixedStringW*>(out);
+        if (src) {
+            std::construct_at(fixed, *static_cast<const RE::BSFixedStringW*>(src));
+        } else {
+            std::construct_at(fixed);
+        }
+    }
+
+    void commonlib_bs_fixed_string_w_destroy(void* string) noexcept {
+        if (!string) {
+            return;
+        }
+
+        std::destroy_at(static_cast<RE::BSFixedStringW*>(string));
+    }
+
+    std::uint32_t commonlib_bs_fixed_string_w_size(const void* string) noexcept {
+        if (!string) {
+            return 0;
+        }
+
+        return static_cast<const RE::BSFixedStringW*>(string)->size();
+    }
+
+    const wchar_t* commonlib_bs_fixed_string_w_c_str(const void* string) noexcept {
+        if (!string) {
+            return L"";
+        }
+
+        return static_cast<const RE::BSFixedStringW*>(string)->c_str();
+    }
+
+    bool commonlib_bs_fixed_string_w_eq(const void* lhs, const void* rhs) noexcept {
+        if (!lhs || !rhs) {
+            return lhs == rhs;
+        }
+
+        return *static_cast<const RE::BSFixedStringW*>(lhs) ==
+               *static_cast<const RE::BSFixedStringW*>(rhs);
+    }
+
+    std::uint32_t commonlib_bs_fixed_string_w_hash(const void* string) noexcept {
+        if (!string) {
+            return 0;
+        }
+
+        return RE::BSCRC32_<RE::BSFixedStringW>()(*static_cast<const RE::BSFixedStringW*>(string));
+    }
+
+    void commonlib_bs_string_pool_release8(const char** entry) noexcept {
+        if (!entry) {
+            return;
+        }
+
+        RE::BSStringPool::Entry::release8(*entry);
+    }
+
+    void commonlib_bs_string_pool_release16(const wchar_t** entry) noexcept {
+        if (!entry) {
+            return;
+        }
+
+        RE::BSStringPool::Entry::release16(*entry);
+    }
+
     void commonlib_destroy_bsi_input_device(void* device) noexcept {
         delete static_cast<RE::BSIInputDevice*>(device);
     }
@@ -830,6 +985,57 @@ extern "C" {
         return creator->Create();
     }
 
+    bool commonlib_ui_get_menu(void* ui, const char* menu_name, void* out) noexcept {
+        if (!out) {
+            return false;
+        }
+
+        return construct_smart_pointer_out(
+            static_cast<RE::GPtr<RE::IMenu>*>(out),
+            [&]() -> RE::GPtr<RE::IMenu> {
+                if (!ui || !menu_name) {
+                    return {};
+                }
+
+                return static_cast<RE::UI*>(ui)->GetMenu(menu_name);
+            });
+    }
+
+    bool commonlib_ui_is_menu_open(void* ui, const char* menu_name) noexcept {
+        if (!ui || !menu_name) {
+            return false;
+        }
+
+        return static_cast<RE::UI*>(ui)->IsMenuOpen(menu_name);
+    }
+
+    bool commonlib_ui_register_menu(void* ui, const char* menu_name, void* creator) noexcept {
+        if (!ui || !menu_name) {
+            return false;
+        }
+
+        static_cast<RE::UI*>(ui)->Register(
+            menu_name,
+            reinterpret_cast<RE::UI::Create_t*>(creator));
+        return true;
+    }
+
+    void* commonlib_tes_form_lookup_by_editor_id(const char* editor_id) noexcept {
+        if (!editor_id) {
+            return nullptr;
+        }
+
+        return RE::TESForm::LookupByEditorID(editor_id);
+    }
+
+    void* commonlib_ni_controller_manager_get_sequence_by_name(void* manager, const char* name) noexcept {
+        if (!manager || !name) {
+            return nullptr;
+        }
+
+        return static_cast<RE::NiControllerManager*>(manager)->GetSequenceByName(name);
+    }
+
     bool commonlib_ui_message_queue_add_message(
         const char* menu_name,
         std::int32_t message_type,
@@ -850,15 +1056,6 @@ extern "C" {
             static_cast<RE::UI_MESSAGE_TYPE>(message_type),
             static_cast<RE::IUIMessageData*>(data));
         return true;
-    }
-
-    bool commonlib_notify_animation_graph(void* holder, const char* event_name) noexcept {
-        if (!holder || !event_name) {
-            return false;
-        }
-
-        const auto fixed_event_name = RE::BSFixedString(event_name);
-        return static_cast<RE::IAnimationGraphManagerHolder*>(holder)->NotifyAnimationGraph(fixed_event_name);
     }
 
     void commonlib_skse_translation_parse_translation(const char* name) {

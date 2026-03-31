@@ -15,6 +15,7 @@ use crate::re::NiTPrimitiveSet;
 use crate::re::NiTimeController;
 use crate::relocation::{RttiType, VariantID};
 use crate::virtual_method;
+use alloc::ffi::CString;
 use core::ffi::c_char;
 use core::ptr;
 
@@ -91,12 +92,17 @@ impl NiControllerManager {
 
     #[inline]
     pub fn get_sequence_by_name(&self, a_name: &str) -> *mut NiControllerSequence {
-        let key = BSFixedString::from_str(a_name);
-        let it = self.string_map.find(&key);
-        if it.is_null() {
+        let Ok(name) = CString::new(a_name) else {
             return ptr::null_mut();
+        };
+
+        unsafe {
+            crate::ffi::commonlib_ni_controller_manager_get_sequence_by_name(
+                core::ptr::from_ref(self).cast_mut().cast(),
+                name.as_ptr(),
+            )
+            .cast()
         }
-        unsafe { (*it).second }
     }
 
     #[inline]
@@ -106,11 +112,6 @@ impl NiControllerManager {
         }
         let name = unsafe { core::ffi::CStr::from_ptr(a_name) };
         let name = name.to_string_lossy();
-        let it = self.string_map.find(&BSFixedString::from_str(&name));
-        if it.is_null() {
-            ptr::null_mut()
-        } else {
-            unsafe { (*it).second }
-        }
+        self.get_sequence_by_name(&name)
     }
 }

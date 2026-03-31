@@ -1,3 +1,4 @@
+use alloc::ffi::CString;
 use bitflags::bitflags;
 use core_util::{EnumSet, inherit};
 
@@ -956,24 +957,11 @@ impl TESForm {
     }
 
     pub fn lookup_by_editor_id(editor_id: &str) -> Option<*mut TESForm> {
-        let (map, lock) = Self::get_all_forms_by_editor_id();
-        if map.is_null() {
-            return None;
-        }
-
-        let _lock_guard = if lock.is_null() {
-            None
-        } else {
-            Some(BSReadLockGuard::new(unsafe { &*lock }))
-        };
-
-        let key = BSFixedString::from_str(editor_id);
-        let value = unsafe { (*map).find(&key) };
-        if value.is_null() {
-            None
-        } else {
-            Some(unsafe { (*value).second })
-        }
+        let editor_id = CString::new(editor_id).ok()?;
+        let form =
+            unsafe { crate::ffi::commonlib_tes_form_lookup_by_editor_id(editor_id.as_ptr()) }
+                .cast::<TESForm>();
+        (!form.is_null()).then_some(form)
     }
 }
 

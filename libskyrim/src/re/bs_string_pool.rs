@@ -1,5 +1,3 @@
-use crate::relocation::RelocationID;
-use crate::relocation_func;
 use core::sync::atomic::{AtomicU16, Ordering};
 
 /// C++ `RE::BSStringPool::Entry`
@@ -51,21 +49,17 @@ impl BSStringPoolEntry {
         }
     }
 
-    relocation_func! {
-        fn release8_impl(entry: *mut *const core::ffi::c_char) => RelocationID::new(67847, 69192)
-    }
-
-    relocation_func! {
-        fn release16_impl(entry: *mut *const u16) => RelocationID::new(67848, 69193)
-    }
-
     #[inline(always)]
     pub fn release8(entry: &mut *const core::ffi::c_char) {
-        Self::release8_impl(entry as *mut _);
+        unsafe {
+            crate::ffi::commonlib_bs_string_pool_release8(entry as *mut _);
+        }
     }
 
     #[inline(always)]
     pub fn release16(entry: &mut *const u16) {
-        Self::release16_impl(entry as *mut _);
+        unsafe {
+            crate::ffi::commonlib_bs_string_pool_release16(entry as *mut _);
+        }
     }
 }

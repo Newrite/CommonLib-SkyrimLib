@@ -1,8 +1,9 @@
+use alloc::ffi::CString;
 use core::ffi::c_void;
 
 use crate::re::{
     BSFixedString, BSSpinLock, BSTArray, BSTEventSink, BSTEventSource, BSTHashMap, BSTSingletonSDM,
-    BSTTuple, BSTimer, GFxMovieView, GPtr, IMenu, MenuModeChangeEvent, MenuOpenCloseEvent,
+    BSTimer, GFxMovieView, GPtr, IMenu, MenuModeChangeEvent, MenuOpenCloseEvent,
 };
 
 pub type UICreateFn = unsafe extern "C" fn() -> *mut IMenu;
@@ -162,12 +163,23 @@ impl UI {
     }
 
     pub fn get_menu(&self, menu_name: &str) -> GPtr<IMenu> {
-        let key = BSFixedString::from_str(menu_name);
-        let entry = self.menu_map.find(&key);
-        if entry.is_null() {
-            GPtr::null()
-        } else {
-            unsafe { (*entry).second.menu.clone() }
+        let Ok(menu_name) = CString::new(menu_name) else {
+            return GPtr::null();
+        };
+
+        // Engine-owned BSFixedString-keyed menu lookups are routed through the
+        // native CommonLib wrapper instead of Rust-side `BSTHashMap::find`.
+        // This avoids the recurring crash class we have seen around temporary
+        // `BSFixedString` keys in live UI maps.
+        unsafe {
+            GPtr::try_construct_with(|out: *mut GPtr<IMenu>| {
+                crate::ffi::commonlib_ui_get_menu(
+                    core::ptr::from_ref(self).cast_mut().cast(),
+                    menu_name.as_ptr(),
+                    out.cast(),
+                )
+            })
+            .unwrap_or_else(GPtr::null)
         }
     }
 
@@ -197,8 +209,16 @@ impl UI {
 
     #[inline(always)]
     pub fn is_menu_open(&self, menu_name: &str) -> bool {
-        let menu = self.get_menu(menu_name);
-        !menu.is_null() && unsafe { (*menu.as_ptr()).on_stack() }
+        let Ok(menu_name) = CString::new(menu_name) else {
+            return false;
+        };
+
+        unsafe {
+            crate::ffi::commonlib_ui_is_menu_open(
+                core::ptr::from_ref(self).cast_mut().cast(),
+                menu_name.as_ptr(),
+            )
+        }
     }
 
     #[inline(always)]
@@ -227,15 +247,18 @@ impl UI {
     }
 
     pub fn register(&mut self, menu_name: &str, creator: Option<UICreateFn>) {
-        let value = BSTTuple::new(
-            BSFixedString::from_str(menu_name),
-            UIMenuEntry {
-                menu: GPtr::null(),
-                create: creator,
-            },
-        );
+        let Ok(menu_name) = CString::new(menu_name) else {
+            return;
+        };
+
         unsafe {
-            self.menu_map.insert(value);
+            let _ = crate::ffi::commonlib_ui_register_menu(
+                core::ptr::from_mut(self).cast(),
+                menu_name.as_ptr(),
+                creator.map_or(core::ptr::null_mut(), |fn_ptr| {
+                    fn_ptr as usize as *mut c_void
+                }),
+            );
         }
     }
 

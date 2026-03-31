@@ -128,6 +128,24 @@ unsafe extern "C" {
     pub fn commonlib_imenu_release(menu: *mut c_void);
     pub fn commonlib_bgs_attack_data_create() -> *mut c_void;
 
+    // BSFixedString helper wrappers.
+    pub fn commonlib_bs_fixed_string_ctor8(out: *mut c_void, string: *const c_char);
+    pub fn commonlib_bs_fixed_string_copy(out: *mut c_void, src: *const c_void);
+    pub fn commonlib_bs_fixed_string_destroy(string: *mut c_void);
+    pub fn commonlib_bs_fixed_string_size(string: *const c_void) -> u32;
+    pub fn commonlib_bs_fixed_string_c_str(string: *const c_void) -> *const c_char;
+    pub fn commonlib_bs_fixed_string_eq(lhs: *const c_void, rhs: *const c_void) -> bool;
+    pub fn commonlib_bs_fixed_string_hash(string: *const c_void) -> u32;
+    pub fn commonlib_bs_fixed_string_ctor16(out: *mut c_void, string: *const u16);
+    pub fn commonlib_bs_fixed_string_w_copy(out: *mut c_void, src: *const c_void);
+    pub fn commonlib_bs_fixed_string_w_destroy(string: *mut c_void);
+    pub fn commonlib_bs_fixed_string_w_size(string: *const c_void) -> u32;
+    pub fn commonlib_bs_fixed_string_w_c_str(string: *const c_void) -> *const u16;
+    pub fn commonlib_bs_fixed_string_w_eq(lhs: *const c_void, rhs: *const c_void) -> bool;
+    pub fn commonlib_bs_fixed_string_w_hash(string: *const c_void) -> u32;
+    pub fn commonlib_bs_string_pool_release8(entry: *mut *const c_char);
+    pub fn commonlib_bs_string_pool_release16(entry: *mut *const u16);
+
     // Input device helpers.
     pub fn commonlib_destroy_bsi_input_device(device: *mut c_void);
     pub fn commonlib_button_event_create(
@@ -170,13 +188,27 @@ unsafe extern "C" {
     ) -> *mut c_void;
     pub fn commonlib_native_function_destroy(function: *mut c_void);
 
-    // UI and animation helper bridges.
+    // UI helper bridges.
     pub fn commonlib_create_ui_message_data(class_name: *const c_char) -> *mut c_void;
+    pub fn commonlib_ui_get_menu(
+        ui: *mut c_void,
+        menu_name: *const c_char,
+        out: *mut c_void,
+    ) -> bool;
+    pub fn commonlib_ui_is_menu_open(ui: *mut c_void, menu_name: *const c_char) -> bool;
+    pub fn commonlib_ui_register_menu(
+        ui: *mut c_void,
+        menu_name: *const c_char,
+        creator: *mut c_void,
+    ) -> bool;
     pub fn commonlib_ui_message_queue_add_message(
         menu_name: *const c_char,
         message_type: i32,
         data: *mut c_void,
     ) -> bool;
-    pub fn commonlib_notify_animation_graph(holder: *mut c_void, event_name: *const c_char)
-    -> bool;
+    pub fn commonlib_tes_form_lookup_by_editor_id(editor_id: *const c_char) -> *mut c_void;
+    pub fn commonlib_ni_controller_manager_get_sequence_by_name(
+        manager: *mut c_void,
+        name: *const c_char,
+    ) -> *mut c_void;
 }
