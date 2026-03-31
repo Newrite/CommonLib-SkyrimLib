@@ -7,8 +7,13 @@ use core::ops::ControlFlow;
 use crate::re::{
     Actor, ActorHandle, BSContainerForEachResult, BSTArray, NiPoint3, NiPointer, ProcessLists,
 };
-use crate::sdk::core::{GamePtr, GameRef, Resolved};
+use crate::sdk::core::{
+    ContiguousSequenceIterationOptions, GamePtr, GameRef, Resolved,
+    for_each_contiguous_sequence_named,
+};
 use crate::sdk::gameplay::player;
+
+const MAX_REASONABLE_PROCESS_ACTOR_HANDLES: u32 = 0x1_0000;
 
 #[inline(always)]
 pub fn process_lists() -> GameRef<ProcessLists> {
@@ -360,18 +365,26 @@ fn for_each_actor_handle_owner(
     actor_handles: &BSTArray<ActorHandle>,
     visit: &mut impl FnMut(ActorHandle, &NiPointer<Actor>) -> BSContainerForEachResult,
 ) -> BSContainerForEachResult {
-    for actor_handle in unsafe { actor_handles.as_slice() } {
-        let actor_handle = *actor_handle;
-        let Some(actor_owner) = resolve_actor_handle_owner(actor_handle) else {
-            continue;
-        };
+    let mut result = BSContainerForEachResult::Continue;
+    let _ = for_each_contiguous_sequence_named(
+        actor_handles,
+        "sdk::gameplay::actors::for_each_actor_handle_owner()",
+        actor_handle_iteration_options(),
+        |actor_handle| {
+            let actor_handle = *actor_handle;
+            let Some(actor_owner) = resolve_actor_handle_owner(actor_handle) else {
+                return ControlFlow::Continue(());
+            };
 
-        if visit(actor_handle, &actor_owner) == BSContainerForEachResult::Stop {
-            return BSContainerForEachResult::Stop;
-        }
-    }
-
-    BSContainerForEachResult::Continue
+            if visit(actor_handle, &actor_owner) == BSContainerForEachResult::Stop {
+                result = BSContainerForEachResult::Stop;
+                ControlFlow::Break(())
+            } else {
+                ControlFlow::Continue(())
+            }
+        },
+    );
+    result
 }
 
 #[inline(always)]
@@ -379,14 +392,20 @@ fn snapshot_actor_handle_array(
     actor_handles: &BSTArray<ActorHandle>,
     out: &mut Vec<(ActorHandle, NiPointer<Actor>)>,
 ) {
-    for actor_handle in unsafe { actor_handles.as_slice() } {
-        let actor_handle = *actor_handle;
-        let Some(actor_owner) = resolve_actor_handle_owner(actor_handle) else {
-            continue;
-        };
+    let _ = for_each_contiguous_sequence_named(
+        actor_handles,
+        "sdk::gameplay::actors::snapshot_actor_handle_array()",
+        actor_handle_iteration_options(),
+        |actor_handle| {
+            let actor_handle = *actor_handle;
+            let Some(actor_owner) = resolve_actor_handle_owner(actor_handle) else {
+                return ControlFlow::Continue(());
+            };
 
-        out.push((actor_handle, actor_owner));
-    }
+            out.push((actor_handle, actor_owner));
+            ControlFlow::Continue(())
+        },
+    );
 }
 
 #[inline(always)]
@@ -402,4 +421,10 @@ fn resolve_actor_handle_owner(actor_handle: ActorHandle) -> Option<NiPointer<Act
 #[inline(always)]
 fn owner_actor_ref(owner: &NiPointer<Actor>) -> Option<&Actor> {
     unsafe { owner.get().as_ref() }
+}
+
+#[inline(always)]
+fn actor_handle_iteration_options() -> ContiguousSequenceIterationOptions {
+    ContiguousSequenceIterationOptions::new()
+        .with_max_reasonable_len(MAX_REASONABLE_PROCESS_ACTOR_HANDLES)
 }

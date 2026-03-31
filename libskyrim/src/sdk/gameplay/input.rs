@@ -18,7 +18,7 @@ use crate::re::{
     BSFixedString, ControlMap, INPUT_CONTEXT_ID, INPUT_DEVICE, PlayerControls, USER_EVENT_FLAG,
     UserEventEnabled, UserEvents,
 };
-use crate::sdk::core::GameRef;
+use crate::sdk::core::{GameRef, snapshot_contiguous_copied_named};
 
 pub const ALL_CONTROL_FLAGS: [USER_EVENT_FLAG; 12] = [
     USER_EVENT_FLAG::kMovement,
@@ -291,7 +291,11 @@ pub fn push_context_scoped(context: INPUT_CONTEXT_ID) -> ContextGuard {
 pub fn context_stack() -> Vec<INPUT_CONTEXT_ID> {
     let control_map = control_map();
     let runtime_data = control_map.runtime_data();
-    unsafe { runtime_data.context_priority_stack.as_slice().to_vec() }
+    snapshot_contiguous_copied_named(
+        &runtime_data.context_priority_stack,
+        "sdk::gameplay::input::context_stack()",
+        Default::default(),
+    )
 }
 
 #[inline(always)]
@@ -303,9 +307,13 @@ pub fn context_stack_depth() -> usize {
 pub fn top_context() -> Option<INPUT_CONTEXT_ID> {
     let control_map = control_map();
     let runtime_data = control_map.runtime_data();
-    unsafe { runtime_data.context_priority_stack.as_slice() }
-        .last()
-        .copied()
+    snapshot_contiguous_copied_named(
+        &runtime_data.context_priority_stack,
+        "sdk::gameplay::input::top_context()",
+        Default::default(),
+    )
+    .last()
+    .copied()
 }
 
 #[inline(always)]
@@ -320,7 +328,12 @@ pub fn has_context(context: INPUT_CONTEXT_ID) -> bool {
 
     let control_map = control_map();
     let runtime_data = control_map.runtime_data();
-    unsafe { runtime_data.context_priority_stack.as_slice() }.contains(&context)
+    snapshot_contiguous_copied_named(
+        &runtime_data.context_priority_stack,
+        "sdk::gameplay::input::has_context()",
+        Default::default(),
+    )
+    .contains(&context)
 }
 
 #[inline(always)]

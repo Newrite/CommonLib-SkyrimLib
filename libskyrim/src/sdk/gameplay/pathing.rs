@@ -15,7 +15,9 @@ use crate::re::{
     NiPoint3, Pathing, PathingCell, PathingCellInfo, TES, TESObjectCELL, TESObjectREFR,
     TESWorldSpace,
 };
-use crate::sdk::core::{GamePtr, GameRef};
+use crate::sdk::core::{
+    GamePtr, GameRef, snapshot_contiguous_cloned_named, snapshot_contiguous_copied_named,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PathingCellState {
@@ -181,14 +183,18 @@ pub fn collect_loaded_pathing_cells() -> Vec<LoadedPathingCellDescriptor> {
 
 pub fn collect_recent_pathing_cells() -> Vec<RecentPathingCellDescriptor> {
     singleton().with(|pathing| {
-        unsafe { pathing.recent_cells.as_slice() }
-            .iter()
-            .map(|entry| RecentPathingCellDescriptor {
-                age_stamp: entry.first,
-                cell: entry.second.clone(),
-            })
-            .filter(|entry| !entry.cell.is_null())
-            .collect()
+        snapshot_contiguous_cloned_named(
+            &pathing.recent_cells,
+            "sdk::gameplay::pathing::collect_recent_pathing_cells()",
+            Default::default(),
+        )
+        .iter()
+        .map(|entry| RecentPathingCellDescriptor {
+            age_stamp: entry.first,
+            cell: entry.second.clone(),
+        })
+        .filter(|entry| !entry.cell.is_null())
+        .collect()
     })
 }
 
@@ -314,12 +320,15 @@ pub fn collect_navmesh_infos(
 ) -> Vec<GamePtr<BSNavmeshInfo>> {
     let mut infos = BSTArray::new();
     navmesh_info_map.get_all_nav_mesh_info(&mut infos);
-    unsafe { infos.as_slice() }
-        .iter()
-        .copied()
-        .map(info_ptr)
-        .filter(|info| !info.is_null())
-        .collect()
+    snapshot_contiguous_copied_named(
+        &infos,
+        "sdk::gameplay::pathing::collect_navmesh_infos()",
+        Default::default(),
+    )
+    .into_iter()
+    .map(info_ptr)
+    .filter(|info| !info.is_null())
+    .collect()
 }
 
 pub fn collect_connected_navmesh_infos(
@@ -328,12 +337,15 @@ pub fn collect_connected_navmesh_infos(
 ) -> Vec<GamePtr<BSNavmeshInfo>> {
     let mut infos = BSTArray::new();
     navmesh_info_map.build_list_of_connected_infos(info as *const _, &mut infos);
-    unsafe { infos.as_slice() }
-        .iter()
-        .copied()
-        .map(info_ptr)
-        .filter(|info| !info.is_null())
-        .collect()
+    snapshot_contiguous_copied_named(
+        &infos,
+        "sdk::gameplay::pathing::collect_connected_navmesh_infos()",
+        Default::default(),
+    )
+    .into_iter()
+    .map(info_ptr)
+    .filter(|info| !info.is_null())
+    .collect()
 }
 
 pub fn collect_connected_navmesh_ids(
@@ -403,12 +415,15 @@ pub fn precomputed_navmesh_path_at(
         return Vec::new();
     };
 
-    unsafe { path.as_slice() }
-        .iter()
-        .copied()
-        .map(|info| unsafe { GamePtr::from_raw(info.cast_mut()) })
-        .filter(|info| !info.is_null())
-        .collect()
+    snapshot_contiguous_copied_named(
+        path,
+        "sdk::gameplay::pathing::precomputed_navmesh_path_at()",
+        Default::default(),
+    )
+    .into_iter()
+    .map(|info| unsafe { GamePtr::from_raw(info.cast_mut()) })
+    .filter(|info| !info.is_null())
+    .collect()
 }
 
 pub fn precomputed_navmesh_path_for_info(
@@ -525,11 +540,14 @@ pub fn collect_potential_navmeshes_for_location(
         });
     }
 
-    unsafe { nav_meshes.as_slice() }
-        .iter()
-        .filter(|nav_mesh| !nav_mesh.is_null())
-        .cloned()
-        .collect()
+    snapshot_contiguous_cloned_named(
+        &nav_meshes,
+        "sdk::gameplay::pathing::collect_potential_navmeshes_for_location()",
+        Default::default(),
+    )
+    .into_iter()
+    .filter(|nav_mesh| !nav_mesh.is_null())
+    .collect()
 }
 
 pub fn collect_connected_navmesh_infos_for_location(
@@ -550,12 +568,15 @@ pub fn collect_connected_navmesh_infos_for_location(
         });
     }
 
-    unsafe { infos.as_slice() }
-        .iter()
-        .copied()
-        .map(|info: *const BSNavmeshInfo| unsafe { GamePtr::from_raw(info.cast_mut()) })
-        .filter(|info| !info.is_null())
-        .collect()
+    snapshot_contiguous_copied_named(
+        &infos,
+        "sdk::gameplay::pathing::collect_connected_navmesh_infos_for_location()",
+        Default::default(),
+    )
+    .into_iter()
+    .map(|info: *const BSNavmeshInfo| unsafe { GamePtr::from_raw(info.cast_mut()) })
+    .filter(|info| !info.is_null())
+    .collect()
 }
 
 pub fn collect_connected_navmeshes_for_location(
@@ -576,11 +597,14 @@ pub fn collect_connected_navmeshes_for_location(
         });
     }
 
-    unsafe { nav_meshes.as_slice() }
-        .iter()
-        .filter(|nav_mesh| !nav_mesh.is_null())
-        .cloned()
-        .collect()
+    snapshot_contiguous_cloned_named(
+        &nav_meshes,
+        "sdk::gameplay::pathing::collect_connected_navmeshes_for_location()",
+        Default::default(),
+    )
+    .into_iter()
+    .filter(|nav_mesh| !nav_mesh.is_null())
+    .collect()
 }
 
 pub fn collect_loaded_navmeshes(pathing: &mut BSPathing) -> Vec<BSTSmartPointer<BSNavmesh>> {
@@ -592,11 +616,14 @@ pub fn collect_loaded_navmeshes(pathing: &mut BSPathing) -> Vec<BSTSmartPointer<
         return Vec::new();
     }
 
-    unsafe { nav_meshes.as_slice() }
-        .iter()
-        .filter(|nav_mesh| !nav_mesh.is_null())
-        .cloned()
-        .collect()
+    snapshot_contiguous_cloned_named(
+        &nav_meshes,
+        "sdk::gameplay::pathing::collect_loaded_navmeshes()",
+        Default::default(),
+    )
+    .into_iter()
+    .filter(|nav_mesh| !nav_mesh.is_null())
+    .collect()
 }
 
 pub fn collect_loaded_navmesh_infos(pathing: &mut BSPathing) -> Vec<GamePtr<BSNavmeshInfo>> {
@@ -608,12 +635,15 @@ pub fn collect_loaded_navmesh_infos(pathing: &mut BSPathing) -> Vec<GamePtr<BSNa
         return Vec::new();
     }
 
-    unsafe { nav_meshes.as_slice() }
-        .iter()
-        .copied()
-        .map(info_ptr)
-        .filter(|info| !info.is_null())
-        .collect()
+    snapshot_contiguous_copied_named(
+        &nav_meshes,
+        "sdk::gameplay::pathing::collect_loaded_navmesh_infos()",
+        Default::default(),
+    )
+    .into_iter()
+    .map(info_ptr)
+    .filter(|info| !info.is_null())
+    .collect()
 }
 
 #[inline(always)]

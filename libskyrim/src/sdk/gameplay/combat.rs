@@ -3,8 +3,13 @@
 use alloc::vec::Vec;
 
 use crate::re::{Actor, BSScrapArray, NiPointer, ProcessLists};
-use crate::sdk::core::{GamePtr, GameRef, Resolved};
+use crate::sdk::core::{
+    ContiguousSequenceIterationOptions, GamePtr, GameRef, Resolved,
+    for_each_contiguous_sequence_named,
+};
 use crate::sdk::gameplay::{actors, player};
+
+const MAX_REASONABLE_HOSTILE_NEAR_HANDLES: u32 = 0x1000;
 
 #[inline(always)]
 pub fn singleton() -> GameRef<ProcessLists> {
@@ -75,11 +80,18 @@ pub fn collect_hostile_actors_nearby() -> Vec<Resolved<Actor>> {
     }
 
     let mut actors = Vec::new();
-    for handle in unsafe { handles.as_slice() } {
-        if let Some(actor) = Resolved::from_handle(*handle) {
-            actors.push(actor);
-        }
-    }
+    let _ = for_each_contiguous_sequence_named(
+        &handles,
+        "sdk::gameplay::combat::collect_hostile_actors_nearby()",
+        ContiguousSequenceIterationOptions::new()
+            .with_max_reasonable_len(MAX_REASONABLE_HOSTILE_NEAR_HANDLES),
+        |handle| {
+            if let Some(actor) = Resolved::from_handle(*handle) {
+                actors.push(actor);
+            }
+            core::ops::ControlFlow::Continue(())
+        },
+    );
     actors
 }
 

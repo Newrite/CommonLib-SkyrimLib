@@ -16,7 +16,7 @@ use crate::re::{
     TESObjectCELL, TESObjectREFR, bhkPickData, bhkWorld, hkVector4, hkpAllRayHitCollector,
     hkpCollidable, hkpWorldRayCastOutput,
 };
-use crate::sdk::core::Resolved;
+use crate::sdk::core::{Resolved, snapshot_contiguous_copied_named};
 
 /// Post-query collision-layer mask used to decide which Havok hits should
 /// count as blockers.
@@ -480,12 +480,14 @@ pub fn raycast_all_segment(
         return Vec::new();
     }
 
-    let mut hits: Vec<_> = collector
-        .hits
-        .as_slice()
-        .iter()
-        .filter_map(|output| raycast_hit_from_output(from, to, output))
-        .collect();
+    let mut hits: Vec<_> = snapshot_contiguous_copied_named(
+        &collector.hits,
+        "sdk::advanced::physics::raycast_all_segment()",
+        Default::default(),
+    )
+    .into_iter()
+    .filter_map(|output| raycast_hit_from_output(from, to, &output))
+    .collect();
     hits.sort_by(compare_hit_fraction);
     hits
 }

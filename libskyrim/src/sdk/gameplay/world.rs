@@ -7,8 +7,9 @@ use alloc::vec::Vec;
 use core::ops::ControlFlow;
 
 use crate::re::{
-    BSContainerForEachResult, NiPoint3, ObjectRefHandle, TES, TESObjectCELL, TESObjectREFR,
+    Actor, BSContainerForEachResult, NiPoint3, ObjectRefHandle, TES, TESObjectCELL, TESObjectREFR,
 };
+use crate::relocation::skyrim_cast_const;
 use crate::sdk::core::{GamePtr, GameRef, ResolvableHandle, Resolved};
 use crate::sdk::gameplay::actors;
 
@@ -63,6 +64,33 @@ fn flow_to_engine_result(flow: ControlFlow<()>) -> BSContainerForEachResult {
 fn snapshot_reference_handle(reference: &TESObjectREFR) -> Option<ObjectRefHandle> {
     let handle = reference.get_handle();
     (!handle.is_null()).then_some(handle)
+}
+
+#[inline(always)]
+fn reference_as_actor(reference: &TESObjectREFR) -> Option<&Actor> {
+    if !reference.base.is_actor() {
+        return None;
+    }
+
+    let actor = unsafe { skyrim_cast_const::<TESObjectREFR, Actor>(reference) };
+    unsafe { actor.as_ref() }
+}
+
+#[inline(always)]
+fn snapshot_scene_reference(reference: &TESObjectREFR, snapshot: &mut WorldSceneSnapshot) {
+    if let Some(handle) = snapshot_reference_handle(reference) {
+        snapshot.reference_handles.push(handle);
+    }
+
+    let Some(actor) = reference_as_actor(reference) else {
+        return;
+    };
+
+    let position = reference.get_position();
+    snapshot.actor_positions.push(position);
+    if actors::is_hostile_to_player(actor) {
+        snapshot.hostile_actor_positions.push(position);
+    }
 }
 
 // Native-sensitive traversal helpers over the global TES reference set.
@@ -259,14 +287,12 @@ pub fn snapshot_scene_in_range(origin: &TESObjectREFR, radius: f32) -> WorldScen
         return WorldSceneSnapshot::default();
     }
 
-    WorldSceneSnapshot {
-        reference_handles: snapshot_reference_handles_in_range(origin, radius),
-        actor_positions: actors::collect_actor_positions_in_range(origin.get_position(), radius),
-        hostile_actor_positions: actors::collect_hostile_positions_in_range(
-            origin.get_position(),
-            radius,
-        ),
-    }
+    let mut snapshot = WorldSceneSnapshot::default();
+    let _ = for_each_reference_in_range(origin, radius, |reference| {
+        snapshot_scene_reference(reference, &mut snapshot);
+        ControlFlow::Continue(())
+    });
+    snapshot
 }
 
 pub fn snapshot_scene_in_cell_range(
@@ -281,11 +307,12 @@ pub fn snapshot_scene_in_cell_range(
         return WorldSceneSnapshot::default();
     }
 
-    WorldSceneSnapshot {
-        reference_handles: snapshot_reference_handles_in_cell_range(cell, origin, radius),
-        actor_positions: actors::collect_actor_positions_in_range(origin, radius),
-        hostile_actor_positions: actors::collect_hostile_positions_in_range(origin, radius),
-    }
+    let mut snapshot = WorldSceneSnapshot::default();
+    let _ = for_each_reference_in_cell_range(cell, origin, radius, |reference| {
+        snapshot_scene_reference(reference, &mut snapshot);
+        ControlFlow::Continue(())
+    });
+    snapshot
 }
 
 pub fn snapshot_scene_in_range_ptr(

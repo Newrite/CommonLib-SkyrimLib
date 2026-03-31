@@ -14,7 +14,7 @@ use core::cmp::Ordering;
 use crate::re::{
     BSNavmeshExt, BSTSmartPointer, NavMesh, NavMeshArray, NiPoint3, TESObjectCELL, TESObjectREFR,
 };
-use crate::sdk::core::{GamePtr, GameRef};
+use crate::sdk::core::{GamePtr, GameRef, snapshot_contiguous_cloned_named};
 
 const NAVMESH_TRIANGLE_NONE: u16 = 0xFFFF;
 
@@ -235,14 +235,14 @@ pub fn snapshot_cell_navmeshes(cell: &TESObjectCELL) -> NavMeshCellSnapshot {
         return NavMeshCellSnapshot::default();
     };
 
-    let mut meshes = Vec::new();
-    for nav_mesh in unsafe { nav_meshes.nav_meshes.as_slice() } {
-        if nav_mesh.is_null() {
-            continue;
-        }
-
-        meshes.push(nav_mesh.clone());
-    }
+    let meshes = snapshot_contiguous_cloned_named(
+        &nav_meshes.nav_meshes,
+        "sdk::gameplay::navmesh::snapshot_cell_navmeshes()",
+        Default::default(),
+    )
+    .into_iter()
+    .filter(|nav_mesh| !nav_mesh.is_null())
+    .collect();
 
     NavMeshCellSnapshot { meshes }
 }
