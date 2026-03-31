@@ -618,12 +618,17 @@ pub fn fade_from_black(fade_duration: f32, pauses_game: bool) -> bool {
     queue_fade(FadeRequest::from_black(fade_duration, pauses_game))
 }
 
-/// Direct engine fade helper that bypasses `UIMessageQueue` / `Fader Menu`.
+/// Direct engine fade helper backed by the engine's `FadeOutGame` relocation.
 ///
-/// This is source-backed from community usage of the engine's `FadeOutGame`
-/// relocation. The fourth boolean parameter is still named `arg4` in public
-/// community references, so `pauses_game` in the convenience wrappers below is
-/// an inference from `FaderData`, not a fully proven engine symbol name.
+/// IDA verification on SE `0x1408D5530` shows that this path still constructs
+/// `FaderData` through `MessageDataFactoryManager` and dispatches it through
+/// the `Fader Menu` path. In practice this bypasses our typed
+/// `queue_named_message_with::<FaderMenu, FaderData>(...)` wrapper, but it
+/// does not bypass the engine's `Fader Menu` / fader-message subsystem.
+///
+/// The fourth boolean parameter is still named `arg4` in public community
+/// references, so `pauses_game` in the convenience wrappers below remains an
+/// inference from `FaderData`, not a fully proven engine symbol name.
 #[inline(always)]
 pub fn fade_out_game_direct(
     fading_out: bool,
