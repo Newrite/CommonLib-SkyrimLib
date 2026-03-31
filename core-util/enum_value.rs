@@ -61,9 +61,10 @@ where
         E: TryFrom<U>,
         F: FnOnce(U) -> E,
     {
-        match self.get() {
-            Some(value) => value,
-            None => default(self.value),
+        let raw = self.value;
+        match E::try_from(raw) {
+            Ok(value) => value,
+            Err(_) => default(raw),
         }
     }
 
@@ -86,9 +87,10 @@ where
         D: FnOnce(U) -> T,
         F: FnOnce(E) -> T,
     {
-        match self.get() {
-            Some(value) => f(value),
-            None => default(self.value),
+        let raw = self.value;
+        match E::try_from(raw) {
+            Ok(value) => f(value),
+            Err(_) => default(raw),
         }
     }
 }
@@ -139,19 +141,6 @@ where
     #[inline(always)]
     fn eq(&self, other: &E) -> bool {
         self.value == other.to_underlying()
-    }
-}
-
-impl<E, U> TryFrom<Enum<E, U>> for E
-where
-    E: TryFrom<U>,
-    U: EnumSetInteger,
-{
-    type Error = E::Error;
-
-    #[inline(always)]
-    fn try_from(value: Enum<E, U>) -> Result<Self, Self::Error> {
-        E::try_from(value.underlying())
     }
 }
 
