@@ -323,7 +323,7 @@ fn satisfies_minimum_distance(minimum: f32, actual: Option<f32>) -> bool {
     if minimum <= f32::EPSILON {
         true
     } else {
-        actual.is_some_and(|distance| distance >= minimum)
+        actual.is_none_or(|distance| distance >= minimum)
     }
 }
 
@@ -336,6 +336,17 @@ fn normalized_distance_score(distance: Option<f32>, scene_radius: f32) -> f32 {
     distance
         .map(|distance| (distance / scene_radius).clamp(0.0, 1.0))
         .unwrap_or(0.0)
+}
+
+#[inline(always)]
+fn normalized_scene_distance_score(distance: Option<f32>, scene_radius: f32) -> f32 {
+    if scene_radius <= f32::EPSILON {
+        return 0.0;
+    }
+
+    distance
+        .map(|distance| (distance / scene_radius).clamp(0.0, 1.0))
+        .unwrap_or(1.0)
 }
 
 #[inline(always)]
@@ -613,10 +624,10 @@ pub fn score_spawn_candidate(
         0.0
     };
     let actor_distance_component =
-        normalized_distance_score(evaluation.nearest_actor_distance, options.scene_radius)
+        normalized_scene_distance_score(evaluation.nearest_actor_distance, options.scene_radius)
             * weights.actor_distance;
     let hostile_distance_component =
-        normalized_distance_score(evaluation.nearest_hostile_distance, options.scene_radius)
+        normalized_scene_distance_score(evaluation.nearest_hostile_distance, options.scene_radius)
             * weights.hostile_distance;
     let navmesh_distance_component = if options.maximum_navmesh_distance <= f32::EPSILON {
         0.0
