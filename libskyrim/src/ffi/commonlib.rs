@@ -190,12 +190,6 @@ unsafe extern "C" {
 
     // UI helper bridges.
     pub fn commonlib_create_ui_message_data(class_name: *const c_char) -> *mut c_void;
-    pub fn commonlib_ui_get_menu(
-        ui: *mut c_void,
-        menu_name: *const c_char,
-        out: *mut c_void,
-    ) -> bool;
-    pub fn commonlib_ui_is_menu_open(ui: *mut c_void, menu_name: *const c_char) -> bool;
     pub fn commonlib_ui_register_menu(
         ui: *mut c_void,
         menu_name: *const c_char,

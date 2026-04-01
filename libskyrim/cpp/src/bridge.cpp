@@ -985,30 +985,6 @@ extern "C" {
         return creator->Create();
     }
 
-    bool commonlib_ui_get_menu(void* ui, const char* menu_name, void* out) noexcept {
-        if (!out) {
-            return false;
-        }
-
-        return construct_smart_pointer_out(
-            static_cast<RE::GPtr<RE::IMenu>*>(out),
-            [&]() -> RE::GPtr<RE::IMenu> {
-                if (!ui || !menu_name) {
-                    return {};
-                }
-
-                return static_cast<RE::UI*>(ui)->GetMenu(menu_name);
-            });
-    }
-
-    bool commonlib_ui_is_menu_open(void* ui, const char* menu_name) noexcept {
-        if (!ui || !menu_name) {
-            return false;
-        }
-
-        return static_cast<RE::UI*>(ui)->IsMenuOpen(menu_name);
-    }
-
     bool commonlib_ui_register_menu(void* ui, const char* menu_name, void* creator) noexcept {
         if (!ui || !menu_name) {
             return false;

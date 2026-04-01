@@ -167,20 +167,10 @@ impl UI {
             return GPtr::null();
         };
 
-        // Engine-owned BSFixedString-keyed menu lookups are routed through the
-        // native CommonLib wrapper instead of Rust-side `BSTHashMap::find`.
-        // This avoids the recurring crash class we have seen around temporary
-        // `BSFixedString` keys in live UI maps.
-        unsafe {
-            GPtr::try_construct_with(|out: *mut GPtr<IMenu>| {
-                crate::ffi::commonlib_ui_get_menu(
-                    core::ptr::from_ref(self).cast_mut().cast(),
-                    menu_name.as_ptr(),
-                    out.cast(),
-                )
-            })
-            .unwrap_or_else(GPtr::null)
-        }
+        let menu_name = BSFixedString::from_str(menu_name.to_str().unwrap_or_default());
+        self.menu_map
+            .get(&menu_name)
+            .map_or_else(GPtr::null, |entry| entry.second.menu.clone())
     }
 
     pub fn get_movie_view(&self, menu_name: &str) -> GPtr<GFxMovieView> {
@@ -209,16 +199,12 @@ impl UI {
 
     #[inline(always)]
     pub fn is_menu_open(&self, menu_name: &str) -> bool {
-        let Ok(menu_name) = CString::new(menu_name) else {
+        let Ok(_validated_menu_name) = CString::new(menu_name) else {
             return false;
         };
 
-        unsafe {
-            crate::ffi::commonlib_ui_is_menu_open(
-                core::ptr::from_ref(self).cast_mut().cast(),
-                menu_name.as_ptr(),
-            )
-        }
+        let menu = self.get_menu(menu_name);
+        !menu.is_null() && unsafe { (*menu.as_ptr()).on_stack() }
     }
 
     #[inline(always)]

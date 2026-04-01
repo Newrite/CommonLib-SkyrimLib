@@ -7,11 +7,9 @@ fn main() {
     // 1. Проброс режима сборки (Debug / Release)
     // Cargo передает нам текущий профиль через переменную PROFILE
     let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".to_string());
-    if profile == "release" {
-        config.mode("release");
-    } else {
-        config.mode("debug");
-    }
+    let is_release_like = profile.starts_with("release") || profile == "bench";
+    let build_mode = if is_release_like { "release" } else { "debug" };
+    config.mode(build_mode);
 
     // 2. Проброс таргетов Скайрима через Cargo Features
     // Если фича включена, Cargo создает переменную CARGO_FEATURE_<ИМЯ>
@@ -28,7 +26,26 @@ fn main() {
     // Запускаем сборку C++ кода
     config.build();
 
-    let dst = config.build_info().linkdirs().first().unwrap();
+    let build_info = config.build_info();
+    let dst = build_info
+        .linkdirs()
+        .iter()
+        .find(|dir| {
+            let dir = dir.as_path();
+            dir.join("commonlib_bridge.lib").exists()
+                && dir.to_string_lossy().contains(build_mode)
+        })
+        .unwrap_or_else(|| {
+            let available = build_info
+                .linkdirs()
+                .iter()
+                .map(|dir| dir.display().to_string())
+                .collect::<Vec<_>>()
+                .join("; ");
+            panic!(
+                "xmake returned no artifact link directory for profile={profile}, mode={build_mode}; available linkdirs: {available}"
+            )
+        });
 
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=commonlib_bridge");
