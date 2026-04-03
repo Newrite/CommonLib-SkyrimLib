@@ -19,11 +19,11 @@ pub fn singleton() -> GameRef<ProcessLists> {
 // Query-ish validation around native-sensitive combat helpers.
 
 #[inline(always)]
-fn is_valid_radius(radius: f32, caller: &'static str) -> bool {
+fn is_valid_radius(radius: f32, _caller: &'static str) -> bool {
     if !radius.is_finite() || radius <= 0.0 {
         crate::defensive_sdk_warn!(
             "{} ignored non-positive or non-finite radius={}",
-            caller,
+            _caller,
             radius
         );
         false
@@ -50,9 +50,9 @@ fn can_stop_combat_on_actor(actor: &Actor) -> bool {
 }
 
 #[inline(always)]
-fn actor_from_ptr(actor: GamePtr<Actor>, caller: &'static str) -> Option<GameRef<Actor>> {
+fn actor_from_ptr(actor: GamePtr<Actor>, _caller: &'static str) -> Option<GameRef<Actor>> {
     let Some(actor) = actor.into_option() else {
-        crate::defensive_sdk_warn!("{} received a null actor pointer", caller);
+        crate::defensive_sdk_warn!("{} received a null actor pointer", _caller);
         return None;
     };
 

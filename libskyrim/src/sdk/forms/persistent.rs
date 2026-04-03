@@ -78,6 +78,13 @@ impl<T> Clone for PersistentForm<T> {
     }
 }
 
+impl<T> From<GameRef<T>> for PersistentForm<T> {
+    #[inline(always)]
+    fn from(value: GameRef<T>) -> Self {
+        Self::from_game_ref(value)
+    }
+}
+
 impl<T> Deref for PersistentForm<T> {
     type Target = T;
 
@@ -182,6 +189,13 @@ impl<T> Clone for PersistentFormPtr<T> {
     #[inline(always)]
     fn clone(&self) -> Self {
         *self
+    }
+}
+
+impl<T> From<GamePtr<T>> for PersistentFormPtr<T> {
+    #[inline(always)]
+    fn from(value: GamePtr<T>) -> Self {
+        Self::from_game_ptr(value)
     }
 }
 

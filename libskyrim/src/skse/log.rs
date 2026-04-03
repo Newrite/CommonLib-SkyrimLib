@@ -25,7 +25,6 @@ use windows_sys::Win32::System::Time::{FileTimeToSystemTime, SystemTimeToTzSpeci
 pub use windows_sys::Win32::UI::WindowsAndMessaging::{MB_ICONERROR, MB_ICONWARNING};
 
 use crate::SKSEPlugin_Version;
-use crate::runtime::CURRENT_VERSION;
 
 #[doc(hidden)]
 pub enum LogType {
@@ -160,7 +159,7 @@ pub(crate) fn open() {
 
     buf.write_fmt(format_args!(
         "\\My Games\\{}\\SKSE\\{}.log",
-        (*CURRENT_VERSION).save_folder(),
+        crate::runtime::current_version().save_folder(),
         unsafe {
             CStr::from_ptr(SKSEPlugin_Version.get_name_ptr())
                 .to_str()

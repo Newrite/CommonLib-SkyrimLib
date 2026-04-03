@@ -48,11 +48,11 @@ pub fn is_within_radius(actor: &Actor, origin: NiPoint3, radius: f32) -> bool {
 }
 
 #[inline(always)]
-fn is_valid_radius(radius: f32, caller: &'static str) -> bool {
+fn is_valid_radius(radius: f32, _caller: &'static str) -> bool {
     if !radius.is_finite() || radius <= 0.0 {
         crate::defensive_sdk_warn!(
             "{} ignored non-positive or non-finite radius={}",
-            caller,
+            _caller,
             radius
         );
         false

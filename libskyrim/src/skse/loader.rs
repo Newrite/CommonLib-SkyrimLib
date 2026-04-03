@@ -2,7 +2,20 @@ use crate::version::Version;
 use crate::{SKSEPlugin_Version, skse_plugin_rust_entry};
 use core_util::RacyCell;
 
-use super::{LoadInterface, PluginInfo};
+use super::{LoadInterface, PluginDeclaration, PluginInfo};
+
+#[inline(always)]
+fn plugin_declaration() -> &'static PluginDeclaration {
+    #[cfg(test)]
+    {
+        &SKSEPlugin_Version
+    }
+
+    #[cfg(not(test))]
+    unsafe {
+        &SKSEPlugin_Version
+    }
+}
 
 fn init_runtime_only(skse: *const LoadInterface) -> bool {
     if skse.is_null() {
@@ -58,8 +71,9 @@ fn init_full(skse: *const LoadInterface) -> bool {
 
 #[inline(always)]
 fn plugin_name() -> &'static str {
+    let declaration = plugin_declaration();
     unsafe {
-        core::ffi::CStr::from_ptr(SKSEPlugin_Version.get_name_ptr())
+        core::ffi::CStr::from_ptr(declaration.get_name_ptr())
             .to_str()
             .unwrap_or("Unknown")
     }
@@ -77,11 +91,12 @@ pub unsafe fn query(skse: *const LoadInterface, info: *mut PluginInfo) -> bool {
         return false;
     }
 
+    let declaration = plugin_declaration();
     unsafe {
         *info = PluginInfo {
             info_version: PluginInfo::VERSION,
-            name: SKSEPlugin_Version.get_name_ptr(),
-            version: SKSEPlugin_Version.get_version().pack(),
+            name: declaration.get_name_ptr(),
+            version: declaration.get_version().pack(),
         };
     }
 
@@ -102,7 +117,7 @@ pub unsafe fn load(skse: *const LoadInterface) -> bool {
     crate::skse_message!(
         "{} v{}\nRunning on Skyrim SE/AE {}, SKSE {}",
         plugin_name(),
-        unsafe { SKSEPlugin_Version.get_version() },
+        plugin_declaration().get_version(),
         game_version,
         skse_version
     );

@@ -26,11 +26,11 @@ pub fn singleton() -> GameRef<TES> {
 }
 
 #[inline(always)]
-fn is_valid_radius(radius: f32, caller: &'static str) -> bool {
+fn is_valid_radius(radius: f32, _caller: &'static str) -> bool {
     if !radius.is_finite() || radius <= 0.0 {
         crate::defensive_sdk_warn!(
             "{} ignored non-positive or non-finite radius={}",
-            caller,
+            _caller,
             radius
         );
         false
@@ -42,10 +42,10 @@ fn is_valid_radius(radius: f32, caller: &'static str) -> bool {
 #[inline(always)]
 fn origin_from_ptr(
     origin: GamePtr<TESObjectREFR>,
-    caller: &'static str,
+    _caller: &'static str,
 ) -> Option<GameRef<TESObjectREFR>> {
     let Some(origin) = origin.into_option() else {
-        crate::defensive_sdk_warn!("{} received a null origin reference", caller);
+        crate::defensive_sdk_warn!("{} received a null origin reference", _caller);
         return None;
     };
 

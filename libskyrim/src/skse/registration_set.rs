@@ -13,17 +13,21 @@ use super::SerializationInterface;
 use super::registration_arguments::{RegistrationEventArgs, with_vm};
 
 fn get_handle_policy() -> *mut IObjectHandlePolicy {
-    let skyrim_vm = SkyrimVM::get_singleton();
-    if skyrim_vm.is_null() {
-        return core::ptr::null_mut();
-    }
+    if cfg!(test) {
+        core::ptr::null_mut()
+    } else {
+        let skyrim_vm = SkyrimVM::get_singleton();
+        if skyrim_vm.is_null() {
+            return core::ptr::null_mut();
+        }
 
-    let vm = unsafe { (*skyrim_vm).get_virtual_machine() };
-    if vm.is_null() {
-        return core::ptr::null_mut();
-    }
+        let vm = unsafe { (*skyrim_vm).get_virtual_machine() };
+        if vm.is_null() {
+            return core::ptr::null_mut();
+        }
 
-    unsafe { (*vm).get_object_handle_policy() }
+        unsafe { (*vm).get_object_handle_policy() }
+    }
 }
 
 fn release_handle_set(handles: &BTreeSet<VMHandle>) {

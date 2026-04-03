@@ -203,6 +203,13 @@ impl TESQuestStage {
     }
 }
 
+impl crate::re::bssimple_list::BSSimpleListValue for TESQuestStage {
+    #[inline(always)]
+    fn bs_has_value(&self) -> bool {
+        self.as_bool()
+    }
+}
+
 /// C++ `RE::TESQuestTarget::Flag`
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

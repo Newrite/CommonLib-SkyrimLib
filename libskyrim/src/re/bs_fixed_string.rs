@@ -258,3 +258,61 @@ impl BSTHash for BSFixedStringW {
         unsafe { crate::ffi::commonlib_bs_fixed_string_w_hash(core::ptr::from_ref(self).cast()) }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{BSFixedString, BSFixedStringW};
+    use crate::re::crc::BSTHash;
+    use alloc::vec::Vec;
+
+    #[test]
+    fn fixed_string_empty_reports_safe_defaults() {
+        let value = BSFixedString::empty();
+        assert!(value.is_empty());
+        assert_eq!(value.len(), 0);
+        assert_eq!(value.as_ptr(), core::ptr::null());
+        assert_eq!(value.as_str(), "");
+    }
+
+    #[test]
+    fn fixed_string_round_trips_clone_eq_and_hash() {
+        let value = BSFixedString::from_str("Dragonborn");
+        let cloned = value.clone();
+        let different = BSFixedString::from_str("Skyrim");
+
+        assert!(!value.is_empty());
+        assert_eq!(value.len(), 10);
+        assert_eq!(value.as_str(), "Dragonborn");
+        assert_eq!(value, cloned);
+        assert_eq!(value.bst_hash(), cloned.bst_hash());
+        assert_ne!(value, different);
+    }
+
+    fn utf16_nul_terminated(value: &str) -> Vec<u16> {
+        value.encode_utf16().chain(core::iter::once(0)).collect()
+    }
+
+    #[test]
+    fn fixed_string_w_empty_reports_safe_defaults() {
+        let value = BSFixedStringW::empty();
+        assert!(value.is_empty());
+        assert_eq!(value.len(), 0);
+        assert_eq!(value.as_ptr(), core::ptr::null());
+    }
+
+    #[test]
+    fn fixed_string_w_round_trips_clone_eq_and_hash() {
+        let source = utf16_nul_terminated("Dovahkiin");
+        let different_source = utf16_nul_terminated("Thuum");
+
+        let value = BSFixedStringW::new(source.as_ptr());
+        let cloned = value.clone();
+        let different = BSFixedStringW::new(different_source.as_ptr());
+
+        assert!(!value.is_empty());
+        assert_eq!(value.len(), 9);
+        assert!(value == cloned);
+        assert_eq!(value.bst_hash(), cloned.bst_hash());
+        assert!(value != different);
+    }
+}

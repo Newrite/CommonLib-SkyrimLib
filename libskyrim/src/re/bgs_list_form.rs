@@ -143,3 +143,95 @@ impl BGSListForm {
             .unwrap_or(false)
     }
 }
+
+impl AsRef<BGSListForm> for BGSListForm {
+    #[inline(always)]
+    fn as_ref(&self) -> &BGSListForm {
+        self
+    }
+}
+
+impl AsMut<BGSListForm> for BGSListForm {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut BGSListForm {
+        self
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use alloc::vec::Vec;
+
+    use super::BGSListForm;
+    use crate::re::base_form_component::BaseFormComponent;
+    use crate::re::bst_array::BSTArray;
+    use crate::re::{FormType, InGameFormFlag, RecordFlag, TESFileContainer, TESForm};
+    use core_util::EnumSet;
+
+    fn test_form(form_id: u32, form_type: FormType) -> TESForm {
+        TESForm {
+            base: BaseFormComponent {
+                vtable: core::ptr::null(),
+            },
+            source_files: TESFileContainer {
+                array: core::ptr::null_mut(),
+            },
+            form_flags: RecordFlag::empty(),
+            form_id,
+            in_game_form_flags: EnumSet::<InGameFormFlag, u16>::from_underlying(0),
+            form_type: EnumSet::from(form_type),
+            pad1b: 0,
+            pad1c: 0,
+        }
+    }
+
+    fn list_from_forms(forms: impl IntoIterator<Item = *mut TESForm>) -> BGSListForm {
+        BGSListForm {
+            base: test_form(0, FormType::FormList),
+            forms: forms.into_iter().collect::<BSTArray<*mut TESForm>>(),
+            script_added_temp_forms: core::ptr::null_mut(),
+            script_added_form_count: 0,
+            pad44: 0,
+        }
+    }
+
+    #[test]
+    fn forms_slice_has_form_and_iteration_skip_null_entries() {
+        let mut spell = test_form(0x300, FormType::Spell);
+        let mut keyword = test_form(0x301, FormType::Keyword);
+        let list = list_from_forms([
+            &mut spell as *mut TESForm,
+            core::ptr::null_mut(),
+            &mut keyword as *mut TESForm,
+        ]);
+
+        assert_eq!(list.forms_slice().len(), 3);
+        assert!(list.has_form(&spell));
+        assert!(list.has_form(&keyword));
+
+        let mut visited = Vec::new();
+        list.for_each_form(|form| {
+            visited.push(unsafe { (&*form).form_id });
+            super::BSContainerForEachResult::Continue
+        });
+
+        assert_eq!(visited, [0x300, 0x301]);
+    }
+
+    #[test]
+    fn contains_only_type_checks_live_entries() {
+        let mut spell = test_form(0x400, FormType::Spell);
+        let mut second_spell = test_form(0x401, FormType::Spell);
+        let mut keyword = test_form(0x402, FormType::Keyword);
+
+        let list = list_from_forms([
+            &mut spell as *mut TESForm,
+            core::ptr::null_mut(),
+            &mut second_spell as *mut TESForm,
+        ]);
+        assert!(list.contains_only_type(FormType::Spell));
+
+        let mixed = list_from_forms([&mut spell as *mut TESForm, &mut keyword as *mut TESForm]);
+        assert!(!mixed.contains_only_type(FormType::Spell));
+    }
+}

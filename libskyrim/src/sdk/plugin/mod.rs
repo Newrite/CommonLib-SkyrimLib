@@ -42,4 +42,12 @@ pub use serialization::{
     schema_fields, take_last_error, unique_id, unregister_model, with_model, with_model_mut,
     write_value_record,
 };
-pub use task::{add_task, add_ui_task};
+pub use task::{
+    TaskHandoff, TaskHandoffOrigin, TaskQueueKind, add_event_task, add_gameplay_event_task,
+    add_gameplay_papyrus_task, add_gameplay_task, add_gameplay_task_resolving_handle,
+    add_gameplay_task_resolving_target, add_papyrus_task, add_task, add_task_resolving_handle,
+    add_task_resolving_target, add_ui_event_task, add_ui_papyrus_task, add_ui_task,
+    add_ui_task_resolving_handle, add_ui_task_resolving_target, gameplay_handoff,
+    gameplay_handoff_from_event, gameplay_handoff_from_papyrus, handoff, handoff_from_event,
+    handoff_from_papyrus, ui_handoff, ui_handoff_from_event, ui_handoff_from_papyrus,
+};

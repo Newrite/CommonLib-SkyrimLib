@@ -9,3 +9,19 @@ pub enum QuestObjectiveState {
     Failed = 4,
     FailedDisplayed = 5,
 }
+
+impl TryFrom<u8> for QuestObjectiveState {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::Dormant),
+            1 => Ok(Self::Displayed),
+            2 => Ok(Self::Completed),
+            3 => Ok(Self::CompletedDisplayed),
+            4 => Ok(Self::Failed),
+            5 => Ok(Self::FailedDisplayed),
+            _ => Err(()),
+        }
+    }
+}

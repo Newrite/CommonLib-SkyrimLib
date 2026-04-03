@@ -29,12 +29,33 @@ pub mod version;
 pub extern crate core;
 pub extern crate core_util;
 
-use crate::skse::{LoadInterface, PluginDeclaration, PluginInfo};
+#[cfg(not(test))]
+use crate::skse::PluginInfo;
+use crate::skse::{LoadInterface, PluginDeclaration};
 
+#[cfg(not(test))]
 unsafe extern "Rust" {
     fn skse_plugin_rust_entry(skse: &LoadInterface) -> Result<(), ()>;
     pub(crate) static SKSEPlugin_Version: PluginDeclaration;
 }
+
+#[cfg(test)]
+unsafe fn skse_plugin_rust_entry(_skse: &LoadInterface) -> Result<(), ()> {
+    Ok(())
+}
+
+#[cfg(test)]
+#[allow(non_upper_case_globals)]
+pub(crate) static SKSEPlugin_Version: PluginDeclaration =
+    PluginDeclaration::new(crate::skse::PluginDeclarationInfo {
+        version: crate::skse::PluginDeclarationVersionNumber::new(0, 0, 0, 0),
+        name: crate::skse::PluginDeclarationString::from_str("libskyrim-tests"),
+        author: crate::skse::PluginDeclarationString::from_str("libskyrim"),
+        support_email: crate::skse::PluginDeclarationString::from_str(""),
+        struct_compatibility: crate::skse::StructCompatibility::Independent,
+        runtime_compatibility: crate::skse::RuntimeCompatibility::new(),
+        minimum_skse_version: crate::skse::PluginDeclarationVersionNumber(0),
+    });
 
 #[cfg(not(test))]
 pub fn panic_runtime(info: &core::panic::PanicInfo<'_>) -> ! {
@@ -47,6 +68,7 @@ fn panic(info: &core::panic::PanicInfo<'_>) -> ! {
     panic_runtime(info)
 }
 
+#[cfg(not(test))]
 #[unsafe(no_mangle)]
 pub unsafe extern "system" fn SKSEPlugin_Query(
     skse: *const LoadInterface,
@@ -55,6 +77,7 @@ pub unsafe extern "system" fn SKSEPlugin_Query(
     unsafe { crate::skse::loader::query(skse, info) }
 }
 
+#[cfg(not(test))]
 #[unsafe(no_mangle)]
 pub unsafe extern "system" fn SKSEPlugin_Load(skse: *const LoadInterface) -> bool {
     unsafe { crate::skse::loader::load(skse) }

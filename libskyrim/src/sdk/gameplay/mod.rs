@@ -10,6 +10,7 @@ pub mod movement;
 pub mod navmesh;
 pub mod pathing;
 pub mod player;
+pub mod projectiles;
 pub mod quests;
 pub mod spatial;
 pub mod world;

@@ -1,29 +1,73 @@
-// libskyrim/build.rs
-use std::env;
+use std::{
+    env, fs, io,
+    path::{Path, PathBuf},
+};
+
+fn stage_commonlib_test_address_libraries() -> io::Result<()> {
+    let manifest_dir =
+        PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is always set"));
+    let source_dir = manifest_dir
+        .join("..")
+        .join("CommonLibVR")
+        .join("tests")
+        .join("REL");
+    if !source_dir.exists() {
+        return Ok(());
+    }
+
+    let out_dir = PathBuf::from(env::var_os("OUT_DIR").expect("OUT_DIR is always set"));
+    let profile_dir = out_dir
+        .ancestors()
+        .nth(3)
+        .expect("OUT_DIR should always be nested under target/<profile>/build/<pkg>/out");
+    let destination_dir = profile_dir
+        .join("deps")
+        .join(Path::new("Data").join("SKSE").join("Plugins"));
+    fs::create_dir_all(&destination_dir)?;
+
+    for entry in fs::read_dir(&source_dir)? {
+        let entry = entry?;
+        let source_path = entry.path();
+        let Some(file_name) = source_path.file_name() else {
+            continue;
+        };
+
+        let matches_address_library = matches!(
+            source_path.extension().and_then(|ext| ext.to_str()),
+            Some("bin" | "csv")
+        ) && file_name.to_string_lossy().starts_with("version");
+        if !matches_address_library {
+            continue;
+        }
+
+        fs::copy(&source_path, destination_dir.join(file_name))?;
+        println!("cargo:rerun-if-changed={}", source_path.display());
+    }
+    Ok(())
+}
 
 fn main() {
+    println!("cargo:rerun-if-changed=build.rs");
+
+    stage_commonlib_test_address_libraries()
+        .expect("failed to stage CommonLib test address libraries");
+
     let mut config = xmake::Config::new("cpp");
 
-    // 1. Проброс режима сборки (Debug / Release)
-    // Cargo передает нам текущий профиль через переменную PROFILE
     let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".to_string());
     let is_release_like = profile.starts_with("release") || profile == "bench";
     let build_mode = if is_release_like { "release" } else { "debug" };
     config.mode(build_mode);
 
-    // 2. Проброс таргетов Скайрима через Cargo Features
-    // Если фича включена, Cargo создает переменную CARGO_FEATURE_<ИМЯ>
     let is_se = env::var("CARGO_FEATURE_SE").is_ok();
     let is_ae = env::var("CARGO_FEATURE_AE").is_ok();
     let is_vr = env::var("CARGO_FEATURE_VR").is_ok();
 
-    // Передаем опции в xmake (xmake f --skyrim_se=y ...)
     config.option("skyrim_se", if is_se { "y" } else { "n" });
     config.option("skyrim_ae", if is_ae { "y" } else { "n" });
     config.option("skyrim_vr", if is_vr { "y" } else { "n" });
-    config.option("skse_xbyak", "y"); // Всегда включено для хуков
+    config.option("skse_xbyak", "y");
 
-    // Запускаем сборку C++ кода
     config.build();
 
     let build_info = config.build_info();
@@ -52,7 +96,6 @@ fn main() {
     println!("cargo:rustc-link-lib=static=commonlibsse-ng");
     println!("cargo:rustc-link-lib=static=spdlog");
 
-    // === БАЗОВЫЕ БИБЛИОТЕКИ WINDOWS ===
     println!("cargo:rustc-link-lib=version");
     println!("cargo:rustc-link-lib=user32");
     println!("cargo:rustc-link-lib=advapi32");
@@ -61,12 +104,10 @@ fn main() {
     println!("cargo:rustc-link-lib=shell32");
     println!("cargo:rustc-link-lib=dbghelp");
 
-    // === DIRECTX ===
     println!("cargo:rustc-link-lib=d3d11");
     println!("cargo:rustc-link-lib=dxgi");
     println!("cargo:rustc-link-lib=d3dcompiler");
 
-    // Следим за изменениями, чтобы пересобирать только при нужде
     println!("cargo:rerun-if-changed=cpp/src");
     println!("cargo:rerun-if-changed=cpp/include");
     println!("cargo:rerun-if-changed=cpp/xmake.lua");

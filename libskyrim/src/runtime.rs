@@ -1,4 +1,6 @@
 use crate::version::Version;
+#[cfg(test)]
+use crate::version::{RUNTIME_LATEST_AE, RUNTIME_LATEST_SE, RUNTIME_LATEST_VR};
 use core_util::Later;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -12,36 +14,89 @@ pub enum RuntimeType {
 pub static CURRENT_VERSION: Later<Version> = Later::new();
 pub static CURRENT_RUNTIME: Later<RuntimeType> = Later::new();
 
-/// Инициализируется один раз при старте плагина
-pub fn init(version: Version) {
-    CURRENT_VERSION.init(version);
+#[cfg(test)]
+#[inline(always)]
+fn fallback_test_version() -> Version {
+    if cfg!(feature = "vr") {
+        RUNTIME_LATEST_VR
+    } else if cfg!(feature = "ae") {
+        RUNTIME_LATEST_AE
+    } else {
+        RUNTIME_LATEST_SE
+    }
+}
 
-    let runtime = if version.minor() == 4 {
+#[inline(always)]
+fn runtime_from_version(version: Version) -> RuntimeType {
+    if version.minor() == 4 {
         RuntimeType::VR
     } else if version.minor() == 6 {
         RuntimeType::AE
     } else {
         RuntimeType::SE
-    };
+    }
+}
 
-    CURRENT_RUNTIME.init(runtime);
+#[inline(always)]
+fn active_version() -> Version {
+    if CURRENT_VERSION.is_init() {
+        *CURRENT_VERSION
+    } else {
+        #[cfg(test)]
+        {
+            fallback_test_version()
+        }
+
+        #[cfg(not(test))]
+        {
+            *CURRENT_VERSION
+        }
+    }
+}
+
+#[inline(always)]
+fn active_runtime() -> RuntimeType {
+    if CURRENT_RUNTIME.is_init() {
+        *CURRENT_RUNTIME
+    } else {
+        #[cfg(test)]
+        {
+            runtime_from_version(active_version())
+        }
+
+        #[cfg(not(test))]
+        {
+            *CURRENT_RUNTIME
+        }
+    }
+}
+
+/// Инициализируется один раз при старте плагина
+pub fn init(version: Version) {
+    CURRENT_VERSION.init(version);
+    CURRENT_RUNTIME.init(runtime_from_version(version));
 }
 
 #[inline(always)]
 pub fn is_ae() -> bool {
-    *CURRENT_RUNTIME == RuntimeType::AE
+    active_runtime() == RuntimeType::AE
 }
 #[inline(always)]
 pub fn is_se() -> bool {
-    *CURRENT_RUNTIME == RuntimeType::SE
+    active_runtime() == RuntimeType::SE
 }
 #[inline(always)]
 pub fn is_vr() -> bool {
-    *CURRENT_RUNTIME == RuntimeType::VR
+    active_runtime() == RuntimeType::VR
 }
 #[inline(always)]
 pub fn current_runtime() -> RuntimeType {
-    *CURRENT_RUNTIME
+    active_runtime()
+}
+
+#[inline(always)]
+pub fn current_version() -> Version {
+    active_version()
 }
 
 #[inline(always)]
@@ -61,7 +116,7 @@ pub fn current_runtime_name() -> &'static str {
 
 #[inline(always)]
 pub fn is_at_least(version: Version) -> bool {
-    *CURRENT_VERSION >= version
+    active_version() >= version
 }
 
 #[inline(always)]

@@ -105,72 +105,180 @@ impl MemoryManager {
 
 #[inline(always)]
 pub fn malloc(size: usize) -> *mut c_void {
-    let heap = MemoryManager::get_singleton();
-    if heap.is_null() {
-        core::ptr::null_mut()
+    if cfg!(test) {
+        unsafe { crate::ffi::commonlib_malloc(size) }
     } else {
-        unsafe { (*heap).allocate(size, 0, false) }
+        let heap = MemoryManager::get_singleton();
+        if heap.is_null() {
+            core::ptr::null_mut()
+        } else {
+            unsafe { (*heap).allocate(size, 0, false) }
+        }
     }
 }
 
 #[inline(always)]
 pub fn aligned_alloc(alignment: usize, size: usize) -> *mut c_void {
-    let heap = MemoryManager::get_singleton();
-    if heap.is_null() {
-        core::ptr::null_mut()
+    if cfg!(test) {
+        unsafe { crate::ffi::commonlib_aligned_alloc(alignment, size) }
     } else {
-        unsafe { (*heap).allocate(size, alignment as i32, true) }
+        let heap = MemoryManager::get_singleton();
+        if heap.is_null() {
+            core::ptr::null_mut()
+        } else {
+            unsafe { (*heap).allocate(size, alignment as i32, true) }
+        }
     }
 }
 
 #[inline(always)]
 pub fn calloc(count: usize, size: usize) -> *mut c_void {
-    let total = count.saturating_mul(size);
-    let mem = malloc(total);
-    if !mem.is_null() {
-        unsafe {
-            core::ptr::write_bytes(mem.cast::<u8>(), 0, total);
+    if cfg!(test) {
+        unsafe { crate::ffi::commonlib_calloc(count, size) }
+    } else {
+        let total = count.saturating_mul(size);
+        let mem = malloc(total);
+        if !mem.is_null() {
+            unsafe {
+                core::ptr::write_bytes(mem.cast::<u8>(), 0, total);
+            }
         }
+        mem
     }
-    mem
 }
 
 #[inline(always)]
 pub fn realloc(ptr: *mut c_void, new_size: usize) -> *mut c_void {
-    let heap = MemoryManager::get_singleton();
-    if heap.is_null() {
-        core::ptr::null_mut()
+    if cfg!(test) {
+        unsafe { crate::ffi::commonlib_realloc(ptr, new_size) }
     } else {
-        unsafe { (*heap).reallocate(ptr, new_size, 0, false) }
+        let heap = MemoryManager::get_singleton();
+        if heap.is_null() {
+            core::ptr::null_mut()
+        } else {
+            unsafe { (*heap).reallocate(ptr, new_size, 0, false) }
+        }
     }
 }
 
 #[inline(always)]
 pub fn aligned_realloc(ptr: *mut c_void, new_size: usize, alignment: usize) -> *mut c_void {
-    let heap = MemoryManager::get_singleton();
-    if heap.is_null() {
-        core::ptr::null_mut()
+    if cfg!(test) {
+        if ptr.is_null() {
+            unsafe { crate::ffi::commonlib_aligned_alloc(alignment, new_size) }
+        } else {
+            // Test-mode callers do not currently rely on strict aligned-realloc
+            // semantics. Prefer a safe best-effort fallback over guessing the old
+            // allocation size and risking an overread.
+            unsafe { crate::ffi::commonlib_realloc(ptr, new_size) }
+        }
     } else {
-        unsafe { (*heap).reallocate(ptr, new_size, alignment as i32, true) }
+        let heap = MemoryManager::get_singleton();
+        if heap.is_null() {
+            core::ptr::null_mut()
+        } else {
+            unsafe { (*heap).reallocate(ptr, new_size, alignment as i32, true) }
+        }
     }
 }
 
 #[inline(always)]
 pub fn free(ptr: *mut c_void) {
-    let heap = MemoryManager::get_singleton();
-    if !heap.is_null() {
+    if cfg!(test) {
         unsafe {
-            (*heap).deallocate(ptr, false);
+            crate::ffi::commonlib_free(ptr);
+        }
+    } else {
+        let heap = MemoryManager::get_singleton();
+        if !heap.is_null() {
+            unsafe {
+                (*heap).deallocate(ptr, false);
+            }
         }
     }
 }
 
 #[inline(always)]
 pub fn aligned_free(ptr: *mut c_void) {
-    let heap = MemoryManager::get_singleton();
-    if !heap.is_null() {
+    if cfg!(test) {
         unsafe {
-            (*heap).deallocate(ptr, true);
+            crate::ffi::commonlib_aligned_free(ptr);
         }
+    } else {
+        let heap = MemoryManager::get_singleton();
+        if !heap.is_null() {
+            unsafe {
+                (*heap).deallocate(ptr, true);
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{aligned_alloc, aligned_free, aligned_realloc, calloc, free, malloc, realloc};
+
+    #[test]
+    fn malloc_and_free_round_trip() {
+        let ptr = malloc(16).cast::<u8>();
+        assert!(!ptr.is_null());
+
+        unsafe {
+            for idx in 0..16 {
+                *ptr.add(idx) = idx as u8;
+            }
+        }
+
+        free(ptr.cast());
+    }
+
+    #[test]
+    fn calloc_zeroes_memory() {
+        let ptr = calloc(4, 4).cast::<u8>();
+        assert!(!ptr.is_null());
+
+        let bytes = unsafe { core::slice::from_raw_parts(ptr, 16) };
+        assert!(bytes.iter().all(|&byte| byte == 0));
+
+        free(ptr.cast());
+    }
+
+    #[test]
+    fn realloc_preserves_existing_prefix() {
+        let ptr = malloc(4).cast::<u8>();
+        assert!(!ptr.is_null());
+
+        unsafe {
+            ptr.add(0).write(1);
+            ptr.add(1).write(2);
+            ptr.add(2).write(3);
+            ptr.add(3).write(4);
+        }
+
+        let grown = realloc(ptr.cast(), 8).cast::<u8>();
+        assert!(!grown.is_null());
+
+        let prefix = unsafe { core::slice::from_raw_parts(grown, 4) };
+        assert_eq!(prefix, &[1, 2, 3, 4]);
+
+        free(grown.cast());
+    }
+
+    #[test]
+    fn aligned_alloc_respects_requested_alignment() {
+        let ptr = aligned_alloc(32, 64).cast::<u8>();
+        assert!(!ptr.is_null());
+        assert_eq!((ptr as usize) % 32, 0);
+
+        aligned_free(ptr.cast());
+    }
+
+    #[test]
+    fn aligned_realloc_null_allocates_aligned_block() {
+        let ptr = aligned_realloc(core::ptr::null_mut(), 64, 64).cast::<u8>();
+        assert!(!ptr.is_null());
+        assert_eq!((ptr as usize) % 64, 0);
+
+        aligned_free(ptr.cast());
     }
 }

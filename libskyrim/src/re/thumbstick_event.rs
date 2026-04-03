@@ -4,7 +4,7 @@ use core_util::{EnumSet, inherit};
 
 use crate::offsets::offsets_rtti::RTTI_ThumbstickEvent;
 use crate::offsets::offsets_vtable::VTABLE_ThumbstickEvent;
-use crate::re::{BSFixedString, IDEvent, INPUT_DEVICE};
+use crate::re::{BSFixedString, IDEvent, INPUT_DEVICE, INPUT_EVENT_TYPE};
 use crate::relocation::{RttiType, VariantID};
 
 /// C++ `RE::ThumbstickEvent::InputTypes::InputType`
@@ -72,6 +72,7 @@ impl ThumbstickEvent {
         self.x_value = x_value;
         self.y_value = y_value;
         self.base.base.device = EnumSet::from_underlying(device as u32);
+        self.base.base.event_type = EnumSet::from_underlying(INPUT_EVENT_TYPE::kThumbstick as u32);
         self.base.id_code = id as u32;
         self.base.user_event = user_event;
     }

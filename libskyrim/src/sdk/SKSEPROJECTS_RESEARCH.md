@@ -1,6 +1,6 @@
 # SKSE Projects Research
 
-Last updated: 2026-03-30
+Last updated: 2026-04-01
 
 This file captures a focused research pass over `S:\Programming\SKSEProjects`
 to keep high-signal C++ plugin patterns available when shaping
@@ -60,6 +60,24 @@ Sampled projects and files included:
 - `S:\Programming\SKSEProjects\NewProjectilesTMP-master\src\Emitters.cpp`
 - `S:\Programming\SKSEProjects\NewProjectilesTMP-master\src\Multicast.cpp`
 - `S:\Programming\SKSEProjects\NewProjectilesTMP-master\src\Hooks.h`
+- `S:\Programming\SKSEProjects\CustomDodge\src\plugin.cpp`
+- `S:\Programming\SKSEProjects\CustomDodge\src\SimpleDodge.cpp`
+- `S:\Programming\SKSEProjects\NavigationRestrictions-master\src\Main.cpp`
+- `S:\Programming\SKSEProjects\NavigationRestrictions-master\src\Hooks.cpp`
+- `S:\Programming\SKSEProjects\NavigationRestrictions-master\src\papyrus.cpp`
+- `S:\Programming\SKSEProjects\PapyrusTweaks-main\src\main.cpp`
+- `S:\Programming\SKSEProjects\PapyrusTweaks-main\src\Papyrus.cpp`
+- `S:\Programming\SKSEProjects\PapyrusTweaks-main\src\ExperimentalHooks.h`
+- `S:\Programming\SKSEProjects\Unblockable\src\Events.cpp`
+- `S:\Programming\SKSEProjects\LoadingScreenTruce01\src\main.cpp`
+- `S:\Programming\SKSEProjects\LoadingScreenTruce02\src\main.cpp`
+- `S:\Programming\SKSEProjects\Acheron\src\Acheron\EventSink.cpp`
+- `S:\Programming\SKSEProjects\Acheron\src\Papyrus\Events.h`
+- `S:\Programming\SKSEProjects\Acheron\src\Serialization\EventManager.h`
+- `S:\Programming\SKSEProjects\Acheron\src\Serialization\EventManager.cpp`
+- `S:\Programming\SKSEProjects\death-alternative-mod-main\src\effectEvent.cpp`
+- `S:\Programming\SKSEProjects\death-alternative-mod-main\src\sleepEvent.cpp`
+- `S:\Programming\SKSEProjects\injury-alt-death\src\utility.h`
 
 ## Utility Libraries And Projectile Framework Pass
 
@@ -272,6 +290,198 @@ Recommended additions:
 - `for_each_reference_in_range(...)`
 - pointer-friendly soft-fail variants for nullable origins
 - snapshot / collect helpers built on `ObjectRefHandle` or `Resolved<TESObjectREFR>`
+
+### 17. Input gesture and control-lock helpers are still hand-rolled in gameplay mods
+
+Observed in:
+
+- `CustomDodge`
+- `Acheron`
+- `SkyrimSE-SmoothCam`
+
+Repeated patterns:
+
+- subscribe directly to `InputEvent*` and inspect `ButtonEvent` / `ThumbstickEvent`
+- use `userEvent` names such as `"Forward"` / `"Strafe Left"` instead of hard-coded movement scancodes
+- add tap-on-release or modifier-key hotkey behavior on top of basic combo parsing
+- snapshot analog direction at trigger time
+- temporarily disable movement or attack handlers and later restore the previous state
+- guard input-driven gameplay actions behind menu, pause, and `ControlMap` checks
+
+What this means for `sdk`:
+
+- `sdk::gameplay::input` already covers snapshots and simple hotkeys, but it
+  still lacks the gesture and handler-control layer that real gameplay mods
+  keep rebuilding
+
+Recommended additions:
+
+- `InputGesture` or equivalent helpers for tap / hold / modifier-aware triggers
+- directional snapshot helpers over current digital + analog movement intent
+- scoped `movement_input_guard()` / `attack_input_guard()` style wrappers over
+  `PlayerControls` handlers
+- named `can_run_gameplay_input()` style predicates that centralize common UI /
+  pause / control-map gates
+
+### 18. Persistent Papyrus event registries are a real framework shape, not a one-off trick
+
+Observed in:
+
+- `Acheron`
+- `NavigationRestrictions-master`
+- `PapyrusTweaks-main`
+
+Repeated patterns:
+
+- large `RegisterFunction(...)` blocks with repeated null tracing and type variants
+- `SKSE::RegistrationSet` managers that support form / alias / active-effect registrations
+- save/load/revert/form-delete plumbing for those registrations
+- mixing Papyrus callbacks with `SKSE::GetTaskInterface()->AddTask(...)` when the real work should happen later
+
+What this means for `sdk`:
+
+- the low-level `skse::registration_set*` layer exists, but plugins still need
+  to rebuild the same higher-level Papyrus-facing registry surface above it
+
+Recommended additions:
+
+- `sdk::papyrus::events` or similar wrappers over `skse::registration_set*`
+- typed helpers for `TESForm`, `BGSRefAlias`, and `ActiveEffect` registration families
+- small registry builders that own save/load/revert/delete callbacks
+- queue-now / run-later helpers for Papyrus functions that should dispatch onto the task interface
+
+### 19. Magic, active-effect, and injury-style gameplay helpers keep repeating
+
+Observed in:
+
+- `injury-alt-death`
+- `death-alternative-mod-main`
+- `Unblockable`
+- `Acheron`
+
+Repeated patterns:
+
+- iterate active effects and filter by keywords or exact `EffectSetting`
+- iterate spells through `VisitSpells(...)`
+- cast spells through `GetMagicCaster(...)->CastSpellImmediate(...)`
+- react to `TESMagicEffectApplyEvent` or sleep events to mutate actor state
+- choose or downgrade spells and potion-like effects based on current actor state
+
+What this means for `sdk`:
+
+- `sdk::gameplay::magic` is still effectively empty even though the underlying
+  operations show up across recovery, combat, and utility plugins
+
+Recommended additions:
+
+- active-effect query helpers by keyword, exact effect, or predicate
+- spell iteration / collect helpers over `VisitSpells(...)`
+- safe-ish immediate-cast helpers that preserve the raw escape hatch
+- small recovery-oriented helpers such as sleep-gated effect cleanup and
+  keyword-based injury/effect predicates
+
+### 20. Inventory and equipment workflows are still rebuilt per plugin
+
+Observed in:
+
+- `Acheron`
+- `NavigationRestrictions-master`
+- `Unblockable`
+
+Repeated patterns:
+
+- scan inventories and filter by playability, quest-item state, worn state, value, or keywords
+- cache worn armor and re-equip it later
+- remove, transfer, or unequip groups of items using repeated reason-selection logic
+- gate gameplay behavior on `GetItemCount(...)` checks for specific forms
+
+What this means for `sdk`:
+
+- `sdk::gameplay::inventory` is still a placeholder even though these are
+  recurring building blocks rather than one mod's special architecture
+
+Recommended additions:
+
+- inventory iteration and filtering helpers
+- worn-equipment collection helpers
+- grouped remove / transfer / unequip helpers with sensible reason defaults
+- simple item-count and keyword-presence predicates
+
+### 21. Lightweight exported service APIs matter beyond plain `RequestPluginAPI`
+
+Observed in:
+
+- `death-alternative-mod-main`
+- `injury-alt-death`
+- `Unblockable` via third-party menu-framework export usage
+
+Repeated patterns:
+
+- load another plugin module
+- `GetProcAddress(...)` a custom symbol rather than `RequestPluginAPI`
+- register a subscriber or callback object through a tiny exported function
+- keep the provider-side contract intentionally small and C ABI friendly
+
+What this means for `sdk`:
+
+- `sdk::interop::external_api` should not stay request-client only
+
+Recommended additions:
+
+- helper patterns for publishing small exported service APIs from Rust plugins
+- support for custom-symbol service discovery in addition to `RequestPluginAPI`
+- tiny subscriber-registry examples or helpers for provider-owned callback lists
+
+### 22. Small UI and lifecycle phase guards are ubiquitous enough to deserve names
+
+Observed in:
+
+- `LoadingScreenTruce01`
+- `LoadingScreenTruce02`
+- `CustomDodge`
+- `Acheron`
+- `NavigationRestrictions-master`
+
+Repeated patterns:
+
+- bail out while `LoadingMenu` or `FaderMenu` is open
+- guard behavior behind `GameIsPaused()`
+- reject gameplay logic while console, application, or item menus are open
+- combine those checks with `ControlMap` enabled-state checks
+
+What this means for `sdk`:
+
+- many plugins only need a tiny, reusable "unsafe phase" predicate rather than
+  a whole new subsystem
+
+Recommended additions:
+
+- named menu / phase predicates for loading, fading, paused, and input-blocked states
+- helpers that compose `UI`, `ControlMap`, and `PlayerControls` checks into one reusable gameplay gate
+
+### 23. Task-interface handoff is a recurring safety boundary after events and Papyrus callbacks
+
+Observed in:
+
+- `Acheron`
+- `Unblockable`
+- `NavigationRestrictions-master`
+
+Repeated patterns:
+
+- capture handles or lightweight state in an event or Papyrus callback
+- defer the real mutation to `SKSE::GetTaskInterface()->AddTask(...)`
+- use that handoff to avoid mutating complex game state inline from the callback
+
+What this means for `sdk`:
+
+- `sdk::plugin::task` is still too small compared with how often this handoff
+  pattern shows up in practice
+
+Recommended additions:
+
+- named helpers for queueing work from event and Papyrus contexts
+- small patterns for handle-first capture and later resolution inside the queued task
 
 ## Repeated Patterns
 
@@ -588,16 +798,25 @@ Recommended additions:
 
 Priority order after this pass:
 
-1. Expand `sdk::forms::lookup` with form-string parsing, plugin-aware lookup,
-   editor-ID helpers, and optional dependency-aware fallbacks.
-2. Add small `sdk::plugin::config` helpers for typed INI access, hotkey parsing,
-   and config-to-form resolution glue.
-3. Start a narrow `sdk::gameplay::projectiles` pass focused on target
-   acquisition, spatial pattern generation, and projectile runtime helpers.
-4. Deepen `sdk::ui::scaleform` with object/member wrappers and function
-   binding.
-5. Expand `sdk::advanced::physics` with ignore filters, split rays, clearance,
-   and relocation-candidate helpers.
+1. Start `sdk::gameplay::magic` with active-effect queries, spell iteration,
+   keyword predicates, and source-backed immediate-cast helpers.
+2. Add a real `sdk::papyrus` registration / event layer on top of
+   `skse::registration_set*`, including save/load/revert/delete-friendly
+   helpers.
+3. Deepen `sdk::gameplay::input` with gesture detection, directional snapshots,
+   and scoped movement / attack handler guards.
+4. Start `sdk::gameplay::inventory` with worn-equipment, filtered inventory,
+   and grouped remove / transfer helpers.
+5. Expand `sdk::interop::external_api` with provider-side publication helpers
+   and custom-symbol service registry patterns.
+6. Add small reusable UI / gameplay phase guards around loading, fading,
+   pause, and control-map state.
+7. Keep `sdk::gameplay::projectiles` on deck once these cross-cutting gameplay
+   helpers are in place.
+8. Continue the deeper `sdk::ui::scaleform` object/member pass once the more
+   repeated gameplay and Papyrus gaps above are covered.
+9. Continue broadening `sdk::advanced::physics` where new gameplay helpers
+   still need lower-level collision support.
 
 ## Things That Should Probably Stay Out Of The SDK For Now
 
@@ -606,6 +825,9 @@ Priority order after this pass:
 - full collision-object creation / active-ragdoll APIs
 - giant gameplay frameworks that bake in one mod’s domain language
 - invasive hook packs whose only commonality is “they exist in many mods”
+- invasive Papyrus VM surgery as a first-class SDK surface
+- whole defeat / recovery frameworks instead of reusable building blocks
+- mod-specific dodge state machines and combo systems
 
 ## Revisit Targets
 
@@ -629,6 +851,22 @@ Projects worth returning to when implementing the next passes:
   for compact API + actor cache + config integration patterns
 - `Acheron`
   for death-flow actor scans, menu use, and consequence selection
+- `CustomDodge`
+  for action-mapped input, analog direction capture, and scoped input-handler locks
+- `NavigationRestrictions-master`
+  for menu gating, item-count workflows, and tiny Papyrus + serialization glue
+- `PapyrusTweaks-main`
+  for Papyrus-facing surface design and the boundary between SDK helpers and VM surgery
+- `Unblockable`
+  for combat-state scans, animation-event-driven gameplay reactions, and delayed task handoff
+- `death-alternative-mod-main`
+  for exported subscriber APIs, sleep/effect event sinks, and recovery flow pieces
+- `injury-alt-death`
+  for injury/spell helpers and sleep-gated recovery logic
+- `LoadingScreenTruce01`
+  for minimal loading/fader safety predicates
+- `LoadingScreenTruce02`
+  for the same loading/fader guard pattern in a split hook file
 - `CLibUtil-master`
   for form-string parsing, editor-ID fallback, distribution, and hotkeys
 - `StyyxUtils-main`

@@ -2192,6 +2192,10 @@ mod tests {
         let _ = TestVcallHook::original_virtual_relocation::<u8>
             as fn(*const u8) -> crate::relocation::Relocation<extern "C" fn(*mut u8, u32) -> u32>;
         let _ = TestVcallSlotHook::install as fn();
+        let _ = TestVcallSlotHook::callsite_relocation as fn() -> crate::relocation::Relocation<()>;
+        let _ = TestVcallSlotHook::vtable_index as fn() -> usize;
         let _ = TestVcallSlotHook::original as fn(*mut u8, u32) -> u32;
+        let _ = TestVcallSlotHook::original_virtual_relocation::<u8>
+            as fn(*const u8) -> crate::relocation::Relocation<extern "C" fn(*mut u8, u32) -> u32>;
     }
 }

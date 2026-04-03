@@ -164,7 +164,7 @@ where
 #[inline(always)]
 pub fn contiguous_sequence_bounds_named<T, S>(
     sequence: &S,
-    caller: &'static str,
+    _caller: &'static str,
     options: ContiguousSequenceIterationOptions,
 ) -> Option<(*const T, u32)>
 where
@@ -179,7 +179,7 @@ where
         if options.require_capacity_at_least_len && capacity < len {
             crate::defensive_sdk_warn!(
                 "{} observed {} with len={} > capacity={}",
-                caller,
+                _caller,
                 core::any::type_name::<S>(),
                 len,
                 capacity
@@ -192,7 +192,7 @@ where
         if len > max_reasonable_len {
             crate::defensive_sdk_warn!(
                 "{} observed suspicious {} len={} (max={})",
-                caller,
+                _caller,
                 core::any::type_name::<S>(),
                 len,
                 max_reasonable_len
@@ -205,7 +205,7 @@ where
     if data.is_null() {
         crate::defensive_sdk_warn!(
             "{} observed {}<{}> with non-zero len={} and null data",
-            caller,
+            _caller,
             core::any::type_name::<S>(),
             core::any::type_name::<T>(),
             len
@@ -232,14 +232,14 @@ where
 #[inline(always)]
 pub fn for_each_contiguous_sequence_named<T, S>(
     sequence: &S,
-    caller: &'static str,
+    _caller: &'static str,
     options: ContiguousSequenceIterationOptions,
     mut visit: impl FnMut(&T) -> ControlFlow<()>,
 ) -> ControlFlow<()>
 where
     S: ContiguousSequence<T>,
 {
-    let Some((data, len)) = contiguous_sequence_bounds_named(sequence, caller, options) else {
+    let Some((data, len)) = contiguous_sequence_bounds_named(sequence, _caller, options) else {
         return ControlFlow::Continue(());
     };
 
@@ -268,14 +268,14 @@ where
 #[inline(always)]
 pub fn snapshot_contiguous_copied_named<T, S>(
     sequence: &S,
-    caller: &'static str,
+    _caller: &'static str,
     options: ContiguousSequenceIterationOptions,
 ) -> Vec<T>
 where
     T: Copy,
     S: ContiguousSequence<T>,
 {
-    let Some((data, len)) = contiguous_sequence_bounds_named(sequence, caller, options) else {
+    let Some((data, len)) = contiguous_sequence_bounds_named(sequence, _caller, options) else {
         return Vec::new();
     };
 
@@ -301,14 +301,14 @@ where
 #[inline(always)]
 pub fn snapshot_contiguous_cloned_named<T, S>(
     sequence: &S,
-    caller: &'static str,
+    _caller: &'static str,
     options: ContiguousSequenceIterationOptions,
 ) -> Vec<T>
 where
     T: Clone,
     S: ContiguousSequence<T>,
 {
-    let Some((data, len)) = contiguous_sequence_bounds_named(sequence, caller, options) else {
+    let Some((data, len)) = contiguous_sequence_bounds_named(sequence, _caller, options) else {
         return Vec::new();
     };
 

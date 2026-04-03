@@ -128,7 +128,7 @@ mod tests {
             as fn() -> Result<(), crate::sdk::hooks::HookInstallError>;
         let _ = sdk_vcall_example_hook::INSTALLER;
 
-        let _ = hooks::install_all![sdk_function_example_hook, sdk_call_example_hook]
-            as Result<(), hooks::HookBatchError>;
+        let _ =
+            hooks::try_install_all as fn(&[hooks::HookInstaller]) -> hooks::HookBatchInstallResult;
     }
 }

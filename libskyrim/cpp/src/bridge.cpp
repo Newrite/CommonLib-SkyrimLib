@@ -1,5 +1,7 @@
 #include "PCH.h"
 
+#include "bridge_test_support.h"
+
 #include "RE/B/BSFixedString.h"
 #include "RE/B/BSStringPool.h"
 #include "RE/I/IAnimationGraphManagerHolder.h"
@@ -22,6 +24,69 @@ namespace
     using bst_event_sink_destroy_callback = void (*)(void* ctx);
     using native_function_marshall_callback =
         bool (*)(void* ctx, void* base_value, void* vm, std::uint32_t stack_id, void* result_value, const void* frame);
+
+    [[nodiscard]] void* bridge_malloc_bytes(std::size_t size) noexcept
+    {
+        const auto allocationSize = size ? size : 1;
+        if (bridge_test_allocator_active()) {
+            return bridge_test_malloc_bytes(allocationSize);
+        }
+        return RE::malloc(allocationSize);
+    }
+
+    void bridge_free_bytes(void* ptr) noexcept
+    {
+        if (!ptr) {
+            return;
+        }
+
+        if (bridge_test_allocator_active()) {
+            bridge_test_free_bytes(ptr);
+            return;
+        }
+
+        RE::free(ptr);
+    }
+
+    [[nodiscard]] void* bridge_calloc_bytes(std::size_t count, std::size_t size) noexcept
+    {
+        if (bridge_test_allocator_active()) {
+            return bridge_test_calloc_bytes(count, size);
+        }
+        return RE::calloc(count, size);
+    }
+
+    [[nodiscard]] void* bridge_realloc_bytes(void* ptr, std::size_t size) noexcept
+    {
+        const auto allocationSize = size ? size : 1;
+        if (bridge_test_allocator_active()) {
+            return bridge_test_realloc_bytes(ptr, allocationSize);
+        }
+        return RE::realloc(ptr, allocationSize);
+    }
+
+    [[nodiscard]] void* bridge_aligned_alloc_bytes(std::size_t alignment, std::size_t size) noexcept
+    {
+        const auto allocationSize = size ? size : 1;
+        if (bridge_test_allocator_active()) {
+            return bridge_test_aligned_alloc_bytes(alignment, allocationSize);
+        }
+        return RE::aligned_alloc(alignment, allocationSize);
+    }
+
+    void bridge_aligned_free_bytes(void* ptr) noexcept
+    {
+        if (!ptr) {
+            return;
+        }
+
+        if (bridge_test_allocator_active()) {
+            bridge_test_aligned_free_bytes(ptr);
+            return;
+        }
+
+        RE::aligned_free(ptr);
+    }
 
     int bridge_dispatch_unhandled_exception(EXCEPTION_POINTERS* exception) noexcept
     {
@@ -79,7 +144,7 @@ namespace
     template <class T, class... Args>
     [[nodiscard]] T* construct_game_object(Args&&... args) noexcept
     {
-        auto* storage = RE::malloc<T>();
+        auto* storage = static_cast<T*>(bridge_malloc_bytes(sizeof(T)));
         if (!storage) {
             return nullptr;
         }
@@ -87,7 +152,7 @@ namespace
         try {
             return std::construct_at(storage, std::forward<Args>(args)...);
         } catch (...) {
-            RE::free(storage);
+            bridge_free_bytes(storage);
             return nullptr;
         }
     }
@@ -430,47 +495,60 @@ extern "C" {
 
     // Выделение памяти через движок Скайрима
     void* commonlib_malloc(size_t size) {
-        return RE::malloc(size);
+        return bridge_malloc_bytes(size);
     }
 
     void* commonlib_aligned_alloc(size_t alignment, size_t size) {
-        return RE::aligned_alloc(alignment, size);
+        return bridge_aligned_alloc_bytes(alignment, size);
     }
 
     // Освобождение памяти
     void commonlib_free(void* ptr) {
-        RE::free(ptr);
+        bridge_free_bytes(ptr);
     }
 
     void commonlib_aligned_free(void* ptr) {
-        RE::aligned_free(ptr);
+        bridge_aligned_free_bytes(ptr);
     }
 
     void* commonlib_calloc(size_t count, size_t size) {
-        return RE::calloc(count, size);
+        return bridge_calloc_bytes(count, size);
     }
 
     void* commonlib_realloc(void* ptr, size_t new_size) {
-        return RE::realloc(ptr, new_size);
+        return bridge_realloc_bytes(ptr, new_size);
     }
 
     // ── MemoryManager ────────────────────────────────────────────────────────
 
     void* commonlib_memory_manager_get_singleton() {
+        if (bridge_test_allocator_active()) {
+            return nullptr;
+        }
         return RE::MemoryManager::GetSingleton();
     }
 
     void* commonlib_memory_manager_get_thread_scrap_heap(void* mgr) {
+        if (bridge_test_allocator_active() || !mgr) {
+            return nullptr;
+        }
         return static_cast<RE::MemoryManager*>(mgr)->GetThreadScrapHeap();
     }
 
     // ── ScrapHeap ────────────────────────────────────────────────────────────
 
     void* commonlib_scrap_heap_allocate(void* heap, size_t size, size_t alignment) {
+        if (bridge_test_allocator_active() || !heap) {
+            return bridge_aligned_alloc_bytes(alignment, size);
+        }
         return static_cast<RE::ScrapHeap*>(heap)->Allocate(size, alignment);
     }
 
     void commonlib_scrap_heap_deallocate(void* heap, void* mem) {
+        if (bridge_test_allocator_active() || !heap) {
+            bridge_aligned_free_bytes(mem);
+            return;
+        }
         static_cast<RE::ScrapHeap*>(heap)->Deallocate(mem);
     }
 
@@ -657,6 +735,11 @@ extern "C" {
             return;
         }
 
+        if (bridge_test_allocator_active()) {
+            bridge_test_bs_fixed_string_ctor8(out, string);
+            return;
+        }
+
         auto* fixed = static_cast<RE::BSFixedString*>(out);
         if (string) {
             std::construct_at(fixed, string);
@@ -667,6 +750,11 @@ extern "C" {
 
     void commonlib_bs_fixed_string_copy(void* out, const void* src) noexcept {
         if (!out) {
+            return;
+        }
+
+        if (bridge_test_allocator_active()) {
+            bridge_test_bs_fixed_string_copy(out, src);
             return;
         }
 
@@ -683,12 +771,21 @@ extern "C" {
             return;
         }
 
+        if (bridge_test_allocator_active()) {
+            bridge_test_bs_fixed_string_destroy(string);
+            return;
+        }
+
         std::destroy_at(static_cast<RE::BSFixedString*>(string));
     }
 
     std::uint32_t commonlib_bs_fixed_string_size(const void* string) noexcept {
         if (!string) {
             return 0;
+        }
+
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_size(string);
         }
 
         return static_cast<const RE::BSFixedString*>(string)->size();
@@ -699,12 +796,20 @@ extern "C" {
             return "";
         }
 
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_c_str(string);
+        }
+
         return static_cast<const RE::BSFixedString*>(string)->c_str();
     }
 
     bool commonlib_bs_fixed_string_eq(const void* lhs, const void* rhs) noexcept {
         if (!lhs || !rhs) {
             return lhs == rhs;
+        }
+
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_eq(lhs, rhs);
         }
 
         return *static_cast<const RE::BSFixedString*>(lhs) ==
@@ -716,11 +821,20 @@ extern "C" {
             return 0;
         }
 
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_hash(string);
+        }
+
         return RE::BSCRC32_<RE::BSFixedString>()(*static_cast<const RE::BSFixedString*>(string));
     }
 
     void commonlib_bs_fixed_string_ctor16(void* out, const wchar_t* string) noexcept {
         if (!out) {
+            return;
+        }
+
+        if (bridge_test_allocator_active()) {
+            bridge_test_bs_fixed_string_ctor16(out, string);
             return;
         }
 
@@ -737,6 +851,11 @@ extern "C" {
             return;
         }
 
+        if (bridge_test_allocator_active()) {
+            bridge_test_bs_fixed_string_w_copy(out, src);
+            return;
+        }
+
         auto* fixed = static_cast<RE::BSFixedStringW*>(out);
         if (src) {
             std::construct_at(fixed, *static_cast<const RE::BSFixedStringW*>(src));
@@ -750,12 +869,21 @@ extern "C" {
             return;
         }
 
+        if (bridge_test_allocator_active()) {
+            bridge_test_bs_fixed_string_w_destroy(string);
+            return;
+        }
+
         std::destroy_at(static_cast<RE::BSFixedStringW*>(string));
     }
 
     std::uint32_t commonlib_bs_fixed_string_w_size(const void* string) noexcept {
         if (!string) {
             return 0;
+        }
+
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_w_size(string);
         }
 
         return static_cast<const RE::BSFixedStringW*>(string)->size();
@@ -766,12 +894,20 @@ extern "C" {
             return L"";
         }
 
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_w_c_str(string);
+        }
+
         return static_cast<const RE::BSFixedStringW*>(string)->c_str();
     }
 
     bool commonlib_bs_fixed_string_w_eq(const void* lhs, const void* rhs) noexcept {
         if (!lhs || !rhs) {
             return lhs == rhs;
+        }
+
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_w_eq(lhs, rhs);
         }
 
         return *static_cast<const RE::BSFixedStringW*>(lhs) ==
@@ -781,6 +917,10 @@ extern "C" {
     std::uint32_t commonlib_bs_fixed_string_w_hash(const void* string) noexcept {
         if (!string) {
             return 0;
+        }
+
+        if (bridge_test_allocator_active()) {
+            return bridge_test_bs_fixed_string_w_hash(string);
         }
 
         return RE::BSCRC32_<RE::BSFixedStringW>()(*static_cast<const RE::BSFixedStringW*>(string));
@@ -818,14 +958,14 @@ extern "C" {
                 sizeof(RE::VRWandEvent) + sizeof(RE::ButtonEvent::RUNTIME_DATA) :
                 sizeof(RE::IDEvent) + sizeof(RE::ButtonEvent::RUNTIME_DATA);
 
-        auto* button_event = RE::malloc<RE::ButtonEvent>(full_size);
+        auto* button_event = static_cast<RE::ButtonEvent*>(bridge_malloc_bytes(full_size));
         if (!button_event) {
             return nullptr;
         }
 
         bridge_memzero(button_event, full_size);
         if (!bridge_emplace_vtable(button_event)) {
-            RE::free(button_event);
+            bridge_free_bytes(button_event);
             return nullptr;
         }
 

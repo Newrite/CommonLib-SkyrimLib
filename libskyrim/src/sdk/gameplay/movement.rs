@@ -9,6 +9,7 @@ use crate::re::{
     ExtraRefrPath, ExtraRefrPathPathType, NiPoint3, TESObjectREFR, TESObjectREFRChangeFlags,
 };
 use crate::sdk::core::ResolvableHandle;
+use libm::{cosf, sinf};
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -54,20 +55,22 @@ fn relative_offset_point(
 ) -> NiPoint3 {
     let origin = target.get_position();
     let yaw = target.get_angle_z();
+    let yaw_sin = sinf(yaw);
+    let yaw_cos = cosf(yaw);
     match side {
         RelativeOffsetSide::Behind => NiPoint3::new(
-            origin.x - distance * yaw.sin(),
-            origin.y - distance * yaw.cos(),
+            origin.x - distance * yaw_sin,
+            origin.y - distance * yaw_cos,
             origin.z,
         ),
         RelativeOffsetSide::Left => NiPoint3::new(
-            origin.x - distance * yaw.cos(),
-            origin.y + distance * yaw.sin(),
+            origin.x - distance * yaw_cos,
+            origin.y + distance * yaw_sin,
             origin.z,
         ),
         RelativeOffsetSide::Right => NiPoint3::new(
-            origin.x + distance * yaw.cos(),
-            origin.y - distance * yaw.sin(),
+            origin.x + distance * yaw_cos,
+            origin.y - distance * yaw_sin,
             origin.z,
         ),
     }

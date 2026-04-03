@@ -30,6 +30,7 @@ if get_config("skyrim_se") then add_defines("ENABLE_SKYRIM_SE=1") end
 if get_config("skyrim_ae") then add_defines("ENABLE_SKYRIM_AE=1") end
 if get_config("skyrim_vr") then add_defines("ENABLE_SKYRIM_VR=1") end
 if get_config("skse_xbyak") then add_defines("SKSE_SUPPORT_XBYAK=1") end
+add_defines("ENABLE_COMMONLIBSSE_TESTING=1")
 
 -- 2. ОПРЕДЕЛЯЕМ КАСТОМНЫЙ ПАКЕТ
 package("commonlibsse-ng")

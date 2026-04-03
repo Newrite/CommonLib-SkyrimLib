@@ -1367,9 +1367,11 @@ Implemented foundation:
   shared `GameRef` / `GamePtr`, native-owner traits, handle resolution, and
   shared RTTI cast helpers
 - `sdk::papyrus`
-  SDK-facing facade over the current high-level Papyrus authoring layer in
-  `skse::papyrus`, including callback-facing `GameRef`, `GamePtr`,
-  `ResolvedHandle<H>`, `Resolved<T>`, and `Option<...>` parameter/base support
+  high-level Papyrus authoring and persistent event-registration layer over
+  `skse::papyrus` and `skse::registration_set*`, including callback-facing
+  `GameRef`, `GamePtr`, `ResolvedHandle<H>`, `Resolved<T>`,
+  `PapyrusEventRegistry*`, grouped save/load/revert/form-delete helpers, event
+  runtime registration, and macro sugar for `RegisterFor...` style modules
 - `sdk::core::handles`
   family-based resolved runtime-object model with immediate support for the
   `Actor`, `TESObjectREFR`, and `Projectile` handle families
@@ -1407,13 +1409,23 @@ Implemented foundation:
   mutable event bus
 - `sdk::interop`
   first-pass plugin-to-plugin interop covering `RequestPluginAPI`-style DLL
-  APIs, typed inter-plugin message dispatch, reusable `RequestClient`, and a
+  APIs, provider-side export/publication helpers, custom-symbol export macros,
+  typed inter-plugin message dispatch, reusable `RequestClient`, and a
   builder-based `RequestServer` for synchronous request / response protocols
+- `sdk::forms`
+  typed form lookup plus first-pass keyword/list/settings helpers covering
+  editor-ID and persistent lookup glue, keyword/list traversal and mutation,
+  typed `Setting` value access, collection iteration, and save/reload wrappers
 - `sdk::ui::menus`
   menu registration, queued open / close / toggle messaging, menu-state
   predicates, top-most lookup, `MenuOpenCloseEvent` helpers, and first-pass
   typed `IUIMessageData` payload helpers for `FaderData`, `LoadingMenuData`,
   `BSUIMessageData`, and `BSUIScaleformData`
+- `sdk::ui::controls`
+  UI-facing control coordination helpers over `menus` and `gameplay::input`,
+  including `UiControlSnapshot`, common menu/open predicates,
+  `is_ui_capturing_input()`, `is_gameplay_input_available()`, and
+  `should_show_hud_widgets()`
 - `sdk::ui::scaleform`
   owner-backed menu-side Scaleform surface covering open-menu `GFxMovieView`
   and `FxDelegate` lookup, plus movie `invoke` / `get_variable` /
@@ -1432,11 +1444,17 @@ Implemented foundation:
 - `sdk::gameplay::combat`
   hostile-nearby collection, cached faction-fight cleanup, player combat-state
   queries, and stop-combat helpers over `ProcessLists`
-- `sdk::forms::lookup`
-  `TESDataHandler` singleton access, plugin-file presence checks, local/raw
-  form-ID resolution, typed form lookup, editor-ID lookup, community-standard
-  `po3_Tweaks` editor-ID fallback for unsupported form types, and
-  `"Plugin.esp|0x123"` helpers
+- `sdk::gameplay::magic`
+  active-effect snapshots and queries, `MagicItem` effect-base inspection,
+  actor spell traversal/mutation, immediate-cast helpers, source-slot runtime
+  control, and compact cast-state snapshots over `MagicCaster`
+- `sdk::gameplay::inventory`
+  inventory-entry snapshots, filtered item collection, equipped/worn queries,
+  typed inventory collectors, item-count helpers, and grouped remove/transfer
+  flows over `InventoryChanges`
+- `sdk::gameplay::quests`
+  quest/objective/stage/alias snapshots, alias/objective lookup, target
+  resolution, stage-state helpers, and common quest lifecycle wrappers
 - `sdk::advanced::physics`
   world-locked closest/all-hit Havok raycasts, actor-aware query filters,
   post-query `LayerMask` filtering, hit resolution into raw `TESObjectREFR` /
@@ -1444,11 +1462,11 @@ Implemented foundation:
 
 Still intentionally placeholder-heavy:
 
-- parts of `sdk::forms` outside `lookup`
-- large parts of `sdk::gameplay`
-- most of `sdk::ui`
+- deeper parts of `sdk::gameplay`, especially projectiles and higher-level
+  input gesture/handler workflows
+- `sdk::ui::notifications` and broader widget-specific UI glue
 - most of `sdk::hooks`
-- most of `sdk::advanced` outside `sdk::advanced::physics`
+- `sdk::advanced::{render, scene, vm}` and broader rendering/VM workflows
 
 The migration strategy is to move existing ergonomic layers into `sdk` first as
 thin, compatibility-friendly facades, then gradually converge on more

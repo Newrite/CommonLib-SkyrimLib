@@ -141,6 +141,13 @@ impl<T> From<GamePtr<T>> for PapyrusRef<T> {
     }
 }
 
+impl<T> From<PapyrusRef<T>> for GamePtr<T> {
+    #[inline(always)]
+    fn from(value: PapyrusRef<T>) -> Self {
+        value.as_game_ptr()
+    }
+}
+
 impl<T> sdk_core_sealed::Sealed for PapyrusRef<T> where T: RttiType {}
 
 impl<T> ConstRttiCastSource for PapyrusRef<T>

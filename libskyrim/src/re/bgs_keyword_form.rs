@@ -219,6 +219,20 @@ impl BGSKeywordForm {
     }
 }
 
+impl AsRef<BGSKeywordForm> for BGSKeywordForm {
+    #[inline(always)]
+    fn as_ref(&self) -> &BGSKeywordForm {
+        self
+    }
+}
+
+impl AsMut<BGSKeywordForm> for BGSKeywordForm {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut BGSKeywordForm {
+        self
+    }
+}
+
 pub trait BGSKeywordFormExt {
     fn add_keyword(&mut self, keyword: *mut BGSKeyword) -> bool;
     fn add_keywords(&mut self, keywords: &[*mut BGSKeyword]) -> bool;
@@ -315,3 +329,106 @@ impl<T: AsRef<BGSKeywordForm> + AsMut<BGSKeywordForm>> BGSKeywordFormExt for T {
 }
 
 inherit!(BGSKeywordForm : BaseFormComponent);
+
+#[cfg(test)]
+mod tests {
+    use alloc::boxed::Box;
+    use alloc::vec::Vec;
+
+    use super::BGSKeywordForm;
+    use crate::re::base_form_component::BaseFormComponent;
+    use crate::re::bs_fixed_string::BSFixedString;
+    use crate::re::{BGSKeyword, FormType, InGameFormFlag, RecordFlag, TESFileContainer, TESForm};
+    use core_util::EnumSet;
+
+    fn test_form(form_id: u32) -> TESForm {
+        TESForm {
+            base: BaseFormComponent {
+                vtable: core::ptr::null(),
+            },
+            source_files: TESFileContainer {
+                array: core::ptr::null_mut(),
+            },
+            form_flags: RecordFlag::empty(),
+            form_id,
+            in_game_form_flags: EnumSet::<InGameFormFlag, u16>::from_underlying(0),
+            form_type: EnumSet::from(FormType::Keyword),
+            pad1b: 0,
+            pad1c: 0,
+        }
+    }
+
+    fn test_keyword(editor_id: &str, form_id: u32) -> *mut BGSKeyword {
+        Box::into_raw(Box::new(BGSKeyword {
+            base: test_form(form_id),
+            form_editor_id: BSFixedString::from_str(editor_id),
+        }))
+    }
+
+    fn keyword_form_from_slice(keywords: &mut [*mut BGSKeyword]) -> BGSKeywordForm {
+        BGSKeywordForm {
+            base: BaseFormComponent {
+                vtable: core::ptr::null(),
+            },
+            keywords: if keywords.is_empty() {
+                core::ptr::null_mut()
+            } else {
+                keywords.as_mut_ptr()
+            },
+            num_keywords: keywords.len() as u32,
+            pad14: 0,
+        }
+    }
+
+    fn empty_keyword_form() -> BGSKeywordForm {
+        keyword_form_from_slice(&mut [])
+    }
+
+    #[test]
+    fn keyword_iteration_and_queries_skip_null_entries() {
+        let fire = test_keyword("MagicDamageFire", 0x100);
+        let frost = test_keyword("MagicDamageFrost", 0x101);
+        let mut keywords = [core::ptr::null_mut(), fire, frost];
+        let form = keyword_form_from_slice(&mut keywords);
+
+        let mut visited = Vec::new();
+        form.for_each_keyword(|keyword| {
+            visited.push(unsafe { (&*keyword).form_id });
+            super::BSContainerForEachResult::Continue
+        });
+
+        assert_eq!(form.get_num_keywords(), 3);
+        assert_eq!(visited, [0x100, 0x101]);
+        assert_eq!(form.get_keyword_index(frost), Some(2));
+        assert_eq!(form.get_keyword_ref_at(1).unwrap().form_id, 0x100);
+        assert!(form.contains_keyword_string("DamageFire"));
+        assert!(form.has_keyword_string("MagicDamageFrost"));
+        assert!(form.has_keyword_id(0x101));
+    }
+
+    #[test]
+    fn add_and_remove_keywords_manage_storage() {
+        let fire = test_keyword("ArmorLight", 0x200);
+        let frost = test_keyword("ArmorHeavy", 0x201);
+        let mut form = empty_keyword_form();
+
+        assert!(form.add_keyword(fire));
+        assert!(!form.add_keyword(fire));
+        assert_eq!(form.get_keywords().len(), 1);
+        assert_eq!(form.get_keywords()[0], fire);
+
+        assert!(form.add_keywords(&[fire, frost]));
+        assert_eq!(form.get_keywords().len(), 2);
+        assert_eq!(form.get_keyword_index(frost), Some(1));
+
+        assert!(form.remove_keyword(fire));
+        assert_eq!(form.get_keywords(), &[frost]);
+        assert!(!form.remove_keyword(fire));
+
+        assert!(form.remove_keywords(&[frost]));
+        assert!(form.get_keywords().is_empty());
+        assert!(form.keywords.is_null());
+        assert_eq!(form.num_keywords, 0);
+        assert!(!form.remove_keyword_at(0));
+    }
+}

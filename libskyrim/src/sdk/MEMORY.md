@@ -6,7 +6,7 @@
 
 # SDK Memory
 
-Last updated: 2026-03-30
+Last updated: 2026-04-03
 
 This file is a persistent working memory for `libskyrim/src/sdk`.
 
@@ -89,6 +89,12 @@ High-signal projects sampled from the consolidated local folder:
 - `TrueHUD-master`
 - `UselessFenixUtils-master`
 - `NewProjectilesTMP-master`
+- `CustomDodge`
+- `NavigationRestrictions-master`
+- `PapyrusTweaks-main`
+- `Unblockable`
+- `LoadingScreenTruce01`
+- `LoadingScreenTruce02`
 - `injury-alt-death`
 - `death-alternative-mod-main`
 - `Reflyem`
@@ -128,6 +134,27 @@ shows the main repeated SDK patterns.
 - `S:\Programming\GigaWidget\src\MenuHandler.cpp`
 - `S:\Programming\SkyrimCrashGuard\Source\src\ConfigMenu.cpp`
 - `S:\Programming\Reflyem\src\Hooks.cpp`
+
+### Concrete files sampled in the 2026-04-01 follow-up pass
+
+- `S:\Programming\SKSEProjects\CustomDodge\src\plugin.cpp`
+- `S:\Programming\SKSEProjects\CustomDodge\src\SimpleDodge.cpp`
+- `S:\Programming\SKSEProjects\NavigationRestrictions-master\src\Main.cpp`
+- `S:\Programming\SKSEProjects\NavigationRestrictions-master\src\Hooks.cpp`
+- `S:\Programming\SKSEProjects\NavigationRestrictions-master\src\papyrus.cpp`
+- `S:\Programming\SKSEProjects\PapyrusTweaks-main\src\main.cpp`
+- `S:\Programming\SKSEProjects\PapyrusTweaks-main\src\Papyrus.cpp`
+- `S:\Programming\SKSEProjects\PapyrusTweaks-main\src\ExperimentalHooks.h`
+- `S:\Programming\SKSEProjects\Unblockable\src\Events.cpp`
+- `S:\Programming\SKSEProjects\Acheron\src\Acheron\EventSink.cpp`
+- `S:\Programming\SKSEProjects\Acheron\src\Papyrus\Events.h`
+- `S:\Programming\SKSEProjects\Acheron\src\Serialization\EventManager.h`
+- `S:\Programming\SKSEProjects\Acheron\src\Serialization\EventManager.cpp`
+- `S:\Programming\SKSEProjects\death-alternative-mod-main\src\effectEvent.cpp`
+- `S:\Programming\SKSEProjects\death-alternative-mod-main\src\sleepEvent.cpp`
+- `S:\Programming\SKSEProjects\injury-alt-death\src\utility.h`
+- `S:\Programming\SKSEProjects\LoadingScreenTruce01\src\main.cpp`
+- `S:\Programming\SKSEProjects\LoadingScreenTruce02\src\main.cpp`
 
 ## What Real Plugins Repeatedly Need
 
@@ -395,6 +422,117 @@ SDK implication:
   - menu registration
   - one-time phase-gated initialization
 
+### 11. Input gestures and scoped control-handler locks still sit below the current SDK surface
+
+Seen strongly in:
+
+- `CustomDodge`
+- `Acheron`
+- `SkyrimSE-SmoothCam`
+
+Repeated pattern:
+
+- inspect `InputEvent*` chains directly for both buttons and thumbsticks
+- use `userEvent` names for directional intent instead of hard-coded scancodes
+- layer tap / release / modifier semantics on top of simple hotkeys
+- temporarily disable movement or attack handlers and later restore the previous state
+- gate gameplay input behind menu, pause, and `ControlMap` checks
+
+SDK implication:
+
+- `sdk::gameplay::input` already covers snapshots and combo parsing, but it
+  still lacks the gesture and handler-control layer that gameplay mods keep
+  rebuilding
+
+### 12. Papyrus-side event registries are a recurring framework shape
+
+Seen strongly in:
+
+- `Acheron`
+- `NavigationRestrictions-master`
+- `PapyrusTweaks-main`
+
+Repeated pattern:
+
+- repeated `RegisterFunction(...)` blocks
+- `SKSE::RegistrationSet` managers over forms, aliases, and active effects
+- save/load/revert/form-delete plumbing for those registrations
+- deferring real work from Papyrus callbacks onto the task interface
+
+SDK implication:
+
+- `sdk::papyrus` now has a real higher-level registry/event layer on top of the
+  low-level `skse::registration_set*` support
+- the next Papyrus-facing gaps are deferred task handoff ergonomics, richer
+  runtime install/lifecycle glue, and more compact `RegisterFor...` authoring
+  sugar
+
+### 13. Magic, active-effect, and injury workflows still fall into plugin-local utilities
+
+Seen strongly in:
+
+- `injury-alt-death`
+- `death-alternative-mod-main`
+- `Unblockable`
+- `Acheron`
+
+Repeated pattern:
+
+- scan active effects by keyword or exact `EffectSetting`
+- iterate actor spells through `VisitSpells(...)`
+- cast immediate spells through `GetMagicCaster(...)->CastSpellImmediate(...)`
+- react to sleep or magic-effect events to clean up, upgrade, or downgrade state
+
+SDK implication:
+
+- `sdk::gameplay::magic` is now a real high-value helper layer
+- the next gaps are more compound cast/cleanup workflows and continued API
+  tightening as real plugin usage shakes out the most important spell/effect
+  flows
+
+### 14. Inventory and equipment workflows are still repeatedly reconstructed
+
+Seen strongly in:
+
+- `Acheron`
+- `NavigationRestrictions-master`
+- `Unblockable`
+
+Repeated pattern:
+
+- scan inventory with filters for worn, quest, playable, keyword, or value state
+- cache worn armor and re-equip it later
+- grouped remove / transfer / unequip flows with repeated reason selection
+- item-count gates for gameplay behavior
+
+SDK implication:
+
+- `sdk::gameplay::inventory` now has a real first helper layer
+- the next gaps are richer equip/unequip/re-equip workflows, more opinionated
+  transfer/remove scenarios, and better worn-state restoration sugar
+
+### 15. Tiny UI and lifecycle safety predicates are a real repeated need
+
+Seen strongly in:
+
+- `LoadingScreenTruce01`
+- `LoadingScreenTruce02`
+- `CustomDodge`
+- `Acheron`
+- `NavigationRestrictions-master`
+
+Repeated pattern:
+
+- bail out while loading, fading, paused, or console/menu states are active
+- combine those checks with `ControlMap` or `PlayerControls` state
+
+SDK implication:
+
+- `sdk::ui::controls` now covers the first compact UI/input coordination layer
+  for these checks
+- follow-up work should deepen widget/notification glue instead of rebuilding
+  the same loading/fader/menu predicates yet again
+
 ## Current SDK Coverage vs Gaps
 
 Current SDK already has meaningful foundations in:
@@ -411,10 +549,13 @@ Current SDK already has meaningful foundations in:
 
 Current weak or placeholder areas:
 
-- `sdk::plugin::config`
 - high-level actor cache / scan helpers
-- high-level widget / menu visibility helpers
+- deeper widget / notification / HUD synchronization helpers
 - richer spatial query helpers
+- gesture and control-handler helpers in `sdk::gameplay::input`
+- projectile-targeting helpers
+- provider-side service registries above the current `sdk::interop::external_api`
+  publication helpers
 
 ## Progress Notes
 
@@ -687,23 +828,88 @@ Intentional limits after this pass:
 - config loaders and hotkey parsing still belong in the next
   `sdk::plugin::config` pass
 
+### 2026-04-01: C++ control / Papyrus / recovery pass reprioritized the next SDK gaps
+
+The follow-up pass over `CustomDodge`, `PapyrusTweaks-main`,
+`NavigationRestrictions-master`, `Unblockable`, `Acheron`,
+`death-alternative-mod-main`, `injury-alt-death`, and
+`LoadingScreenTruce01/02` changed the near-term SDK picture.
+
+Highest-signal findings:
+
+- simple config hotkeys are no longer the main input gap; the repeated missing
+  layer is gesture handling plus scoped movement / attack handler locks
+- the repository already has low-level `skse::registration_set*`, but plugins
+  still rebuild their own persistent Papyrus event registries above it
+- `sdk::gameplay::magic` and `sdk::gameplay::inventory` remain far emptier than
+  the real plugin demand shown by recovery, combat, and utility mods
+- many mods repeatedly hand-roll tiny "unsafe phase" checks for loading, fader,
+  pause, console, and control-map state
+- custom exported service symbols such as subscriber registries show that
+  interop needs provider-side helpers, not just API request clients
+
+Implication for SDK direction:
+
+- the next work should favor cross-cutting gameplay and Papyrus glue layers
+  over another content-heavy one-mod-shaped subsystem
+- `projectiles`, deeper Scaleform DSL work, and more physics are still valid,
+  but they no longer outrank the missing `magic`, `inventory`, Papyrus event,
+  and input-control surfaces
+
+### 2026-04-03: first-pass cross-cutting SDK gaps landed
+
+Several of the highest-priority gaps from the 2026-04-01 reprioritization pass
+now have real SDK surfaces:
+
+- `sdk::papyrus`
+  persistent event registries, grouped save/load/revert/form-delete helpers,
+  runtime registration sets, and event-oriented macro sugar over
+  `skse::registration_set*`
+- `sdk::gameplay::magic`
+  active-effect queries, item/spell inspection, actor-spell traversal and
+  mutation, immediate-cast helpers, and source-slot runtime control
+- `sdk::gameplay::inventory`
+  inventory-entry snapshots, typed/filtered collection, equipped/worn queries,
+  and grouped remove/transfer helpers
+- `sdk::gameplay::quests`
+  quest/objective/stage/alias snapshots, alias/objective lookup, and common
+  quest lifecycle wrappers
+- `sdk::ui::controls`
+  compact UI/input coordination helpers such as `UiControlSnapshot`,
+  `is_ui_capturing_input()`, `is_gameplay_input_available()`, and
+  `should_show_hud_widgets()`
+- `sdk::interop::external_api`
+  provider-side publication helpers, version selection, and export macros in
+  addition to the existing request/client surface
+- `sdk::forms::{keywords, lists, settings}`
+  no longer placeholder-heavy; these now cover first-pass traversal, lookup,
+  mutation, typed value access, and store iteration workflows
+
+This shifts the immediate SDK backlog away from "add any layer at all" and
+toward deepening the already-started surfaces:
+
+- richer input gestures and handler guards
+- widget/notification glue on top of `ui::controls`, `ui::menus`, and
+  `ui::scaleform`
+- projectile and targeting helpers
+- higher-level interop registrars and provider-side service patterns
+
 ## Recommended Near-Term SDK Backlog
 
 Priority order as of this pass:
 
-1. Start a narrow `sdk::gameplay::projectiles` pass focused on target
-   acquisition, spatial pattern generation, and projectile runtime helpers.
-2. Deepen `sdk::ui::scaleform` with object/member sugar, function binding, and
-   richer `GFxValue` workflows now that movie-level helpers are in place.
-3. Return to `sdk::plugin::config` for a second pass around schema validation,
-   reload flow, and stronger path conventions once real plugin usage shapes the
-   first surface.
-4. Add an `sdk::interop` API-repository / interface-loader layer on top of the
-   existing external API and messaging surfaces.
-5. Broaden menu-payload coverage in `sdk::ui::menus` and start shaping
-   reusable custom-menu scaffolding.
-6. Expand `sdk::advanced::physics` with ignore filters, split-ray helpers,
-   clearance/headroom validation, and relocation-candidate workflows.
+1. Deepen `sdk::gameplay::input` with gesture detection, directional snapshots,
+   and scoped movement / attack handler guards.
+2. Expand `sdk::ui` beyond menus/controls/scaleform with notifications and
+   stronger widget-state synchronization helpers.
+3. Add `sdk::gameplay::projectiles` once the cross-cutting input/UI helpers
+   above are stable enough to support targeting-heavy mods cleanly.
+4. Continue the deeper `sdk::ui::scaleform` object/member and callback pass
+   once the more repeated widget/HUD gaps above are covered.
+5. Continue broadening `sdk::advanced::physics` where new gameplay helpers
+   still need lower-level collision support.
+6. Add higher-level interop registrars and provider-side service patterns above
+   the current `external_api` publication/export helpers.
 
 ### 2026-03-31: respawn / spatial-query backlog clarified
 
@@ -910,6 +1116,43 @@ These are directional examples, not frozen signatures.
 - `HotkeyCombo::currently_pressed()`
 - `HotkeyCombo::just_pressed_in(...)`
 
+### Input helpers
+
+- `InputGesture::tap(combo)`
+- `InputGesture::hold(combo, duration)`
+- `DirectionalInputSnapshot::capture_now()`
+- `movement_input_guard()`
+- `attack_input_guard()`
+- `can_run_gameplay_input()`
+
+### Papyrus event helpers
+
+- `PapyrusEventRegistry::new("OnActorDefeated")`
+- `registry.register_form(form)`
+- `registry.register_alias(alias)`
+- `registry.register_active_effect(effect)`
+- `registry.save/load/revert/form_delete(...)`
+- `registry.send((payload, ...))`
+- `registry.queue_send((payload, ...))`
+
+### Magic helpers
+
+- `has_active_effect(effect)`
+- `has_active_effect_with_keyword("CureInjury")`
+- `collect_active_effects_matching(...)`
+- `visit_spells(actor, |spell| ...)`
+- `collect_spells_matching(...)`
+- `cast_spell_immediate(caster, target, spell)`
+- `remove_spells_matching(...)`
+
+### Inventory helpers
+
+- `collect_worn_armor(actor, ignored_mask)`
+- `collect_inventory_items(container, filter)`
+- `remove_items_matching(container, filter, target)`
+- `transfer_items_matching(from, to, filter)`
+- `item_count(form)`
+
 ### Physics helpers
 
 - `raycast_all_segment(...)`
@@ -979,6 +1222,22 @@ Projects and areas worth revisiting in later passes:
   config menu and defensive runtime helpers
 - `Reflyem`
   breadth of gameplay utility and actor-state patterns
+- `CustomDodge`
+  action-mapped input, analog direction capture, and scoped input-handler locks
+- `NavigationRestrictions-master`
+  menu gating, item-count workflows, and tiny Papyrus + serialization glue
+- `PapyrusTweaks-main`
+  Papyrus-facing surface design and the boundary between SDK helpers and VM surgery
+- `Unblockable`
+  combat-state scans, animation-event-driven gameplay reactions, and delayed task handoff
+- `death-alternative-mod-main`
+  exported subscriber APIs, sleep/effect event sinks, and recovery flow pieces
+- `injury-alt-death`
+  injury/spell helpers and sleep-gated recovery logic
+- `LoadingScreenTruce01`
+  minimal loading/fader safety predicates
+- `LoadingScreenTruce02`
+  the same loading/fader guard pattern in a split hook file
 - `CLibUtil-master`
   form-string parsing, editor-ID lookup, distribution, and hotkey helpers
 - `StyyxUtils-main`
