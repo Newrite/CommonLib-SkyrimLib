@@ -14,6 +14,39 @@ namespace
     bool BRIDGE_RUST_TEST_HARNESS_ACTIVE = false;
 #endif
 
+    [[nodiscard]] bool bridge_is_ascii_hex(wchar_t ch) noexcept
+    {
+        return (ch >= L'0' && ch <= L'9') || (ch >= L'a' && ch <= L'f') ||
+               (ch >= L'A' && ch <= L'F');
+    }
+
+    [[nodiscard]] bool bridge_is_rust_test_harness_name(std::wstring_view file_name) noexcept
+    {
+        constexpr auto exe_suffix = std::wstring_view{ L".exe", 4 };
+        if (!file_name.ends_with(exe_suffix)) {
+            return false;
+        }
+
+        file_name.remove_suffix(exe_suffix.size());
+        const auto dash = file_name.find_last_of(L'-');
+        if (dash == std::wstring_view::npos || dash == 0 || dash + 1 >= file_name.size()) {
+            return false;
+        }
+
+        const auto hash = file_name.substr(dash + 1);
+        if (hash.size() < 8) {
+            return false;
+        }
+
+        for (const auto ch : hash) {
+            if (!bridge_is_ascii_hex(ch)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     [[nodiscard]] std::size_t bridge_normalize_alignment(std::size_t alignment) noexcept
     {
         auto normalized = sizeof(void*);
@@ -44,7 +77,12 @@ namespace
         if (const auto separator = file_name.find_last_of(L"\\/"); separator != std::wstring_view::npos) {
             file_name.remove_prefix(separator + 1);
 
-            if (file_name.starts_with(L"libskyrim-")) {
+            const std::wstring_view full_path(path, len);
+            const auto deps_component = full_path.rfind(L"\\deps\\");
+            const auto is_cargo_test_exe =
+                deps_component != std::wstring_view::npos &&
+                bridge_is_rust_test_harness_name(file_name);
+            if (file_name.starts_with(L"libskyrim-") || is_cargo_test_exe) {
                 path[separator] = L'\0';
                 (void)::SetCurrentDirectoryW(path);
 #ifdef ENABLE_COMMONLIBSSE_TESTING
