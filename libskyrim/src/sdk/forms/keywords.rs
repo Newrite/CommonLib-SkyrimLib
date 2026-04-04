@@ -25,17 +25,17 @@ pub fn matches_keyword_editor_id(keyword: &BGSKeyword, editor_id: &str) -> bool 
 }
 
 #[inline(always)]
-pub fn lookup_keyword_editor_id(editor_id: &str) -> GamePtr<BGSKeyword> {
+pub fn lookup_keyword_by_editor_id(editor_id: &str) -> GamePtr<BGSKeyword> {
     lookup_editor_id_typed::<BGSKeyword>(editor_id)
 }
 
 #[inline(always)]
-pub fn lookup_persistent_keyword_editor_id(editor_id: &str) -> PersistentFormPtr<BGSKeyword> {
+pub fn lookup_persistent_keyword_by_editor_id(editor_id: &str) -> PersistentFormPtr<BGSKeyword> {
     lookup_persistent_editor_id_typed::<BGSKeyword>(editor_id)
 }
 
 #[inline(always)]
-pub fn require_persistent_keyword_editor_id(
+pub fn require_persistent_keyword_by_editor_id(
     editor_id: &str,
     context: &str,
 ) -> PersistentForm<BGSKeyword> {
@@ -135,7 +135,7 @@ where
 }
 
 #[inline(always)]
-pub fn find_keyword_form_id<T>(form: &T, form_id: FormID) -> GamePtr<BGSKeyword>
+pub fn find_keyword_by_form_id<T>(form: &T, form_id: FormID) -> GamePtr<BGSKeyword>
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
 {
@@ -143,7 +143,7 @@ where
 }
 
 #[inline(always)]
-pub fn find_keyword_editor_id<T>(form: &T, editor_id: &str) -> GamePtr<BGSKeyword>
+pub fn find_keyword_by_editor_id<T>(form: &T, editor_id: &str) -> GamePtr<BGSKeyword>
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
 {
@@ -161,19 +161,19 @@ where
 }
 
 #[inline(always)]
-pub fn has_keyword_form_id<T>(form: &T, form_id: FormID) -> bool
+pub fn has_keyword_with_form_id<T>(form: &T, form_id: FormID) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
 {
-    find_keyword_form_id(form, form_id).is_some()
+    find_keyword_by_form_id(form, form_id).is_some()
 }
 
 #[inline(always)]
-pub fn has_keyword_editor_id<T>(form: &T, editor_id: &str) -> bool
+pub fn has_keyword_with_editor_id<T>(form: &T, editor_id: &str) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
 {
-    find_keyword_editor_id(form, editor_id).is_some()
+    find_keyword_by_editor_id(form, editor_id).is_some()
 }
 
 pub fn has_any_keywords<T>(form: &T, keywords: &[&BGSKeyword]) -> bool
@@ -196,24 +196,24 @@ where
         .all(|keyword| has_keyword(form, keyword))
 }
 
-pub fn has_any_keyword_editor_ids<T>(form: &T, editor_ids: &[&str]) -> bool
+pub fn has_any_keywords_with_editor_id<T>(form: &T, editor_ids: &[&str]) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
 {
     editor_ids
         .iter()
         .copied()
-        .any(|editor_id| has_keyword_editor_id(form, editor_id))
+        .any(|editor_id| has_keyword_with_editor_id(form, editor_id))
 }
 
-pub fn has_all_keyword_editor_ids<T>(form: &T, editor_ids: &[&str]) -> bool
+pub fn has_all_keywords_with_editor_id<T>(form: &T, editor_ids: &[&str]) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
 {
     editor_ids
         .iter()
         .copied()
-        .all(|editor_id| has_keyword_editor_id(form, editor_id))
+        .all(|editor_id| has_keyword_with_editor_id(form, editor_id))
 }
 
 #[inline(always)]
@@ -305,8 +305,8 @@ fn keyword_ptrs_to_raw(keywords: &[GamePtr<BGSKeyword>]) -> Vec<*mut BGSKeyword>
 #[cfg(test)]
 mod tests {
     use super::{
-        collect_keywords, count_keywords, find_keyword_editor_id, for_each_keyword,
-        has_all_keyword_editor_ids, has_any_keywords, has_keyword, has_keyword_editor_id,
+        collect_keywords, count_keywords, find_keyword_by_editor_id, for_each_keyword,
+        has_all_keywords_with_editor_id, has_any_keywords, has_keyword, has_keyword_with_editor_id,
         matches_keyword_editor_id,
     };
     use crate::re::base_form_component::BaseFormComponent;
@@ -370,9 +370,12 @@ mod tests {
         assert!(matches_keyword_editor_id(fire_ref, "MagicDamageFire"));
         assert!(!matches_keyword_editor_id(fire_ref, " "));
         assert!(has_keyword(&keyword_form, fire_ref));
-        assert!(has_keyword_editor_id(&keyword_form, "MagicDamageFrost"));
+        assert!(has_keyword_with_editor_id(
+            &keyword_form,
+            "MagicDamageFrost"
+        ));
         assert!(has_any_keywords(&keyword_form, &[fire_ref]));
-        assert!(has_all_keyword_editor_ids(
+        assert!(has_all_keywords_with_editor_id(
             &keyword_form,
             &["MagicDamageFire", "MagicDamageFrost"]
         ));
@@ -381,7 +384,7 @@ mod tests {
         assert_eq!(snapshot.len(), 2);
         assert_eq!(snapshot[0].as_ptr(), fire);
         assert_eq!(
-            find_keyword_editor_id(&keyword_form, "MagicDamageFire").as_ptr(),
+            find_keyword_by_editor_id(&keyword_form, "MagicDamageFire").as_ptr(),
             fire
         );
     }

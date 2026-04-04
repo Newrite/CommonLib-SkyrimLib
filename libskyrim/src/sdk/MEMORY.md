@@ -6,7 +6,7 @@
 
 # SDK Memory
 
-Last updated: 2026-04-03
+Last updated: 2026-04-04
 
 This file is a persistent working memory for `libskyrim/src/sdk`.
 
@@ -422,7 +422,7 @@ SDK implication:
   - menu registration
   - one-time phase-gated initialization
 
-### 11. Input gestures and scoped control-handler locks still sit below the current SDK surface
+### 11. Input gestures and scoped control-handler locks were important enough to become a dedicated SDK layer
 
 Seen strongly in:
 
@@ -440,9 +440,11 @@ Repeated pattern:
 
 SDK implication:
 
-- `sdk::gameplay::input` already covers snapshots and combo parsing, but it
-  still lacks the gesture and handler-control layer that gameplay mods keep
-  rebuilding
+- `sdk::gameplay::input` now covers this repeated layer directly:
+  directional snapshots, tap/hold helpers over `InputEvent*` chains, and
+  scoped movement/look/attack handler guards
+- follow-up work here should favor deeper ergonomics and higher-level
+  workflows, not rediscovering the basic gesture/control-lock surface
 
 ### 12. Papyrus-side event registries are a recurring framework shape
 
@@ -463,9 +465,9 @@ SDK implication:
 
 - `sdk::papyrus` now has a real higher-level registry/event layer on top of the
   low-level `skse::registration_set*` support
-- the next Papyrus-facing gaps are deferred task handoff ergonomics, richer
-  runtime install/lifecycle glue, and more compact `RegisterFor...` authoring
-  sugar
+- queue-oriented task handoff and `RegisterFor...` authoring sugar are no
+  longer major gaps; the next Papyrus-facing work is richer lifecycle/install
+  glue and deeper VM/runtime ergonomics
 
 ### 13. Magic, active-effect, and injury workflows still fall into plugin-local utilities
 
@@ -530,6 +532,8 @@ SDK implication:
 
 - `sdk::ui::controls` now covers the first compact UI/input coordination layer
   for these checks
+- `sdk::core::phase` and `sdk::plugin::task` now also cover named phase
+  snapshots, gameplay/HUD blockers, and gameplay-safe queued handoff
 - follow-up work should deepen widget/notification glue instead of rebuilding
   the same loading/fader/menu predicates yet again
 
@@ -542,20 +546,23 @@ Current SDK already has meaningful foundations in:
 - borrowed vs stable pointer semantics
 - serialization / cosave schema
 - basic gameplay wrappers
-- basic menu fade helpers
-- a first Havok raycast helper
-- a first usable external plugin API helper layer
-- a first usable plugin-to-plugin messaging helper layer
+- runtime phase / queued task handoff
+- notification / HUD update helpers
+- projectile targeting / steering helpers
+- advanced VM lookup / dispatch helpers
+- advanced physics / raycast helpers
+- external plugin API and plugin-to-plugin messaging layers
 
 Current weak or placeholder areas:
 
-- high-level actor cache / scan helpers
 - deeper widget / notification / HUD synchronization helpers
-- richer spatial query helpers
-- gesture and control-handler helpers in `sdk::gameplay::input`
-- projectile-targeting helpers
 - provider-side service registries above the current `sdk::interop::external_api`
   publication helpers
+- higher-level hook recipes and policy-driven install flows beyond the current
+  attribute / trampoline / patch surface
+- broader `sdk::advanced::{render, scene}` coverage
+- deeper `sdk::advanced::vm` workflows beyond the current lookup/property/
+  dispatch toolkit
 
 ## Progress Notes
 
@@ -863,7 +870,8 @@ now have real SDK surfaces:
 
 - `sdk::papyrus`
   persistent event registries, grouped save/load/revert/form-delete helpers,
-  runtime registration sets, and event-oriented macro sugar over
+  runtime registration sets, `last_runtime_error()` /
+  `take_last_runtime_error()` diagnostics, and event-oriented macro sugar over
   `skse::registration_set*`
 - `sdk::gameplay::magic`
   active-effect queries, item/spell inspection, actor-spell traversal and
@@ -876,6 +884,7 @@ now have real SDK surfaces:
   quest lifecycle wrappers
 - `sdk::ui::controls`
   compact UI/input coordination helpers such as `UiControlSnapshot`,
+  `control_snapshot()`,
   `is_ui_capturing_input()`, `is_gameplay_input_available()`, and
   `should_show_hud_widgets()`
 - `sdk::interop::external_api`
@@ -894,22 +903,54 @@ toward deepening the already-started surfaces:
 - projectile and targeting helpers
 - higher-level interop registrars and provider-side service patterns
 
+### 2026-04-04: cross-cutting follow-up layers landed
+
+The next wave of cross-cutting SDK work is no longer hypothetical:
+
+- `sdk::core::phase`
+  named runtime-phase snapshots and gameplay/HUD blockers over loading,
+  fading, pause, menu, and input-capture state
+- `sdk::plugin::task`
+  named task handoff origins, gameplay-safe queue gating, queue-oriented
+  helpers, and handle-first deferred resolution
+- `sdk::ui::notifications`
+  real HUD notification/message builders instead of a placeholder
+- `sdk::gameplay::projectiles`
+  manager snapshots, launch helpers, target acquisition, intercept
+  prediction, desired-target maintenance, and steering behavior helpers
+- `sdk::hooks`
+  trampoline / patch / thunk-install helpers now fill the manual-hooking gap
+  below the attribute-driven install surface
+- `sdk::advanced::vm`
+  live VM/runtime lookup, bound-object/property access, event/method/static
+  dispatch helpers, and latent-result return helpers
+
+This moves the center of gravity again:
+
+- widget/HUD synchronization remains important, but the SDK now already has
+  the notification and phase primitives it needs
+- higher-level interop registrars and provider-side service patterns stand out
+  more clearly as a next cross-cutting gap
+- `advanced::render` / `advanced::scene` and deeper hook/VM workflows now
+  outrank "add any projectile/input surface at all"
+
 ## Recommended Near-Term SDK Backlog
 
 Priority order as of this pass:
 
-1. Deepen `sdk::gameplay::input` with gesture detection, directional snapshots,
-   and scoped movement / attack handler guards.
-2. Expand `sdk::ui` beyond menus/controls/scaleform with notifications and
-   stronger widget-state synchronization helpers.
-3. Add `sdk::gameplay::projectiles` once the cross-cutting input/UI helpers
-   above are stable enough to support targeting-heavy mods cleanly.
-4. Continue the deeper `sdk::ui::scaleform` object/member and callback pass
-   once the more repeated widget/HUD gaps above are covered.
-5. Continue broadening `sdk::advanced::physics` where new gameplay helpers
-   still need lower-level collision support.
-6. Add higher-level interop registrars and provider-side service patterns above
+1. Add higher-level interop registrars and provider-side service patterns above
    the current `external_api` publication/export helpers.
+2. Deepen widget/HUD synchronization on top of `ui::controls`,
+   `ui::notifications`, `ui::menus`, and `ui::scaleform`.
+3. Continue the deeper `sdk::ui::scaleform` object/member and callback pass
+   once the more repeated widget/HUD gaps above are covered.
+4. Continue broadening `sdk::hooks` beyond the current attribute / trampoline /
+   patch / thunk-install surface when real install recipes repeat.
+5. Deepen `sdk::advanced::vm` with richer lifecycle/runtime glue once repeated
+   plugin-side patterns become clearer.
+6. Keep broadening `sdk::advanced::physics` and `sdk::gameplay::projectiles`
+   where new gameplay helpers still need lower-level collision or steering
+   support.
 
 ### 2026-03-31: respawn / spatial-query backlog clarified
 
@@ -1166,14 +1207,16 @@ These are directional examples, not frozen signatures.
 
 ### Projectile helpers
 
+- `collect_managed_projectile_snapshots(...)`
 - `collect_projectile_targets(...)`
-- `collect_cursor_targets(...)`
-- `pattern_positions_line(...)`
-- `pattern_positions_circle(...)`
-- `pattern_positions_sphere(...)`
+- `find_projectile_target(...)`
 - `projectile_shooter(...)`
 - `projectile_desired_target(...)`
-- `projectile_speed(...)`
+- `projectile_intercept_snapshot(...)`
+- `refresh_projectile_desired_target(...)`
+- `steer_projectile_towards_target(...)`
+- `launch_spell(...)`
+- `launch_arrow_auto(...)`
 
 ### Actor and runtime helpers
 

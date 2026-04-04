@@ -146,7 +146,7 @@ fn build_intercept_snapshot_from_velocity(
 }
 
 #[inline(always)]
-pub fn projectile_target_velocity(target: &TESObjectREFR) -> NiPoint3 {
+pub fn projectile_target_linear_velocity(target: &TESObjectREFR) -> NiPoint3 {
     reference_linear_velocity(target)
 }
 
@@ -158,7 +158,11 @@ pub fn anticipated_projectile_target_position(
     let delta_seconds = validated_non_negative_seconds(delta_seconds, caller, "delta_seconds")?;
     let position = validated_reference_position(target, caller, "target")?;
 
-    anticipated_position_from_velocity(position, projectile_target_velocity(target), delta_seconds)
+    anticipated_position_from_velocity(
+        position,
+        projectile_target_linear_velocity(target),
+        delta_seconds,
+    )
 }
 
 pub fn projectile_intercept_snapshot(
@@ -170,7 +174,7 @@ pub fn projectile_intercept_snapshot(
     build_intercept_snapshot_from_velocity(
         validated_projectile_origin(projectile, caller)?,
         validated_reference_position(target, caller, "target")?,
-        projectile_target_velocity(target),
+        projectile_target_linear_velocity(target),
         validated_projectile_speed(projectile, caller)?,
         initial_prediction_seconds,
         caller,
@@ -223,7 +227,7 @@ pub fn clear_projectile_desired_target(projectile: &mut Projectile) {
     projectile.get_projectile_runtime_data_mut().desired_target = ObjectRefHandle::new();
 }
 
-pub fn projectile_should_keep_desired_target(projectile: &Projectile) -> bool {
+pub fn should_keep_projectile_desired_target(projectile: &Projectile) -> bool {
     let desired_target = projectile_desired_target(projectile);
     let Some(desired_target) = desired_target.as_ref() else {
         return false;
@@ -258,7 +262,7 @@ pub fn refresh_projectile_desired_target(
     reacquire_projectile_desired_target(projectile, strategy, options)
 }
 
-pub fn sync_projectile_rotation_to_linear_velocity(
+pub fn align_projectile_rotation_to_linear_velocity(
     projectile: &mut Projectile,
 ) -> Option<ProjectileRot> {
     let linear_velocity = projectile.get_projectile_runtime_data().linear_velocity;
@@ -334,7 +338,7 @@ pub fn steer_projectile_towards_point(
     };
 
     projectile.get_projectile_runtime_data_mut().linear_velocity = steered_velocity;
-    let _ = sync_projectile_rotation_to_linear_velocity(projectile);
+    let _ = align_projectile_rotation_to_linear_velocity(projectile);
     Some(steered_velocity)
 }
 

@@ -59,7 +59,7 @@ impl UiControlSnapshot {
     }
 
     #[inline(always)]
-    pub const fn ui_is_capturing_input(self) -> bool {
+    pub const fn is_ui_capturing_input(self) -> bool {
         self.text_input_active
             || self.menu_like_context
             || self.has_major_menu_open()
@@ -67,16 +67,16 @@ impl UiControlSnapshot {
     }
 
     #[inline(always)]
-    pub const fn gameplay_input_available(self) -> bool {
-        !self.ui_is_capturing_input()
+    pub const fn is_gameplay_input_available(self) -> bool {
+        !self.is_ui_capturing_input()
             && !self.keyboard_mouse_ignored
             && !self.player_input_blocked
             && self.gameplay_controls_enabled
     }
 
     #[inline(always)]
-    pub const fn gameplay_input_suppressed(self) -> bool {
-        !self.gameplay_input_available()
+    pub const fn is_gameplay_input_suppressed(self) -> bool {
+        !self.is_gameplay_input_available()
     }
 
     #[inline(always)]
@@ -94,27 +94,27 @@ fn are_control_flags_enabled(flags: &[USER_EVENT_FLAG]) -> bool {
 }
 
 #[inline(always)]
-pub fn top_context() -> Option<INPUT_CONTEXT_ID> {
+pub fn top_input_context() -> Option<INPUT_CONTEXT_ID> {
     input::top_context()
 }
 
 #[inline(always)]
-pub fn has_text_input_focus() -> bool {
+pub fn is_text_input_active() -> bool {
     input::has_text_input_requests()
 }
 
 #[inline(always)]
-pub fn has_menu_like_input_context() -> bool {
+pub fn is_menu_like_input_context() -> bool {
     input::has_menu_like_context()
 }
 
 #[inline(always)]
-pub fn ignores_keyboard_mouse() -> bool {
+pub fn is_ignoring_keyboard_mouse() -> bool {
     input::ignores_keyboard_mouse()
 }
 
 #[inline(always)]
-pub fn ignores_activate_disabled_events() -> bool {
+pub fn is_ignoring_activate_disabled_events() -> bool {
     input::ignores_activate_disabled_events()
 }
 
@@ -169,7 +169,7 @@ pub fn is_loading_transition_active() -> bool {
 }
 
 #[inline(always)]
-pub fn snapshot() -> UiControlSnapshot {
+pub fn control_snapshot() -> UiControlSnapshot {
     UiControlSnapshot {
         top_context: input::top_context(),
         menus_visible: menus::are_menus_visible(),
@@ -197,26 +197,26 @@ pub fn snapshot() -> UiControlSnapshot {
 
 #[inline(always)]
 pub fn is_ui_capturing_input() -> bool {
-    snapshot().ui_is_capturing_input()
+    control_snapshot().is_ui_capturing_input()
 }
 
 #[inline(always)]
 pub fn is_gameplay_input_available() -> bool {
-    snapshot().gameplay_input_available()
+    control_snapshot().is_gameplay_input_available()
 }
 
 #[inline(always)]
 pub fn is_gameplay_input_suppressed() -> bool {
-    snapshot().gameplay_input_suppressed()
+    control_snapshot().is_gameplay_input_suppressed()
 }
 
 #[inline(always)]
 pub fn should_show_hud_widgets() -> bool {
-    snapshot().should_show_hud_widgets()
+    control_snapshot().should_show_hud_widgets()
 }
 
 #[inline(always)]
-pub fn allow_ui_text_input_scoped() -> input::TextInputGuard {
+pub fn enable_ui_text_input_scoped() -> input::TextInputGuard {
     input::allow_text_input_scoped()
 }
 
@@ -236,7 +236,7 @@ pub fn push_console_context_scoped() -> input::ContextGuard {
 }
 
 #[inline(always)]
-pub fn suppress_gameplay_input_for_ui() -> input::InputStateGuard {
+pub fn suppress_gameplay_input_for_ui_scoped() -> input::InputStateGuard {
     input::scoped_gameplay_input_suppressed()
 }
 
@@ -275,9 +275,9 @@ mod tests {
     fn gameplay_snapshot_reports_available_input_and_visible_hud() {
         let snapshot = gameplay_snapshot();
 
-        assert!(!snapshot.ui_is_capturing_input());
-        assert!(snapshot.gameplay_input_available());
-        assert!(!snapshot.gameplay_input_suppressed());
+        assert!(!snapshot.is_ui_capturing_input());
+        assert!(snapshot.is_gameplay_input_available());
+        assert!(!snapshot.is_gameplay_input_suppressed());
         assert!(snapshot.should_show_hud_widgets());
     }
 
@@ -290,9 +290,9 @@ mod tests {
         snapshot.menu_like_context = true;
 
         assert!(snapshot.has_major_menu_open());
-        assert!(snapshot.ui_is_capturing_input());
-        assert!(!snapshot.gameplay_input_available());
-        assert!(snapshot.gameplay_input_suppressed());
+        assert!(snapshot.is_ui_capturing_input());
+        assert!(!snapshot.is_gameplay_input_available());
+        assert!(snapshot.is_gameplay_input_suppressed());
         assert!(!snapshot.should_show_hud_widgets());
     }
 
@@ -302,7 +302,7 @@ mod tests {
         snapshot.loading_open = true;
 
         assert!(snapshot.has_loading_transition());
-        assert!(snapshot.ui_is_capturing_input());
+        assert!(snapshot.is_ui_capturing_input());
         assert!(!snapshot.should_show_hud_widgets());
     }
 
@@ -311,8 +311,8 @@ mod tests {
         let mut snapshot = gameplay_snapshot();
         snapshot.keyboard_mouse_ignored = true;
 
-        assert!(!snapshot.ui_is_capturing_input());
-        assert!(!snapshot.gameplay_input_available());
-        assert!(snapshot.gameplay_input_suppressed());
+        assert!(!snapshot.is_ui_capturing_input());
+        assert!(!snapshot.is_gameplay_input_available());
+        assert!(snapshot.is_gameplay_input_suppressed());
     }
 }

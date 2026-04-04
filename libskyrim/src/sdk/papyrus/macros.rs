@@ -134,7 +134,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::TESForm>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.register_form($param)
             })
             .unwrap_or(false)
@@ -144,7 +144,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::TESForm>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.unregister_form($param)
             })
             .unwrap_or(false)
@@ -154,7 +154,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::BGSBaseAlias>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.register_alias($param)
             })
             .unwrap_or(false)
@@ -164,7 +164,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::BGSBaseAlias>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.unregister_alias($param)
             })
             .unwrap_or(false)
@@ -179,7 +179,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::BGSRefAlias>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.register_ref_alias($param)
             })
             .unwrap_or(false)
@@ -189,7 +189,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::BGSRefAlias>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.unregister_ref_alias($param)
             })
             .unwrap_or(false)
@@ -199,7 +199,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::ActiveEffect>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.register_active_effect($param)
             })
             .unwrap_or(false)
@@ -209,7 +209,7 @@ macro_rules! papyrus_event_functions {
         $vis fn $fn_name(
             $param: $crate::sdk::papyrus::GamePtr<$crate::re::ActiveEffect>,
         ) -> bool {
-            $crate::sdk::papyrus::with_events_mut::<$events, _>(|events| {
+            $crate::sdk::papyrus::with_registered_events_mut::<$events, _>(|events| {
                 events.$registry.unregister_active_effect($param)
             })
             .unwrap_or(false)

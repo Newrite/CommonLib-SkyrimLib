@@ -147,7 +147,7 @@ impl<T: Model> RegisteredDriver for ModelDriver<T> {
 
 struct SerializationState {
     driver: Box<dyn RegisteredDriver>,
-    last_error: Option<RuntimeError>,
+    runtime_error: Option<RuntimeError>,
 }
 
 impl SerializationState {
@@ -155,25 +155,25 @@ impl SerializationState {
     fn new(driver: Box<dyn RegisteredDriver>) -> Self {
         Self {
             driver,
-            last_error: None,
+            runtime_error: None,
         }
     }
 
     #[inline(always)]
-    fn set_last_error(&mut self, error: RuntimeError) {
-        self.last_error = Some(error);
+    fn set_runtime_error(&mut self, error: RuntimeError) {
+        self.runtime_error = Some(error);
     }
 
     #[inline(always)]
-    fn clear_last_error(&mut self) {
-        self.last_error = None;
+    fn clear_runtime_error(&mut self) {
+        self.runtime_error = None;
     }
 }
 
 static SERIALIZATION_STATE: Mutex<Option<SerializationState>> = Mutex::new(None);
 
 #[inline(always)]
-pub fn is_registered() -> bool {
+pub fn has_registered_model() -> bool {
     SERIALIZATION_STATE.lock().is_some()
 }
 
@@ -210,25 +210,25 @@ pub fn unregister_model() {
     *SERIALIZATION_STATE.lock() = None;
 }
 
-pub fn registered_unique_id() -> Option<UniqueId> {
+pub fn registered_model_unique_id() -> Option<UniqueId> {
     SERIALIZATION_STATE
         .lock()
         .as_ref()
         .map(|state| state.driver.unique_id())
 }
 
-pub fn last_error() -> Option<RuntimeError> {
+pub fn last_runtime_error() -> Option<RuntimeError> {
     SERIALIZATION_STATE
         .lock()
         .as_ref()
-        .and_then(|state| state.last_error.clone())
+        .and_then(|state| state.runtime_error.clone())
 }
 
-pub fn take_last_error() -> Option<RuntimeError> {
+pub fn take_last_runtime_error() -> Option<RuntimeError> {
     SERIALIZATION_STATE
         .lock()
         .as_mut()
-        .and_then(|state| state.last_error.take())
+        .and_then(|state| state.runtime_error.take())
 }
 
 fn with_model_driver<T: Model, R>(
@@ -257,11 +257,13 @@ fn with_model_driver_mut<T: Model, R>(
     Ok(f(driver))
 }
 
-pub fn with_model<T: Model, R>(f: impl FnOnce(&T) -> R) -> Result<R, ModelAccessError> {
+pub fn with_registered_model<T: Model, R>(f: impl FnOnce(&T) -> R) -> Result<R, ModelAccessError> {
     with_model_driver(|driver| f(&driver.state))
 }
 
-pub fn with_model_mut<T: Model, R>(f: impl FnOnce(&mut T) -> R) -> Result<R, ModelAccessError> {
+pub fn with_registered_model_mut<T: Model, R>(
+    f: impl FnOnce(&mut T) -> R,
+) -> Result<R, ModelAccessError> {
     with_model_driver_mut(|driver| f(&mut driver.state))
 }
 
@@ -276,9 +278,9 @@ unsafe extern "system" fn save_callback(serialization: *mut SerializationInterfa
             return;
         };
 
-        state.clear_last_error();
+        state.clear_runtime_error();
         if let Err(error) = state.driver.save(serialization) {
-            state.set_last_error(error);
+            state.set_runtime_error(error);
         }
     });
 }
@@ -294,9 +296,9 @@ unsafe extern "system" fn load_callback(serialization: *mut SerializationInterfa
             return;
         };
 
-        state.clear_last_error();
+        state.clear_runtime_error();
         if let Err(error) = state.driver.load(serialization) {
-            state.set_last_error(error);
+            state.set_runtime_error(error);
         }
     });
 }
@@ -308,7 +310,7 @@ unsafe extern "system" fn revert_callback(_serialization: *mut SerializationInte
             return;
         };
 
-        state.clear_last_error();
+        state.clear_runtime_error();
         state.driver.revert();
     });
 }

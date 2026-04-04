@@ -254,82 +254,81 @@ sdk/
   prelude.rs
 
   core/
-    refs.rs
-    owners.rs
-    handles.rs
-    cast.rs
-    ptr.rs
-    phase.rs
+    cast/
+    containers/
+    handles/
+    owners/
+    phase/
+    refs/
     error.rs
+    ptr.rs
 
   plugin/
-    entry.rs
-    lifecycle.rs
-    messaging.rs
-    log.rs
-    config.rs
-    task.rs
-    serialization.rs
+    config/
+    serialization/
+    task/
+    *.rs
 
   papyrus/
-    registry.rs
-    context.rs
-    types.rs
-    macros.rs
+    events/
+    *.rs
 
   forms/
-    lookup.rs
+    lookup/
+    settings/
     keywords.rs
     lists.rs
-    settings.rs
+    persistent.rs
+    shared.rs
 
   gameplay/
+    input/
+    inventory/
+    magic/
+    navmesh/
+    pathing/
+    projectiles/
+    quests/
+    spatial/
     actors.rs
-    player.rs
-    inventory.rs
-    magic.rs
-    combat.rs
     camera.rs
-    input.rs
-    navmesh.rs
-    pathing.rs
-    quests.rs
+    combat.rs
+    movement.rs
+    player.rs
+    world.rs
 
   events/
-    game.rs
-    input.rs
-    install.rs
-    source.rs
-    ui.rs
-    bus.rs
+    bus/
+    game/
+    input/
+    install/
     skse/
-      mod.rs
-      dispatchers.rs
-      messages.rs
+      dispatchers/
+      messages/
+    source/
+    ui/
 
   ui/
-    menus.rs
-    notifications.rs
+    menus/
+    scaleform/
     controls.rs
-    scaleform.rs
+    notifications.rs
 
   interop/
-    messaging.rs
-    external_api.rs
+    messaging/
+    external_api/
 
   hooks/
-    trampoline.rs
-    patch.rs
-    patterns.rs
+    *.rs
 
   persistence/
-    cosave.rs
+    cosave/
 
   advanced/
-    scene.rs
-    physics.rs
-    vm.rs
+    physics/
     render.rs
+    scene.rs
+    vm/
 ```
 
 ## Expected Stability
@@ -341,14 +340,17 @@ The first waves of SDK work should focus on:
 3. `forms`
 4. `events`
 5. `gameplay`
+6. `core`
+7. `ui`
+8. `interop`
 
-The following domains should come later:
+The domains that should still be treated as later / more volatile are:
 
 - `hooks`
-- `ui::scaleform`
+- higher-level `ui::scaleform` DSL work
 - `advanced::scene`
-- `advanced::physics`
-- `advanced::vm`
+- deeper `advanced::physics`
+- deeper `advanced::vm`
 - `advanced::render`
 
 These later domains depend more heavily on engine internals, runtime splits, or
@@ -1036,7 +1038,7 @@ code to opt into fatal install semantics.
 
 ### Guard Presets
 
-For the common “all invalid hook arguments should behave the same way” case, the
+For the common "all invalid hook arguments should behave the same way" case, the
 attribute layer supports a named `guard = ...` preset:
 
 ```rust
@@ -1371,16 +1373,22 @@ Implemented foundation:
   `skse::papyrus` and `skse::registration_set*`, including callback-facing
   `GameRef`, `GamePtr`, `ResolvedHandle<H>`, `Resolved<T>`,
   `PapyrusEventRegistry*`, grouped save/load/revert/form-delete helpers, event
-  runtime registration, and macro sugar for `RegisterFor...` style modules
+  runtime registration, installed event-set runtime state,
+  `last_runtime_error()` / `take_last_runtime_error()` diagnostics, and macro
+  sugar for `RegisterFor...` style modules
 - `sdk::core::handles`
   family-based resolved runtime-object model with immediate support for the
   `Actor`, `TESObjectREFR`, and `Projectile` handle families
+- `sdk::core::phase`
+  compact runtime phase snapshots and named gameplay/HUD blockers over
+  loading, fading, pause, menu, and input-capture state
 - `sdk::plugin::log`
   facade over the current SKSE logging convenience layer
 - `sdk::plugin::task`
-  facade over the current SKSE task helpers
+  queue-oriented task handoff surface over SKSE task helpers with named
+  origins, gameplay-phase gating, and handle-first capture / later resolution
 - `sdk::plugin::messaging`
-  high-level façade over SKSE plugin messaging with typed `MessageKind`,
+  high-level facade over SKSE plugin messaging with typed `MessageKind`,
   `MessageRef<'_>`, sender-filtered listeners, and lifecycle-aware helpers
 - `sdk::plugin::lifecycle`
   structured plugin/game lifecycle registration built on typed SKSE messaging
@@ -1397,10 +1405,11 @@ Implemented foundation:
 - `sdk::plugin::serialization`
   high-level `Model` / `Schema` registration layer over the typed cosave
   foundation, including save/load/revert/form-delete callback registration,
-  typed state access, runtime error capture, passthrough preservation of
+  typed registered-model state access, `last_runtime_error()` /
+  `take_last_runtime_error()` runtime diagnostics, passthrough preservation of
   unknown records in the plugin's own co-save segment, `#[derive(Cosave)]`,
-  `schema_fields!(...)` sugar for top-level value records, and migrating-record
-  sugar for versioned load handlers
+  `schema_fields!(...)` sugar for top-level value records, and
+  migrating-record sugar for versioned load handlers
 - `sdk::events`
   raw `BSTEventSource<T>` subscriptions, singleton gameplay/UI/SKSE dispatcher
   helpers, typed SKSE messaging registration, ergonomic input-chain wrappers,
@@ -1423,9 +1432,14 @@ Implemented foundation:
   `BSUIMessageData`, and `BSUIScaleformData`
 - `sdk::ui::controls`
   UI-facing control coordination helpers over `menus` and `gameplay::input`,
-  including `UiControlSnapshot`, common menu/open predicates,
+  including `UiControlSnapshot`, `control_snapshot()`, common menu/open
+  predicates,
   `is_ui_capturing_input()`, `is_gameplay_input_available()`, and
   `should_show_hud_widgets()`
+- `sdk::ui::notifications`
+  HUD notification/message builders over `HUDData`, covering common text,
+  subtitle, hint, quest/objective, location, word-of-power, dragon-soul, and
+  HUD-mode update flows
 - `sdk::ui::scaleform`
   owner-backed menu-side Scaleform surface covering open-menu `GFxMovieView`
   and `FxDelegate` lookup, plus movie `invoke` / `get_variable` /
@@ -1434,8 +1448,9 @@ Implemented foundation:
   high-level access to the player singleton, current world state, current
   command target, and common player state such as combat
 - `sdk::gameplay::input`
-  context-stack inspection, input-state snapshot/restore, scoped gameplay-input
-  suppression helpers, and user-event mapping lookup over `ControlMap` /
+  context-stack inspection, input-state snapshot/restore, directional/analog
+  snapshots, gesture helpers over `InputEvent*` chains, scoped movement/look/
+  attack handler guards, and user-event mapping lookup over `ControlMap` /
   `PlayerControls`
 - `sdk::gameplay::actors`
   loaded/high actor traversal, retained actor collections, player-following and
@@ -1455,18 +1470,30 @@ Implemented foundation:
 - `sdk::gameplay::quests`
   quest/objective/stage/alias snapshots, alias/objective lookup, target
   resolution, stage-state helpers, and common quest lifecycle wrappers
+- `sdk::gameplay::projectiles`
+  manager/runtime snapshots, launch helpers, target acquisition, intercept
+  prediction, desired-target refresh/reacquire flows, and aim/steering helpers
+- `sdk::hooks`
+  attribute-driven hook authoring, typed install/batch-install helpers, named
+  guard presets, and first-pass trampoline / patch / thunk-install patterns
 - `sdk::advanced::physics`
   world-locked closest/all-hit Havok raycasts, actor-aware query filters,
   post-query `LayerMask` filtering, hit resolution into raw `TESObjectREFR` /
   `NiAVObject` pointers, plus LOS / backoff / ground-snap helpers
+- `sdk::advanced::vm`
+  strict VM singleton/policy access, script-type and bound-object lookup,
+  property/variable access, event/method/static dispatch helpers, awaitable
+  dispatch wrappers, and latent-result return helpers over `IVirtualMachine`
 
 Still intentionally placeholder-heavy:
 
-- deeper parts of `sdk::gameplay`, especially projectiles and higher-level
-  input gesture/handler workflows
-- `sdk::ui::notifications` and broader widget-specific UI glue
-- most of `sdk::hooks`
-- `sdk::advanced::{render, scene, vm}` and broader rendering/VM workflows
+- broader widget/HUD synchronization on top of `sdk::ui::{menus, controls,
+  notifications, scaleform}`
+- higher-level hook recipes and policy-driven install patterns beyond the
+  current attribute/trampoline/patch surface
+- `sdk::advanced::{render, scene}` and broader rendering workflows
+- deeper `sdk::advanced::vm` workflows beyond the current lookup/property/
+  dispatch toolkit
 
 The migration strategy is to move existing ergonomic layers into `sdk` first as
 thin, compatibility-friendly facades, then gradually converge on more
@@ -1598,3 +1625,4 @@ fn load_settings(ini: &libskyrim::sdk::plugin::Ini) {
     let _ = (enabled, interval);
 }
 ```
+

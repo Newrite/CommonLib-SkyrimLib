@@ -61,12 +61,12 @@ impl<'a> HudNotificationRequest<'a> {
     }
 
     #[inline(always)]
-    pub const fn hint_text(text: &'a str) -> Self {
+    pub const fn hint(text: &'a str) -> Self {
         Self::new(text, HudMessageType::kShowHintText)
     }
 
     #[inline(always)]
-    pub const fn location_name(text: &'a str) -> Self {
+    pub const fn location(text: &'a str) -> Self {
         Self::new(text, HudMessageType::kShowLocationName)
     }
 
@@ -86,7 +86,7 @@ impl<'a> HudNotificationRequest<'a> {
     }
 
     #[inline(always)]
-    pub const fn set_mode(mode: &'a str, push: bool) -> Self {
+    pub const fn hud_mode(mode: &'a str, push: bool) -> Self {
         Self::new(mode, HudMessageType::kSetMode).with_show(push)
     }
 
@@ -152,7 +152,7 @@ fn write_request_to_hud_data(data: &mut HUDData, request: HudNotificationRequest
     data.discovery = discovery_storage(request.discovery);
 }
 
-pub fn queue_hud_notification(request: HudNotificationRequest<'_>) -> bool {
+pub fn queue_hud_request(request: HudNotificationRequest<'_>) -> bool {
     let queued =
         menus::queue_named_message_with::<HUDMenu, HUDData>(request.ui_message_type, |data| {
             write_request_to_hud_data(data, request);
@@ -160,7 +160,7 @@ pub fn queue_hud_notification(request: HudNotificationRequest<'_>) -> bool {
 
     if !queued {
         crate::defensive_sdk_warn!(
-            "sdk::ui::notifications::queue_hud_notification() failed for {:?}",
+            "sdk::ui::notifications::queue_hud_request() failed for {:?}",
             request.message_type
         );
     }
@@ -169,111 +169,111 @@ pub fn queue_hud_notification(request: HudNotificationRequest<'_>) -> bool {
 }
 
 #[inline(always)]
-pub fn show_notification(text: &str) -> bool {
-    queue_hud_notification(HudNotificationRequest::notification(text))
+pub fn queue_notification(text: &str) -> bool {
+    queue_hud_request(HudNotificationRequest::notification(text))
 }
 
 #[inline(always)]
-pub fn show_subtitle(text: &str) -> bool {
-    queue_hud_notification(HudNotificationRequest::subtitle(text))
+pub fn queue_subtitle(text: &str) -> bool {
+    queue_hud_request(HudNotificationRequest::subtitle(text))
 }
 
 #[inline(always)]
 pub fn hide_subtitle() -> bool {
-    queue_hud_notification(HudNotificationRequest::hide_subtitle())
+    queue_hud_request(HudNotificationRequest::hide_subtitle())
 }
 
 #[inline(always)]
-pub fn show_hint_text(text: &str) -> bool {
-    queue_hud_notification(HudNotificationRequest::hint_text(text))
+pub fn queue_hint(text: &str) -> bool {
+    queue_hud_request(HudNotificationRequest::hint(text))
 }
 
 #[inline(always)]
-pub fn show_location_name(text: &str) -> bool {
-    queue_hud_notification(HudNotificationRequest::location_name(text))
+pub fn queue_location(text: &str) -> bool {
+    queue_hud_request(HudNotificationRequest::location(text))
 }
 
 #[inline(always)]
-pub fn show_location_discovery(text: &str, discovery: MARKER_TYPE) -> bool {
-    queue_hud_notification(HudNotificationRequest::location_discovery(text, discovery))
+pub fn queue_location_discovery(text: &str, discovery: MARKER_TYPE) -> bool {
+    queue_hud_request(HudNotificationRequest::location_discovery(text, discovery))
 }
 
 #[inline(always)]
-pub fn show_quest_started(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
-    queue_hud_notification(
+pub fn queue_quest_started(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
+    queue_hud_request(
         HudNotificationRequest::new(text, HudMessageType::kQuestStarted).with_quest(quest),
     )
 }
 
 #[inline(always)]
-pub fn show_quest_complete(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
-    queue_hud_notification(
+pub fn queue_quest_completed(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
+    queue_hud_request(
         HudNotificationRequest::new(text, HudMessageType::kQuestComplete).with_quest(quest),
     )
 }
 
 #[inline(always)]
-pub fn show_quest_failed(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
-    queue_hud_notification(
+pub fn queue_quest_failed(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
+    queue_hud_request(
         HudNotificationRequest::new(text, HudMessageType::kQuestFailed).with_quest(quest),
     )
 }
 
 #[inline(always)]
-pub fn show_objective_started(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
-    queue_hud_notification(
+pub fn queue_objective_started(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
+    queue_hud_request(
         HudNotificationRequest::new(text, HudMessageType::kObjectiveStarted).with_quest(quest),
     )
 }
 
 #[inline(always)]
-pub fn show_objective_complete(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
-    queue_hud_notification(
+pub fn queue_objective_completed(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
+    queue_hud_request(
         HudNotificationRequest::new(text, HudMessageType::kObjectiveComplete).with_quest(quest),
     )
 }
 
 #[inline(always)]
-pub fn show_objective_failed(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
-    queue_hud_notification(
+pub fn queue_objective_failed(text: &str, quest: impl Into<GamePtr<TESQuest>>) -> bool {
+    queue_hud_request(
         HudNotificationRequest::new(text, HudMessageType::kObjectiveFailed).with_quest(quest),
     )
 }
 
 #[inline(always)]
-pub fn show_skill_increase(text: &str) -> bool {
-    queue_hud_notification(HudNotificationRequest::skill_increase(text))
+pub fn queue_skill_increase(text: &str) -> bool {
+    queue_hud_request(HudNotificationRequest::skill_increase(text))
 }
 
 #[inline(always)]
-pub fn show_word_of_power_learned(
+pub fn queue_word_of_power_learned(
     text: &str,
     word_of_power: impl Into<GamePtr<TESWordOfPower>>,
 ) -> bool {
-    queue_hud_notification(
+    queue_hud_request(
         HudNotificationRequest::new(text, HudMessageType::kWordOfPowerLearned)
             .with_word_of_power(word_of_power),
     )
 }
 
 #[inline(always)]
-pub fn show_dragon_soul_absorbed(text: &str) -> bool {
-    queue_hud_notification(HudNotificationRequest::dragon_soul_absorbed(text))
+pub fn queue_dragon_soul_absorbed(text: &str) -> bool {
+    queue_hud_request(HudNotificationRequest::dragon_soul_absorbed(text))
 }
 
 #[inline(always)]
-pub fn set_hud_mode(mode: &str, push: bool) -> bool {
-    queue_hud_notification(HudNotificationRequest::set_mode(mode, push))
+pub fn queue_hud_mode(mode: &str, push: bool) -> bool {
+    queue_hud_request(HudNotificationRequest::hud_mode(mode, push))
 }
 
 #[inline(always)]
 pub fn push_hud_mode(mode: &str) -> bool {
-    set_hud_mode(mode, true)
+    queue_hud_mode(mode, true)
 }
 
 #[inline(always)]
 pub fn pop_hud_mode(mode: &str) -> bool {
-    set_hud_mode(mode, false)
+    queue_hud_mode(mode, false)
 }
 
 #[cfg(test)]
@@ -326,8 +326,8 @@ mod tests {
 
     #[test]
     fn set_mode_request_uses_show_flag_for_push_pop() {
-        let push = HudNotificationRequest::set_mode("InventoryLessHUD", true);
-        let pop = HudNotificationRequest::set_mode("InventoryLessHUD", false);
+        let push = HudNotificationRequest::hud_mode("InventoryLessHUD", true);
+        let pop = HudNotificationRequest::hud_mode("InventoryLessHUD", false);
 
         assert_eq!(push.message_type, HudMessageType::kSetMode);
         assert!(push.show);

@@ -50,8 +50,8 @@ pub use crate::sdk::persistence::cosave::{
 pub use libskyrim_macros::Cosave;
 
 pub use runtime::{
-    is_registered, last_error, register_model, registered_unique_id, take_last_error,
-    unregister_model, with_model, with_model_mut,
+    has_registered_model, last_runtime_error, register_model, registered_model_unique_id,
+    take_last_runtime_error, unregister_model, with_registered_model, with_registered_model_mut,
 };
 pub use schema::{MigratingRecordBuilder, Schema, write_value_record};
 pub use types::{

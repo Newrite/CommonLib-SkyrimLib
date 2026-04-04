@@ -21,39 +21,39 @@ pub fn singleton() -> GameRef<ProjectileManager> {
     unsafe { GameRef::from_raw(ProjectileManager::get_singleton()) }
 }
 
-pub fn snapshot_manager() -> ProjectileManagerSnapshot {
+pub fn manager_snapshot() -> ProjectileManagerSnapshot {
     singleton().with(|manager| ProjectileManagerSnapshot {
         unlimited: snapshot_handle_bucket(
             &manager.unlimited,
-            "sdk::gameplay::projectiles::snapshot_manager()/unlimited",
+            "sdk::gameplay::projectiles::manager_snapshot()/unlimited",
         ),
         limited: snapshot_handle_bucket(
             &manager.limited,
-            "sdk::gameplay::projectiles::snapshot_manager()/limited",
+            "sdk::gameplay::projectiles::manager_snapshot()/limited",
         ),
         pending: snapshot_handle_bucket(
             &manager.pending,
-            "sdk::gameplay::projectiles::snapshot_manager()/pending",
+            "sdk::gameplay::projectiles::manager_snapshot()/pending",
         ),
     })
 }
 
 pub fn collect_managed_projectiles() -> Vec<Resolved<Projectile>> {
-    snapshot_manager().managed_projectiles()
+    manager_snapshot().managed_projectiles()
 }
 
-pub fn snapshot_managed_projectiles() -> Vec<ProjectileSnapshot> {
+pub fn collect_managed_projectile_snapshots() -> Vec<ProjectileSnapshot> {
     collect_managed_projectiles()
         .into_iter()
         .map(|projectile| snapshot_projectile(projectile.as_ref()))
         .collect()
 }
 
-pub fn snapshot_managed_projectiles_matching(
+pub fn collect_managed_projectile_snapshots_matching(
     mut predicate: impl FnMut(&ProjectileSnapshot) -> bool,
 ) -> Vec<ProjectileSnapshot> {
     let mut projectiles = Vec::new();
-    for snapshot in snapshot_managed_projectiles() {
+    for snapshot in collect_managed_projectile_snapshots() {
         if predicate(&snapshot) {
             projectiles.push(snapshot);
         }
@@ -61,10 +61,10 @@ pub fn snapshot_managed_projectiles_matching(
     projectiles
 }
 
-pub fn find_managed_projectile_matching(
+pub fn find_managed_projectile_snapshot_matching(
     mut predicate: impl FnMut(&ProjectileSnapshot) -> bool,
 ) -> Option<ProjectileSnapshot> {
-    for snapshot in snapshot_managed_projectiles() {
+    for snapshot in collect_managed_projectile_snapshots() {
         if predicate(&snapshot) {
             return Some(snapshot);
         }
@@ -160,7 +160,7 @@ pub fn snapshot_projectile_base(projectile: &BGSProjectile) -> ProjectileBaseSna
 }
 
 #[inline(always)]
-pub fn snapshot_projectile_base_for(projectile: &Projectile) -> Option<ProjectileBaseSnapshot> {
+pub fn snapshot_projectile_base_of(projectile: &Projectile) -> Option<ProjectileBaseSnapshot> {
     projectile_base(projectile).with(snapshot_projectile_base)
 }
 

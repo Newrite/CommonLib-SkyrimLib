@@ -9,7 +9,7 @@ use crate::sdk::core::GamePtr;
 
 use super::shared::{
     active_effect_matches_archetype, active_effect_matches_keyword,
-    active_effect_matches_keyword_editor_id,
+    active_effect_matches_keyword_with_editor_id,
 };
 use super::types::ActiveEffectSnapshot;
 
@@ -128,12 +128,12 @@ where
     )
 }
 
-pub fn has_active_effect_with_keyword_editor_id<T>(target: &T, editor_id: &str) -> bool
+pub fn has_active_effect_with_keyword_with_editor_id<T>(target: &T, editor_id: &str) -> bool
 where
     T: AsRef<MagicTarget> + ?Sized,
 {
     for_each_active_effect(target, |effect| {
-        if active_effect_matches_keyword_editor_id(effect, editor_id) {
+        if active_effect_matches_keyword_with_editor_id(effect, editor_id) {
             ControlFlow::Break(())
         } else {
             ControlFlow::Continue(())
@@ -142,7 +142,7 @@ where
     .is_break()
 }
 
-pub fn collect_active_effects_with_keyword_editor_id<T>(
+pub fn collect_active_effects_with_keyword_with_editor_id<T>(
     target: &T,
     editor_id: &str,
 ) -> Vec<GamePtr<ActiveEffect>>
@@ -150,7 +150,7 @@ where
     T: AsRef<MagicTarget> + ?Sized,
 {
     collect_active_effects_matching(target, |effect| {
-        active_effect_matches_keyword_editor_id(effect, editor_id)
+        active_effect_matches_keyword_with_editor_id(effect, editor_id)
     })
 }
 
@@ -189,7 +189,7 @@ where
     )
 }
 
-pub fn dispel_active_effects_with_keyword_editor_id<T>(
+pub fn dispel_active_effects_with_keyword_with_editor_id<T>(
     target: &T,
     editor_id: &str,
     force: bool,
@@ -199,7 +199,7 @@ where
 {
     dispel_active_effects_matching(
         target,
-        |effect| active_effect_matches_keyword_editor_id(effect, editor_id),
+        |effect| active_effect_matches_keyword_with_editor_id(effect, editor_id),
         force,
     )
 }

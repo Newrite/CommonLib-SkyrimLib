@@ -21,9 +21,10 @@ pub use registry::{
 };
 pub use runtime::{
     PapyrusEventAccessError, PapyrusEventRegistrationError, PapyrusEventRuntimeError,
-    PapyrusEventSet, PapyrusEventUniqueId, is_registered, last_error, register_event_set,
-    registered_unique_id, take_last_error, unregister_event_set, with_event_set,
-    with_event_set_mut, with_events, with_events_mut,
+    PapyrusEventSet, PapyrusEventUniqueId, has_registered_event_set, last_runtime_error,
+    register_event_set, registered_event_set_unique_id, take_last_runtime_error,
+    unregister_event_set, with_registered_event_set, with_registered_event_set_mut,
+    with_registered_events, with_registered_events_mut,
 };
 pub use types::{
     GamePtr, GameRef, PapyrusMethodFunctionSignature, PapyrusMethodLatentFunctionSignature,

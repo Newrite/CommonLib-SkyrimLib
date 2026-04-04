@@ -10,10 +10,10 @@ use crate::sdk::core::GamePtr;
 
 use super::items::{
     has_item_effect_with_archetype, has_item_effect_with_keyword,
-    has_item_effect_with_keyword_editor_id,
+    has_item_effect_with_keyword_with_editor_id,
 };
 use super::shared::{
-    actor_spell_has_keyword, actor_spell_has_keyword_editor_id, casting_source_slot,
+    actor_spell_has_keyword, actor_spell_has_keyword_with_editor_id, casting_source_slot,
 };
 
 type SpellVisitorCallback =
@@ -155,9 +155,9 @@ pub fn remove_actor_spells_matching(
     removed
 }
 
-pub fn has_actor_spell_with_keyword_editor_id(actor: &mut Actor, editor_id: &str) -> bool {
+pub fn has_actor_spell_with_keyword_with_editor_id(actor: &mut Actor, editor_id: &str) -> bool {
     actor_has_spell_matching(actor, |spell| {
-        actor_spell_has_keyword_editor_id(spell, editor_id)
+        actor_spell_has_keyword_with_editor_id(spell, editor_id)
     })
 }
 
@@ -169,9 +169,12 @@ pub fn has_actor_spell_with_effect_keyword(actor: &mut Actor, keyword: &BGSKeywo
     actor_has_spell_matching(actor, |spell| has_item_effect_with_keyword(spell, keyword))
 }
 
-pub fn has_actor_spell_with_effect_keyword_editor_id(actor: &mut Actor, editor_id: &str) -> bool {
+pub fn has_actor_spell_with_effect_keyword_with_editor_id(
+    actor: &mut Actor,
+    editor_id: &str,
+) -> bool {
     actor_has_spell_matching(actor, |spell| {
-        has_item_effect_with_keyword_editor_id(spell, editor_id)
+        has_item_effect_with_keyword_with_editor_id(spell, editor_id)
     })
 }
 
@@ -191,12 +194,12 @@ pub fn collect_actor_spells_with_keyword(
     collect_actor_spells_matching(actor, |spell| actor_spell_has_keyword(spell, keyword))
 }
 
-pub fn collect_actor_spells_with_keyword_editor_id(
+pub fn collect_actor_spells_with_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
 ) -> Vec<GamePtr<SpellItem>> {
     collect_actor_spells_matching(actor, |spell| {
-        actor_spell_has_keyword_editor_id(spell, editor_id)
+        actor_spell_has_keyword_with_editor_id(spell, editor_id)
     })
 }
 
@@ -207,12 +210,12 @@ pub fn collect_actor_spells_with_effect_keyword(
     collect_actor_spells_matching(actor, |spell| has_item_effect_with_keyword(spell, keyword))
 }
 
-pub fn collect_actor_spells_with_effect_keyword_editor_id(
+pub fn collect_actor_spells_with_effect_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
 ) -> Vec<GamePtr<SpellItem>> {
     collect_actor_spells_matching(actor, |spell| {
-        has_item_effect_with_keyword_editor_id(spell, editor_id)
+        has_item_effect_with_keyword_with_editor_id(spell, editor_id)
     })
 }
 
@@ -296,14 +299,14 @@ pub fn remove_spells_with_keyword(
     )
 }
 
-pub fn remove_spells_with_keyword_editor_id(
+pub fn remove_spells_with_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
     deselect_matching: bool,
 ) -> usize {
     remove_actor_spells_matching(
         actor,
-        |spell| actor_spell_has_keyword_editor_id(spell, editor_id),
+        |spell| actor_spell_has_keyword_with_editor_id(spell, editor_id),
         deselect_matching,
     )
 }
@@ -320,14 +323,14 @@ pub fn remove_spells_with_effect_keyword(
     )
 }
 
-pub fn remove_spells_with_effect_keyword_editor_id(
+pub fn remove_spells_with_effect_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
     deselect_matching: bool,
 ) -> usize {
     remove_actor_spells_matching(
         actor,
-        |spell| has_item_effect_with_keyword_editor_id(spell, editor_id),
+        |spell| has_item_effect_with_keyword_with_editor_id(spell, editor_id),
         deselect_matching,
     )
 }

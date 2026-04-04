@@ -5,7 +5,7 @@ use crate::re::{BGSKeyword, EffectArchetypeId, EffectSetting, MagicItem};
 use crate::sdk::core::GamePtr;
 
 use super::shared::{
-    effect_base_matches_keyword, effect_base_matches_keyword_editor_id, magic_item_effect_base,
+    effect_base_matches_keyword, effect_base_matches_keyword_with_editor_id, magic_item_effect_base,
 };
 
 pub fn for_each_item_effect_base<T>(
@@ -86,12 +86,12 @@ where
     .is_break()
 }
 
-pub fn has_item_effect_with_keyword_editor_id<T>(item: &T, editor_id: &str) -> bool
+pub fn has_item_effect_with_keyword_with_editor_id<T>(item: &T, editor_id: &str) -> bool
 where
     T: AsRef<MagicItem> + ?Sized,
 {
     for_each_item_effect_base(item, |base| {
-        if effect_base_matches_keyword_editor_id(base, editor_id) {
+        if effect_base_matches_keyword_with_editor_id(base, editor_id) {
             ControlFlow::Break(())
         } else {
             ControlFlow::Continue(())
@@ -110,7 +110,7 @@ where
     collect_item_effect_bases_matching(item, |base| effect_base_matches_keyword(base, keyword))
 }
 
-pub fn collect_item_effect_bases_with_keyword_editor_id<T>(
+pub fn collect_item_effect_bases_with_keyword_with_editor_id<T>(
     item: &T,
     editor_id: &str,
 ) -> Vec<GamePtr<EffectSetting>>
@@ -118,7 +118,7 @@ where
     T: AsRef<MagicItem> + ?Sized,
 {
     collect_item_effect_bases_matching(item, |base| {
-        effect_base_matches_keyword_editor_id(base, editor_id)
+        effect_base_matches_keyword_with_editor_id(base, editor_id)
     })
 }
 

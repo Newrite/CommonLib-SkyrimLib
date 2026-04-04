@@ -24,17 +24,17 @@ pub fn matches_form_editor_id(form: &TESForm, editor_id: &str) -> bool {
 }
 
 #[inline(always)]
-pub fn lookup_list_editor_id(editor_id: &str) -> GamePtr<BGSListForm> {
+pub fn lookup_list_by_editor_id(editor_id: &str) -> GamePtr<BGSListForm> {
     lookup_editor_id_typed::<BGSListForm>(editor_id)
 }
 
 #[inline(always)]
-pub fn lookup_persistent_list_editor_id(editor_id: &str) -> PersistentFormPtr<BGSListForm> {
+pub fn lookup_persistent_list_by_editor_id(editor_id: &str) -> PersistentFormPtr<BGSListForm> {
     lookup_persistent_editor_id_typed::<BGSListForm>(editor_id)
 }
 
 #[inline(always)]
-pub fn require_persistent_list_editor_id(
+pub fn require_persistent_list_by_editor_id(
     editor_id: &str,
     context: &str,
 ) -> PersistentForm<BGSListForm> {
@@ -181,7 +181,7 @@ where
 }
 
 #[inline(always)]
-pub fn find_form_id<T>(list: &T, form_id: FormID) -> GamePtr<TESForm>
+pub fn find_form_by_id<T>(list: &T, form_id: FormID) -> GamePtr<TESForm>
 where
     T: AsRef<BGSListForm> + ?Sized,
 {
@@ -189,7 +189,7 @@ where
 }
 
 #[inline(always)]
-pub fn find_form_editor_id<T>(list: &T, editor_id: &str) -> GamePtr<TESForm>
+pub fn find_form_by_editor_id<T>(list: &T, editor_id: &str) -> GamePtr<TESForm>
 where
     T: AsRef<BGSListForm> + ?Sized,
 {
@@ -207,19 +207,19 @@ where
 }
 
 #[inline(always)]
-pub fn has_form_id<T>(list: &T, form_id: FormID) -> bool
+pub fn has_form_with_id<T>(list: &T, form_id: FormID) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
 {
-    find_form_id(list, form_id).is_some()
+    find_form_by_id(list, form_id).is_some()
 }
 
 #[inline(always)]
-pub fn has_form_editor_id<T>(list: &T, editor_id: &str) -> bool
+pub fn has_form_with_editor_id<T>(list: &T, editor_id: &str) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
 {
-    find_form_editor_id(list, editor_id).is_some()
+    find_form_by_editor_id(list, editor_id).is_some()
 }
 
 pub fn has_any_forms<T>(list: &T, forms: &[&TESForm]) -> bool
@@ -236,24 +236,24 @@ where
     forms.iter().copied().all(|form| has_form(list, form))
 }
 
-pub fn has_any_form_ids<T>(list: &T, form_ids: &[FormID]) -> bool
+pub fn has_any_forms_with_id<T>(list: &T, form_ids: &[FormID]) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
 {
     form_ids
         .iter()
         .copied()
-        .any(|form_id| has_form_id(list, form_id))
+        .any(|form_id| has_form_with_id(list, form_id))
 }
 
-pub fn has_all_form_ids<T>(list: &T, form_ids: &[FormID]) -> bool
+pub fn has_all_forms_with_id<T>(list: &T, form_ids: &[FormID]) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
 {
     form_ids
         .iter()
         .copied()
-        .all(|form_id| has_form_id(list, form_id))
+        .all(|form_id| has_form_with_id(list, form_id))
 }
 
 #[inline(always)]
@@ -318,8 +318,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::{
-        collect_forms, contains_only_form_type, count_forms, find_form_id, for_each_form,
-        has_all_form_ids, has_any_forms, has_form, has_form_id,
+        collect_forms, contains_only_form_type, count_forms, find_form_by_id, for_each_form,
+        has_all_forms_with_id, has_any_forms, has_form, has_form_with_id,
     };
     use crate::re::base_form_component::BaseFormComponent;
     use crate::re::bst_array::BSTArray;
@@ -367,16 +367,16 @@ mod tests {
 
         assert_eq!(count_forms(&list), 2);
         assert!(has_form(&list, &spell));
-        assert!(has_form_id(&list, 0x0101));
+        assert!(has_form_with_id(&list, 0x0101));
         assert!(has_any_forms(&list, &[&spell]));
-        assert!(has_all_form_ids(&list, &[0x0100, 0x0101]));
+        assert!(has_all_forms_with_id(&list, &[0x0100, 0x0101]));
 
         let snapshot = collect_forms(&list);
         assert_eq!(snapshot.len(), 2);
         assert_eq!(snapshot[0].as_ptr(), &mut spell as *mut TESForm);
         assert_eq!(snapshot[1].as_ptr(), &mut keyword as *mut TESForm);
         assert_eq!(
-            find_form_id(&list, 0x0101).as_ptr(),
+            find_form_by_id(&list, 0x0101).as_ptr(),
             &mut keyword as *mut TESForm
         );
     }

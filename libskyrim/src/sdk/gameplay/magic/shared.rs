@@ -12,7 +12,10 @@ pub(super) fn effect_base_matches_keyword(
 }
 
 #[inline(always)]
-pub(super) fn effect_base_matches_keyword_editor_id(base: &EffectSetting, editor_id: &str) -> bool {
+pub(super) fn effect_base_matches_keyword_with_editor_id(
+    base: &EffectSetting,
+    editor_id: &str,
+) -> bool {
     !editor_id.is_empty() && base.has_keyword_string(editor_id)
 }
 
@@ -34,12 +37,12 @@ pub(super) fn active_effect_matches_keyword(effect: &ActiveEffect, keyword: &BGS
 }
 
 #[inline(always)]
-pub(super) fn active_effect_matches_keyword_editor_id(
+pub(super) fn active_effect_matches_keyword_with_editor_id(
     effect: &ActiveEffect,
     editor_id: &str,
 ) -> bool {
     active_effect_base(effect)
-        .is_some_and(|base| effect_base_matches_keyword_editor_id(base, editor_id))
+        .is_some_and(|base| effect_base_matches_keyword_with_editor_id(base, editor_id))
 }
 
 #[inline(always)]
@@ -103,6 +106,6 @@ pub(super) fn actor_spell_has_keyword(spell: &SpellItem, keyword: &BGSKeyword) -
 }
 
 #[inline(always)]
-pub(super) fn actor_spell_has_keyword_editor_id(spell: &SpellItem, editor_id: &str) -> bool {
+pub(super) fn actor_spell_has_keyword_with_editor_id(spell: &SpellItem, editor_id: &str) -> bool {
     spell.base.keyword_form.has_keyword_string(editor_id)
 }

@@ -163,7 +163,7 @@ where
 
 struct RuntimeState {
     set: Box<dyn RegisteredEventSet>,
-    last_error: Option<PapyrusEventRuntimeError>,
+    runtime_error: Option<PapyrusEventRuntimeError>,
 }
 
 impl RuntimeState {
@@ -171,18 +171,18 @@ impl RuntimeState {
     fn new(set: Box<dyn RegisteredEventSet>) -> Self {
         Self {
             set,
-            last_error: None,
+            runtime_error: None,
         }
     }
 
     #[inline(always)]
-    fn clear_last_error(&mut self) {
-        self.last_error = None;
+    fn clear_runtime_error(&mut self) {
+        self.runtime_error = None;
     }
 
     #[inline(always)]
-    fn set_last_error(&mut self, error: PapyrusEventRuntimeError) {
-        self.last_error = Some(error);
+    fn set_runtime_error(&mut self, error: PapyrusEventRuntimeError) {
+        self.runtime_error = Some(error);
     }
 }
 
@@ -204,7 +204,7 @@ fn skip_record_data(serialization: &SerializationInterface, mut length: u32) -> 
 }
 
 #[inline(always)]
-pub fn is_registered() -> bool {
+pub fn has_registered_event_set() -> bool {
     PAPYRUS_EVENT_RUNTIME.lock().is_some()
 }
 
@@ -244,7 +244,7 @@ pub fn unregister_event_set() {
 }
 
 #[inline(always)]
-pub fn registered_unique_id() -> Option<PapyrusEventUniqueId> {
+pub fn registered_event_set_unique_id() -> Option<PapyrusEventUniqueId> {
     PAPYRUS_EVENT_RUNTIME
         .lock()
         .as_ref()
@@ -252,19 +252,19 @@ pub fn registered_unique_id() -> Option<PapyrusEventUniqueId> {
 }
 
 #[inline(always)]
-pub fn last_error() -> Option<PapyrusEventRuntimeError> {
+pub fn last_runtime_error() -> Option<PapyrusEventRuntimeError> {
     PAPYRUS_EVENT_RUNTIME
         .lock()
         .as_ref()
-        .and_then(|state| state.last_error)
+        .and_then(|state| state.runtime_error)
 }
 
 #[inline(always)]
-pub fn take_last_error() -> Option<PapyrusEventRuntimeError> {
+pub fn take_last_runtime_error() -> Option<PapyrusEventRuntimeError> {
     PAPYRUS_EVENT_RUNTIME
         .lock()
         .as_mut()
-        .and_then(|state| state.last_error.take())
+        .and_then(|state| state.runtime_error.take())
 }
 
 fn with_registered_set<T, R>(
@@ -304,7 +304,7 @@ where
 }
 
 #[inline(always)]
-pub fn with_event_set<T, R>(
+pub fn with_registered_event_set<T, R>(
     f: impl FnOnce(&PapyrusEventSet<T>) -> R,
 ) -> Result<R, PapyrusEventAccessError>
 where
@@ -314,7 +314,7 @@ where
 }
 
 #[inline(always)]
-pub fn with_event_set_mut<T, R>(
+pub fn with_registered_event_set_mut<T, R>(
     f: impl FnOnce(&mut PapyrusEventSet<T>) -> R,
 ) -> Result<R, PapyrusEventAccessError>
 where
@@ -324,7 +324,7 @@ where
 }
 
 #[inline(always)]
-pub fn with_events<T, R>(f: impl FnOnce(&T) -> R) -> Result<R, PapyrusEventAccessError>
+pub fn with_registered_events<T, R>(f: impl FnOnce(&T) -> R) -> Result<R, PapyrusEventAccessError>
 where
     T: PapyrusEventCollection + Send + 'static,
 {
@@ -332,7 +332,9 @@ where
 }
 
 #[inline(always)]
-pub fn with_events_mut<T, R>(f: impl FnOnce(&mut T) -> R) -> Result<R, PapyrusEventAccessError>
+pub fn with_registered_events_mut<T, R>(
+    f: impl FnOnce(&mut T) -> R,
+) -> Result<R, PapyrusEventAccessError>
 where
     T: PapyrusEventCollection + Send + 'static,
 {
@@ -350,9 +352,9 @@ unsafe extern "system" fn save_callback(serialization: *mut SerializationInterfa
             return;
         };
 
-        state.clear_last_error();
+        state.clear_runtime_error();
         if let Err(error) = state.set.save(serialization) {
-            state.set_last_error(error);
+            state.set_runtime_error(error);
         }
     });
 }
@@ -368,9 +370,9 @@ unsafe extern "system" fn load_callback(serialization: *mut SerializationInterfa
             return;
         };
 
-        state.clear_last_error();
+        state.clear_runtime_error();
         if let Err(error) = state.set.load(serialization) {
-            state.set_last_error(error);
+            state.set_runtime_error(error);
         }
     });
 }
@@ -382,7 +384,7 @@ unsafe extern "system" fn revert_callback(serialization: *mut SerializationInter
             return;
         };
 
-        state.clear_last_error();
+        state.clear_runtime_error();
         state.set.revert(unsafe { serialization.as_ref() });
     });
 }
