@@ -16,13 +16,14 @@
 //! Example:
 //!
 //! ```rust,ignore
+//! use libskyrim::re::TESObjectREFR;
 //! use libskyrim::sdk::hooks;
 //!
-//! #[libskyrim::hook(
-//!     offset = 0x123456,
+//! #[hooks::function_hook(
+//!     target = 0x123456usize,
 //!     guard = hooks::guards::original(),
 //! )]
-//! fn example_hook(_target: libskyrim::sdk::core::GameRef<libskyrim::re::TESObjectREFR>) {}
+//! fn example_hook(_target: &TESObjectREFR) {}
 //! ```
 
 /// The base action to take when a strict hook argument fails adaptation.

@@ -1,3 +1,25 @@
+//! Procedural macros backing `libskyrim` and its SDK-facing authoring surface.
+//!
+//! Most plugin authors do not need to depend on `libskyrim-macros` directly:
+//!
+//! - hook attributes are re-exported from `libskyrim::sdk::hooks`
+//! - event attributes are re-exported from `libskyrim::sdk::events`
+//! - `Cosave` is re-exported from `libskyrim::sdk::plugin::serialization`
+//!
+//! The main direct-use exception is `#[libskyrim_macros::open_enum]`, which is
+//! part of the lower-level `re` translation workflow rather than the SDK.
+//!
+//! Decision guide:
+//!
+//! - use `function_hook`, `call_hook`, `vtable_hook`, or `vcall_hook` for
+//!   high-level hook authoring with generated install glue
+//! - use `game_event`, `ui_event`, `dispatcher_event`, `input_event`,
+//!   `message_event`, or `bus_event` for event callbacks that should generate
+//!   `EventInstaller`-style modules
+//! - use `#[derive(Cosave)]` for value-like persistence payloads
+//! - use `#[open_enum]` for fieldless integer enums in `re` translations that
+//!   should stay open to unknown engine values
+
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
@@ -11,56 +33,123 @@ use syn::{
     TypeGroup, TypeParen, TypePath, UnOp, Visibility, parse_macro_input, parse_quote,
 };
 
+/// High-level attribute hook for function-entry detours.
+///
+/// This macro is re-exported as `libskyrim::sdk::hooks::function_hook`.
+///
+/// Use it when the plugin is patching one function entry and wants Rust-facing
+/// parameters plus a generated sibling hook module with `try_install()`,
+/// `INSTALLER`, and batch-install support.
+///
+/// ```rust,ignore
+/// use libskyrim::re::Actor;
+/// use libskyrim::relocation::RelocationID;
+/// use libskyrim::sdk::hooks;
+///
+/// #[hooks::function_hook(
+///     target = RelocationID::new(123, 456),
+///     guard = hooks::guards::default(),
+/// )]
+/// fn sample_hook(
+///     original: hooks::Original<fn(&Actor, bool) -> bool>,
+///     actor: &Actor,
+///     value: bool,
+/// ) -> bool {
+///     !original.call(actor, value)
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn function_hook(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_hook(HookKind::Function, attr, item)
 }
 
+/// High-level attribute hook for one concrete call site.
+///
+/// This macro is re-exported as `libskyrim::sdk::hooks::call_hook`.
 #[proc_macro_attribute]
 pub fn call_hook(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_hook(HookKind::Call, attr, item)
 }
 
+/// High-level attribute hook for one vtable slot.
+///
+/// This macro is re-exported as `libskyrim::sdk::hooks::vtable_hook`.
 #[proc_macro_attribute]
 pub fn vtable_hook(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_hook(HookKind::Vtable, attr, item)
 }
 
+/// High-level attribute hook for one indirect virtual call site.
+///
+/// This macro is re-exported as `libskyrim::sdk::hooks::vcall_hook`.
 #[proc_macro_attribute]
 pub fn vcall_hook(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_hook(HookKind::Vcall, attr, item)
 }
 
+/// Attribute event installer for gameplay events from
+/// `ScriptEventSourceHolder`.
+///
+/// This macro is re-exported as `libskyrim::sdk::events::game_event`.
 #[proc_macro_attribute]
 pub fn game_event(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_event(EventDomain::Game, attr, item)
 }
 
+/// Attribute event installer for UI events from the `UI` singleton.
+///
+/// This macro is re-exported as `libskyrim::sdk::events::ui_event`.
 #[proc_macro_attribute]
 pub fn ui_event(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_event(EventDomain::Ui, attr, item)
 }
 
+/// Attribute event installer for SKSE dispatcher events.
+///
+/// This macro is re-exported as `libskyrim::sdk::events::dispatcher_event`.
 #[proc_macro_attribute]
 pub fn dispatcher_event(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_event(EventDomain::Dispatcher, attr, item)
 }
 
+/// Attribute event installer for the SDK input-chain callback surface.
+///
+/// This macro is re-exported as `libskyrim::sdk::events::input_event`.
 #[proc_macro_attribute]
 pub fn input_event(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_event(EventDomain::Input, attr, item)
 }
 
+/// Attribute event installer for SKSE plugin messaging.
+///
+/// This macro is re-exported as `libskyrim::sdk::events::message_event`.
+///
+/// It supports `kind = ...`, `plugin_phase = ...`, `game_phase = ...`, or
+/// `phase = ...`, plus optional `sender = "PluginName"` filtering.
 #[proc_macro_attribute]
 pub fn message_event(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_event(EventDomain::Message, attr, item)
 }
 
+/// Attribute event installer for the local synchronous SDK event bus.
+///
+/// This macro is re-exported as `libskyrim::sdk::events::bus_event`.
 #[proc_macro_attribute]
 pub fn bus_event(attr: TokenStream, item: TokenStream) -> TokenStream {
     expand_event(EventDomain::Bus, attr, item)
 }
 
+/// Derive `CosaveEncode` and `CosaveDecode` for one value-like persistence
+/// struct.
+///
+/// This derive is re-exported as
+/// `libskyrim::sdk::plugin::serialization::Cosave`.
+///
+/// Supported field attributes:
+///
+/// - `#[cosave(skip)]`
+/// - `#[cosave(default)]`
+/// - `#[cosave(with = path)]`
 #[proc_macro_derive(Cosave, attributes(cosave))]
 pub fn derive_cosave(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -70,6 +159,15 @@ pub fn derive_cosave(input: TokenStream) -> TokenStream {
     }
 }
 
+/// Generate `TryFrom<repr>` for a fieldless integer enum without pretending
+/// the enum is closed over future engine values.
+///
+/// This macro is commonly used directly as `#[libskyrim_macros::open_enum]`
+/// inside `re` translations.
+///
+/// Optional configuration:
+///
+/// - `#[open_enum(ignore(HelperVariant, ...))]`
 #[proc_macro_attribute]
 pub fn open_enum(attr: TokenStream, item: TokenStream) -> TokenStream {
     let attr_ts = TokenStream2::from(attr);
@@ -1033,6 +1131,13 @@ fn is_original_type(ty: &Type) -> bool {
 }
 
 fn map_user_ty_to_abi(ty: &Type) -> syn::Result<Type> {
+    if let Some(path) = find_stable_hook_wrapper_type(ty) {
+        return Err(syn::Error::new_spanned(
+            path,
+            "stable SDK pointer wrappers are not supported as hook parameters; use `&T`, `Option<&T>`, `&mut T`, raw pointers, or `Resolved<T>` instead",
+        ));
+    }
+
     match peel_type(ty) {
         Type::Ptr(ptr) => Ok(Type::Ptr(ptr.clone())),
         Type::Reference(reference) => {
@@ -1055,12 +1160,6 @@ fn map_user_ty_to_abi(ty: &Type) -> syn::Result<Type> {
                 _ if last_ident == "Resolved" => {
                     let inner = last_type_arg(path)?;
                     Ok(parse_quote!(*mut #inner))
-                }
-                _ if last_ident == "GameRef" || last_ident == "GamePtr" => {
-                    Err(syn::Error::new_spanned(
-                        path,
-                        "stable SDK pointer wrappers are not supported as hook parameters; use `&T`, `Option<&T>`, `&mut T`, raw pointers, or `Resolved<T>` instead",
-                    ))
                 }
                 _ if last_ident == "ResolvedHandle" => {
                     let inner = last_type_arg(path)?;
@@ -1095,6 +1194,32 @@ fn map_option_inner_to_abi(inner: &Type) -> syn::Result<Type> {
             other,
             "unsupported `Option<_>` hook argument type; use Option<&T>, Option<&mut T>, Option<Resolved<T>>, or Option<ResolvedHandle<H>>",
         )),
+    }
+}
+
+fn find_stable_hook_wrapper_type(ty: &Type) -> Option<&TypePath> {
+    match peel_type(ty) {
+        Type::Reference(reference) => find_stable_hook_wrapper_type(&reference.elem),
+        Type::Ptr(ptr) => find_stable_hook_wrapper_type(&ptr.elem),
+        Type::Path(path) => {
+            if path_last_ident(path).is_some_and(|ident| ident == "GameRef" || ident == "GamePtr") {
+                return Some(path);
+            }
+
+            path.path
+                .segments
+                .iter()
+                .find_map(|segment| match &segment.arguments {
+                    PathArguments::AngleBracketed(args) => {
+                        args.args.iter().find_map(|arg| match arg {
+                            GenericArgument::Type(ty) => find_stable_hook_wrapper_type(ty),
+                            _ => None,
+                        })
+                    }
+                    _ => None,
+                })
+        }
+        _ => None,
     }
 }
 
@@ -2682,4 +2807,52 @@ fn expand_cosave_derive(input: DeriveInput) -> syn::Result<TokenStream2> {
             }
         }
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use quote::ToTokens;
+    use syn::parse_quote;
+
+    fn ty_tokens(ty: &Type) -> String {
+        ty.to_token_stream().to_string()
+    }
+
+    #[test]
+    fn map_shared_ref_hook_arg_to_raw_pointer() {
+        let ty: Type = parse_quote!(&Actor);
+        let abi = map_user_ty_to_abi(&ty).expect("&Actor should stay supported");
+        assert_eq!(ty_tokens(&abi), "* mut Actor");
+    }
+
+    #[test]
+    fn reject_ref_to_game_ref_hook_arg() {
+        let ty: Type = parse_quote!(&GameRef<PlayerCharacter>);
+        let err = map_user_ty_to_abi(&ty).expect_err("&GameRef<_> must be rejected");
+        assert!(
+            err.to_string()
+                .contains("stable SDK pointer wrappers are not supported as hook parameters")
+        );
+    }
+
+    #[test]
+    fn reject_option_ref_to_game_ptr_hook_arg() {
+        let ty: Type = parse_quote!(Option<&GamePtr<Actor>>);
+        let err = map_user_ty_to_abi(&ty).expect_err("Option<&GamePtr<_>> must be rejected");
+        assert!(
+            err.to_string()
+                .contains("stable SDK pointer wrappers are not supported as hook parameters")
+        );
+    }
+
+    #[test]
+    fn reject_raw_pointer_to_game_ref_hook_arg() {
+        let ty: Type = parse_quote!(*mut GameRef<Actor>);
+        let err = map_user_ty_to_abi(&ty).expect_err("*mut GameRef<_> must be rejected");
+        assert!(
+            err.to_string()
+                .contains("stable SDK pointer wrappers are not supported as hook parameters")
+        );
+    }
 }

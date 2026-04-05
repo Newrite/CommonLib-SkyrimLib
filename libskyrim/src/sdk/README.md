@@ -1,6 +1,6 @@
 # `libskyrim::sdk`
 
-`libskyrim::sdk` is the planned high-level Rust-first layer for plugin authors.
+`libskyrim::sdk` is the high-level Rust-first layer for plugin authors.
 It sits above the source-backed ABI layers in `libskyrim::re` and
 `libskyrim::skse`.
 
@@ -346,10 +346,10 @@ fn choose_respawn_point(
 
 ## Purpose
 
-The low-level layers have a different job from the future SDK:
+The low-level layers have a different job from `sdk`:
 
 - `re`
-  Faithful CommonLib/RE translations, runtime-aware layout handling, relocated
+  Faithful CommonLib-backed `re` translations, runtime-aware layout handling, relocated
   wrappers, and ABI-correct ownership boundaries.
 - `skse`
   Faithful SKSE interface layer and thin Rust facades over SKSE services.
@@ -362,7 +362,7 @@ behavior by plugin author intent rather than by reverse-engineered class name.
 
 ## Design Constraints
 
-The SDK must remain stable while the translated `RE` layer continues to grow.
+The SDK must remain stable while the translated `re` layer continues to grow.
 That means:
 
 - new `re` files do not automatically imply new `sdk` wrappers
@@ -514,7 +514,7 @@ Good SDK candidates:
 
 Poor SDK candidates:
 
-- direct mirrors of `RE::*` layout types
+- direct mirrors of `re::*` layout types
 - ad-hoc wrappers around unstable runtime-data fields
 - heavy `Ni*`, `hk*`, `bhk*`, or `hkb*` types before there is a clear consumer
   use case and a stable abstraction boundary
@@ -530,7 +530,7 @@ usually satisfy all of the following:
 - it can be explained in terms of behavior rather than raw field access
 - it can hide runtime selection or ownership complexity behind a stable API
 - it still leaves a straightforward path back to `re` / `skse`
-- it remains useful even if more `RE` types are translated later
+- it remains useful even if more `re` types are translated later
 
 When these conditions are not met yet, the type should stay exclusively in the
 low-level layer until a clearer domain abstraction emerges.
@@ -556,7 +556,7 @@ The intended model is:
 The SDK should compose these, not erase them. High-level helpers may wrap them
 for ergonomics, but the native Bethesda types remain first-class values.
 
-Planned shared SDK support types:
+Shared SDK support types:
 
 - `GameRef<T>`
   non-null wrapper for stable engine objects sourced from trusted pointers
@@ -579,6 +579,28 @@ Planned shared SDK support types:
 - `DynamicCastExt` / `DynamicCastMutExt`
   shared RTTI-backed cast helpers for SDK wrappers, native owners, and
   resolved handles
+
+### `GameRef<T>` and `GamePtr<T>` in practice
+
+`GameRef<T>` and `GamePtr<T>` are the SDK's "trusted stable engine pointer"
+vocabulary:
+
+- use `&T` / `&mut T` at immediate callback, hook, and traversal boundaries
+- use `GameRef<T>` when the pointer is trusted to be non-null
+- use `GamePtr<T>` when the same kind of trusted pointer is nullable
+- use native handles when identity must survive later resolution
+
+```rust,ignore
+use libskyrim::re::TESObjectREFR;
+use libskyrim::sdk::core::{GamePtr, GameRef};
+
+fn choose_reference(
+    preferred: GamePtr<TESObjectREFR>,
+    fallback: GameRef<TESObjectREFR>,
+) -> GameRef<TESObjectREFR> {
+    preferred.into_option().unwrap_or(fallback)
+}
+```
 
 ## Domain Layout
 
@@ -690,7 +712,7 @@ The domains that should still be treated as later / more volatile are:
 - `advanced::render`
 
 These later domains depend more heavily on engine internals, runtime splits, or
-ongoing `RE` translation work.
+ongoing `re` translation work.
 
 ## Evolution Rules
 
@@ -825,9 +847,12 @@ their already-registered SKSE state.
 The typed installer layer looks like this:
 
 ```rust
+use libskyrim::re::TESHitEvent;
+use libskyrim::sdk;
+
 let mut batch = sdk::events::EventBatch::new();
 
-batch.game::<RE::TESHitEvent, _, _>("hit", |event| {
+batch.game::<TESHitEvent, _, _>("hit", |event| {
     let _ = event;
 })?;
 
@@ -846,7 +871,10 @@ When a plugin subsystem already owns a borrowed dynamic source, use
 `EventSourceRef<'a, T>` instead of spelling raw `*mut BSTEventSource<T>`:
 
 ```rust
-let mut source = RE::BSTEventSource::<RE::TESHitEvent>::new();
+use libskyrim::re::{BSTEventSource, TESHitEvent};
+use libskyrim::sdk;
+
+let mut source = BSTEventSource::<TESHitEvent>::new();
 let _sub = sdk::events::EventSourceRef::new(&mut source).subscribe(|event| {
     let _ = event;
 })?;
@@ -870,8 +898,8 @@ attribute-driven event registration.
 
 Supported attributes:
 
-- `#[events::game_event(event = RE::TESHitEvent)]`
-- `#[events::ui_event(event = RE::MenuOpenCloseEvent)]`
+- `#[events::game_event(event = libskyrim::re::TESHitEvent)]`
+- `#[events::ui_event(event = libskyrim::re::MenuOpenCloseEvent)]`
 - `#[events::dispatcher_event(event = skse::ActionEvent)]`
 - `#[events::input_event]`
 - `#[events::message_event(kind = events::skse::messages::MessageKind::DataLoaded)]`
@@ -902,17 +930,20 @@ methods, generics, `async`, `const`, `extern`, or variadics.
 If the callback returns `EventFlow`, that flow is used directly. If it returns
 `()`, the SDK treats it as `EventFlow::Continue`.
 
-### Planned Domain Examples
+### Domain Examples
 
 The intended authoring style is:
 
 ```rust
-let _hit = sdk::events::game::subscribe::<RE::TESHitEvent>(|event| {
+use libskyrim::re::{MenuOpenCloseEvent, TESHitEvent, INPUT_DEVICE};
+use libskyrim::{sdk, skse};
+
+let _hit = sdk::events::game::subscribe::<TESHitEvent>(|event| {
     let _ = event;
     sdk::events::EventFlow::Continue
 })?;
 
-let _menu = sdk::events::ui::subscribe::<RE::MenuOpenCloseEvent>(|event| {
+let _menu = sdk::events::ui::subscribe::<MenuOpenCloseEvent>(|event| {
     let _ = event;
     sdk::events::EventFlow::Continue
 })?;
@@ -949,7 +980,7 @@ sdk::plugin::on_game_lifecycle(
 );
 
 let _input = sdk::events::input::subscribe(|mut events| {
-    if events.contains_device(RE::INPUT_DEVICE::kKeyboard) {
+    if events.contains_device(INPUT_DEVICE::kKeyboard) {
         for button in events.buttons_mut() {
             let _ = button;
         }
@@ -1062,7 +1093,9 @@ For owner-bound dynamic sources, the SDK now also exposes
 need to spell `EventSourceRef::new(...)` manually:
 
 ```rust
-let mut source = RE::BSTEventSource::<RE::TESHitEvent>::new();
+use libskyrim::re::{BSTEventSource, TESHitEvent};
+
+let mut source = BSTEventSource::<TESHitEvent>::new();
 let _subscription = source.subscribe_sdk(|event| {
     let _ = event;
 })?;
@@ -1163,7 +1196,7 @@ The SDK serialization layer tries to be safer than the usual hand-written
 
 ## Respawn / Spatial Query Direction
 
-The current SDK and RE stack is now strong enough to support the first serious
+The current SDK and `re` stack is now strong enough to support the first serious
 pass of dynamic recovery-point selection, but not yet the final high-level
 ergonomic surface that a plugin like `GhostOfDeath` wants.
 
@@ -1301,16 +1334,18 @@ by high-level hook signatures:
 - `ResolvedHandle`
 
 ```rust
+use libskyrim::re::{Actor, PlayerCharacter, TESObjectREFR};
+use libskyrim::relocation::{RelocationID, VariantOffset};
 use libskyrim::sdk::hooks;
+use libskyrim::sdk::hooks::Resolved;
 
 #[hooks::function_hook(
     target = RelocationID::new(123, 456),
     guard = hooks::guards::default(),
-    convert_fail = return_(false)
 )]
 fn invert_actor_bool(
-    original: hooks::Original<fn(&RE::Actor, bool) -> bool>,
-    actor: &RE::Actor,
+    original: hooks::Original<fn(&Actor, bool) -> bool>,
+    actor: &Actor,
     value: bool,
 ) -> bool {
     !original.call(actor, value)
@@ -1323,17 +1358,17 @@ fn invert_actor_bool(
     invalid = skip
 )]
 fn maybe_skip_call(
-    original: hooks::Original<fn(&RE::TESObjectREFR, f32)>,
-    refr: &RE::TESObjectREFR,
+    original: hooks::Original<fn(&TESObjectREFR, f32)>,
+    refr: &TESObjectREFR,
     delta: f32,
 ) {
     original.call(refr, delta);
 }
 
-#[hooks::vtable_hook(vtable = RE::VTABLE_PlayerCharacter, slot = 0x518, invalid = original)]
+#[hooks::vtable_hook(vtable = PlayerCharacter::VTABLE[0], slot = 0x518, invalid = original)]
 fn patch_player_vfunc(
-    original: hooks::Original<fn(&mut RE::PlayerCharacter)>,
-    player: &mut RE::PlayerCharacter,
+    original: hooks::Original<fn(&mut PlayerCharacter)>,
+    player: &mut PlayerCharacter,
 ) {
     original.call(player);
 }
@@ -1347,14 +1382,19 @@ fn patch_player_vfunc(
     invalid = return_(0usize)
 )]
 fn patch_virtual_call_site(
-    original: hooks::Original<fn(*mut RE::Actor, Resolved<RE::Actor>, u32) -> usize>,
-    actor: *mut RE::Actor,
-    target: Resolved<RE::Actor>,
+    original: hooks::Original<fn(*mut Actor, Resolved<Actor>, u32) -> usize>,
+    actor: *mut Actor,
+    target: Resolved<Actor>,
     source: u32,
 ) -> usize {
     original.call(actor, target, source)
 }
 ```
+
+For high-level attribute hooks, prefer borrowed Rust-facing parameters such as
+`&T`, `&mut T`, `Option<&T>`, `Resolved<T>`, and `ResolvedHandle<H>`. `GameRef<T>`
+and `GamePtr<T>` belong on the SDK helper side when a stable engine pointer
+needs to cross helper boundaries, not in the detour signature itself.
 
 `offset`, `index`, and `slot` accept ordinary constants as well as runtime-aware
 expressions such as `VariantOffset`.
@@ -1378,6 +1418,9 @@ For the common "all invalid hook arguments should behave the same way" case, the
 attribute layer supports a named `guard = ...` preset:
 
 ```rust
+use libskyrim::relocation::RelocationID;
+use libskyrim::sdk::hooks;
+
 #[hooks::function_hook(target = RelocationID::new(123, 456), guard = hooks::guards::original())]
 #[hooks::function_hook(target = RelocationID::new(123, 456), guard = hooks::guards::default())]
 #[hooks::call_hook(target = RelocationID::new(123, 456), offset = 0x10, size = 5, guard = hooks::guards::skip())]
@@ -1439,6 +1482,9 @@ The guard policy is wider than just `on_null`. Current invalidity kinds:
 Current policy spelling:
 
 ```rust
+use libskyrim::relocation::RelocationID;
+use libskyrim::sdk::hooks;
+
 #[hooks::function_hook(target = RelocationID::new(123, 456), invalid = original)]
 #[hooks::function_hook(target = RelocationID::new(123, 456), invalid = default)]
 #[hooks::function_hook(target = RelocationID::new(123, 456), invalid = return_(false))]
@@ -1495,6 +1541,8 @@ hook module exposes an `INSTALLER` constant of type `HookInstaller`, and
 `sdk::hooks` exposes both function-based and macro-based batch installation:
 
 ```rust
+use libskyrim::sdk::hooks;
+
 hooks::try_install_all(&[
     some_hook_hook::INSTALLER,
     other_hook_hook::INSTALLER,
@@ -1509,8 +1557,8 @@ and the underlying `HookInstallError`.
 
 ## Low-Level Hook Escape Hatch
 
-For users who want raw hooks without the future SDK layer, `libskyrim` exposes a
-uniform low-level `hook! { ... }` macro in the relocation layer.
+For users who want raw hooks without the high-level SDK layer, `libskyrim`
+exposes a uniform low-level `hook! { ... }` macro in the relocation layer.
 
 This hatch complements the existing `define_call_hook!` and
 `define_vtable_hook!` macros. It currently supports:
@@ -1532,11 +1580,15 @@ This hatch complements the existing `define_call_hook!` and
 ### `hook!` Function Syntax
 
 ```rust
+use libskyrim::hook;
+use libskyrim::re::Actor;
+use libskyrim::relocation::RelocationID;
+
 hook! {
     pub function InvertHook {
         target: RelocationID::new(123, 456),
         size: 12,
-        fn detour(actor: *mut RE::Actor, value: bool) -> bool {
+        fn detour(actor: *mut Actor, value: bool) -> bool {
             !original(actor, value)
         }
     }
@@ -1555,10 +1607,14 @@ If `size` is omitted, `hook! { function ... }` uses the universal MinHook
 backend:
 
 ```rust
+use libskyrim::hook;
+use libskyrim::re::Actor;
+use libskyrim::relocation::RelocationID;
+
 hook! {
     pub function UniversalHook {
         target: RelocationID::new(123, 456),
-        fn detour(actor: *mut RE::Actor, value: bool) -> bool {
+        fn detour(actor: *mut Actor, value: bool) -> bool {
             !original(actor, value)
         }
     }
@@ -1568,10 +1624,14 @@ hook! {
 Equivalent alias:
 
 ```rust
+use libskyrim::hook;
+use libskyrim::re::Actor;
+use libskyrim::relocation::RelocationID;
+
 hook! {
     pub universal UniversalHook {
         target: RelocationID::new(123, 456),
-        fn detour(actor: *mut RE::Actor, value: bool) -> bool {
+        fn detour(actor: *mut Actor, value: bool) -> bool {
             !original(actor, value)
         }
     }
@@ -1581,10 +1641,14 @@ hook! {
 If you want the first-party `iced-x86` backend instead, use `detour`:
 
 ```rust
+use libskyrim::hook;
+use libskyrim::re::Actor;
+use libskyrim::relocation::RelocationID;
+
 hook! {
     pub detour AutoDetourHook {
         target: RelocationID::new(123, 456),
-        fn detour(actor: *mut RE::Actor, value: bool) -> bool {
+        fn detour(actor: *mut Actor, value: bool) -> bool {
             !original(actor, value)
         }
     }
@@ -1594,12 +1658,16 @@ hook! {
 ### `hook!` Call Syntax
 
 ```rust
+use libskyrim::hook;
+use libskyrim::re::TESObjectREFR;
+use libskyrim::relocation::RelocationID;
+
 hook! {
     pub call SomeCallHook {
         target: RelocationID::new(123, 456),
         offset: 0x2A,
         size: 5,
-        fn detour(this: *mut RE::TESObjectREFR, value: u32) {
+        fn detour(this: *mut TESObjectREFR, value: u32) {
             original(this, value);
         }
     }
@@ -1609,6 +1677,10 @@ hook! {
 ### `hook!` Virtual Call Syntax
 
 ```rust
+use libskyrim::hook;
+use libskyrim::re::{Actor, MagicCaster};
+use libskyrim::relocation::RelocationID;
+
 hook! {
     pub vcall SomeVirtualCallHook {
         target: RelocationID::new(123, 456),
@@ -1616,7 +1688,7 @@ hook! {
         size: 6,
         receiver: actor,
         slot: 0x2E0,
-        fn detour(actor: *mut RE::Actor, source: u32) -> *mut RE::MagicCaster {
+        fn detour(actor: *mut Actor, source: u32) -> *mut MagicCaster {
             original(actor, source)
         }
     }
@@ -1648,11 +1720,14 @@ to an index.
 ### `hook!` VTable Syntax
 
 ```rust
+use libskyrim::hook;
+use libskyrim::re::PlayerCharacter;
+
 hook! {
     pub vtable SomeVTableHook {
-        vtable: RE::VTABLE_PlayerCharacter,
+        vtable: PlayerCharacter::VTABLE[0],
         index: 0xA3,
-        fn detour(this: *mut RE::PlayerCharacter) {
+        fn detour(this: *mut PlayerCharacter) {
             original(this);
         }
     }
