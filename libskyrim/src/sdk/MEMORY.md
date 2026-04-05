@@ -98,6 +98,18 @@ High-signal projects sampled from the consolidated local folder:
 - `injury-alt-death`
 - `death-alternative-mod-main`
 - `Reflyem`
+- `PhotoMode-master`
+- `wheeler-main`
+- `dMenu-main`
+- `MaxsuDetectionMeter-main`
+- `SCAR-main`
+- `BehaviorDataInjector-master`
+- `CombatPathingRevolution-master`
+- `DynamicAnimationCasting-main`
+- `TK_Dodge_RE-main`
+- `MaxsuIFrame-main`
+- `Simple-Power-Attack-main`
+- `skyrim-firmament-1.5`
 
 This folder is now the fastest local source for recurring plugin-side patterns
 that should inform the SDK.
@@ -155,6 +167,24 @@ shows the main repeated SDK patterns.
 - `S:\Programming\SKSEProjects\injury-alt-death\src\utility.h`
 - `S:\Programming\SKSEProjects\LoadingScreenTruce01\src\main.cpp`
 - `S:\Programming\SKSEProjects\LoadingScreenTruce02\src\main.cpp`
+
+### Concrete files sampled in the 2026-04-05 follow-up pass
+
+- `S:\Programming\SKSEProjects\PhotoMode-master\src\ImGui\Renderer.cpp`
+- `S:\Programming\SKSEProjects\wheeler-main\src\bin\Rendering\RenderManager.cpp`
+- `S:\Programming\SKSEProjects\dMenu-main\src\bin\Renderer.cpp`
+- `S:\Programming\SKSEProjects\MaxsuDetectionMeter-main\src\Renderer.cpp`
+- `S:\Programming\SKSEProjects\SCAR-main\src\DataHandler.cpp`
+- `S:\Programming\SKSEProjects\BehaviorDataInjector-master\src\Hook.cpp`
+- `S:\Programming\SKSEProjects\BehaviorDataInjector-master\src\DataHandler.cpp`
+- `S:\Programming\SKSEProjects\CombatPathingRevolution-master\src\PayloadInterpreter\hooks.h`
+- `S:\Programming\SKSEProjects\DynamicAnimationCasting-main\src\Framework.cpp`
+- `S:\Programming\SKSEProjects\TK_Dodge_RE-main\src\TKRE.cpp`
+- `S:\Programming\SKSEProjects\MaxsuIFrame-main\src\Functions.cpp`
+- `S:\Programming\SKSEProjects\Simple-Power-Attack-main\include\SKSEMenuFramework.h`
+- `S:\Programming\SKSEProjects\Simple-Power-Attack-main\src\main.cpp`
+- `S:\Programming\SKSEProjects\skyrim-firmament-1.5\src\main.cpp`
+- `S:\Programming\SKSEProjects\skyrim-firmament-1.5\include\CustomSkills\Interfaces.inl`
 
 ## What Real Plugins Repeatedly Need
 
@@ -537,6 +567,92 @@ SDK implication:
 - follow-up work should deepen widget/notification glue instead of rebuilding
   the same loading/fader/menu predicates yet again
 
+### 16. Native overlay/render lifecycle has crossed the line from niche to repeated pattern
+
+Seen strongly in:
+
+- `PhotoMode-master`
+- `wheeler-main`
+- `dMenu-main`
+- `MaxsuDetectionMeter-main`
+
+Repeated pattern:
+
+- hook renderer or D3D initialization
+- acquire `BSRenderManager`, swap chain, device, and context
+- install a `WndProc` hook
+- initialize ImGui Win32 + DX11 backends
+- load fonts/textures after lifecycle messages
+- render an overlay pass once per frame/present
+
+SDK implication:
+
+- `sdk::advanced::render` should no longer stay a placeholder waiting for
+  "more evidence"
+- the repeated abstraction boundary is now strong enough for a real
+  overlay/render helper layer
+- do not try to force this into `sdk::ui`; this is a separate native-render
+  family from menu/Scaleform/widget runtime work
+
+### 17. Animation and behavior-graph workflows are now one of the clearest missing SDK domains
+
+Seen strongly in:
+
+- `SCAR-main`
+- `BehaviorDataInjector-master`
+- `CombatPathingRevolution-master`
+- `DynamicAnimationCasting-main`
+- `TK_Dodge_RE-main`
+- `MaxsuIFrame-main`
+- `OneClickPowerAttack-main`
+- `skyrim-firmament-1.5`
+
+Repeated pattern:
+
+- hook or subscribe to `BSTEventSink<BSAnimationGraphEvent>`
+- call `NotifyAnimationGraph(...)`
+- read/write graph variables
+- inspect `BSAnimationGraphManager`, `hkbBehaviorGraph`, and `activeNodes`
+- resolve `hkbClipGenerator` nodes
+- read annotation tracks and parse payload strings / JSON
+- inject behavior variables/events into graph data
+
+SDK implication:
+
+- add a new animation/behavior SDK domain instead of scattering these helpers
+  across `events`, `gameplay`, and `advanced`
+- likely sub-families:
+  - animation graph events
+  - graph variable helpers
+  - clip/annotation/payload helpers
+  - behavior graph traversal
+  - optional OAR-style interop recipes
+
+### 18. Interop needs one more recipe layer for framework-style APIs
+
+Seen strongly in:
+
+- `Simple-Power-Attack-main`
+- `skyrim-firmament-1.5`
+- `SCAR-main`
+- `dMenu-main`
+
+Repeated pattern:
+
+- listen for a named sender and decode one pointer interface from
+  `SKSE::MessagingInterface::Message::data`
+- wrap large flat export sets such as `SKSEMenuFramework` behind a tiny
+  framework facade instead of calling `GetProcAddress(...)` everywhere
+- mix exported symbol lookup with plugin-shaped higher-level helper methods
+
+SDK implication:
+
+- `sdk::interop::external_api` foundations are good, but it still needs one
+  more recipe/helper layer
+- useful next additions:
+  - message-broadcast pointer-interface helper for `CustomSkills`-style APIs
+  - clearer wrapper pattern for `SKSEMenuFramework`-style flat export families
+
 ## Current SDK Coverage vs Gaps
 
 Current SDK already has meaningful foundations in:
@@ -556,14 +672,20 @@ Current SDK already has meaningful foundations in:
 
 Current weak or placeholder areas:
 
+- missing animation / behavior graph domain
+- native overlay/render helpers above the current placeholder
+  `sdk::advanced::render`
 - direct config-to-form workflow bridges above `sdk::forms` and
   `sdk::plugin::config`
 - plugin-shaped UI observer/install glue and mod-specific widget registries on
   top of the now-real `sdk::ui::{widgets, hud_runtime, driver, controller}`
   layer
+- framework-shaped interop recipes above the current `external_api`
+  foundations
 - higher-level hook recipes and policy-driven install flows beyond the current
   attribute / trampoline / patch surface
-- broader `sdk::advanced::{render, scene}` coverage
+- `sdk::advanced::scene` specifically remains weak and should stay behind
+  render/animation in priority
 - deeper `sdk::advanced::vm` workflows beyond the current lookup/property/
   dispatch toolkit
 - deeper end-to-end plugin examples beyond the current overview/README

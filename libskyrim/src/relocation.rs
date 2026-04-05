@@ -602,6 +602,24 @@ impl<T: Copy> Relocation<T> {
     }
 }
 
+/// Resolves a relocation that points at a pointer cell and returns the pointee.
+///
+/// This matches CommonLib-style helpers that use `REL::Relocation<T**>` and
+/// return `*singleton`, as opposed to `Relocation::<*mut T>::get()`, which
+/// keeps the original address-cast semantics.
+///
+/// # Safety
+/// `source` must resolve to a valid pointer cell containing a `*mut T`.
+#[inline(always)]
+pub unsafe fn read_indirect_ptr<T, A: TryIntoAddress>(source: A) -> *mut T {
+    let cell = unsafe { Relocation::<*mut *mut T>::new(source).get() };
+    if cell.is_null() {
+        core::ptr::null_mut()
+    } else {
+        unsafe { *cell }
+    }
+}
+
 impl<T> TryIntoAddress for Relocation<T> {
     fn try_into_address(self) -> Result<usize, RelocationError> {
         Ok(self.address)
@@ -1022,6 +1040,11 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
             "BSString is a non-trivial C++ owning string type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper, pointer/reference ABI, or a C++ bridge."
         );
     };
+    (BSFixedString) => {
+        compile_error!(
+            "BSFixedString is a non-trivial C++ string type; do not use it by value in relocation/virtual/hook macro signatures. Use a borrowed string storage ABI, pointer/reference ABI, or a C++ bridge."
+        );
+    };
     (BSStringT<$n:tt, $a:ty>) => {
         compile_error!(
             "BSStringT is a non-trivial C++ owning string type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper, pointer/reference ABI, or a C++ bridge."
@@ -1030,6 +1053,31 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     (BSStaticStringT<$n:tt>) => {
         compile_error!(
             "BSStaticStringT is a non-trivial C++ owning string type; do not use it by value in relocation/virtual/hook macro signatures. Use an out-param wrapper, pointer/reference ABI, or a C++ bridge."
+        );
+    };
+    (NiPointer<$t:ty>) => {
+        compile_error!(
+            "NiPointer is a non-trivial C++ intrusive smart pointer type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTSmartPointer<$t:ty>) => {
+        compile_error!(
+            "BSTSmartPointer is a non-trivial C++ intrusive smart pointer type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTSmartPointer<$t:ty, $m:ty>) => {
+        compile_error!(
+            "BSTSmartPointer is a non-trivial C++ intrusive smart pointer type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (GPtr<$t:ty>) => {
+        compile_error!(
+            "GPtr is a non-trivial C++ intrusive smart pointer type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (hkRefPtr<$t:ty>) => {
+        compile_error!(
+            "hkRefPtr is a non-trivial C++ intrusive smart pointer type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
         );
     };
     (BSTArray<$t:ty, $a:ty>) => {
@@ -1138,6 +1186,9 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     (crate::re::BSString) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSString);
     };
+    (crate::re::BSFixedString) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSFixedString);
+    };
     (crate::re::BSStringT<$n:tt, $a:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSStringT<$n, $a>);
     };
@@ -1146,6 +1197,9 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     };
     (crate::re::bs_string::BSString) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSString);
+    };
+    (crate::re::bs_fixed_string::BSFixedString) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSFixedString);
     };
     (crate::re::bs_string::BSStringT<$n:tt, $a:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSStringT<$n, $a>);
@@ -1200,6 +1254,36 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     };
     (crate::re::bst_array::BSTSmallSharedArray<$t:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSTSmallSharedArray<$t>);
+    };
+    (crate::re::NiPointer<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiPointer<$t>);
+    };
+    (crate::re::BSTSmartPointer<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmartPointer<$t>);
+    };
+    (crate::re::BSTSmartPointer<$t:ty, $m:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmartPointer<$t, $m>);
+    };
+    (crate::re::GPtr<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(GPtr<$t>);
+    };
+    (crate::re::hkRefPtr<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(hkRefPtr<$t>);
+    };
+    (crate::re::ni_smart_pointer::NiPointer<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiPointer<$t>);
+    };
+    (crate::re::bst_smart_pointer::BSTSmartPointer<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmartPointer<$t>);
+    };
+    (crate::re::bst_smart_pointer::BSTSmartPointer<$t:ty, $m:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmartPointer<$t, $m>);
+    };
+    (crate::re::g_ptr::GPtr<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(GPtr<$t>);
+    };
+    (crate::re::hk_ref_ptr::hkRefPtr<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(hkRefPtr<$t>);
     };
     (crate::re::bst_array::BSTArrayHeapAllocator) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSTArrayHeapAllocator);
@@ -1962,6 +2046,19 @@ macro_rules! relocation_variable {
         }
     };
 
+    ( @no_inline $vis:vis fn $name:ident() -> *mut $ty:ty => $id:expr, is_indirect_ptr ) => {
+        $vis fn $name() -> *mut $ty {
+            $crate::relocation_variable!(@body_indirect_ptr $ty, $id)
+        }
+    };
+
+    ( $vis:vis fn $name:ident() -> *mut $ty:ty => $id:expr, is_indirect_ptr ) => {
+        #[inline]
+        $vis fn $name() -> *mut $ty {
+            $crate::relocation_variable!(@body_indirect_ptr $ty, $id)
+        }
+    };
+
     (@body $ty:ty, $id:expr) => {{
         let relocation = $crate::relocation::Relocation::<$ty>::new($id);
         unsafe { &*relocation.as_ptr() }
@@ -1974,6 +2071,10 @@ macro_rules! relocation_variable {
 
     (@body_ptr $ty:ty, $id:expr) => {{
         unsafe { $crate::relocation::Relocation::<*mut $ty>::new($id).get() }
+    }};
+
+    (@body_indirect_ptr $ty:ty, $id:expr) => {{
+        unsafe { $crate::relocation::read_indirect_ptr::<$ty, _>($id) }
     }};
 }
 
@@ -2042,6 +2143,7 @@ macro_rules! relocation_func {
 
 #[cfg(test)]
 mod tests {
+    use super::{Relocation, read_indirect_ptr};
     use core::marker::PhantomData;
 
     struct GenericVirtual<T> {
@@ -2197,5 +2299,26 @@ mod tests {
         let _ = TestVcallSlotHook::original as fn(*mut u8, u32) -> u32;
         let _ = TestVcallSlotHook::original_virtual_relocation::<u8>
             as fn(*const u8) -> crate::relocation::Relocation<extern "C" fn(*mut u8, u32) -> u32>;
+    }
+
+    #[test]
+    fn relocation_pointer_get_keeps_address_cast_semantics() {
+        let mut value = 41u32;
+        let mut stored_ptr = core::ptr::from_mut(&mut value);
+        let cell = core::ptr::from_mut(&mut stored_ptr);
+
+        let raw = unsafe { Relocation::<*mut u32>::from_address(cell as usize).get() };
+        assert_eq!(raw, cell.cast());
+        assert_ne!(raw, core::ptr::from_mut(&mut value));
+    }
+
+    #[test]
+    fn read_indirect_ptr_dereferences_singleton_cells_once() {
+        let mut value = 99u32;
+        let mut stored_ptr = core::ptr::from_mut(&mut value);
+        let cell = core::ptr::from_mut(&mut stored_ptr);
+
+        let resolved = unsafe { read_indirect_ptr::<u32, _>(cell as usize) };
+        assert_eq!(resolved, core::ptr::from_mut(&mut value));
     }
 }

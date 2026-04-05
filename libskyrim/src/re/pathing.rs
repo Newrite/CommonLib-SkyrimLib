@@ -437,7 +437,7 @@ impl Pathing {
     // BSEventNotifyControl ProcessEvent(...) override;  // 01
 
     crate::relocation_variable! {
-        fn singleton_ptr() -> *mut Pathing => RelocationID::new(514893, 401037), is_ptr
+        fn singleton_ptr() -> *mut Pathing => RelocationID::new(514893, 401037), is_indirect_ptr
     }
 
     crate::relocation_func! {

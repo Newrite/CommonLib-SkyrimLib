@@ -812,17 +812,9 @@ fn parse_guard_policy(expr: Expr) -> syn::Result<GuardPolicy> {
 
 fn parse_guard_preset(expr: Expr) -> syn::Result<GuardPolicies> {
     let preset_name = match expr {
-        Expr::Path(path) => path
-            .path
-            .segments
-            .last()
-            .map(|segment| segment.ident.to_string()),
+        Expr::Path(path) => classify_guard_preset_path(&path),
         Expr::Call(ExprCall { func, args, .. }) if args.is_empty() => match *func {
-            Expr::Path(path) => path
-                .path
-                .segments
-                .last()
-                .map(|segment| segment.ident.to_string()),
+            Expr::Path(path) => classify_guard_preset_path(&path),
             other => {
                 return Err(syn::Error::new_spanned(
                     other,
@@ -861,6 +853,39 @@ fn parse_guard_preset(expr: Expr) -> syn::Result<GuardPolicies> {
             Span::call_site(),
             "unsupported guard preset; use one of hooks::guards::original(), hooks::guards::default(), or hooks::guards::skip()",
         )),
+    }
+}
+
+fn classify_guard_preset_path(path: &ExprPath) -> Option<String> {
+    if path_matches_known_paths(
+        &path.path,
+        &[
+            &["sdk", "hooks", "guards", "original"],
+            &["sdk", "hooks", "original"],
+            &["original"],
+        ],
+    ) {
+        Some("original".to_owned())
+    } else if path_matches_known_paths(
+        &path.path,
+        &[
+            &["sdk", "hooks", "guards", "default"],
+            &["sdk", "hooks", "default"],
+            &["default"],
+        ],
+    ) {
+        Some("default".to_owned())
+    } else if path_matches_known_paths(
+        &path.path,
+        &[
+            &["sdk", "hooks", "guards", "skip"],
+            &["sdk", "hooks", "skip"],
+            &["skip"],
+        ],
+    ) {
+        Some("skip".to_owned())
+    } else {
+        None
     }
 }
 
@@ -1127,7 +1152,14 @@ fn require_exactly_one_of_three<T, U, V>(
 }
 
 fn is_original_type(ty: &Type) -> bool {
-    matches!(peel_type(ty), Type::Path(path) if path_last_ident(path).is_some_and(|ident| ident == "Original"))
+    matches!(peel_type(ty), Type::Path(path) if type_path_matches_known_paths(
+        path,
+        &[
+            &["sdk", "hooks", "Original"],
+            &["sdk", "hooks", "runtime", "Original"],
+            &["Original"],
+        ],
+    ))
 }
 
 fn map_user_ty_to_abi(ty: &Type) -> syn::Result<Type> {
@@ -1144,30 +1176,21 @@ fn map_user_ty_to_abi(ty: &Type) -> syn::Result<Type> {
             let elem = (*reference.elem).clone();
             Ok(parse_quote!(*mut #elem))
         }
-        Type::Path(path) => {
-            let Some(last_ident) = path_last_ident(path) else {
-                return Err(syn::Error::new_spanned(
-                    path,
-                    "unsupported hook argument type",
-                ));
-            };
-
-            match () {
-                _ if last_ident == "Option" => {
-                    let inner = option_inner_type(path)?;
-                    map_option_inner_to_abi(&inner)
-                }
-                _ if last_ident == "Resolved" => {
-                    let inner = last_type_arg(path)?;
-                    Ok(parse_quote!(*mut #inner))
-                }
-                _ if last_ident == "ResolvedHandle" => {
-                    let inner = last_type_arg(path)?;
-                    Ok(inner)
-                }
-                _ => Ok(Type::Path(path.clone())),
+        Type::Path(path) => match () {
+            _ if type_path_is_option(path) => {
+                let inner = option_inner_type(path)?;
+                map_option_inner_to_abi(&inner)
             }
-        }
+            _ if type_path_is_sdk_resolved(path) => {
+                let inner = last_type_arg(path)?;
+                Ok(parse_quote!(*mut #inner))
+            }
+            _ if type_path_is_sdk_resolved_handle(path) => {
+                let inner = last_type_arg(path)?;
+                Ok(inner)
+            }
+            _ => Ok(Type::Path(path.clone())),
+        },
         other => Err(syn::Error::new_spanned(
             other,
             "unsupported high-level hook argument type",
@@ -1181,15 +1204,11 @@ fn map_option_inner_to_abi(inner: &Type) -> syn::Result<Type> {
             let elem = (*reference.elem).clone();
             Ok(parse_quote!(*mut #elem))
         }
-        Type::Path(path) if path_last_ident(path).is_some_and(|ident| ident == "Resolved") => {
+        Type::Path(path) if type_path_is_sdk_resolved(path) => {
             let inner = last_type_arg(path)?;
             Ok(parse_quote!(*mut #inner))
         }
-        Type::Path(path)
-            if path_last_ident(path).is_some_and(|ident| ident == "ResolvedHandle") =>
-        {
-            last_type_arg(path)
-        }
+        Type::Path(path) if type_path_is_sdk_resolved_handle(path) => last_type_arg(path),
         other => Err(syn::Error::new_spanned(
             other,
             "unsupported `Option<_>` hook argument type; use Option<&T>, Option<&mut T>, Option<Resolved<T>>, or Option<ResolvedHandle<H>>",
@@ -1202,7 +1221,7 @@ fn find_stable_hook_wrapper_type(ty: &Type) -> Option<&TypePath> {
         Type::Reference(reference) => find_stable_hook_wrapper_type(&reference.elem),
         Type::Ptr(ptr) => find_stable_hook_wrapper_type(&ptr.elem),
         Type::Path(path) => {
-            if path_last_ident(path).is_some_and(|ident| ident == "GameRef" || ident == "GamePtr") {
+            if type_path_is_sdk_game_ref(path) || type_path_is_sdk_game_ptr(path) {
                 return Some(path);
             }
 
@@ -1231,9 +1250,14 @@ fn is_nontrivial_cpp_value_type(ty: &Type) -> bool {
                 ident == "ActorHandle"
                     || ident == "ObjectRefHandle"
                     || ident == "ProjectileHandle"
+                    || ident == "BSFixedString"
                     || ident == "BSString"
                     || ident == "BSStringT"
                     || ident == "BSStaticStringT"
+                    || ident == "NiPointer"
+                    || ident == "BSTSmartPointer"
+                    || ident == "GPtr"
+                    || ident == "hkRefPtr"
                     || ident == "BSTArray"
                     || ident == "BSScrapArray"
                     || ident == "BSTSmallArray"
@@ -1278,6 +1302,96 @@ fn peel_type(ty: &Type) -> &Type {
 
 fn path_last_ident(path: &TypePath) -> Option<&Ident> {
     path.path.segments.last().map(|segment| &segment.ident)
+}
+
+fn path_matches_known_paths(path: &Path, expected_paths: &[&[&str]]) -> bool {
+    let normalized = normalized_path_segments(path);
+    expected_paths.iter().any(|expected| {
+        normalized_segments_match(&normalized, expected)
+            || bare_ident_matches_expected_tail(&normalized, expected)
+    })
+}
+
+fn type_path_matches_known_paths(path: &TypePath, expected_paths: &[&[&str]]) -> bool {
+    path_matches_known_paths(&path.path, expected_paths)
+}
+
+fn normalized_path_segments(path: &Path) -> Vec<String> {
+    let mut segments: Vec<String> = path
+        .segments
+        .iter()
+        .map(|segment| segment.ident.to_string())
+        .collect();
+
+    while matches!(
+        segments.first().map(String::as_str),
+        Some("crate" | "self" | "super" | "libskyrim")
+    ) {
+        segments.remove(0);
+    }
+
+    segments
+}
+
+fn type_path_is_option(path: &TypePath) -> bool {
+    type_path_matches_known_paths(
+        path,
+        &[
+            &["Option"],
+            &["core", "option", "Option"],
+            &["std", "option", "Option"],
+        ],
+    )
+}
+
+fn type_path_is_sdk_resolved(path: &TypePath) -> bool {
+    type_path_matches_known_paths(
+        path,
+        &[
+            &["sdk", "core", "Resolved"],
+            &["sdk", "core", "handles", "Resolved"],
+            &["sdk", "hooks", "Resolved"],
+            &["Resolved"],
+        ],
+    )
+}
+
+fn type_path_is_sdk_resolved_handle(path: &TypePath) -> bool {
+    type_path_matches_known_paths(
+        path,
+        &[
+            &["sdk", "core", "ResolvedHandle"],
+            &["sdk", "core", "handles", "ResolvedHandle"],
+            &["sdk", "hooks", "ResolvedHandle"],
+            &["ResolvedHandle"],
+        ],
+    )
+}
+
+fn type_path_is_sdk_game_ref(path: &TypePath) -> bool {
+    type_path_matches_known_paths(
+        path,
+        &[
+            &["sdk", "core", "GameRef"],
+            &["sdk", "core", "refs", "GameRef"],
+            &["sdk", "core", "ptr", "GameRef"],
+            &["sdk", "papyrus", "types", "GameRef"],
+            &["GameRef"],
+        ],
+    )
+}
+
+fn type_path_is_sdk_game_ptr(path: &TypePath) -> bool {
+    type_path_matches_known_paths(
+        path,
+        &[
+            &["sdk", "core", "GamePtr"],
+            &["sdk", "core", "refs", "GamePtr"],
+            &["sdk", "core", "ptr", "GamePtr"],
+            &["sdk", "papyrus", "types", "GamePtr"],
+            &["GamePtr"],
+        ],
+    )
 }
 
 fn last_type_arg(path: &TypePath) -> syn::Result<Type> {
@@ -2159,7 +2273,13 @@ fn parse_event_callback_param(ty: &Type, event_ty: &Type) -> syn::Result<EventPa
 }
 
 fn parse_input_callback_param(ty: &Type) -> syn::Result<EventParamKind> {
-    if path_last_ident_is(ty, "InputEvents") {
+    if type_matches_known_path(
+        ty,
+        &[
+            &["sdk", "events", "InputEvents"],
+            &["sdk", "events", "input", "InputEvents"],
+        ],
+    ) {
         Ok(EventParamKind::InputEvents)
     } else {
         Err(syn::Error::new_spanned(
@@ -2170,9 +2290,9 @@ fn parse_input_callback_param(ty: &Type) -> syn::Result<EventParamKind> {
 }
 
 fn parse_message_callback_param(ty: &Type) -> syn::Result<EventParamKind> {
-    if path_last_ident_is(ty, "MessageRef") {
+    if type_matches_known_path(ty, &[&["sdk", "events", "skse", "messages", "MessageRef"]]) {
         Ok(EventParamKind::MessageRef)
-    } else if is_ref_to_terminal_ident(ty, "Message") {
+    } else if is_ref_to_known_path(ty, &[&["skse", "Message"]]) {
         Ok(EventParamKind::MessageRawRef)
     } else {
         Err(syn::Error::new_spanned(
@@ -2475,22 +2595,58 @@ fn is_option_ref_to_type(ty: &Type, target: &Type) -> bool {
     is_ref_to_type(inner_ty, target)
 }
 
-fn is_ref_to_terminal_ident(ty: &Type, ident: &str) -> bool {
+fn is_ref_to_known_path(ty: &Type, expected_paths: &[&[&str]]) -> bool {
     let Type::Reference(reference) = peel_type_groups(ty) else {
         return false;
     };
-    path_last_ident_is(reference.elem.as_ref(), ident)
+    type_matches_known_path(reference.elem.as_ref(), expected_paths)
 }
 
-fn path_last_ident_is(ty: &Type, ident: &str) -> bool {
+fn type_matches_known_path(ty: &Type, expected_paths: &[&[&str]]) -> bool {
     let Type::Path(path) = peel_type_groups(ty) else {
         return false;
     };
-    path.path
-        .segments
-        .last()
-        .map(|segment| segment.ident == ident)
-        .unwrap_or(false)
+
+    let normalized = normalized_path_segments(&path.path);
+    expected_paths.iter().any(|expected| {
+        normalized_segments_match(&normalized, expected)
+            || bare_ident_matches_expected_tail(&normalized, expected)
+    })
+}
+
+fn normalized_segments_match(normalized: &[String], expected: &[&str]) -> bool {
+    normalized.len() == expected.len()
+        && normalized
+            .iter()
+            .map(String::as_str)
+            .zip(expected.iter().copied())
+            .all(|(left, right)| left == right)
+}
+
+fn bare_ident_matches_expected_tail(normalized: &[String], expected: &[&str]) -> bool {
+    match (normalized, expected.last().copied()) {
+        ([ident], Some(expected_tail)) => ident == expected_tail,
+        _ => false,
+    }
+}
+
+fn bare_or_normalized_type_paths_equal(left: &TypePath, right: &TypePath) -> bool {
+    let left_segments = normalized_path_segments(&left.path);
+    let right_segments = normalized_path_segments(&right.path);
+
+    if left_segments == right_segments {
+        return true;
+    }
+
+    match (left_segments.as_slice(), right_segments.as_slice()) {
+        ([left_ident], right) => right
+            .last()
+            .is_some_and(|right_ident| left_ident == right_ident),
+        (left, [right_ident]) => left
+            .last()
+            .is_some_and(|left_ident| left_ident == right_ident),
+        _ => false,
+    }
 }
 
 fn peel_type_groups(ty: &Type) -> &Type {
@@ -2511,13 +2667,9 @@ fn types_equal(left: &Type, right: &Type) -> bool {
     }
 
     match (left, right) {
-        (Type::Path(left_path), Type::Path(right_path)) => left_path
-            .path
-            .segments
-            .last()
-            .zip(right_path.path.segments.last())
-            .map(|(left_segment, right_segment)| left_segment.ident == right_segment.ident)
-            .unwrap_or(false),
+        (Type::Path(left_path), Type::Path(right_path)) => {
+            bare_or_normalized_type_paths_equal(left_path, right_path)
+        }
         _ => false,
     }
 }
@@ -2854,5 +3006,189 @@ mod tests {
             err.to_string()
                 .contains("stable SDK pointer wrappers are not supported as hook parameters")
         );
+    }
+
+    #[test]
+    fn reject_bs_fixed_string_hook_param() {
+        let ty: Type = parse_quote!(BSFixedString);
+        let err = ensure_supported_hook_abi_ty(&ty, "hook parameter")
+            .expect_err("BSFixedString by value must be rejected");
+        assert!(err.to_string().contains("non-trivial C++ value type"));
+    }
+
+    #[test]
+    fn reject_ni_pointer_hook_param() {
+        let ty: Type = parse_quote!(NiPointer<NiNode>);
+        let err = ensure_supported_hook_abi_ty(&ty, "hook parameter")
+            .expect_err("NiPointer by value must be rejected");
+        assert!(err.to_string().contains("non-trivial C++ value type"));
+    }
+
+    #[test]
+    fn reject_bst_smart_pointer_hook_param() {
+        let ty: Type = parse_quote!(BSTSmartPointer<Object>);
+        let err = ensure_supported_hook_abi_ty(&ty, "hook parameter")
+            .expect_err("BSTSmartPointer by value must be rejected");
+        assert!(err.to_string().contains("non-trivial C++ value type"));
+    }
+
+    #[test]
+    fn reject_gptr_hook_param() {
+        let ty: Type = parse_quote!(GPtr<IMenu>);
+        let err =
+            ensure_supported_hook_abi_ty(&ty, "hook parameter").expect_err("GPtr must be rejected");
+        assert!(err.to_string().contains("non-trivial C++ value type"));
+    }
+
+    #[test]
+    fn reject_hk_ref_ptr_hook_param() {
+        let ty: Type = parse_quote!(hkRefPtr<hkReferencedObject>);
+        let err = ensure_supported_hook_abi_ty(&ty, "hook parameter")
+            .expect_err("hkRefPtr must be rejected");
+        assert!(err.to_string().contains("non-trivial C++ value type"));
+    }
+
+    #[test]
+    fn types_equal_accepts_bare_imported_ident_against_sdk_path() {
+        let left: Type = parse_quote!(TESHitEvent);
+        let right: Type = parse_quote!(crate::re::TESHitEvent);
+        assert!(types_equal(&left, &right));
+    }
+
+    #[test]
+    fn types_equal_accepts_normalized_sdk_paths() {
+        let left: Type = parse_quote!(libskyrim::re::TESHitEvent);
+        let right: Type = parse_quote!(crate::re::TESHitEvent);
+        assert!(types_equal(&left, &right));
+    }
+
+    #[test]
+    fn types_equal_rejects_only_terminal_ident_match() {
+        let left: Type = parse_quote!(other_crate::TESHitEvent);
+        let right: Type = parse_quote!(crate::re::TESHitEvent);
+        assert!(!types_equal(&left, &right));
+    }
+
+    #[test]
+    fn parse_event_callback_param_rejects_foreign_terminal_ident_match() {
+        let callback_ty: Type = parse_quote!(&other_crate::TESHitEvent);
+        let event_ty: Type = parse_quote!(crate::re::TESHitEvent);
+        let err = match parse_event_callback_param(&callback_ty, &event_ty) {
+            Ok(_) => panic!("foreign terminal-ident match must be rejected"),
+            Err(err) => err,
+        };
+        assert!(
+            err.to_string().contains(
+                "event callback parameter must be `&Event`, `Option<&Event>`, or omitted"
+            )
+        );
+    }
+
+    #[test]
+    fn parse_input_callback_param_accepts_sdk_paths() {
+        let bare: Type = parse_quote!(InputEvents<'_>);
+        let namespaced: Type = parse_quote!(crate::sdk::events::input::InputEvents<'_>);
+        assert!(matches!(
+            parse_input_callback_param(&bare),
+            Ok(EventParamKind::InputEvents)
+        ));
+        assert!(matches!(
+            parse_input_callback_param(&namespaced),
+            Ok(EventParamKind::InputEvents)
+        ));
+    }
+
+    #[test]
+    fn parse_input_callback_param_rejects_foreign_terminal_ident_match() {
+        let foreign: Type = parse_quote!(other_crate::InputEvents<'_>);
+        let err = match parse_input_callback_param(&foreign) {
+            Ok(_) => panic!("foreign InputEvents must be rejected"),
+            Err(err) => err,
+        };
+        assert!(
+            err.to_string()
+                .contains("input event callback parameter must be `InputEvents<'_>`")
+        );
+    }
+
+    #[test]
+    fn parse_message_callback_param_accepts_sdk_paths() {
+        let bare_ref: Type = parse_quote!(MessageRef<'_>);
+        let namespaced_ref: Type = parse_quote!(crate::sdk::events::skse::messages::MessageRef<'_>);
+        let bare_raw: Type = parse_quote!(&Message);
+        let namespaced_raw: Type = parse_quote!(&crate::skse::Message);
+
+        assert!(matches!(
+            parse_message_callback_param(&bare_ref),
+            Ok(EventParamKind::MessageRef)
+        ));
+        assert!(matches!(
+            parse_message_callback_param(&namespaced_ref),
+            Ok(EventParamKind::MessageRef)
+        ));
+        assert!(matches!(
+            parse_message_callback_param(&bare_raw),
+            Ok(EventParamKind::MessageRawRef)
+        ));
+        assert!(matches!(
+            parse_message_callback_param(&namespaced_raw),
+            Ok(EventParamKind::MessageRawRef)
+        ));
+    }
+
+    #[test]
+    fn parse_message_callback_param_rejects_foreign_terminal_ident_matches() {
+        let foreign_ref: Type = parse_quote!(other_crate::MessageRef<'_>);
+        let foreign_raw: Type = parse_quote!(&other_crate::Message);
+
+        let err = match parse_message_callback_param(&foreign_ref) {
+            Ok(_) => panic!("foreign MessageRef must be rejected"),
+            Err(err) => err,
+        };
+        assert!(
+            err.to_string().contains(
+                "message event callback parameter must be `MessageRef<'_>` or `&Message`"
+            )
+        );
+
+        let err = match parse_message_callback_param(&foreign_raw) {
+            Ok(_) => panic!("foreign Message must be rejected"),
+            Err(err) => err,
+        };
+        assert!(
+            err.to_string().contains(
+                "message event callback parameter must be `MessageRef<'_>` or `&Message`"
+            )
+        );
+    }
+
+    #[test]
+    fn foreign_original_type_is_not_treated_as_sdk_original() {
+        let ty: Type = parse_quote!(other_crate::Original<fn(&Actor)>);
+        assert!(!is_original_type(&ty));
+    }
+
+    #[test]
+    fn foreign_resolved_type_is_not_special_cased() {
+        let ty: Type = parse_quote!(other_crate::Resolved<Actor>);
+        let abi = map_user_ty_to_abi(&ty).expect("foreign Resolved should not be special-cased");
+        assert_eq!(ty_tokens(&abi), "other_crate :: Resolved < Actor >");
+    }
+
+    #[test]
+    fn foreign_game_ref_is_not_rejected_as_sdk_wrapper() {
+        let ty: Type = parse_quote!(&other_crate::GameRef<Actor>);
+        let abi = map_user_ty_to_abi(&ty).expect("foreign GameRef should not be rejected");
+        assert_eq!(ty_tokens(&abi), "* mut other_crate :: GameRef < Actor >");
+    }
+
+    #[test]
+    fn parse_guard_preset_rejects_foreign_original_call() {
+        let expr: Expr = parse_quote!(other_crate::original());
+        let err = match parse_guard_preset(expr) {
+            Ok(_) => panic!("foreign original() preset must be rejected"),
+            Err(err) => err,
+        };
+        assert!(err.to_string().contains("unsupported guard preset"));
     }
 }

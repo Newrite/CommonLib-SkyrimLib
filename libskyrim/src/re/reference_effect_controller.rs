@@ -35,7 +35,7 @@ const _: () = assert!(
 
 impl ProcessListsReferenceEffectStopView {
     relocation_variable! {
-        fn get_singleton() -> *mut ProcessListsReferenceEffectStopView => RelocationID::new(514167, 400315), is_ptr
+        fn get_singleton() -> *mut ProcessListsReferenceEffectStopView => RelocationID::new(514167, 400315), is_indirect_ptr
     }
 }
 

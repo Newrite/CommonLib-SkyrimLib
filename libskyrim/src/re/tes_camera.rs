@@ -41,7 +41,7 @@ impl TESCamera {
 
     crate::virtual_method! {
         pub const VFUNC_SET_CAMERA_ROOT: usize = 0x01;
-        pub fn set_camera_root(root: NiPointer<NiNode>)
+        fn set_camera_root_impl(root: *mut NiNode)
     }
 
     crate::virtual_method! {
@@ -54,6 +54,21 @@ impl TESCamera {
     }
 
     #[inline(always)]
+    pub fn set_camera_root(&mut self, root: NiPointer<NiNode>) {
+        self.set_camera_root_ref(&root);
+    }
+
+    #[inline(always)]
+    pub fn set_camera_root_ref(&mut self, root: &NiPointer<NiNode>) {
+        self.set_camera_root_ptr(root.get());
+    }
+
+    #[inline(always)]
+    pub fn set_camera_root_ptr(&mut self, root: *mut NiNode) {
+        Self::set_camera_root_impl(self, root)
+    }
+
+    #[inline(always)]
     pub fn set_state(&mut self, state: *mut TESCameraState) {
         Self::set_state_impl(self, state)
     }
@@ -61,6 +76,8 @@ impl TESCamera {
 
 pub trait TESCameraExt {
     fn set_camera_root(&mut self, root: NiPointer<NiNode>);
+    fn set_camera_root_ref(&mut self, root: &NiPointer<NiNode>);
+    fn set_camera_root_ptr(&mut self, root: *mut NiNode);
     fn update(&mut self);
     fn set_state(&mut self, state: *mut TESCameraState);
 }
@@ -72,6 +89,16 @@ where
     #[inline(always)]
     fn set_camera_root(&mut self, root: NiPointer<NiNode>) {
         TESCamera::set_camera_root(self.as_mut(), root)
+    }
+
+    #[inline(always)]
+    fn set_camera_root_ref(&mut self, root: &NiPointer<NiNode>) {
+        TESCamera::set_camera_root_ref(self.as_mut(), root)
+    }
+
+    #[inline(always)]
+    fn set_camera_root_ptr(&mut self, root: *mut NiNode) {
+        TESCamera::set_camera_root_ptr(self.as_mut(), root)
     }
 
     #[inline(always)]

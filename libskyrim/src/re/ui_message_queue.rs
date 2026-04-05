@@ -31,7 +31,7 @@ impl UIMessageQueue {
     pub const POOL_SIZE: usize = 64;
 
     crate::relocation_variable! {
-        fn singleton() -> *mut UIMessageQueue => RelocationID::new(514285, 400445), is_ptr
+        fn singleton() -> *mut UIMessageQueue => RelocationID::new(514285, 400445), is_indirect_ptr
     }
 
     crate::relocation_func! {

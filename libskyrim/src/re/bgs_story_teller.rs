@@ -14,7 +14,7 @@ impl BGSStoryTeller {
     pub const VTABLE: &'static [VariantID] = &VTABLE_BGSStoryTeller;
 
     crate::relocation_variable! {
-        fn singleton() -> *mut BGSStoryTeller => RelocationID::new(514316, 400476), is_ptr
+        fn singleton() -> *mut BGSStoryTeller => RelocationID::new(514316, 400476), is_indirect_ptr
     }
 
     #[inline]

@@ -125,7 +125,7 @@ impl ControlMap {
     pub const kInvalid: u32 = CONTROL_MAP_kInvalid;
 
     crate::relocation_variable! {
-        fn singleton() -> *mut ControlMap => crate::relocation::RelocationID::new(514705, 400863), is_ptr
+        fn singleton() -> *mut ControlMap => crate::relocation::RelocationID::new(514705, 400863), is_indirect_ptr
     }
 
     crate::runtime_data_accessor! {

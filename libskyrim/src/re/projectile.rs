@@ -64,7 +64,7 @@ const _: () = assert!(core::mem::offset_of!(ProjectileManager, wobble) == 0x58);
 
 impl ProjectileManager {
     crate::relocation_variable! {
-        fn singleton() -> *mut ProjectileManager => RelocationID::new(514313, 400473), is_ptr
+        fn singleton() -> *mut ProjectileManager => RelocationID::new(514313, 400473), is_indirect_ptr
     }
 
     #[inline(always)]

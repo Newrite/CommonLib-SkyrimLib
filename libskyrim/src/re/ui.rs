@@ -101,7 +101,7 @@ impl UI {
     pub const VR_RUNTIME_DATA_OFFSET: usize = 0x1C8;
 
     crate::relocation_variable! {
-        fn singleton() -> *mut UI => crate::relocation::RelocationID::new(514178, 400327), is_ptr
+        fn singleton() -> *mut UI => crate::relocation::RelocationID::new(514178, 400327), is_indirect_ptr
     }
 
     crate::relocation_func! {

@@ -43,11 +43,27 @@ The most important sampled files were:
 - `NavigationRestrictions-master/src/papyrus.cpp`
 - `BetterTelekinesis/src/Config.cpp`
 - `SkyrimSE-SmoothCam/SmoothCam/source/raycast.cpp`
+- `PhotoMode-master/src/ImGui/Renderer.cpp`
+- `wheeler-main/src/bin/Rendering/RenderManager.cpp`
+- `dMenu-main/src/bin/Renderer.cpp`
+- `MaxsuDetectionMeter-main/src/Renderer.cpp`
+- `SCAR-main/src/DataHandler.cpp`
+- `BehaviorDataInjector-master/src/Hook.cpp`
+- `BehaviorDataInjector-master/src/DataHandler.cpp`
+- `CombatPathingRevolution-master/src/PayloadInterpreter/hooks.h`
+- `DynamicAnimationCasting-main/src/Framework.cpp`
+- `TK_Dodge_RE-main/src/TKRE.cpp`
+- `MaxsuIFrame-main/src/Functions.cpp`
+- `Simple-Power-Attack-main/include/SKSEMenuFramework.h`
+- `Simple-Power-Attack-main/src/main.cpp`
+- `skyrim-firmament-1.5/src/main.cpp`
+- `skyrim-firmament-1.5/include/CustomSkills/Interfaces.inl`
 
 These plugins were chosen because together they cover the main recurring SDK
 concerns: messaging, exported APIs, papyrus registration sets, serialization,
 Scaleform/UI runtime, input sinks, hooks, raycasts, targeting, INI/config,
-form lookup, and gameplay helpers.
+form lookup, gameplay helpers, animation/behavior graph workflows, and native
+overlay/render patterns.
 
 ## Layer Assessment
 
@@ -264,15 +280,24 @@ Where the gap is:
   - domain-specific show/hide/refresh recipes
 - The SDK now covers the reusable runtime/driver/controller foundation, but not
   those final plugin-shaped install recipes.
+- A second UI family is now clearly repeated in local plugins:
+  `PhotoMode`, `wheeler`, `dMenu`, and `MaxsuDetectionMeter` all build native
+  DX11 + ImGui overlays through `BSRenderManager`, swap-chain/device/context
+  acquisition, `WndProc` hooks, and per-present render loops.
+- That overlay family does not belong inside the current Scaleform/widget stack.
+  It is better treated as a render/overlay SDK gap than as a failure of
+  `sdk::ui`.
 
 Repair direction:
 
 - Keep `sdk::ui` focused on reusable menu/widget runtime patterns and avoid
   overfitting the next layer to one specific HUD mod architecture.
+- Pair it with a separate `sdk::advanced::render` pass for native overlay mods
+  instead of trying to force DX11/ImGui concerns into `sdk::ui`.
 
 ### `sdk::interop::external_api`
 
-Status: `green`
+Status: `green/yellow`
 
 Why:
 
@@ -282,6 +307,9 @@ Why:
   - messaging-driven interface loading (`SmoothCam` via TDM)
   - flat exported symbol families and callback/subscriber symbols
     (`SKSEMenuFramework`, `ResurrectionAPI`)
+- The new local plugin set validates those same foundations again through
+  `SKSEMenuFramework`, `CustomSkills`, `OpenAnimationReplacer`, `po3_Tweaks`,
+  `TrueHUD`, and `Precision`.
 
 Important boundary:
 
@@ -289,12 +317,23 @@ Important boundary:
   the interface uses `virtual`, `std::function`, `std::vector`, or overloaded
   methods. That is a correct boundary, not necessarily an SDK mistake.
 
+What still looks incomplete:
+
+- `skyrim-firmament-1.5` shows a lightweight but repeated fourth pattern:
+  message-broadcast pointer APIs where a plugin listens for a named sender and
+  decodes one interface pointer from `msg->data` (`CustomSkills`).
+- `SKSEMenuFramework`-style framework wrappers are now common enough that the
+  SDK should provide a clearer recipe layer on top of low-level export loading,
+  instead of stopping at generic `symbol()` helpers.
+
 Repair direction:
 
 - Keep documenting the intended split clearly:
   `external_api` loads and organizes interop, but does not erase the need for a
   C++ shim for non-flat C++ APIs. The next examples should show that boundary
   through thin wrapper patterns, not hide it.
+- Add one more recipe/helper layer for message-broadcast pointer APIs and for
+  framework-shaped flat export sets.
 
 ### `sdk::hooks`
 
@@ -349,44 +388,114 @@ What still looks incomplete:
 - `vm` needs more continued comparison against complex Papyrus-heavy plugins to
   make sure the dispatch/binding surface stays practical.
 
-### `sdk::advanced::{render,scene}`
+### `sdk::advanced::render`
+
+Status: `yellow/red`
+
+Why:
+
+- This is still implementation-light, but the local evidence is now strong and
+  repeated rather than speculative.
+- `PhotoMode`, `wheeler`, `dMenu`, and `MaxsuDetectionMeter` all rebuild the
+  same overlay pipeline:
+  - hook renderer or D3D initialization
+  - acquire `BSRenderManager` / swap chain / device / context
+  - install a `WndProc` hook
+  - initialize ImGui Win32 + DX11 backends
+  - render one overlay pass per frame/present
+  - load fonts/textures after lifecycle messages
+
+What still looks incomplete:
+
+- The SDK currently has almost no real surface here, so plugin authors still
+  rebuild the whole pipeline themselves.
+
+Repair direction:
+
+- Promote `advanced::render` from placeholder status and build it from those
+  repeated overlay/render patterns instead of leaving it deferred indefinitely.
+
+### `sdk::advanced::scene`
 
 Status: `red`
 
 Why:
 
-- These remain the weakest major SDK domains. The local plugin evidence does not
-  currently support a mature abstraction there, and the implementation is still
-  comparatively placeholder-heavy.
+- `scene` is still much weaker than `render`. The new plugin pack did not
+  uncover a comparably clear, repeated `Ni*` scene-graph abstraction boundary.
 
 Repair direction:
 
-- Do not expand these speculatively. Audit more plugin code first and build only
-  from repeated patterns.
+- Keep `scene` behind `render` and `animation` in priority.
+
+## Missing Domain: Animation / Behavior Graph
+
+Status: `red` (missing)
+
+Why:
+
+- The new plugin pack repeatedly uses the same animation-heavy workflows:
+  - install `BSTEventSink<BSAnimationGraphEvent>` hooks or sinks
+  - read/write animation graph variables
+  - call `NotifyAnimationGraph(...)`
+  - inspect `BSAnimationGraphManager`, `hkbBehaviorGraph`, and `activeNodes`
+  - walk `hkbClipGenerator` bindings and animation annotation tracks
+  - parse payloads or JSON from animation annotations/events
+  - inject behavior variables/events into `hkbBehaviorGraph` data
+- This shows up in `SCAR`, `BehaviorDataInjector`, `CombatPathingRevolution`,
+  `DynamicAnimationCasting`, `TK_Dodge_RE`, `MaxsuIFrame`,
+  `OneClickPowerAttack`, and `skyrim-firmament-1.5`.
+
+Why it matters:
+
+- This is no longer a one-off "advanced engine hack". It is one of the most
+  repeated modern plugin domains, and the SDK currently has no dedicated
+  animation/behavior layer at all.
+
+Repair direction:
+
+- Add a new animation-focused SDK domain rather than trying to smuggle these
+  helpers into unrelated gameplay or event modules.
+- The likely shape is:
+  - animation graph event install/helpers
+  - graph variable get/set helpers
+  - clip/annotation/payload helpers
+  - behavior graph traversal helpers
+  - optional interop recipes for OAR-style APIs
 
 ## Most Likely Mismatches
 
 The most likely places where the SDK is still incomplete or at risk of
 misalignment are:
 
-1. `sdk::forms` and `sdk::plugin::config` have the right primitives, but still
-   need more direct "plugin workflow" bridges from config strings into resolved,
-   validated forms.
-2. `sdk::gameplay::{magic,inventory,quests,projectiles}` provide good building
+1. A whole animation / behavior graph SDK domain is missing even though modern
+   plugins repeatedly depend on it.
+2. `sdk::advanced::render` should no longer be treated as speculative; native
+   overlay/render patterns now have strong repeated local evidence.
+3. `sdk::interop::external_api` has the right foundation, but still needs
+   framework-shaped wrapper recipes and a cleaner path for message-broadcast
+   pointer APIs like `CustomSkills`.
+4. `sdk::forms` and `sdk::plugin::config` still need more direct "plugin
+   workflow" bridges from config strings into resolved, validated forms.
+5. `sdk::gameplay::{magic,inventory,quests,projectiles}` provide good building
    blocks but still stop earlier than some real plugin-side orchestration
    layers.
-3. `sdk::advanced::{render,scene}` should not be treated as mature layers yet.
 
 ## Recommended Repair Order
 
 Recommended next passes, in order:
 
-1. Add config-to-form workflow helpers on top of `sdk::forms` and
+1. Add a new animation / behavior graph SDK layer.
+2. Promote `sdk::advanced::render` into a real overlay/render helper domain.
+3. Add framework-shaped interop recipes on top of `sdk::interop::external_api`
+   for `CustomSkills`-style message APIs and `SKSEMenuFramework`-style flat
+   export sets.
+4. Add config-to-form workflow helpers on top of `sdk::forms` and
    `sdk::plugin::config`.
-2. Continue auditing `projectiles` and `physics` against
+5. Continue auditing `projectiles` and `physics` against
    `NewProjectilesTMP`-style data-driven behavior.
-3. Leave `advanced::render` and `advanced::scene` for later, after collecting
-   stronger plugin evidence.
+6. Leave `sdk::advanced::scene` for later, after the render and animation
+   domains are grounded.
 
 ## Bottom Line
 
@@ -400,7 +509,11 @@ matches repeated SKSE plugin patterns well, especially:
 - `plugin::serialization`
 
 The main remaining gaps are no longer low-level interop or the menu-owned UI
-runtime itself. The reusable UI foundation is now present and the SDK now has
-broader rustdoc plus archetype-guided onboarding. The remaining work is more
-about workflow-shaped gaps around Papyrus authoring and config/form
-orchestration, plus a few higher-level plugin install recipes.
+runtime itself. The biggest newly confirmed holes are:
+
+- missing animation / behavior graph helpers
+- missing native overlay/render helpers
+- missing higher-level interop recipes for framework-shaped plugin APIs
+
+After those, the remaining work shifts back toward config/form workflows and a
+few higher-level plugin install recipes.

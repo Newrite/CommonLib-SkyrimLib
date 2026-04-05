@@ -47,7 +47,7 @@ impl BSIInputDevice {
 
     crate::virtual_method! {
         pub const VFUNC_GET_MAPPING_KEY: usize = 0x05;
-        pub fn get_mapping_key(&mut self, mapping: BSFixedString) -> u32
+        fn get_mapping_key_impl(&mut self, mapping: &BSFixedString) -> u32
     }
 
     crate::virtual_method! {
@@ -76,8 +76,19 @@ impl BSIInputDevice {
     }
 
     #[inline(always)]
+    pub fn get_mapping_key(&mut self, mapping: BSFixedString) -> u32 {
+        self.get_mapping_key_ref(&mapping)
+    }
+
+    #[inline(always)]
+    pub fn get_mapping_key_ref(&mut self, mapping: &BSFixedString) -> u32 {
+        self.get_mapping_key_impl(mapping)
+    }
+
+    #[inline(always)]
     pub fn get_mapping_key_from_str(&mut self, mapping: &str) -> u32 {
-        self.get_mapping_key(BSFixedString::from_str(mapping))
+        let mapping = BSFixedString::from_str(mapping);
+        self.get_mapping_key_ref(&mapping)
     }
 
     #[inline(always)]
@@ -113,6 +124,7 @@ pub trait BSIInputDeviceExt {
     fn get_button_name_from_id(&mut self, id: i32, button_name: &mut BSFixedString) -> bool;
     fn try_get_button_name_from_id(&mut self, id: i32) -> Option<BSFixedString>;
     fn get_mapping_key(&mut self, mapping: BSFixedString) -> u32;
+    fn get_mapping_key_ref(&mut self, mapping: &BSFixedString) -> u32;
     fn get_mapping_key_from_str(&mut self, mapping: &str) -> u32;
     fn get_key_code_from_id(&mut self, id: i32, key_code: &mut u32) -> bool;
     fn try_get_key_code_from_id(&mut self, id: i32) -> Option<u32>;
@@ -157,6 +169,11 @@ where
     #[inline(always)]
     fn get_mapping_key(&mut self, mapping: BSFixedString) -> u32 {
         BSIInputDevice::get_mapping_key(self.as_mut(), mapping)
+    }
+
+    #[inline(always)]
+    fn get_mapping_key_ref(&mut self, mapping: &BSFixedString) -> u32 {
+        BSIInputDevice::get_mapping_key_ref(self.as_mut(), mapping)
     }
 
     #[inline(always)]

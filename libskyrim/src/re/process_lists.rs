@@ -115,7 +115,7 @@ const _: () = assert!(core::mem::offset_of!(ProcessLists, sync_position_queue) =
 
 impl ProcessLists {
     relocation_variable! {
-        fn singleton() -> *mut ProcessLists => RelocationID::new(514167, 400315), is_ptr
+        fn singleton() -> *mut ProcessLists => RelocationID::new(514167, 400315), is_indirect_ptr
     }
 
     #[inline(always)]

@@ -278,7 +278,7 @@ const _: () = assert!(core::mem::offset_of!(UserEvents, item_zoom) == 0x338);
 
 impl UserEvents {
     crate::relocation_variable! {
-        fn singleton() -> *mut UserEvents => RelocationID::new(516458, 402638), is_ptr
+        fn singleton() -> *mut UserEvents => RelocationID::new(516458, 402638), is_indirect_ptr
     }
 
     #[inline(always)]

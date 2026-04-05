@@ -14,7 +14,7 @@ const _: () = assert!(core::mem::offset_of!(TaskQueueInterface, pad0) == 0x00);
 
 impl TaskQueueInterface {
     crate::relocation_variable! {
-        fn singleton() -> *mut TaskQueueInterface => RelocationID::new(517228, 403759), is_ptr
+        fn singleton() -> *mut TaskQueueInterface => RelocationID::new(517228, 403759), is_indirect_ptr
     }
 
     crate::relocation_func! {

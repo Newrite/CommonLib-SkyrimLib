@@ -281,7 +281,7 @@ impl TES {
     // BSEventNotifyControl ProcessEvent(...) override;  // 01
 
     crate::relocation_variable! {
-        fn singleton_ptr() -> *mut TES => RelocationID::new(516923, 403450), is_ptr
+        fn singleton_ptr() -> *mut TES => RelocationID::new(516923, 403450), is_indirect_ptr
     }
 
     crate::relocation_func! {

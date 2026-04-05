@@ -53,7 +53,7 @@ impl BSInputDeviceManager {
     pub const RUNTIME_DATA_OFFSET: VariantOffset = VariantOffset::new(0x80, 0x80, 0x98);
 
     crate::relocation_variable! {
-        fn singleton() -> *mut BSInputDeviceManager => RelocationID::new(516574, 402776), is_ptr
+        fn singleton() -> *mut BSInputDeviceManager => RelocationID::new(516574, 402776), is_indirect_ptr
     }
 
     crate::relocation_func! {
