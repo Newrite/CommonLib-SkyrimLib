@@ -93,6 +93,7 @@ fn actor_has_spell_matching(
     .is_break()
 }
 
+/// Iterates every learned spell on an actor until the visitor breaks.
 pub fn for_each_actor_spell(
     actor: &mut Actor,
     mut visit: impl FnMut(&SpellItem) -> ControlFlow<()>,
@@ -111,10 +112,12 @@ pub fn for_each_actor_spell(
     flow
 }
 
+/// Collects every learned spell on an actor.
 pub fn collect_actor_spells(actor: &mut Actor) -> Vec<GamePtr<SpellItem>> {
     collect_actor_spells_matching(actor, |_| true)
 }
 
+/// Collects learned spells matching the predicate.
 pub fn collect_actor_spells_matching(
     actor: &mut Actor,
     mut predicate: impl FnMut(&SpellItem) -> bool,
@@ -136,6 +139,10 @@ pub fn collect_actor_spells_matching(
     spells
 }
 
+/// Removes learned spells matching the predicate and returns the count.
+///
+/// When `deselect_matching` is `true`, matching spells are deselected before
+/// removal.
 pub fn remove_actor_spells_matching(
     actor: &mut Actor,
     mut predicate: impl FnMut(&SpellItem) -> bool,
@@ -155,20 +162,25 @@ pub fn remove_actor_spells_matching(
     removed
 }
 
+/// Returns `true` when the actor knows a spell with the given keyword editor ID.
 pub fn has_actor_spell_with_keyword_with_editor_id(actor: &mut Actor, editor_id: &str) -> bool {
     actor_has_spell_matching(actor, |spell| {
         actor_spell_has_keyword_with_editor_id(spell, editor_id)
     })
 }
 
+/// Returns `true` when the actor knows a spell with the given keyword.
 pub fn has_actor_spell_with_keyword(actor: &mut Actor, keyword: &BGSKeyword) -> bool {
     actor_has_spell_matching(actor, |spell| actor_spell_has_keyword(spell, keyword))
 }
 
+/// Returns `true` when the actor knows a spell whose effects include the given keyword.
 pub fn has_actor_spell_with_effect_keyword(actor: &mut Actor, keyword: &BGSKeyword) -> bool {
     actor_has_spell_matching(actor, |spell| has_item_effect_with_keyword(spell, keyword))
 }
 
+/// Returns `true` when the actor knows a spell whose effects include the given
+/// keyword editor ID.
 pub fn has_actor_spell_with_effect_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
@@ -178,6 +190,7 @@ pub fn has_actor_spell_with_effect_keyword_with_editor_id(
     })
 }
 
+/// Returns `true` when the actor knows a spell whose effects include the given archetype.
 pub fn has_actor_spell_with_effect_archetype(
     actor: &mut Actor,
     archetype: EffectArchetypeId,
@@ -187,6 +200,7 @@ pub fn has_actor_spell_with_effect_archetype(
     })
 }
 
+/// Collects learned spells matching a spell keyword.
 pub fn collect_actor_spells_with_keyword(
     actor: &mut Actor,
     keyword: &BGSKeyword,
@@ -194,6 +208,7 @@ pub fn collect_actor_spells_with_keyword(
     collect_actor_spells_matching(actor, |spell| actor_spell_has_keyword(spell, keyword))
 }
 
+/// Collects learned spells matching a spell keyword editor ID.
 pub fn collect_actor_spells_with_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
@@ -203,6 +218,7 @@ pub fn collect_actor_spells_with_keyword_with_editor_id(
     })
 }
 
+/// Collects learned spells whose effects include the given keyword.
 pub fn collect_actor_spells_with_effect_keyword(
     actor: &mut Actor,
     keyword: &BGSKeyword,
@@ -210,6 +226,7 @@ pub fn collect_actor_spells_with_effect_keyword(
     collect_actor_spells_matching(actor, |spell| has_item_effect_with_keyword(spell, keyword))
 }
 
+/// Collects learned spells whose effects include the given keyword editor ID.
 pub fn collect_actor_spells_with_effect_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
@@ -219,6 +236,7 @@ pub fn collect_actor_spells_with_effect_keyword_with_editor_id(
     })
 }
 
+/// Collects learned spells whose effects include the given archetype.
 pub fn collect_actor_spells_with_effect_archetype(
     actor: &mut Actor,
     archetype: EffectArchetypeId,
@@ -228,21 +246,27 @@ pub fn collect_actor_spells_with_effect_archetype(
     })
 }
 
+/// Adds one spell to an actor.
 #[inline(always)]
 pub fn add_actor_spell(actor: &mut Actor, spell: &SpellItem) -> bool {
     actor.add_spell(spell as *const SpellItem as *mut SpellItem)
 }
 
+/// Returns `true` when the actor already knows the given spell.
 #[inline(always)]
 pub fn has_actor_spell(actor: &Actor, spell: &SpellItem) -> bool {
     actor.has_spell(spell as *const SpellItem as *mut SpellItem)
 }
 
+/// Ensures the actor knows the given spell.
+///
+/// Returns `true` when the spell was already known or was added successfully.
 #[inline(always)]
 pub fn ensure_actor_spell(actor: &mut Actor, spell: &SpellItem) -> bool {
     has_actor_spell(actor, spell) || add_actor_spell(actor, spell)
 }
 
+/// Enables or disables one spell on an actor.
 #[inline(always)]
 pub fn set_actor_spell_enabled(
     actor: &mut Actor,
@@ -257,6 +281,7 @@ pub fn set_actor_spell_enabled(
     }
 }
 
+/// Removes one spell from an actor.
 #[inline(always)]
 pub fn remove_actor_spell(actor: &mut Actor, spell: &SpellItem, deselect_first: bool) -> bool {
     let spell = spell as *const SpellItem as *mut SpellItem;
@@ -266,6 +291,7 @@ pub fn remove_actor_spell(actor: &mut Actor, spell: &SpellItem, deselect_first: 
     actor.remove_spell(spell)
 }
 
+/// Returns the actor's currently selected spell for the given casting source.
 #[inline(always)]
 pub fn selected_actor_spell(
     actor: &Actor,
@@ -278,6 +304,7 @@ pub fn selected_actor_spell(
     unsafe { GamePtr::from_raw(actor.get_actor_runtime_data().selected_spells[slot]) }
 }
 
+/// Returns `true` when the given spell is selected into the casting source.
 #[inline(always)]
 pub fn is_selected_actor_spell(
     actor: &Actor,
@@ -287,6 +314,7 @@ pub fn is_selected_actor_spell(
     selected_actor_spell(actor, source).as_ptr() == spell as *const MagicItem as *mut MagicItem
 }
 
+/// Removes learned spells matching a spell keyword and returns the count.
 pub fn remove_spells_with_keyword(
     actor: &mut Actor,
     keyword: &BGSKeyword,
@@ -299,6 +327,7 @@ pub fn remove_spells_with_keyword(
     )
 }
 
+/// Removes learned spells matching a spell keyword editor ID and returns the count.
 pub fn remove_spells_with_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
@@ -311,6 +340,7 @@ pub fn remove_spells_with_keyword_with_editor_id(
     )
 }
 
+/// Removes learned spells whose effects include the given keyword and returns the count.
 pub fn remove_spells_with_effect_keyword(
     actor: &mut Actor,
     keyword: &BGSKeyword,
@@ -323,6 +353,7 @@ pub fn remove_spells_with_effect_keyword(
     )
 }
 
+/// Removes learned spells whose effects include the given keyword editor ID and returns the count.
 pub fn remove_spells_with_effect_keyword_with_editor_id(
     actor: &mut Actor,
     editor_id: &str,
@@ -335,6 +366,7 @@ pub fn remove_spells_with_effect_keyword_with_editor_id(
     )
 }
 
+/// Removes learned spells whose effects include the given archetype and returns the count.
 pub fn remove_spells_with_effect_archetype(
     actor: &mut Actor,
     archetype: EffectArchetypeId,

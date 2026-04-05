@@ -10,6 +10,7 @@ use crate::re::{
 use super::surface::message_queue;
 use super::{NamedMenu, TypedMenuMessageData};
 
+/// Immediately processes queued UI commands on the engine message queue.
 #[inline(always)]
 pub fn process_commands() {
     unsafe { message_queue().with_mut_unchecked(crate::re::UIMessageQueue::process_commands) };
@@ -87,6 +88,7 @@ where
     message_data
 }
 
+/// Allocates typed engine UI message data and queues it for the target menu.
 pub fn queue_message_with<T>(
     menu_name: &str,
     message_type: UIMessageType,
@@ -114,6 +116,7 @@ where
     }
 }
 
+/// Typed variant of [`queue_message_with`] for [`NamedMenu`] markers.
 #[inline(always)]
 pub fn queue_named_message_with<M, T>(
     message_type: UIMessageType,
@@ -126,31 +129,37 @@ where
     queue_message_with::<T>(M::MENU_NAME, message_type, init)
 }
 
+/// Queues a bare UI message with no attached payload.
 #[inline(always)]
 pub fn queue_message(menu_name: &str, message_type: UIMessageType) {
     unsafe { queue_message_data_unchecked(menu_name, message_type, core::ptr::null_mut()) };
 }
 
+/// Queues a `Show` message for the target menu.
 #[inline(always)]
 pub fn open_menu(menu_name: &str) {
     queue_message(menu_name, UIMessageType::Show);
 }
 
+/// Queues a `Hide` message for the target menu.
 #[inline(always)]
 pub fn close_menu(menu_name: &str) {
     queue_message(menu_name, UIMessageType::Hide);
 }
 
+/// Queues a `ForceHide` message for the target menu.
 #[inline(always)]
 pub fn force_close_menu(menu_name: &str) {
     queue_message(menu_name, UIMessageType::ForceHide);
 }
 
+/// Queues a `Reshow` message for the target menu.
 #[inline(always)]
 pub fn reshow_menu(menu_name: &str) {
     queue_message(menu_name, UIMessageType::Reshow);
 }
 
+/// Opens or closes a menu based on the boolean flag.
 #[inline(always)]
 pub fn toggle_menu(menu_name: &str, open: bool) {
     if open {
@@ -160,6 +169,7 @@ pub fn toggle_menu(menu_name: &str, open: bool) {
     }
 }
 
+/// Typed variant of [`open_menu`].
 #[inline(always)]
 pub fn open_named_menu<M>()
 where
@@ -168,6 +178,7 @@ where
     open_menu(M::MENU_NAME)
 }
 
+/// Typed variant of [`close_menu`].
 #[inline(always)]
 pub fn close_named_menu<M>()
 where
@@ -176,6 +187,7 @@ where
     close_menu(M::MENU_NAME)
 }
 
+/// Typed variant of [`force_close_menu`].
 #[inline(always)]
 pub fn force_close_named_menu<M>()
 where
@@ -184,6 +196,7 @@ where
     force_close_menu(M::MENU_NAME)
 }
 
+/// Typed variant of [`toggle_menu`].
 #[inline(always)]
 pub fn toggle_named_menu<M>(open: bool)
 where
@@ -212,6 +225,7 @@ fn queue_bsui_message(
     queued
 }
 
+/// Queues a `BSUIMessageData` payload carrying one boolean.
 #[inline(always)]
 pub fn queue_bsui_bool_message(menu_name: &str, message_type: UIMessageType, data: bool) -> bool {
     queue_bsui_message(
@@ -224,6 +238,7 @@ pub fn queue_bsui_bool_message(menu_name: &str, message_type: UIMessageType, dat
     )
 }
 
+/// Queues a `BSUIMessageData` payload carrying one `u32`.
 #[inline(always)]
 pub fn queue_bsui_uint_message(menu_name: &str, message_type: UIMessageType, data: u32) -> bool {
     queue_bsui_message(
@@ -236,6 +251,7 @@ pub fn queue_bsui_uint_message(menu_name: &str, message_type: UIMessageType, dat
     )
 }
 
+/// Queues a `BSUIMessageData` payload carrying one raw pointer.
 #[inline(always)]
 pub fn queue_bsui_ptr_message(
     menu_name: &str,
@@ -252,6 +268,7 @@ pub fn queue_bsui_ptr_message(
     )
 }
 
+/// Queues a `BSUIMessageData` payload carrying one string.
 #[inline(always)]
 pub fn queue_bsui_string_message(
     menu_name: &str,
@@ -268,6 +285,7 @@ pub fn queue_bsui_string_message(
     )
 }
 
+/// Queues a `BSUIMessageData` payload carrying one string and one boolean.
 #[inline(always)]
 pub fn queue_bsui_string_bool_message(
     menu_name: &str,
@@ -286,6 +304,7 @@ pub fn queue_bsui_string_bool_message(
     )
 }
 
+/// Queues a `BSUIMessageData` payload carrying one string and one float.
 #[inline(always)]
 pub fn queue_bsui_string_float_message(
     menu_name: &str,
@@ -304,6 +323,7 @@ pub fn queue_bsui_string_float_message(
     )
 }
 
+/// Queues a `BSUIMessageData` payload carrying one string and one `u32`.
 #[inline(always)]
 pub fn queue_bsui_string_uint_message(
     menu_name: &str,
@@ -322,6 +342,7 @@ pub fn queue_bsui_string_uint_message(
     )
 }
 
+/// Queues a `BSUIScaleformData` payload carrying a raw `GFxEvent`.
 #[inline(always)]
 pub fn queue_scaleform_event_message(
     menu_name: &str,

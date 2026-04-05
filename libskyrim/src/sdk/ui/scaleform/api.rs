@@ -6,6 +6,7 @@ use crate::sdk::ui::menus::NamedMenu;
 
 use super::surface::MenuSurface;
 
+/// Looks up the Scaleform surface for one open menu.
 #[inline(always)]
 pub fn surface(menu_name: &str) -> Option<MenuSurface> {
     MenuSurface::lookup(menu_name)
@@ -24,6 +25,7 @@ fn surface_or_warn(menu_name: &str, _caller: &'static str) -> Option<MenuSurface
     surface
 }
 
+/// Typed variant of [`surface`].
 #[inline(always)]
 pub fn named_surface<M>() -> Option<MenuSurface>
 where
@@ -32,22 +34,26 @@ where
     MenuSurface::lookup_named::<M>()
 }
 
+/// Returns the top-most menu surface up to the given depth limit.
 #[inline(always)]
 pub fn top_most_surface(depth_limit: u32) -> Option<MenuSurface> {
     MenuSurface::top_most(depth_limit)
 }
 
+/// Returns the top-most menu surface using the default depth limit.
 #[inline(always)]
 pub fn top_most_surface_default() -> Option<MenuSurface> {
     MenuSurface::top_most_default()
 }
 
+/// Returns whether the named menu exposes a variable/path.
 #[inline(always)]
 pub fn is_available(menu_name: &str, path: &str) -> Result<bool, NulError> {
     surface_or_warn(menu_name, "sdk::ui::scaleform::is_available()")
         .map_or(Ok(false), |surface| surface.is_available(path))
 }
 
+/// Typed variant of [`is_available`].
 #[inline(always)]
 pub fn named_is_available<M>(path: &str) -> Result<bool, NulError>
 where
@@ -56,12 +62,14 @@ where
     is_available(M::MENU_NAME, path)
 }
 
+/// Returns the named menu's variable value, if available.
 #[inline(always)]
 pub fn variable(menu_name: &str, path: &str) -> Result<Option<GFxValue>, NulError> {
     surface_or_warn(menu_name, "sdk::ui::scaleform::variable()")
         .map_or(Ok(None), |surface| surface.variable(path))
 }
 
+/// Typed variant of [`variable`].
 #[inline(always)]
 pub fn named_variable<M>(path: &str) -> Result<Option<GFxValue>, NulError>
 where
@@ -70,6 +78,7 @@ where
     variable(M::MENU_NAME, path)
 }
 
+/// Sets a variable on the named menu surface.
 #[inline(always)]
 pub fn set_variable(
     menu_name: &str,
@@ -82,6 +91,7 @@ pub fn set_variable(
     })
 }
 
+/// Bool convenience variant of [`set_variable`].
 #[inline(always)]
 pub fn set_variable_bool(
     menu_name: &str,
@@ -95,6 +105,7 @@ pub fn set_variable_bool(
         })
 }
 
+/// Number convenience variant of [`set_variable`].
 #[inline(always)]
 pub fn set_variable_number(
     menu_name: &str,
@@ -108,6 +119,7 @@ pub fn set_variable_number(
         })
 }
 
+/// Invokes a Scaleform method on the named menu surface.
 #[inline(always)]
 pub fn invoke(
     menu_name: &str,
@@ -120,6 +132,7 @@ pub fn invoke(
     })
 }
 
+/// Invokes a Scaleform method and ignores the return value.
 #[inline(always)]
 pub fn invoke_no_return(
     menu_name: &str,
@@ -132,6 +145,7 @@ pub fn invoke_no_return(
         })
 }
 
+/// Returns the named menu's `GFxMovieView`, if available.
 #[inline(always)]
 pub fn movie_view(menu_name: &str) -> GPtr<GFxMovieView> {
     surface(menu_name)
@@ -139,6 +153,7 @@ pub fn movie_view(menu_name: &str) -> GPtr<GFxMovieView> {
         .unwrap_or_default()
 }
 
+/// Typed variant of [`movie_view`].
 #[inline(always)]
 pub fn named_movie_view<M>() -> GPtr<GFxMovieView>
 where
@@ -147,6 +162,7 @@ where
     movie_view(M::MENU_NAME)
 }
 
+/// Returns the top-most menu's `GFxMovieView`, if available.
 #[inline(always)]
 pub fn top_most_movie_view(depth_limit: u32) -> GPtr<GFxMovieView> {
     top_most_surface(depth_limit)
@@ -154,11 +170,13 @@ pub fn top_most_movie_view(depth_limit: u32) -> GPtr<GFxMovieView> {
         .unwrap_or_default()
 }
 
+/// Returns the top-most menu's `GFxMovieView` using the default depth limit.
 #[inline(always)]
 pub fn top_most_movie_view_default() -> GPtr<GFxMovieView> {
     top_most_movie_view(menus::DEFAULT_TOP_MOST_MENU_DEPTH_LIMIT)
 }
 
+/// Returns the named menu's `FxDelegate`, if available.
 #[inline(always)]
 pub fn fx_delegate(menu_name: &str) -> GPtr<FxDelegate> {
     surface(menu_name)
@@ -166,6 +184,7 @@ pub fn fx_delegate(menu_name: &str) -> GPtr<FxDelegate> {
         .unwrap_or_default()
 }
 
+/// Typed variant of [`fx_delegate`].
 #[inline(always)]
 pub fn named_fx_delegate<M>() -> GPtr<FxDelegate>
 where
@@ -174,6 +193,7 @@ where
     fx_delegate(M::MENU_NAME)
 }
 
+/// Returns the top-most menu's `FxDelegate`, if available.
 #[inline(always)]
 pub fn top_most_fx_delegate(depth_limit: u32) -> GPtr<FxDelegate> {
     top_most_surface(depth_limit)
@@ -181,6 +201,7 @@ pub fn top_most_fx_delegate(depth_limit: u32) -> GPtr<FxDelegate> {
         .unwrap_or_default()
 }
 
+/// Returns the top-most menu's `FxDelegate` using the default depth limit.
 #[inline(always)]
 pub fn top_most_fx_delegate_default() -> GPtr<FxDelegate> {
     top_most_fx_delegate(menus::DEFAULT_TOP_MOST_MENU_DEPTH_LIMIT)

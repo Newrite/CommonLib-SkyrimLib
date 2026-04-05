@@ -5,12 +5,21 @@ use crate::skse::{self, Message};
 
 use super::types::{MessageKind, MessageListener, MessageRef};
 
+/// Installs one raw function-pointer listener for a concrete SKSE message kind.
+///
+/// Prefer higher-level helpers such as [`on`], [`on_plugin_phase`], or
+/// [`on_game_lifecycle`] unless the callback needs direct access to the raw
+/// `Message` packet.
 #[inline(always)]
 pub fn on_raw(kind: MessageKind, callback: fn(&Message)) -> MessageListener {
     skse::register_listener(kind.raw(), callback);
     MessageListener(core::marker::PhantomData)
 }
 
+/// Install one closure listener for a concrete SKSE [`MessageKind`].
+///
+/// This is the general entry point when a plugin wants one lifecycle/message
+/// packet and does not need sender-specific filtering.
 pub fn on<F>(kind: MessageKind, callback: F) -> MessageListener
 where
     F: for<'a> FnMut(MessageRef<'a>) + 'static,
@@ -22,6 +31,7 @@ where
     MessageListener(core::marker::PhantomData)
 }
 
+/// Installs one listener gated by an additional predicate over the typed wrapper.
 pub fn on_filtered<P, F>(kind: MessageKind, predicate: P, callback: F) -> MessageListener
 where
     P: for<'a> Fn(MessageRef<'a>) -> bool + 'static,
@@ -35,6 +45,7 @@ where
     })
 }
 
+/// Installs one listener for `kind` that only accepts messages from `sender`.
 #[inline(always)]
 pub fn on_sender<F>(kind: MessageKind, sender: &'static CStr, callback: F) -> MessageListener
 where
@@ -47,6 +58,7 @@ where
     )
 }
 
+/// String-slice convenience overload of [`on_sender`].
 #[inline(always)]
 pub fn on_sender_str<F>(kind: MessageKind, sender: &'static str, callback: F) -> MessageListener
 where
@@ -55,11 +67,13 @@ where
     on_filtered(kind, move |message| message.sender_equals(sender), callback)
 }
 
+/// Installs one raw listener for a [`PluginLifecyclePhase`].
 #[inline(always)]
 pub fn on_plugin_phase_raw(phase: PluginLifecyclePhase, callback: fn(&Message)) -> MessageListener {
     on_raw(message_kind_for_plugin_phase(phase), callback)
 }
 
+/// Installs one typed listener for a [`PluginLifecyclePhase`].
 #[inline(always)]
 pub fn on_plugin_phase<F>(phase: PluginLifecyclePhase, callback: F) -> MessageListener
 where
@@ -68,6 +82,7 @@ where
     on(message_kind_for_plugin_phase(phase), callback)
 }
 
+/// Installs one phase listener gated by an additional predicate.
 pub fn on_plugin_phase_filtered<P, F>(
     phase: PluginLifecyclePhase,
     predicate: P,
@@ -80,6 +95,7 @@ where
     on_filtered(message_kind_for_plugin_phase(phase), predicate, callback)
 }
 
+/// Installs one plugin-phase listener restricted to one sender C string.
 #[inline(always)]
 pub fn on_plugin_phase_sender<F>(
     phase: PluginLifecyclePhase,
@@ -96,6 +112,7 @@ where
     )
 }
 
+/// String-slice convenience overload of [`on_plugin_phase_sender`].
 #[inline(always)]
 pub fn on_plugin_phase_sender_str<F>(
     phase: PluginLifecyclePhase,
@@ -112,11 +129,13 @@ where
     )
 }
 
+/// Installs one raw listener for a [`GameLifecyclePhase`].
 #[inline(always)]
 pub fn on_game_lifecycle_raw(phase: GameLifecyclePhase, callback: fn(&Message)) -> MessageListener {
     on_raw(message_kind_for_game_lifecycle(phase), callback)
 }
 
+/// Installs one typed listener for a [`GameLifecyclePhase`].
 #[inline(always)]
 pub fn on_game_lifecycle<F>(phase: GameLifecyclePhase, callback: F) -> MessageListener
 where
@@ -125,6 +144,7 @@ where
     on(message_kind_for_game_lifecycle(phase), callback)
 }
 
+/// Installs one game-lifecycle listener gated by an additional predicate.
 pub fn on_game_lifecycle_filtered<P, F>(
     phase: GameLifecyclePhase,
     predicate: P,
@@ -137,6 +157,7 @@ where
     on_filtered(message_kind_for_game_lifecycle(phase), predicate, callback)
 }
 
+/// Installs one game-lifecycle listener restricted to one sender C string.
 #[inline(always)]
 pub fn on_game_lifecycle_sender<F>(
     phase: GameLifecyclePhase,
@@ -153,6 +174,7 @@ where
     )
 }
 
+/// String-slice convenience overload of [`on_game_lifecycle_sender`].
 #[inline(always)]
 pub fn on_game_lifecycle_sender_str<F>(
     phase: GameLifecyclePhase,
@@ -169,6 +191,7 @@ where
     )
 }
 
+/// Installs one raw listener for any [`LifecyclePhase`].
 #[inline(always)]
 pub fn on_lifecycle_raw(phase: LifecyclePhase, callback: fn(&Message)) -> MessageListener {
     match phase {
@@ -177,6 +200,7 @@ pub fn on_lifecycle_raw(phase: LifecyclePhase, callback: fn(&Message)) -> Messag
     }
 }
 
+/// Installs one typed listener for any [`LifecyclePhase`].
 #[inline(always)]
 pub fn on_lifecycle<F>(phase: LifecyclePhase, callback: F) -> MessageListener
 where
@@ -188,6 +212,7 @@ where
     }
 }
 
+/// Installs one lifecycle listener gated by an additional predicate.
 pub fn on_lifecycle_filtered<P, F>(
     phase: LifecyclePhase,
     predicate: P,
@@ -203,6 +228,7 @@ where
     }
 }
 
+/// Installs one lifecycle listener restricted to one sender C string.
 #[inline(always)]
 pub fn on_lifecycle_sender<F>(
     phase: LifecyclePhase,
@@ -219,6 +245,7 @@ where
     )
 }
 
+/// String-slice convenience overload of [`on_lifecycle_sender`].
 #[inline(always)]
 pub fn on_lifecycle_sender_str<F>(
     phase: LifecyclePhase,

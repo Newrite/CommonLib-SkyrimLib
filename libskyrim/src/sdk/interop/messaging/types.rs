@@ -6,6 +6,9 @@ use core::fmt;
 use crate::sdk::events::skse::messages::MessageRef;
 
 /// Install-time filtering for inter-plugin message listeners.
+///
+/// Use this when the listener should stay installed once but only react to a
+/// narrow subset of custom plugin messages.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MessageFilter {
     message_type: Option<u32>,
@@ -13,6 +16,7 @@ pub struct MessageFilter {
 }
 
 impl MessageFilter {
+    /// Match any inter-plugin message.
     #[inline(always)]
     pub const fn any() -> Self {
         Self {
@@ -21,6 +25,7 @@ impl MessageFilter {
         }
     }
 
+    /// Match one exact message type.
     #[inline(always)]
     pub const fn for_type(message_type: u32) -> Self {
         Self {
@@ -29,6 +34,7 @@ impl MessageFilter {
         }
     }
 
+    /// Match any message sent by one sender.
     #[inline(always)]
     pub fn for_sender(sender: &CStr) -> Self {
         Self {
@@ -37,6 +43,7 @@ impl MessageFilter {
         }
     }
 
+    /// String-based variant of [`Self::for_sender`].
     #[inline(always)]
     pub fn for_sender_str(sender: &str) -> Result<Self, NulError> {
         Ok(Self {
@@ -45,44 +52,52 @@ impl MessageFilter {
         })
     }
 
+    /// Match one exact message type from one sender.
     #[inline(always)]
     pub fn for_type_sender(message_type: u32, sender: &CStr) -> Self {
         Self::for_type(message_type).with_sender(sender)
     }
 
+    /// String-based variant of [`Self::for_type_sender`].
     #[inline(always)]
     pub fn for_type_sender_str(message_type: u32, sender: &str) -> Result<Self, NulError> {
         Ok(Self::for_type(message_type).with_sender_str(sender)?)
     }
 
+    /// Optional exact message type currently configured on the filter.
     #[inline(always)]
     pub const fn message_type(&self) -> Option<u32> {
         self.message_type
     }
 
+    /// Optional exact sender currently configured on the filter.
     #[inline(always)]
     pub fn sender(&self) -> Option<&CStr> {
         self.sender.as_deref()
     }
 
+    /// Add or replace the exact message type match.
     #[inline(always)]
     pub const fn with_message_type(mut self, message_type: u32) -> Self {
         self.message_type = Some(message_type);
         self
     }
 
+    /// Add or replace the exact sender match.
     #[inline(always)]
     pub fn with_sender(mut self, sender: &CStr) -> Self {
         self.sender = Some(sender.to_owned());
         self
     }
 
+    /// String-based variant of [`Self::with_sender`].
     #[inline(always)]
     pub fn with_sender_str(mut self, sender: &str) -> Result<Self, NulError> {
         self.sender = Some(CString::new(sender)?);
         Ok(self)
     }
 
+    /// Check whether a received message satisfies the filter.
     #[inline(always)]
     pub fn matches(&self, message: MessageRef<'_>) -> bool {
         if let Some(expected) = self.message_type {
@@ -101,7 +116,9 @@ impl MessageFilter {
 /// Failure installing the shared inter-plugin listener.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ListenerInstallError {
+    /// The SKSE messaging interface was unavailable.
     InterfaceUnavailable,
+    /// Registering the shared listener with SKSE failed.
     RegisterFailed,
 }
 
@@ -119,8 +136,11 @@ impl core::error::Error for ListenerInstallError {}
 /// Failure dispatching one custom plugin message.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DispatchError {
+    /// The SKSE messaging interface was unavailable.
     InterfaceUnavailable,
+    /// The payload length exceeded the `u32`-sized SKSE payload contract.
     DataTooLarge(usize),
+    /// The SKSE dispatch call reported failure.
     DispatchFailed,
 }
 
@@ -147,18 +167,24 @@ pub struct ApiVersion {
 }
 
 impl ApiVersion {
+    /// Zero/unspecified protocol version.
     pub const ZERO: Self = Self { major: 0, minor: 0 };
 
+    /// Construct an explicit semantic version pair.
     #[inline(always)]
     pub const fn new(major: u16, minor: u16) -> Self {
         Self { major, minor }
     }
 
+    /// Whether the version is the zero/unspecified sentinel.
     #[inline(always)]
     pub const fn is_zero(self) -> bool {
         self.major == 0 && self.minor == 0
     }
 
+    /// Whether this server version satisfies the requested client version.
+    ///
+    /// The current policy is "same major, equal-or-greater minor".
     #[inline(always)]
     pub const fn satisfies(self, requested: Self) -> bool {
         self.major == requested.major && self.minor >= requested.minor
@@ -174,6 +200,7 @@ pub struct VersionHandshake {
 }
 
 impl VersionHandshake {
+    /// Construct a client-side handshake with an empty server response slot.
     #[inline(always)]
     pub const fn new(client: ApiVersion) -> Self {
         Self {
@@ -182,11 +209,14 @@ impl VersionHandshake {
         }
     }
 
+    /// Whether the server version recorded in the handshake is compatible with
+    /// the client request.
     #[inline(always)]
     pub const fn is_compatible(&self) -> bool {
         self.server.satisfies(self.client)
     }
 
+    /// Fill in the responding server version.
     #[inline(always)]
     pub fn respond(&mut self, server: ApiVersion) {
         self.server = server;
@@ -207,6 +237,7 @@ pub enum QueryResponse {
 }
 
 impl QueryResponse {
+    /// Decode a raw protocol response code.
     #[inline(always)]
     pub const fn from_raw(raw: u32) -> Option<Self> {
         match raw {
@@ -244,6 +275,7 @@ pub struct RequestMessageIds {
 }
 
 impl RequestMessageIds {
+    /// Construct one `version/query` message-ID pair.
     #[inline(always)]
     pub const fn new(version: u32, query: u32) -> Self {
         Self { version, query }

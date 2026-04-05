@@ -394,19 +394,104 @@ macro_rules! papyrus_event_module {
     };
 }
 
+/// Generate a lightweight `sdk::papyrus::PapyrusScript` binding recipe for the
+/// common C++ `Bind(VM*) -> RegisterFunction(...)` plugin pattern.
+///
+/// This is intentionally thinner than `papyrus_module!`: it binds one Papyrus
+/// script/class name through `sdk::papyrus::Registry<'_>` and keeps the
+/// low-level direct-registration flow visible.
+///
+/// Example:
+///
+/// ```ignore
+/// libskyrim::sdk::papyrus::papyrus_script! {
+///     pub PapyrusTweaksBindings("PapyrusTweaks") {
+///         fn "GetPapyrusTweaksVersion"
+///             => get_papyrus_tweaks_version
+///             => fn(base: *mut libskyrim::re::StaticFunctionTag) -> Vec<i32>,
+///             callable_from_tasklets = true;
+///         long fn "DisableFastMode"
+///             => disable_fast_mode
+///             => fn(
+///                 vm: *mut libskyrim::re::IVirtualMachine,
+///                 stack_id: libskyrim::re::VMStackID,
+///                 base: *mut libskyrim::re::StaticFunctionTag,
+///             ) -> bool;
+///     }
+/// }
+/// ```
+#[macro_export]
+macro_rules! papyrus_script {
+    ($(#[$meta:meta])* $vis:vis $name:ident ($script_name:expr) { $($entries:tt)* }) => {
+        $(#[$meta])*
+        $vis struct $name;
+
+        impl $crate::sdk::papyrus::PapyrusScript for $name {
+            const NAME: &'static str = $script_name;
+
+            fn register(mut registry: &mut $crate::skse::papyrus::Registry<'_>) -> bool {
+                $crate::papyrus_script!(@registry registry; $($entries)*);
+                registry.is_ok()
+            }
+        }
+    };
+    (@registry $registry:ident;) => {};
+    (@registry $registry:ident;
+        fn $fn_name:literal => $callback:path
+            => fn($base_name:ident : $base_ty:ty $(, $arg_name:ident : $arg_ty:ty)*)
+            $(-> $ret:ty)? $(, callable_from_tasklets = $callable:expr)? ;
+        $($rest:tt)*
+    ) => {
+        let _ = $crate::papyrus_register_function!(
+            $registry,
+            $fn_name,
+            $callback => fn($base_ty $(, $arg_ty)*) $(-> $ret)? $(, callable_from_tasklets = $callable)?
+        );
+        $crate::papyrus_script!(@registry $registry; $($rest)*);
+    };
+    (@registry $registry:ident;
+        long fn $fn_name:literal => $callback:path
+            => fn($vm_name:ident : $vm_ty:ty, $stack_name:ident : $stack_ty:ty, $base_name:ident : $base_ty:ty $(, $arg_name:ident : $arg_ty:ty)*)
+            $(-> $ret:ty)? $(, callable_from_tasklets = $callable:expr)? ;
+        $($rest:tt)*
+    ) => {
+        let _ = $crate::papyrus_register_long_function!(
+            $registry,
+            $fn_name,
+            $callback => fn($vm_ty, $stack_ty, $base_ty $(, $arg_ty)*) $(-> $ret)? $(, callable_from_tasklets = $callable)?
+        );
+        $crate::papyrus_script!(@registry $registry; $($rest)*);
+    };
+    (@registry $registry:ident;
+        latent fn $fn_name:literal => $callback:path
+            => fn($vm_name:ident : $vm_ty:ty, $stack_name:ident : $stack_ty:ty, $base_name:ident : $base_ty:ty $(, $arg_name:ident : $arg_ty:ty)*) returns $latent:ty
+            $(, callable_from_tasklets = $callable:expr)? ;
+        $($rest:tt)*
+    ) => {
+        let _ = $crate::papyrus_register_latent_function!(
+            $registry,
+            $fn_name,
+            $callback => fn($vm_ty, $stack_ty, $base_ty $(, $arg_ty)*) -> $crate::re::LatentStatus,
+            returns $latent
+            $(, callable_from_tasklets = $callable)?
+        );
+        $crate::papyrus_script!(@registry $registry; $($rest)*);
+    };
+}
+
 pub use crate::{
     papyrus_class, papyrus_event_collection, papyrus_event_functions, papyrus_event_module,
     papyrus_method_function, papyrus_method_latent_function, papyrus_method_long_function,
     papyrus_module, papyrus_register_function, papyrus_register_latent_function,
-    papyrus_register_long_function, papyrus_static_function, papyrus_static_latent_function,
-    papyrus_static_long_function,
+    papyrus_register_long_function, papyrus_script, papyrus_static_function,
+    papyrus_static_latent_function, papyrus_static_long_function,
 };
 
 #[cfg(test)]
 mod tests {
-    use crate::re::{ActiveEffect, BGSBaseAlias, BGSRefAlias, TESForm};
+    use crate::re::{ActiveEffect, BGSBaseAlias, BGSRefAlias, StaticFunctionTag, TESForm};
     use crate::sdk::papyrus::{
-        GamePtr, PapyrusEventRegistry, PapyrusModule, PapyrusTargetedEventRegistry,
+        GamePtr, PapyrusEventRegistry, PapyrusModule, PapyrusScript, PapyrusTargetedEventRegistry,
     };
 
     struct MacroTestEvents {
@@ -461,6 +546,30 @@ mod tests {
         }
     }
 
+    fn macro_script_get_version(_base: *mut StaticFunctionTag) -> i32 {
+        1
+    }
+
+    fn macro_script_disable_fast_mode(
+        _vm: *mut crate::re::IVirtualMachine,
+        _stack_id: crate::re::VMStackID,
+        _base: *mut StaticFunctionTag,
+    ) -> bool {
+        true
+    }
+
+    crate::papyrus_script! {
+        pub(crate) MacroGeneratedScript("MacroGeneratedScript") {
+            fn "GetVersion"
+                => macro_script_get_version
+                => fn(base: *mut StaticFunctionTag) -> i32,
+                callable_from_tasklets = true;
+            long fn "DisableFastMode"
+                => macro_script_disable_fast_mode
+                => fn(vm: *mut crate::re::IVirtualMachine, stack_id: crate::re::VMStackID, base: *mut StaticFunctionTag) -> bool;
+        }
+    }
+
     #[test]
     fn generated_functions_fail_soft_without_registered_runtime() {
         assert!(!register_regular_form(GamePtr::<TESForm>::null()));
@@ -485,6 +594,14 @@ mod tests {
     fn generated_event_module_implements_papyrus_module() {
         fn assert_module<T: PapyrusModule>() {}
         assert_module::<MacroGeneratedModule>();
+    }
+
+    #[test]
+    fn generated_script_implements_papyrus_script() {
+        fn assert_script<T: PapyrusScript>() {}
+
+        assert_script::<MacroGeneratedScript>();
+        assert_eq!(MacroGeneratedScript::NAME, "MacroGeneratedScript");
     }
 
     #[test]

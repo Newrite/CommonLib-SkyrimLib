@@ -7,6 +7,10 @@ use crate::sdk::gameplay::navmesh::{
 };
 use crate::sdk::gameplay::world::WorldSceneSnapshot;
 
+/// Options controlling one candidate-point evaluation pass.
+///
+/// This groups the scene, navmesh, reachability, and physics thresholds used
+/// by one spatial evaluation run.
 #[derive(Debug, Clone, Copy)]
 pub struct SpatialCandidateEvaluationOptions {
     pub scene_radius: f32,
@@ -18,6 +22,11 @@ pub struct SpatialCandidateEvaluationOptions {
     pub physics: SpawnPointValidationOptions,
 }
 
+/// Full evaluation result for one candidate point.
+///
+/// This is the main query-style result for spawn/teleport candidate analysis.
+/// It keeps the raw sub-results from scene, physics, navmesh, and reachability
+/// helpers together with the derived boolean gates.
 #[derive(Debug, Clone)]
 pub struct SpatialCandidateEvaluation {
     pub candidate: NiPoint3,
@@ -35,6 +44,11 @@ pub struct SpatialCandidateEvaluation {
     pub is_valid: bool,
 }
 
+/// Weights used when converting an evaluation into a numeric score.
+///
+/// These weights are intentionally visible instead of baked into one scoring
+/// function so plugins can tune policy without treating candidate scoring as a
+/// black box.
 #[derive(Debug, Clone, Copy)]
 pub struct SpatialCandidateScoreWeights {
     pub valid_bonus: f32,
@@ -76,6 +90,10 @@ impl Default for SpatialCandidateScoreWeights {
     }
 }
 
+/// Score breakdown for one spatial candidate.
+///
+/// Keeping the per-component breakdown visible makes it easier for plugins to
+/// tune policy weights without treating the final score as a black box.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SpatialCandidateScore {
     pub total: f32,
@@ -96,12 +114,17 @@ pub struct SpatialCandidateScore {
     pub line_of_sight_component: f32,
 }
 
+/// Evaluation plus its derived score.
 #[derive(Debug, Clone)]
 pub struct ScoredSpatialCandidateEvaluation {
     pub evaluation: SpatialCandidateEvaluation,
     pub score: SpatialCandidateScore,
 }
 
+/// Scored result set for a group of candidate points.
+///
+/// This is the natural result type for "evaluate many spawn/teleport
+/// candidates, then pick one" workflows.
 #[derive(Debug, Clone)]
 pub struct SpatialCandidateSetEvaluation {
     pub candidates: Vec<ScoredSpatialCandidateEvaluation>,
@@ -109,6 +132,10 @@ pub struct SpatialCandidateSetEvaluation {
     pub best_valid_index: Option<usize>,
 }
 
+/// Named policy tier used when selecting fallback spawn/teleport candidates.
+///
+/// Tiers are the higher-level policy layer above numeric scoring: they say
+/// which constraints are mandatory before a candidate may even compete.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SpatialCandidateTier {
     pub name: &'static str,
@@ -123,6 +150,7 @@ pub struct SpatialCandidateTier {
 }
 
 impl SpatialCandidateTier {
+    /// Strict profile suited for high-confidence respawn selection.
     #[must_use]
     pub const fn strict_respawn() -> Self {
         Self {
@@ -138,6 +166,7 @@ impl SpatialCandidateTier {
         }
     }
 
+    /// Strict profile that additionally prefers broken line of sight.
     #[must_use]
     pub const fn occluded_respawn() -> Self {
         Self {
@@ -153,6 +182,7 @@ impl SpatialCandidateTier {
         }
     }
 
+    /// Relaxed profile that still prefers grounded, navigable candidates.
     #[must_use]
     pub const fn relaxed_respawn() -> Self {
         Self {
@@ -168,6 +198,7 @@ impl SpatialCandidateTier {
         }
     }
 
+    /// Minimal emergency fallback when few good candidates exist.
     #[must_use]
     pub const fn emergency_respawn() -> Self {
         Self {
@@ -183,6 +214,7 @@ impl SpatialCandidateTier {
         }
     }
 
+    /// Tier that never rejects and instead relies only on score ordering.
     #[must_use]
     pub const fn score_only(name: &'static str) -> Self {
         Self {
@@ -199,6 +231,10 @@ impl SpatialCandidateTier {
     }
 }
 
+/// Successful selection of a candidate within a particular tier.
+///
+/// Use this result when plugins need to know not only which candidate won, but
+/// also which fallback policy tier accepted it.
 #[derive(Debug, Clone)]
 pub struct SpatialCandidateTierSelection {
     pub tier_index: usize,
@@ -208,18 +244,31 @@ pub struct SpatialCandidateTierSelection {
     pub diagnostics: SpatialCandidateTierDiagnostics,
 }
 
+/// Reason a candidate failed a tier's required constraints.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SpatialCandidateTierRejectionReason {
+    /// The tier required a grounded/snapped candidate.
     GroundSnapRequired,
+    /// The tier required sufficient headroom.
     HeadroomRequired,
+    /// The tier required local clearance.
     ClearanceRequired,
+    /// The tier required broken line of sight from the relevant origin.
     BrokenLineOfSightRequired,
+    /// The tier required minimum actor separation.
     ActorDistanceRequired,
+    /// The tier required minimum hostile separation.
     HostileDistanceRequired,
+    /// The tier required acceptable navmesh support distance.
     NavmeshDistanceRequired,
+    /// The tier required acceptable reachability heuristics.
     ReachabilityRequired,
 }
 
+/// Aggregated rejection counts for one tier pass.
+///
+/// This is mainly diagnostic output for tuning tier policy and understanding
+/// why a candidate set failed to yield a strict result.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct SpatialCandidateTierRejectionSummary {
     pub ground_snap_required: usize,
@@ -263,6 +312,10 @@ impl SpatialCandidateTierRejectionSummary {
     }
 }
 
+/// Diagnostics for one candidate under one tier.
+///
+/// Plugins can surface this in logs or debugging UIs to explain why an
+/// otherwise high-scoring point still failed a stricter fallback tier.
 #[derive(Debug, Clone)]
 pub struct SpatialCandidateTierCandidateDiagnostics {
     pub candidate_index: usize,
@@ -272,6 +325,10 @@ pub struct SpatialCandidateTierCandidateDiagnostics {
     pub rejection_reasons: Vec<SpatialCandidateTierRejectionReason>,
 }
 
+/// Diagnostics for an entire tier pass.
+///
+/// This keeps the overall rejection summary together with per-candidate detail
+/// for one fallback tier.
 #[derive(Debug, Clone)]
 pub struct SpatialCandidateTierDiagnostics {
     pub tier_index: usize,
@@ -283,6 +340,11 @@ pub struct SpatialCandidateTierDiagnostics {
     pub candidate_diagnostics: Vec<SpatialCandidateTierCandidateDiagnostics>,
 }
 
+/// Full fallback-selection report across all evaluated tiers.
+///
+/// This is the highest-level output of the tiered selection flow. It keeps the
+/// raw scored evaluations, diagnostics for every tier, and the final accepted
+/// candidate when one exists.
 #[derive(Debug, Clone)]
 pub struct SpatialCandidateFallbackSelection {
     pub evaluations: SpatialCandidateSetEvaluation,

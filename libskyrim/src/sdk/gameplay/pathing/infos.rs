@@ -10,6 +10,7 @@ use crate::sdk::core::{GamePtr, snapshot_contiguous_copied_named};
 use super::shared::info_ptr;
 use super::types::{NavMeshInfoGraphPath, approximate_info_path_cost};
 
+/// Look up one navmesh-info record by navmesh form ID.
 pub fn lookup_navmesh_info(
     navmesh_info_map: &mut BSNavmeshInfoMap,
     nav_mesh_id: FormID,
@@ -24,6 +25,7 @@ pub fn lookup_navmesh_info(
     info_ptr(navmesh_info_map.get_navmesh_info(nav_mesh_id))
 }
 
+/// Collect every navmesh-info record currently known to the info map.
 pub fn collect_navmesh_infos(
     navmesh_info_map: &mut BSNavmeshInfoMap,
 ) -> Vec<GamePtr<BSNavmeshInfo>> {
@@ -40,6 +42,7 @@ pub fn collect_navmesh_infos(
     .collect()
 }
 
+/// Collect navmesh-info records connected to the supplied start info.
 pub fn collect_connected_navmesh_infos(
     navmesh_info_map: &mut BSNavmeshInfoMap,
     info: &BSNavmeshInfo,
@@ -158,6 +161,10 @@ pub fn approximate_navmesh_info_path_cost(path: &[GamePtr<BSNavmeshInfo>]) -> Op
     approximate_info_path_cost(path)
 }
 
+/// Approximate a graph path between two navmesh-info nodes.
+///
+/// This is intentionally a light-weight graph hint over adjacent-info links,
+/// not a substitute for a full engine path solve.
 pub fn approximate_navmesh_info_graph_path(
     navmesh_info_map: &mut BSNavmeshInfoMap,
     start: &BSNavmeshInfo,

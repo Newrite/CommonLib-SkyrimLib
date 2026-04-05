@@ -8,6 +8,7 @@ use super::shared::{
     effect_base_matches_keyword, effect_base_matches_keyword_with_editor_id, magic_item_effect_base,
 };
 
+/// Iterates every loaded effect base on a magic item until the visitor breaks.
 pub fn for_each_item_effect_base<T>(
     item: &T,
     mut visit: impl FnMut(&EffectSetting) -> ControlFlow<()>,
@@ -30,6 +31,7 @@ where
     flow
 }
 
+/// Collects every loaded effect base from a magic item.
 pub fn collect_item_effect_bases<T>(item: &T) -> Vec<GamePtr<EffectSetting>>
 where
     T: AsRef<MagicItem> + ?Sized,
@@ -37,6 +39,7 @@ where
     collect_item_effect_bases_matching(item, |_| true)
 }
 
+/// Collects effect bases matching the predicate.
 pub fn collect_item_effect_bases_matching<T>(
     item: &T,
     mut predicate: impl FnMut(&EffectSetting) -> bool,
@@ -58,6 +61,7 @@ where
     bases
 }
 
+/// Returns `true` when the magic item has an effect with the given archetype.
 pub fn has_item_effect_with_archetype<T>(item: &T, archetype: EffectArchetypeId) -> bool
 where
     T: AsRef<MagicItem> + ?Sized,
@@ -72,6 +76,7 @@ where
     .is_break()
 }
 
+/// Returns `true` when the magic item has an effect with the given keyword.
 pub fn has_item_effect_with_keyword<T>(item: &T, keyword: &BGSKeyword) -> bool
 where
     T: AsRef<MagicItem> + ?Sized,
@@ -86,6 +91,7 @@ where
     .is_break()
 }
 
+/// Returns `true` when the magic item has an effect with the given keyword editor ID.
 pub fn has_item_effect_with_keyword_with_editor_id<T>(item: &T, editor_id: &str) -> bool
 where
     T: AsRef<MagicItem> + ?Sized,
@@ -100,6 +106,7 @@ where
     .is_break()
 }
 
+/// Collects effect bases matching a keyword.
 pub fn collect_item_effect_bases_with_keyword<T>(
     item: &T,
     keyword: &BGSKeyword,
@@ -110,6 +117,7 @@ where
     collect_item_effect_bases_matching(item, |base| effect_base_matches_keyword(base, keyword))
 }
 
+/// Collects effect bases matching a keyword editor ID.
 pub fn collect_item_effect_bases_with_keyword_with_editor_id<T>(
     item: &T,
     editor_id: &str,
@@ -122,6 +130,7 @@ where
     })
 }
 
+/// Collects effect bases matching an archetype.
 pub fn collect_item_effect_bases_with_archetype<T>(
     item: &T,
     archetype: EffectArchetypeId,

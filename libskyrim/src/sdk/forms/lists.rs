@@ -2,6 +2,16 @@
 //!
 //! The current SDK surface is centered on `BGSListForm`: lookup, iteration,
 //! snapshots, membership checks, typed collection, and append/ensure helpers.
+//!
+//! Decision guide:
+//!
+//! - use `lookup_*_editor_id` when config/bootstrap code still works with list
+//!   editor IDs;
+//! - use `collect_*` / `find_*` helpers when runtime code wants snapshots or a
+//!   first matching entry;
+//! - use `has_*` helpers for one-shot membership checks;
+//! - use `append_*` / `ensure_*` when installation code needs to mutate a
+//!   `BGSListForm`.
 
 use alloc::vec::Vec;
 use core::ops::ControlFlow;
@@ -18,21 +28,26 @@ use super::shared::{
 };
 use super::{PersistentForm, PersistentFormPtr};
 
+/// Returns `true` when a form matches the given editor ID.
 #[inline]
 pub fn matches_form_editor_id(form: &TESForm, editor_id: &str) -> bool {
     trimmed_non_empty(editor_id).is_some_and(|editor_id| try_editor_id(form) == Some(editor_id))
 }
 
+/// Looks up a list form by editor ID.
 #[inline(always)]
 pub fn lookup_list_by_editor_id(editor_id: &str) -> GamePtr<BGSListForm> {
     lookup_editor_id_typed::<BGSListForm>(editor_id)
 }
 
+/// Looks up a list form by editor ID and wraps it as persistent plugin-owned
+/// state.
 #[inline(always)]
 pub fn lookup_persistent_list_by_editor_id(editor_id: &str) -> PersistentFormPtr<BGSListForm> {
     lookup_persistent_editor_id_typed::<BGSListForm>(editor_id)
 }
 
+/// Looks up a list form by editor ID and requires it to be present.
 #[inline(always)]
 pub fn require_persistent_list_by_editor_id(
     editor_id: &str,
@@ -41,6 +56,7 @@ pub fn require_persistent_list_by_editor_id(
     require_persistent_editor_id_typed::<BGSListForm>(editor_id, context)
 }
 
+/// Counts loaded entries in a list form.
 pub fn count_forms<T>(list: &T) -> usize
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -53,6 +69,7 @@ where
     count
 }
 
+/// Iterates every loaded form in the list until the visitor breaks.
 pub fn for_each_form<T>(
     list: &T,
     mut visit: impl FnMut(&TESForm) -> ControlFlow<()>,
@@ -76,6 +93,7 @@ where
     flow
 }
 
+/// Collects all loaded forms from a list.
 pub fn collect_forms<T>(list: &T) -> Vec<GamePtr<TESForm>>
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -83,6 +101,7 @@ where
     collect_forms_matching(list, |_| true)
 }
 
+/// Collects all loaded forms matching the predicate.
 pub fn collect_forms_matching<T>(
     list: &T,
     mut predicate: impl FnMut(&TESForm) -> bool,
@@ -100,6 +119,7 @@ where
     forms
 }
 
+/// Collects all entries in the list that can be cast to `U`.
 pub fn collect_typed_forms<T, U>(list: &T) -> Vec<GamePtr<U>>
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -108,6 +128,7 @@ where
     collect_typed_forms_matching::<T, U>(list, |_| true)
 }
 
+/// Collects all typed entries matching the predicate.
 pub fn collect_typed_forms_matching<T, U>(
     list: &T,
     mut predicate: impl FnMut(&U) -> bool,
@@ -131,6 +152,7 @@ where
     forms
 }
 
+/// Finds the first loaded form matching the predicate.
 pub fn find_form_matching<T>(
     list: &T,
     mut predicate: impl FnMut(&TESForm) -> bool,
@@ -150,6 +172,7 @@ where
     found
 }
 
+/// Finds the first typed entry matching the predicate.
 pub fn find_typed_form_matching<T, U>(list: &T, mut predicate: impl FnMut(&U) -> bool) -> GamePtr<U>
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -172,6 +195,7 @@ where
     found
 }
 
+/// Finds a specific form by pointer identity.
 #[inline(always)]
 pub fn find_form<T>(list: &T, form: &TESForm) -> GamePtr<TESForm>
 where
@@ -180,6 +204,7 @@ where
     find_form_matching(list, |candidate| core::ptr::eq(candidate, form))
 }
 
+/// Finds the first form with the given form ID.
 #[inline(always)]
 pub fn find_form_by_id<T>(list: &T, form_id: FormID) -> GamePtr<TESForm>
 where
@@ -188,6 +213,7 @@ where
     find_form_matching(list, |candidate| candidate.form_id == form_id)
 }
 
+/// Finds the first form with the given editor ID.
 #[inline(always)]
 pub fn find_form_by_editor_id<T>(list: &T, editor_id: &str) -> GamePtr<TESForm>
 where
@@ -198,6 +224,7 @@ where
     })
 }
 
+/// Returns `true` when the list contains the given form.
 #[inline(always)]
 pub fn has_form<T>(list: &T, form: &TESForm) -> bool
 where
@@ -206,6 +233,7 @@ where
     list.as_ref().has_form(core::ptr::from_ref(form))
 }
 
+/// Returns `true` when the list contains a form with the given ID.
 #[inline(always)]
 pub fn has_form_with_id<T>(list: &T, form_id: FormID) -> bool
 where
@@ -214,6 +242,7 @@ where
     find_form_by_id(list, form_id).is_some()
 }
 
+/// Returns `true` when the list contains a form with the given editor ID.
 #[inline(always)]
 pub fn has_form_with_editor_id<T>(list: &T, editor_id: &str) -> bool
 where
@@ -222,6 +251,7 @@ where
     find_form_by_editor_id(list, editor_id).is_some()
 }
 
+/// Returns `true` when the list contains any of the given forms.
 pub fn has_any_forms<T>(list: &T, forms: &[&TESForm]) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -229,6 +259,7 @@ where
     forms.iter().copied().any(|form| has_form(list, form))
 }
 
+/// Returns `true` when the list contains all of the given forms.
 pub fn has_all_forms<T>(list: &T, forms: &[&TESForm]) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -236,6 +267,7 @@ where
     forms.iter().copied().all(|form| has_form(list, form))
 }
 
+/// Returns `true` when the list contains any of the given form IDs.
 pub fn has_any_forms_with_id<T>(list: &T, form_ids: &[FormID]) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -246,6 +278,7 @@ where
         .any(|form_id| has_form_with_id(list, form_id))
 }
 
+/// Returns `true` when the list contains all of the given form IDs.
 pub fn has_all_forms_with_id<T>(list: &T, form_ids: &[FormID]) -> bool
 where
     T: AsRef<BGSListForm> + ?Sized,
@@ -256,6 +289,7 @@ where
         .all(|form_id| has_form_with_id(list, form_id))
 }
 
+/// Returns `true` when every loaded entry has the given raw form type.
 #[inline(always)]
 pub fn contains_only_form_type<T>(list: &T, form_type: FormType) -> bool
 where
@@ -264,6 +298,7 @@ where
     list.as_ref().contains_only_type(form_type)
 }
 
+/// Returns `true` when every loaded entry can be treated as type `U`.
 #[inline(always)]
 pub fn contains_only_type<T, U>(list: &T) -> bool
 where
@@ -273,6 +308,7 @@ where
     contains_only_form_type(list, U::TARGET_FORM_TYPE)
 }
 
+/// Appends one form to a mutable list.
 #[inline(always)]
 pub fn append_form<T>(list: &mut T, form: &TESForm)
 where
@@ -281,6 +317,7 @@ where
     list.as_mut().add_form(core::ptr::from_ref(form).cast_mut())
 }
 
+/// Appends multiple forms to a mutable list.
 pub fn append_forms<T>(list: &mut T, forms: &[&TESForm])
 where
     T: AsRef<BGSListForm> + AsMut<BGSListForm> + ?Sized,
@@ -290,6 +327,9 @@ where
     }
 }
 
+/// Ensures one form is present in a mutable list.
+///
+/// Returns `true` when the form had to be appended.
 pub fn ensure_form<T>(list: &mut T, form: &TESForm) -> bool
 where
     T: AsRef<BGSListForm> + AsMut<BGSListForm> + ?Sized,
@@ -302,6 +342,9 @@ where
     }
 }
 
+/// Ensures all given forms are present in a mutable list.
+///
+/// Returns the number of forms that were appended.
 pub fn ensure_forms<T>(list: &mut T, forms: &[&TESForm]) -> usize
 where
     T: AsRef<BGSListForm> + AsMut<BGSListForm> + ?Sized,

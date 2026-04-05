@@ -21,6 +21,8 @@ fn flow_to_engine_result(flow: ControlFlow<()>) -> BSContainerForEachResult {
     }
 }
 
+/// Iterates every loaded active effect on a magic target until the visitor
+/// breaks.
 pub fn for_each_active_effect<T>(
     target: &T,
     mut visit: impl FnMut(&ActiveEffect) -> ControlFlow<()>,
@@ -40,6 +42,7 @@ where
     flow
 }
 
+/// Collects all loaded active effects from a magic target.
 pub fn collect_active_effects<T>(target: &T) -> Vec<GamePtr<ActiveEffect>>
 where
     T: AsRef<MagicTarget> + ?Sized,
@@ -47,6 +50,7 @@ where
     collect_active_effects_matching(target, |_| true)
 }
 
+/// Collects all loaded active effects matching the predicate.
 pub fn collect_active_effects_matching<T>(
     target: &T,
     mut predicate: impl FnMut(&ActiveEffect) -> bool,
@@ -69,6 +73,7 @@ where
     effects
 }
 
+/// Dispels all active effects matching the predicate and returns the count.
 pub fn dispel_active_effects_matching<T>(
     target: &T,
     mut predicate: impl FnMut(&ActiveEffect) -> bool,
@@ -87,6 +92,7 @@ where
     dispelled
 }
 
+/// Captures read-mostly snapshots for every loaded active effect.
 pub fn snapshot_active_effects<T>(target: &T) -> Vec<ActiveEffectSnapshot>
 where
     T: AsRef<MagicTarget> + ?Sized,
@@ -107,6 +113,7 @@ where
         .collect()
 }
 
+/// Returns `true` when the target currently has the given effect setting.
 #[inline(always)]
 pub fn has_active_effect<T>(target: &T, effect: &EffectSetting) -> bool
 where
@@ -117,6 +124,7 @@ where
         .has_magic_effect(effect as *const EffectSetting as *mut EffectSetting)
 }
 
+/// Returns `true` when the target currently has an active effect with the given keyword.
 #[inline(always)]
 pub fn has_active_effect_with_keyword<T>(target: &T, keyword: &BGSKeyword) -> bool
 where
@@ -128,6 +136,8 @@ where
     )
 }
 
+/// Returns `true` when the target currently has an active effect with the given
+/// keyword editor ID.
 pub fn has_active_effect_with_keyword_with_editor_id<T>(target: &T, editor_id: &str) -> bool
 where
     T: AsRef<MagicTarget> + ?Sized,
@@ -142,6 +152,7 @@ where
     .is_break()
 }
 
+/// Collects active effects matching a keyword editor ID.
 pub fn collect_active_effects_with_keyword_with_editor_id<T>(
     target: &T,
     editor_id: &str,
@@ -154,6 +165,7 @@ where
     })
 }
 
+/// Collects active effects matching a keyword.
 pub fn collect_active_effects_with_keyword<T>(
     target: &T,
     keyword: &BGSKeyword,
@@ -166,6 +178,7 @@ where
     })
 }
 
+/// Collects active effects matching an archetype.
 pub fn collect_active_effects_with_archetype<T>(
     target: &T,
     archetype: EffectArchetypeId,
@@ -178,6 +191,7 @@ where
     })
 }
 
+/// Dispels active effects matching a keyword and returns the count.
 pub fn dispel_active_effects_with_keyword<T>(target: &T, keyword: &BGSKeyword, force: bool) -> usize
 where
     T: AsRef<MagicTarget> + ?Sized,
@@ -189,6 +203,7 @@ where
     )
 }
 
+/// Dispels active effects matching a keyword editor ID and returns the count.
 pub fn dispel_active_effects_with_keyword_with_editor_id<T>(
     target: &T,
     editor_id: &str,
@@ -204,6 +219,7 @@ where
     )
 }
 
+/// Dispels active effects matching an archetype and returns the count.
 pub fn dispel_active_effects_with_archetype<T>(
     target: &T,
     archetype: EffectArchetypeId,

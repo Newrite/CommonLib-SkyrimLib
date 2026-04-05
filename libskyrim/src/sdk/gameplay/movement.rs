@@ -4,6 +4,28 @@
 //! `TESObjectCELL::add_translate_object(...)` seams explicit in `re`, while
 //! offering a narrow ergonomic surface for the common "translate this actor or
 //! reference to a point" workflows.
+//!
+//! Reach for this module when the plugin wants engine-driven translation, not
+//! direct teleports:
+//!
+//! - compute relative points around a target with [`point_behind`],
+//!   [`point_left_of`], or [`point_right_of`]
+//! - move one reference toward a world-space point with [`translate_to`]
+//! - move one reference relative to another with [`translate_behind`],
+//!   [`translate_left`], or [`translate_right`]
+//!
+//! Example:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::gameplay::movement;
+//!
+//! fn sidestep(
+//!     reference: &mut libskyrim::re::TESObjectREFR,
+//!     target: &libskyrim::re::TESObjectREFR,
+//! ) {
+//!     let _ = movement::translate_left(reference, target, 96.0, 900.0, 4.0);
+//! }
+//! ```
 
 use crate::re::{
     ExtraRefrPath, ExtraRefrPathPathType, NiPoint3, TESObjectREFR, TESObjectREFRChangeFlags,
@@ -14,8 +36,11 @@ use libm::{cosf, sinf};
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RelativeOffsetSide {
+    /// Offset behind the target's facing direction.
     Behind,
+    /// Offset to the target's local left.
     Left,
+    /// Offset to the target's local right.
     Right,
 }
 
@@ -76,18 +101,35 @@ fn relative_offset_point(
     }
 }
 
+/// Compute a point directly behind the target at the supplied distance.
+///
+/// This is the cheapest relative-position helper when plugin code only needs a
+/// world-space point and does not want to start a translation yet.
 pub fn point_behind(target: &TESObjectREFR, distance: f32) -> NiPoint3 {
     relative_offset_point(target, RelativeOffsetSide::Behind, distance)
 }
 
+/// Compute a point to the left of the target at the supplied distance.
+///
+/// This is useful for sidestep/dodge candidates before deciding whether to use
+/// movement translation, teleportation, or spatial validation.
 pub fn point_left_of(target: &TESObjectREFR, distance: f32) -> NiPoint3 {
     relative_offset_point(target, RelativeOffsetSide::Left, distance)
 }
 
+/// Compute a point to the right of the target at the supplied distance.
+///
+/// This is useful for sidestep/dodge candidates before deciding whether to use
+/// movement translation, teleportation, or spatial validation.
 pub fn point_right_of(target: &TESObjectREFR, distance: f32) -> NiPoint3 {
     relative_offset_point(target, RelativeOffsetSide::Right, distance)
 }
 
+/// Translate a reference toward a world-space position with explicit angular
+/// and speed parameters.
+///
+/// Use this when the plugin wants engine-driven movement interpolation through
+/// `ExtraRefrPath` instead of an immediate teleport.
 pub fn translate_to(
     reference: &mut TESObjectREFR,
     position: NiPoint3,
@@ -151,6 +193,13 @@ pub fn translate_to(
     cell.add_translate_object(&mut handle)
 }
 
+/// Translate a reference toward a point defined relative to another target.
+///
+/// This is the general relative-translation entry point used by the narrower
+/// `translate_behind/left/right` helpers.
+///
+/// Reach for this when the target-relative side is dynamic in plugin code and
+/// the narrower directional helpers would only add branching at the call site.
 pub fn translate_relative_to(
     reference: &mut TESObjectREFR,
     target: &TESObjectREFR,
@@ -177,6 +226,10 @@ pub fn translate_relative_to(
     )
 }
 
+/// Translate a reference behind a target.
+///
+/// This is the narrow convenience helper for the common "move behind target"
+/// gameplay pattern.
 pub fn translate_behind(
     reference: &mut TESObjectREFR,
     target: &TESObjectREFR,
@@ -195,6 +248,9 @@ pub fn translate_behind(
     )
 }
 
+/// Translate a reference to the left of a target.
+///
+/// This is the narrow convenience helper for sidestep/strafe style movement.
 pub fn translate_left(
     reference: &mut TESObjectREFR,
     target: &TESObjectREFR,
@@ -213,6 +269,9 @@ pub fn translate_left(
     )
 }
 
+/// Translate a reference to the right of a target.
+///
+/// This is the narrow convenience helper for sidestep/strafe style movement.
 pub fn translate_right(
     reference: &mut TESObjectREFR,
     target: &TESObjectREFR,

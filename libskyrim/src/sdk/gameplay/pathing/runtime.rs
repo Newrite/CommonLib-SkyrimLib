@@ -10,10 +10,16 @@ use crate::sdk::core::{
 
 use super::shared::{door_ptr, info_ptr};
 
+/// Return the global pathing singleton.
+///
+/// Most consumers should still prefer the narrower helpers in this module, but
+/// this accessor is the raw front door for plugins that need direct `Pathing`
+/// methods.
 pub fn singleton() -> GameRef<Pathing> {
     unsafe { GameRef::from_raw(Pathing::get_singleton()) }
 }
 
+/// Return the global navmesh-info map owned by `TES`.
 pub fn nav_mesh_info_map() -> GameRef<crate::re::NavMeshInfoMap> {
     unsafe {
         GameRef::from_raw(
@@ -31,6 +37,8 @@ pub fn exterior_cell_width() -> f32 {
     singleton().with(|pathing| pathing.get_exterior_cell_width())
 }
 
+/// Collect currently loaded navmesh objects through one mutable `BSPathing`
+/// interface.
 pub fn collect_loaded_navmeshes(
     pathing: &mut BSPathing,
 ) -> Vec<crate::re::BSTSmartPointer<BSNavmesh>> {
@@ -52,6 +60,8 @@ pub fn collect_loaded_navmeshes(
     .collect()
 }
 
+/// Collect currently loaded navmesh-info records through one mutable
+/// `BSPathing` interface.
 pub fn collect_loaded_navmesh_infos(pathing: &mut BSPathing) -> Vec<GamePtr<BSNavmeshInfo>> {
     let mut nav_meshes = BSTArray::new();
     if !pathing.get_all_loaded_navmeshes3(&mut nav_meshes) {
@@ -77,6 +87,8 @@ pub fn selected_debug_ref(pathing: &mut BSPathing) -> FormID {
     pathing.get_selected_debug_ref()
 }
 
+/// Resolve a `BSPathingDoor` from a collision object when the pathing runtime
+/// recognizes that object as a pathing door.
 pub fn pathing_door_from_collision(
     pathing: &mut BSPathing,
     object: GamePtr<NiAVObject>,

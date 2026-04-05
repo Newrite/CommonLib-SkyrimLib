@@ -2,6 +2,28 @@
 //!
 //! This SDK layer keeps `TES` singleton access strict while softening nullable
 //! origin/radius seams around reference scans.
+//!
+//! Use this module when plugin code wants global or radius-bounded reference
+//! traversal without dropping to raw `TES::for_each_reference*` callbacks.
+//!
+//! Common workflows:
+//!
+//! - collect or visit all tracked references with [`for_each_reference`] and
+//!   [`collect_references`]
+//! - scan around one origin reference with [`for_each_reference_in_range`] and
+//!   [`collect_references_in_range`]
+//! - build lightweight world-space snapshots with [`snapshot_scene_in_range`]
+//!   and [`snapshot_scene_in_cell_range`]
+//!
+//! Example:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::gameplay::world;
+//!
+//! fn nearby_reference_count(origin: &libskyrim::re::TESObjectREFR) -> usize {
+//!     world::snapshot_reference_handles_in_range(origin, 1024.0).len()
+//! }
+//! ```
 
 use alloc::vec::Vec;
 use core::ops::ControlFlow;
@@ -15,11 +37,18 @@ use crate::sdk::gameplay::actors;
 
 #[derive(Debug, Default, Clone)]
 pub struct WorldSceneSnapshot {
+    /// All references captured in the scene snapshot, as handles.
     pub reference_handles: Vec<ObjectRefHandle>,
+    /// Positions of actor references found in the scene.
     pub actor_positions: Vec<NiPoint3>,
+    /// Positions of hostile actor references found in the scene.
     pub hostile_actor_positions: Vec<NiPoint3>,
 }
 
+/// Return the global `TES` singleton.
+///
+/// Prefer the traversal helpers in this module for ordinary scans. This raw
+/// accessor exists for code that still needs direct `TES` methods.
 #[inline(always)]
 pub fn singleton() -> GameRef<TES> {
     unsafe { GameRef::from_raw(TES::get_singleton()) }
@@ -95,6 +124,7 @@ fn snapshot_scene_reference(reference: &TESObjectREFR, snapshot: &mut WorldScene
 
 // Native-sensitive traversal helpers over the global TES reference set.
 
+/// Visit every reference currently tracked by the global `TES` singleton.
 pub fn for_each_reference(
     mut visit: impl FnMut(&TESObjectREFR) -> ControlFlow<()>,
 ) -> ControlFlow<()> {
@@ -109,6 +139,7 @@ pub fn for_each_reference(
     flow
 }
 
+/// Visit references within a radius around a reference origin.
 pub fn for_each_reference_in_range(
     origin: &TESObjectREFR,
     radius: f32,
@@ -136,6 +167,7 @@ pub fn for_each_reference_in_range(
     flow
 }
 
+/// Visit references within a radius around an arbitrary point inside a cell.
 pub fn for_each_reference_in_cell_range(
     cell: &TESObjectCELL,
     origin: NiPoint3,
@@ -160,6 +192,7 @@ pub fn for_each_reference_in_cell_range(
     flow
 }
 
+/// Pointer-friendly variant of [`for_each_reference_in_range`].
 pub fn for_each_reference_in_range_ptr(
     origin: GamePtr<TESObjectREFR>,
     radius: f32,
@@ -183,6 +216,7 @@ pub fn for_each_reference_in_range_ptr(
     true
 }
 
+/// Snapshot handles for all tracked world references.
 pub fn snapshot_reference_handles() -> Vec<ObjectRefHandle> {
     let mut handles = Vec::new();
     let _ = for_each_reference(|reference| {
@@ -194,6 +228,7 @@ pub fn snapshot_reference_handles() -> Vec<ObjectRefHandle> {
     handles
 }
 
+/// Snapshot handles for references within a radius around an origin reference.
 pub fn snapshot_reference_handles_in_range(
     origin: &TESObjectREFR,
     radius: f32,
@@ -208,6 +243,8 @@ pub fn snapshot_reference_handles_in_range(
     handles
 }
 
+/// Snapshot handles for references within a radius around a point inside a
+/// cell.
 pub fn snapshot_reference_handles_in_cell_range(
     cell: &TESObjectCELL,
     origin: NiPoint3,
@@ -223,6 +260,7 @@ pub fn snapshot_reference_handles_in_cell_range(
     handles
 }
 
+/// Pointer-friendly variant of [`snapshot_reference_handles_in_range`].
 pub fn snapshot_reference_handles_in_range_ptr(
     origin: GamePtr<TESObjectREFR>,
     radius: f32,
@@ -244,6 +282,7 @@ pub fn snapshot_reference_handles_in_range_ptr(
     snapshot_reference_handles_in_range(origin.as_ref(), radius)
 }
 
+/// Resolve all tracked world references.
 pub fn collect_references() -> Vec<Resolved<TESObjectREFR>> {
     snapshot_reference_handles()
         .into_iter()
@@ -251,6 +290,7 @@ pub fn collect_references() -> Vec<Resolved<TESObjectREFR>> {
         .collect()
 }
 
+/// Resolve references within a radius around an origin reference.
 pub fn collect_references_in_range(
     origin: &TESObjectREFR,
     radius: f32,
@@ -261,6 +301,7 @@ pub fn collect_references_in_range(
         .collect()
 }
 
+/// Resolve references within a radius around a point inside a cell.
 pub fn collect_references_in_cell_range(
     cell: &TESObjectCELL,
     origin: NiPoint3,
@@ -272,6 +313,7 @@ pub fn collect_references_in_cell_range(
         .collect()
 }
 
+/// Pointer-friendly variant of [`collect_references_in_range`].
 pub fn collect_references_in_range_ptr(
     origin: GamePtr<TESObjectREFR>,
     radius: f32,
@@ -282,6 +324,11 @@ pub fn collect_references_in_range_ptr(
         .collect()
 }
 
+/// Snapshot nearby reference and actor positions around a reference origin.
+///
+/// This is the highest-level world scan in the module: it collects reference
+/// handles plus actor/hostile positions in one pass for plugins that need a
+/// coarse scene summary.
 pub fn snapshot_scene_in_range(origin: &TESObjectREFR, radius: f32) -> WorldSceneSnapshot {
     if !is_valid_radius(radius, "sdk::gameplay::world::snapshot_scene_in_range()") {
         return WorldSceneSnapshot::default();
@@ -295,6 +342,7 @@ pub fn snapshot_scene_in_range(origin: &TESObjectREFR, radius: f32) -> WorldScen
     snapshot
 }
 
+/// Snapshot nearby reference and actor positions around a point inside a cell.
 pub fn snapshot_scene_in_cell_range(
     cell: &TESObjectCELL,
     origin: NiPoint3,
@@ -315,6 +363,7 @@ pub fn snapshot_scene_in_cell_range(
     snapshot
 }
 
+/// Pointer-friendly variant of [`snapshot_scene_in_range`].
 pub fn snapshot_scene_in_range_ptr(
     origin: GamePtr<TESObjectREFR>,
     radius: f32,

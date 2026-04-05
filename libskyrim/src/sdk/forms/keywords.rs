@@ -1,4 +1,21 @@
 //! Keyword-centric form helpers.
+//!
+//! This module is the usual SDK layer for:
+//!
+//! - resolving keywords by editor ID;
+//! - traversing `BGSKeywordForm` containers;
+//! - testing keyword membership;
+//! - mutating keyword sets during install or runtime.
+//!
+//! Decision guide:
+//!
+//! - use `lookup_*_editor_id` when configuration or authoring code still works
+//!   with editor-ID strings;
+//! - use `collect_*` / `find_*` helpers when runtime code wants a snapshot or a
+//!   specific matching keyword;
+//! - use `has_*` helpers for one-shot membership checks;
+//! - use `add_*` / `remove_*` / `set_keyword_enabled` when install logic needs
+//!   to mutate a `BGSKeywordForm`.
 
 use alloc::vec::Vec;
 use core::ops::ControlFlow;
@@ -14,26 +31,32 @@ use super::shared::{
 };
 use super::{PersistentForm, PersistentFormPtr};
 
+/// Returns the editor ID stored on a keyword.
 #[inline(always)]
 pub fn keyword_editor_id(keyword: &BGSKeyword) -> &str {
     keyword.get_form_editor_id_as_str()
 }
 
+/// Returns `true` when a keyword matches the given editor ID.
 #[inline]
 pub fn matches_keyword_editor_id(keyword: &BGSKeyword, editor_id: &str) -> bool {
     trimmed_non_empty(editor_id).is_some_and(|editor_id| keyword_editor_id(keyword) == editor_id)
 }
 
+/// Looks up a keyword by editor ID.
 #[inline(always)]
 pub fn lookup_keyword_by_editor_id(editor_id: &str) -> GamePtr<BGSKeyword> {
     lookup_editor_id_typed::<BGSKeyword>(editor_id)
 }
 
+/// Looks up a keyword by editor ID and wraps it as persistent plugin-owned
+/// state.
 #[inline(always)]
 pub fn lookup_persistent_keyword_by_editor_id(editor_id: &str) -> PersistentFormPtr<BGSKeyword> {
     lookup_persistent_editor_id_typed::<BGSKeyword>(editor_id)
 }
 
+/// Looks up a keyword by editor ID and requires it to be present.
 #[inline(always)]
 pub fn require_persistent_keyword_by_editor_id(
     editor_id: &str,
@@ -42,6 +65,7 @@ pub fn require_persistent_keyword_by_editor_id(
     require_persistent_editor_id_typed::<BGSKeyword>(editor_id, context)
 }
 
+/// Counts the number of keyword entries on a keyword-bearing form.
 #[inline(always)]
 pub fn count_keywords<T>(form: &T) -> usize
 where
@@ -50,6 +74,7 @@ where
     form.as_ref().get_num_keywords() as usize
 }
 
+/// Returns the engine-reported default keyword for a form, if any.
 #[inline(always)]
 pub fn default_keyword<T>(form: &T) -> GamePtr<BGSKeyword>
 where
@@ -58,6 +83,7 @@ where
     unsafe { GamePtr::from_raw(form.as_ref().get_default_keyword()) }
 }
 
+/// Iterates every loaded keyword on a form until the visitor breaks.
 pub fn for_each_keyword<T>(
     form: &T,
     mut visit: impl FnMut(&BGSKeyword) -> ControlFlow<()>,
@@ -79,6 +105,7 @@ where
     ControlFlow::Continue(())
 }
 
+/// Collects all loaded keywords from a form.
 pub fn collect_keywords<T>(form: &T) -> Vec<GamePtr<BGSKeyword>>
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
@@ -86,6 +113,7 @@ where
     collect_keywords_matching(form, |_| true)
 }
 
+/// Collects all loaded keywords matching the predicate.
 pub fn collect_keywords_matching<T>(
     form: &T,
     mut predicate: impl FnMut(&BGSKeyword) -> bool,
@@ -106,6 +134,7 @@ where
     keywords
 }
 
+/// Finds the first loaded keyword matching the predicate.
 pub fn find_keyword_matching<T>(
     form: &T,
     mut predicate: impl FnMut(&BGSKeyword) -> bool,
@@ -126,6 +155,7 @@ where
     GamePtr::null()
 }
 
+/// Finds a specific keyword by pointer identity.
 #[inline(always)]
 pub fn find_keyword<T>(form: &T, keyword: &BGSKeyword) -> GamePtr<BGSKeyword>
 where
@@ -134,6 +164,7 @@ where
     find_keyword_matching(form, |candidate| core::ptr::eq(candidate, keyword))
 }
 
+/// Finds the first keyword with the given form ID.
 #[inline(always)]
 pub fn find_keyword_by_form_id<T>(form: &T, form_id: FormID) -> GamePtr<BGSKeyword>
 where
@@ -142,6 +173,7 @@ where
     find_keyword_matching(form, |candidate| candidate.form_id == form_id)
 }
 
+/// Finds the first keyword with the given editor ID.
 #[inline(always)]
 pub fn find_keyword_by_editor_id<T>(form: &T, editor_id: &str) -> GamePtr<BGSKeyword>
 where
@@ -152,6 +184,7 @@ where
     })
 }
 
+/// Returns `true` when the form contains the given keyword.
 #[inline(always)]
 pub fn has_keyword<T>(form: &T, keyword: &BGSKeyword) -> bool
 where
@@ -160,6 +193,7 @@ where
     find_keyword(form, keyword).is_some()
 }
 
+/// Returns `true` when the form contains a keyword with the given form ID.
 #[inline(always)]
 pub fn has_keyword_with_form_id<T>(form: &T, form_id: FormID) -> bool
 where
@@ -168,6 +202,7 @@ where
     find_keyword_by_form_id(form, form_id).is_some()
 }
 
+/// Returns `true` when the form contains a keyword with the given editor ID.
 #[inline(always)]
 pub fn has_keyword_with_editor_id<T>(form: &T, editor_id: &str) -> bool
 where
@@ -176,6 +211,7 @@ where
     find_keyword_by_editor_id(form, editor_id).is_some()
 }
 
+/// Returns `true` when the form contains any of the given keywords.
 pub fn has_any_keywords<T>(form: &T, keywords: &[&BGSKeyword]) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
@@ -186,6 +222,7 @@ where
         .any(|keyword| has_keyword(form, keyword))
 }
 
+/// Returns `true` when the form contains all of the given keywords.
 pub fn has_all_keywords<T>(form: &T, keywords: &[&BGSKeyword]) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
@@ -196,6 +233,7 @@ where
         .all(|keyword| has_keyword(form, keyword))
 }
 
+/// Returns `true` when the form contains any keyword with the given editor IDs.
 pub fn has_any_keywords_with_editor_id<T>(form: &T, editor_ids: &[&str]) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
@@ -206,6 +244,7 @@ where
         .any(|editor_id| has_keyword_with_editor_id(form, editor_id))
 }
 
+/// Returns `true` when the form contains all keywords with the given editor IDs.
 pub fn has_all_keywords_with_editor_id<T>(form: &T, editor_ids: &[&str]) -> bool
 where
     T: AsRef<BGSKeywordForm> + ?Sized,
@@ -216,6 +255,7 @@ where
         .all(|editor_id| has_keyword_with_editor_id(form, editor_id))
 }
 
+/// Adds one keyword to a mutable keyword-bearing form.
 #[inline(always)]
 pub fn add_keyword<T>(form: &mut T, keyword: &BGSKeyword) -> bool
 where
@@ -225,6 +265,7 @@ where
         .add_keyword(core::ptr::from_ref(keyword).cast_mut())
 }
 
+/// Adds multiple keywords to a mutable keyword-bearing form.
 pub fn add_keywords<T>(form: &mut T, keywords: &[&BGSKeyword]) -> bool
 where
     T: AsRef<BGSKeywordForm> + AsMut<BGSKeywordForm> + ?Sized,
@@ -233,6 +274,7 @@ where
     form.as_mut().add_keywords(&keywords)
 }
 
+/// Removes one keyword from a mutable keyword-bearing form.
 #[inline(always)]
 pub fn remove_keyword<T>(form: &mut T, keyword: &BGSKeyword) -> bool
 where
@@ -242,6 +284,7 @@ where
         .remove_keyword(core::ptr::from_ref(keyword).cast_mut())
 }
 
+/// Removes multiple keywords from a mutable keyword-bearing form.
 pub fn remove_keywords<T>(form: &mut T, keywords: &[&BGSKeyword]) -> bool
 where
     T: AsRef<BGSKeywordForm> + AsMut<BGSKeywordForm> + ?Sized,
@@ -250,6 +293,7 @@ where
     form.as_mut().remove_keywords(&keywords)
 }
 
+/// Removes all loaded keywords matching the predicate and returns the count.
 pub fn remove_keywords_matching<T>(
     form: &mut T,
     predicate: impl FnMut(&BGSKeyword) -> bool,
@@ -270,6 +314,7 @@ where
     }
 }
 
+/// Removes every loaded keyword from a mutable keyword-bearing form.
 #[inline(always)]
 pub fn clear_keywords<T>(form: &mut T) -> usize
 where
@@ -278,6 +323,7 @@ where
     remove_keywords_matching(form, |_| true)
 }
 
+/// Ensures one keyword is enabled or disabled on a mutable form.
 #[inline(always)]
 pub fn set_keyword_enabled<T>(form: &mut T, keyword: &BGSKeyword, enabled: bool) -> bool
 where

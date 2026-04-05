@@ -5,6 +5,7 @@ use crate::re::{Actor, CFilter, ColLayer, TESObjectREFR};
 use super::shared::compare_hit_fraction;
 use super::types::{LayerMask, RaycastHit, RaycastHitFilter};
 
+/// Wraps one raw Havok filter bitfield as a typed [`CFilter`].
 #[inline(always)]
 pub const fn raw_filter(filter: u32) -> CFilter {
     CFilter { filter }
@@ -27,16 +28,23 @@ pub fn actor_filter(actor: &Actor, layer: ColLayer) -> CFilter {
     filter
 }
 
+/// Returns the actor's collision filter retargeted for line-of-sight queries.
 #[inline(always)]
 pub fn actor_line_of_sight_filter(actor: &Actor) -> CFilter {
     actor_filter(actor, ColLayer::LineOfSight)
 }
 
+/// Returns the actor's collision filter retargeted for item-pick queries.
 #[inline(always)]
 pub fn actor_item_pick_filter(actor: &Actor) -> CFilter {
     actor_filter(actor, ColLayer::ItemPick)
 }
 
+/// Filters a converted hit list by layer mask, ignored references, and a predicate.
+///
+/// This is the convenience path when the caller does not need the full
+/// [`RaycastHitFilter`] struct but still wants the common “layers + ignored
+/// refs + custom predicate” flow.
 pub fn filter_hits(
     hits: &[RaycastHit],
     layers: LayerMask,
@@ -53,6 +61,8 @@ pub fn filter_hits(
     filter_hits_with(hits, &hit_filter, predicate)
 }
 
+/// Returns the nearest hit that survives layer filtering, ignored references,
+/// and an additional predicate.
 pub fn best_hit(
     hits: &[RaycastHit],
     layers: LayerMask,
@@ -69,6 +79,7 @@ pub fn best_hit(
     best_hit_with(hits, &hit_filter, predicate)
 }
 
+/// Filters a converted hit list with an explicit post-query hit filter.
 pub fn filter_hits_with(
     hits: &[RaycastHit],
     hit_filter: &RaycastHitFilter<'_>,
@@ -80,6 +91,7 @@ pub fn filter_hits_with(
         .collect()
 }
 
+/// Returns the nearest hit that survives an explicit post-query hit filter.
 pub fn best_hit_with(
     hits: &[RaycastHit],
     hit_filter: &RaycastHitFilter<'_>,
@@ -91,6 +103,7 @@ pub fn best_hit_with(
         .min_by(compare_hit_fraction)
 }
 
+/// Returns the nearest hit whose collision layer matches `layers`.
 #[inline(always)]
 pub fn closest_hit_in_layers(hits: &[RaycastHit], layers: LayerMask) -> Option<&RaycastHit> {
     hits.iter()

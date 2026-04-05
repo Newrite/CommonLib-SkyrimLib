@@ -15,6 +15,8 @@ use super::types::{
     SpatialCandidateSetEvaluation,
 };
 
+/// Evaluate one candidate point inside a cell using the default empty hit
+/// filter.
 pub fn evaluate_spawn_candidate(
     cell: &TESObjectCELL,
     candidate: NiPoint3,
@@ -23,6 +25,8 @@ pub fn evaluate_spawn_candidate(
     evaluate_spawn_candidate_with_filter(cell, candidate, options, &RaycastHitFilter::new())
 }
 
+/// Evaluate one candidate point inside a cell while applying an explicit
+/// physics hit filter.
 pub fn evaluate_spawn_candidate_with_filter(
     cell: &TESObjectCELL,
     candidate: NiPoint3,
@@ -113,6 +117,8 @@ pub fn evaluate_spawn_candidate_with_filter(
     }
 }
 
+/// Evaluate one candidate relative to a reference's current cell and, when
+/// needed, its current position as reachability origin.
 pub fn evaluate_spawn_candidate_from_reference(
     reference: &TESObjectREFR,
     candidate: NiPoint3,
@@ -141,6 +147,7 @@ pub fn evaluate_spawn_candidate_from_reference_with_filter(
     ))
 }
 
+/// Convert one candidate evaluation into a numeric score breakdown.
 pub fn score_spawn_candidate(
     evaluation: &SpatialCandidateEvaluation,
     options: SpatialCandidateEvaluationOptions,
@@ -271,6 +278,7 @@ pub fn score_spawn_candidate(
     }
 }
 
+/// Evaluate and score one candidate in a single step.
 pub fn evaluate_and_score_spawn_candidate(
     cell: &TESObjectCELL,
     candidate: NiPoint3,
@@ -298,6 +306,7 @@ pub fn evaluate_and_score_spawn_candidate_with_filter(
     ScoredSpatialCandidateEvaluation { evaluation, score }
 }
 
+/// Return the best-scoring candidate from a slice of candidate points.
 pub fn best_spawn_candidate(
     cell: &TESObjectCELL,
     candidates: &[NiPoint3],
@@ -330,6 +339,7 @@ pub fn best_spawn_candidate_with_filter(
         })
 }
 
+/// Evaluate and score an entire candidate set.
 pub fn evaluate_spawn_candidates(
     cell: &TESObjectCELL,
     candidates: &[NiPoint3],
@@ -345,6 +355,7 @@ pub fn evaluate_spawn_candidates(
     )
 }
 
+/// Evaluate and score an entire candidate set with an explicit hit filter.
 pub fn evaluate_spawn_candidates_with_filter(
     cell: &TESObjectCELL,
     candidates: &[NiPoint3],

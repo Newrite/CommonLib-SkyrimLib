@@ -2,6 +2,10 @@ use alloc::string::String;
 
 use crate::re::{Setting, SettingType};
 
+/// Borrowed, type-tagged view of a [`Setting`] value.
+///
+/// Use this when code already has a `Setting` borrow and wants to inspect or
+/// apply a value without cloning owned data unnecessarily.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum SettingValueRef<'a> {
     Bool(bool),
@@ -16,6 +20,10 @@ pub enum SettingValueRef<'a> {
     Unknown,
 }
 
+/// Owned snapshot of a [`Setting`] value.
+///
+/// This is useful for caches, diagnostics, or APIs that should not keep a
+/// borrow to the original [`Setting`].
 #[derive(Debug, Clone, PartialEq)]
 pub enum SettingValue {
     Bool(bool),
@@ -47,21 +55,28 @@ impl<'a> From<SettingValueRef<'a>> for SettingValue {
     }
 }
 
+/// Returns the canonical setting name.
 #[inline(always)]
 pub fn setting_name(setting: &Setting) -> &str {
     setting.get_name_as_str()
 }
 
+/// Returns the engine-reported runtime type of the setting.
 #[inline(always)]
 pub fn setting_type(setting: &Setting) -> SettingType {
     setting.get_type()
 }
 
+/// Returns `true` when the setting belongs to the preference store.
 #[inline(always)]
 pub fn is_preference_setting(setting: &Setting) -> bool {
     setting.is_preference_setting()
 }
 
+/// Borrows the current setting value in a type-tagged form.
+///
+/// This is the main read path when a caller wants to branch on the runtime
+/// [`SettingType`] without manually touching the raw engine unions.
 pub fn setting_value_ref(setting: &Setting) -> SettingValueRef<'_> {
     match setting.get_type() {
         SettingType::Bool => SettingValueRef::Bool(setting.get_bool()),
@@ -81,11 +96,13 @@ pub fn setting_value_ref(setting: &Setting) -> SettingValueRef<'_> {
     }
 }
 
+/// Clones the current setting value into an owned enum.
 #[inline(always)]
 pub fn setting_value(setting: &Setting) -> SettingValue {
     setting_value_ref(setting).into()
 }
 
+/// Returns the bool value when the setting is actually a bool.
 #[inline(always)]
 pub fn try_bool(setting: &Setting) -> Option<bool> {
     match setting_value_ref(setting) {
@@ -94,6 +111,7 @@ pub fn try_bool(setting: &Setting) -> Option<bool> {
     }
 }
 
+/// Returns the signed character value when the setting has that type.
 #[inline(always)]
 pub fn try_character(setting: &Setting) -> Option<i8> {
     match setting_value_ref(setting) {
@@ -102,6 +120,7 @@ pub fn try_character(setting: &Setting) -> Option<i8> {
     }
 }
 
+/// Returns the unsigned character value when the setting has that type.
 #[inline(always)]
 pub fn try_unsigned_character(setting: &Setting) -> Option<u8> {
     match setting_value_ref(setting) {
@@ -110,6 +129,7 @@ pub fn try_unsigned_character(setting: &Setting) -> Option<u8> {
     }
 }
 
+/// Returns the integer value when the setting has that type.
 #[inline(always)]
 pub fn try_integer(setting: &Setting) -> Option<i32> {
     match setting_value_ref(setting) {
@@ -118,6 +138,7 @@ pub fn try_integer(setting: &Setting) -> Option<i32> {
     }
 }
 
+/// Returns the unsigned integer value when the setting has that type.
 #[inline(always)]
 pub fn try_unsigned_integer(setting: &Setting) -> Option<u32> {
     match setting_value_ref(setting) {
@@ -126,6 +147,7 @@ pub fn try_unsigned_integer(setting: &Setting) -> Option<u32> {
     }
 }
 
+/// Returns the floating-point value when the setting has that type.
 #[inline(always)]
 pub fn try_float(setting: &Setting) -> Option<f32> {
     match setting_value_ref(setting) {
@@ -134,6 +156,7 @@ pub fn try_float(setting: &Setting) -> Option<f32> {
     }
 }
 
+/// Returns the string value when the setting has that type.
 #[inline(always)]
 pub fn try_string(setting: &Setting) -> Option<&str> {
     match setting_value_ref(setting) {
@@ -142,6 +165,7 @@ pub fn try_string(setting: &Setting) -> Option<&str> {
     }
 }
 
+/// Returns the RGB color value when the setting has that type.
 #[inline(always)]
 pub fn try_color_rgb(setting: &Setting) -> Option<u32> {
     match setting_value_ref(setting) {
@@ -150,6 +174,7 @@ pub fn try_color_rgb(setting: &Setting) -> Option<u32> {
     }
 }
 
+/// Returns the RGBA color value when the setting has that type.
 #[inline(always)]
 pub fn try_color_rgba(setting: &Setting) -> Option<u32> {
     match setting_value_ref(setting) {
@@ -158,6 +183,7 @@ pub fn try_color_rgba(setting: &Setting) -> Option<u32> {
     }
 }
 
+/// Set a bool setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_bool(setting: &mut Setting, value: bool) -> bool {
     if setting.get_type() == SettingType::Bool {
@@ -168,6 +194,7 @@ pub fn set_bool(setting: &mut Setting, value: bool) -> bool {
     }
 }
 
+/// Set a signed character setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_character(setting: &mut Setting, value: i8) -> bool {
     if setting.get_type() == SettingType::Character {
@@ -178,6 +205,7 @@ pub fn set_character(setting: &mut Setting, value: i8) -> bool {
     }
 }
 
+/// Set an unsigned character setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_unsigned_character(setting: &mut Setting, value: u8) -> bool {
     if setting.get_type() == SettingType::UnsignedCharacter {
@@ -188,6 +216,7 @@ pub fn set_unsigned_character(setting: &mut Setting, value: u8) -> bool {
     }
 }
 
+/// Set an integer setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_integer(setting: &mut Setting, value: i32) -> bool {
     if setting.get_type() == SettingType::Integer {
@@ -198,6 +227,7 @@ pub fn set_integer(setting: &mut Setting, value: i32) -> bool {
     }
 }
 
+/// Set an unsigned integer setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_unsigned_integer(setting: &mut Setting, value: u32) -> bool {
     if setting.get_type() == SettingType::UnsignedInteger {
@@ -208,6 +238,7 @@ pub fn set_unsigned_integer(setting: &mut Setting, value: u32) -> bool {
     }
 }
 
+/// Set a float setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_float(setting: &mut Setting, value: f32) -> bool {
     if setting.get_type() == SettingType::Float {
@@ -218,6 +249,7 @@ pub fn set_float(setting: &mut Setting, value: f32) -> bool {
     }
 }
 
+/// Set a string setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_string(setting: &mut Setting, value: &str) -> bool {
     if setting.get_type() == SettingType::String {
@@ -228,6 +260,7 @@ pub fn set_string(setting: &mut Setting, value: &str) -> bool {
     }
 }
 
+/// Set an RGB color setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_color_rgb(setting: &mut Setting, value: u32) -> bool {
     if setting.get_type() == SettingType::ColorRGB {
@@ -238,6 +271,7 @@ pub fn set_color_rgb(setting: &mut Setting, value: u32) -> bool {
     }
 }
 
+/// Set an RGBA color setting, returning `false` on type mismatch.
 #[inline(always)]
 pub fn set_color_rgba(setting: &mut Setting, value: u32) -> bool {
     if setting.get_type() == SettingType::ColorRGBA {
@@ -248,6 +282,10 @@ pub fn set_color_rgba(setting: &mut Setting, value: u32) -> bool {
     }
 }
 
+/// Applies a type-tagged value to a setting, returning `false` on mismatch.
+///
+/// This is the main generic write path used by higher-level setting-store
+/// helpers once they have resolved a concrete setting by name.
 pub fn set_setting_value(setting: &mut Setting, value: SettingValueRef<'_>) -> bool {
     match value {
         SettingValueRef::Bool(value) => set_bool(setting, value),

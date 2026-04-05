@@ -3,18 +3,26 @@ use core::fmt;
 use crate::re::BSEventNotifyControl;
 
 /// SDK-facing event propagation result.
+///
+/// This is the small Rust-facing vocabulary used by closure-based event
+/// subscriptions. It maps directly onto the engine's
+/// [`BSEventNotifyControl`], but reads more naturally at SDK call sites.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EventFlow {
+    /// Continue propagation to later sinks.
     Continue,
+    /// Stop propagation after the current sink.
     Stop,
 }
 
 impl EventFlow {
+    /// Whether propagation should continue.
     #[inline(always)]
     pub const fn is_continue(self) -> bool {
         matches!(self, Self::Continue)
     }
 
+    /// Whether propagation should stop.
     #[inline(always)]
     pub const fn is_stop(self) -> bool {
         matches!(self, Self::Stop)
@@ -36,6 +44,7 @@ impl From<EventFlow> for BSEventNotifyControl {
 /// Returning `()` means "continue propagation", which keeps common handlers
 /// concise without forcing explicit `EventFlow::Continue` at every call site.
 pub trait IntoEventFlow {
+    /// Convert one callback return value into an [`EventFlow`].
     fn into_event_flow(self) -> EventFlow;
 }
 
@@ -54,15 +63,22 @@ impl IntoEventFlow for () {
 }
 
 /// Installation failures for high-level event subscriptions.
+///
+/// This covers the common failure modes for SDK-managed owned sinks and
+/// messaging-backed listener installs.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum EventInstallError {
+    /// The requested event source could not be resolved.
     SourceUnavailable,
+    /// The SDK could not allocate an owned sink wrapper for the callback.
     SinkAllocationFailed,
+    /// The requested messaging listener endpoint is not available.
     MessagingListenerUnavailable,
 }
 
 impl EventInstallError {
+    /// Abort plugin startup with a fatal runtime error for one named event.
     #[inline(always)]
     pub fn install_or_fatal(self, event_name: &str) -> ! {
         crate::skse::log::fatal_runtime(format_args!(

@@ -9,6 +9,10 @@ use super::shared::{
 };
 use super::types::{NavMeshReachabilityHeuristics, NavMeshReachabilityHeuristicsOptions};
 
+/// Evaluate approximate reachability between two points inside one cell.
+///
+/// This combines nearest-support queries with same-mesh or cross-mesh graph
+/// heuristics and returns a detailed [`NavMeshReachabilityHeuristics`] summary.
 pub fn evaluate_reachability_in_cell(
     cell: &TESObjectCELL,
     from: crate::re::NiPoint3,
@@ -123,6 +127,8 @@ pub fn evaluate_reachability_in_cell(
     }
 }
 
+/// Evaluate approximate reachability from a reference's current position to a
+/// goal point.
 pub fn evaluate_reachability_from_reference(
     reference: &TESObjectREFR,
     to: crate::re::NiPoint3,

@@ -85,6 +85,7 @@ impl_typed_menu_message_data!(
     LoadingMenuData,
 );
 
+/// Typed request payload for `Fader Menu` updates.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct FadeRequest {
     pub min_duration: f32,
@@ -96,6 +97,7 @@ pub struct FadeRequest {
 }
 
 impl FadeRequest {
+    /// Builds a fade-to-black request.
     #[inline(always)]
     pub const fn to_black(min_duration: f32, fade_duration: f32, pauses_game: bool) -> Self {
         Self {
@@ -108,6 +110,7 @@ impl FadeRequest {
         }
     }
 
+    /// Builds a fade-from-black request.
     #[inline(always)]
     pub const fn from_black(fade_duration: f32, pauses_game: bool) -> Self {
         Self {
@@ -128,6 +131,7 @@ impl Default for FadeRequest {
     }
 }
 
+/// Typed request payload for `Loading Menu` updates.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct LoadingMenuRequest {
     pub current_location: GamePtr<BGSLocation>,
@@ -136,6 +140,7 @@ pub struct LoadingMenuRequest {
 }
 
 impl LoadingMenuRequest {
+    /// Builds a loading-menu show request.
     #[inline(always)]
     pub const fn show(current_location: GamePtr<BGSLocation>, show_loading_text: bool) -> Self {
         Self {

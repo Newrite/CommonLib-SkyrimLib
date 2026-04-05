@@ -10,6 +10,53 @@
 //!
 //! The raw escape hatch remains `crate::hook! { ... }` from the relocation
 //! layer for unsupported or intentionally low-level scenarios.
+//!
+//! Decision guide:
+//!
+//! - start with attribute hooks when the install site is already known and the
+//!   plugin mostly wants ergonomic arguments plus predictable install glue
+//! - reach for [`patterns`] when the plugin needs explicit thunk installation
+//!   patterns such as stored-original call/vfunc helpers
+//! - reach for [`patch`] when the plugin is writing bytes, values, vfunc slots,
+//!   or import-table patches rather than installing a classic detour
+//! - reach for [`trampoline`] when the plugin needs lower-level call/branch
+//!   writes or explicit trampoline-pool management
+//! - fall back to the raw relocation-layer hook macros when the SDK surface is
+//!   too opinionated for the target hook shape
+//!
+//! The intended split is:
+//!
+//! - `sdk::hooks`
+//!   ergonomic authoring for repeated plugin patterns
+//! - raw relocation hooks
+//!   escape hatch for unusual or source-backed low-level cases
+//!
+//! Typical attribute-hook recipe:
+//!
+//! ```rust,ignore
+//! #[libskyrim::sdk::hooks::function_hook(
+//!     target = 0usize,
+//!     guard = libskyrim::sdk::hooks::guards::default()
+//! )]
+//! fn example_hook(
+//!     original: libskyrim::sdk::hooks::Original<fn(u32) -> u32>,
+//!     value: u32,
+//! ) -> u32 {
+//!     original.call(value)
+//! }
+//!
+//! fn install_hooks() -> Result<(), libskyrim::sdk::hooks::HookBatchError> {
+//!     libskyrim::sdk::hooks::try_install_all(&[example_hook_hook::INSTALLER])
+//! }
+//! ```
+//!
+//! Typical manual-thunk recipe:
+//!
+//! 1. reserve or acquire trampoline space through [`trampoline`] or
+//!    [`patterns`]
+//! 2. write the detour/call/branch/vfunc patch
+//! 3. keep the original function pointer if the plugin needs to tail-call it
+//! 4. batch the install together with other hooks through [`install`]
 
 pub mod guards;
 pub mod install;

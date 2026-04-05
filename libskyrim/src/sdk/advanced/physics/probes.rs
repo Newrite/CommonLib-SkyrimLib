@@ -14,6 +14,7 @@ use super::types::{
 const CARDINAL_DIRECTIONS: [(f32, f32); 4] = [(1.0, 0.0), (-1.0, 0.0), (0.0, 1.0), (0.0, -1.0)];
 const DIAGONAL_DIRECTIONS: [(f32, f32); 4] = [(1.0, 1.0), (1.0, -1.0), (-1.0, 1.0), (-1.0, -1.0)];
 
+/// Builds horizontal clearance probe segments around one origin point.
 pub fn clearance_probe_segments(
     origin: NiPoint3,
     radius: f32,
@@ -50,6 +51,7 @@ pub fn clearance_probe_segments(
     segments
 }
 
+/// Builds horizontal clearance probe segments at multiple heights.
 pub fn clearance_probe_segments_at_heights(
     origin: NiPoint3,
     radius: f32,
@@ -70,6 +72,7 @@ pub fn clearance_probe_segments_at_heights(
     segments
 }
 
+/// Returns whether all requested clearance probes are free of matching hits.
 pub fn clearance_is_clear_with_filter(
     cell: &TESObjectCELL,
     origin: NiPoint3,
@@ -91,6 +94,9 @@ pub fn clearance_is_clear_with_filter(
     split_raycast_with_filter(cell, &segments, filter, hit_filter).is_none()
 }
 
+/// Evaluates LOS from multiple origins to one target and aggregates the result.
+///
+/// Returns [`None`] when no origin point was usable.
 pub fn line_of_sight_from_points_with_filter(
     cell: &TESObjectCELL,
     origins: &[NiPoint3],
@@ -128,6 +134,7 @@ pub fn line_of_sight_from_points_with_filter(
     }
 }
 
+/// Validates one spawn or teleport candidate with the default permissive hit filter.
 pub fn validate_spawn_point(
     cell: &TESObjectCELL,
     candidate: NiPoint3,
@@ -136,6 +143,7 @@ pub fn validate_spawn_point(
     validate_spawn_point_with_filter(cell, candidate, options, &RaycastHitFilter::new())
 }
 
+/// Validates one spawn or teleport candidate with an explicit hit filter.
 pub fn validate_spawn_point_with_filter(
     cell: &TESObjectCELL,
     candidate: NiPoint3,
@@ -280,6 +288,7 @@ pub fn validate_spawn_point_with_filter(
     }
 }
 
+/// Returns whether the straight segment between `from` and `to` is unobstructed.
 #[inline(always)]
 pub fn segment_is_clear(
     cell: &TESObjectCELL,
@@ -291,6 +300,7 @@ pub fn segment_is_clear(
     raycast_segment_layers(cell, from, to, filter, blocking_layers).is_none()
 }
 
+/// Returns whether the segment is unobstructed after applying a hit filter.
 pub fn segment_is_clear_with_filter(
     cell: &TESObjectCELL,
     from: NiPoint3,
@@ -302,6 +312,7 @@ pub fn segment_is_clear_with_filter(
     best_hit_with(&hits, hit_filter, |_| true).is_none()
 }
 
+/// Convenience alias for [`segment_is_clear`] when the query is LOS-oriented.
 #[inline(always)]
 pub fn has_line_of_sight(
     cell: &TESObjectCELL,
@@ -313,6 +324,7 @@ pub fn has_line_of_sight(
     segment_is_clear(cell, from, to, filter, blocking_layers)
 }
 
+/// Convenience alias for [`segment_is_clear_with_filter`] when the query is LOS-oriented.
 #[inline(always)]
 pub fn has_line_of_sight_with_filter(
     cell: &TESObjectCELL,

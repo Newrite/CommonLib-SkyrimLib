@@ -46,6 +46,9 @@ pub fn write_bytes<A: IntoAddress>(address: A, bytes: &[u8]) {
 }
 
 /// Write one `Copy` value to process memory.
+///
+/// Prefer this over [`write_bytes`] when the patch payload is already a typed
+/// integer, pointer, or small POD value.
 pub fn write_value<A: IntoAddress, T: Copy>(address: A, value: T) {
     let bytes = unsafe {
         core::slice::from_raw_parts((&value as *const T).cast::<u8>(), core::mem::size_of::<T>())
@@ -54,6 +57,9 @@ pub fn write_value<A: IntoAddress, T: Copy>(address: A, value: T) {
 }
 
 /// Fill one memory range with one repeated byte.
+///
+/// This is the generic fill primitive used by [`write_nops`] and
+/// [`write_int3`].
 #[inline(always)]
 pub fn fill_bytes<A: IntoAddress>(address: A, value: u8, count: usize) {
     safe_fill(address, value, count);
@@ -72,6 +78,9 @@ pub fn write_int3<A: IntoAddress>(address: A, count: usize) {
 }
 
 /// Patch one vtable slot and return the original function address.
+///
+/// Use this for C++-style virtual detours where the plugin needs to retain the
+/// previous slot target as an original function pointer.
 pub fn write_vfunc<A: TryIntoAddress, I: TryIntoOffset>(
     vtable_addr: A,
     index: I,
@@ -81,12 +90,18 @@ pub fn write_vfunc<A: TryIntoAddress, I: TryIntoOffset>(
 }
 
 /// Look up one imported function in the current module.
+///
+/// This is mainly useful for diagnostics or when the plugin wants to inspect
+/// the current IAT target before patching it.
 #[inline(always)]
 pub fn iat_addr(dll: &str, function: &str) -> usize {
     crate::skse::iat::get_addr(dll, function)
 }
 
 /// Patch one imported function in the current module and return the previous pointer.
+///
+/// This is the helper for the few plugins that need import-table detours
+/// instead of relocation- or trampoline-based hooks.
 pub fn patch_iat(dll: &str, function: &str, new_func: usize) -> Result<usize, PatchInstallError> {
     let _ = CString::new(dll).map_err(|_| PatchInstallError::InvalidDllName)?;
     let _ = CString::new(function).map_err(|_| PatchInstallError::InvalidFunctionName)?;

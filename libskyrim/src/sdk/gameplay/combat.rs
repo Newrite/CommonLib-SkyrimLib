@@ -1,4 +1,25 @@
 //! Combat-state and hit-processing helpers.
+//!
+//! This module focuses on a narrower set of combat-adjacent workflows than a
+//! full combat framework:
+//!
+//! - query cached hostility state through [`are_hostile_actors_nearby`] and
+//!   [`collect_hostile_actors_nearby`]
+//! - clear native reaction caches with
+//!   [`clear_cached_faction_fight_reactions`]
+//! - stop combat on one actor, the player, or nearby groups
+//!
+//! Example:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::gameplay::combat;
+//!
+//! fn calm_nearby_hostiles() {
+//!     if combat::are_hostile_actors_nearby() {
+//!         combat::stop_combat_on_hostile_actors_nearby(true);
+//!     }
+//! }
+//! ```
 
 use alloc::vec::Vec;
 
@@ -11,6 +32,11 @@ use crate::sdk::gameplay::{actors, player};
 
 const MAX_REASONABLE_HOSTILE_NEAR_HANDLES: u32 = 0x1000;
 
+/// Return the combat-facing `ProcessLists` singleton.
+///
+/// Most consumers reach for higher-level helpers in this module, but the raw
+/// singleton accessor stays available when a gameplay routine needs direct
+/// `ProcessLists` state.
 #[inline(always)]
 pub fn singleton() -> GameRef<ProcessLists> {
     actors::process_lists()
@@ -59,6 +85,7 @@ fn actor_from_ptr(actor: GamePtr<Actor>, _caller: &'static str) -> Option<GameRe
     Some(actor)
 }
 
+/// Query the engine's cached "hostile actors near" state.
 #[inline(always)]
 pub fn are_hostile_actors_nearby() -> bool {
     let mut actors = BSScrapArray::new();
@@ -68,6 +95,10 @@ pub fn are_hostile_actors_nearby() -> bool {
     }
 }
 
+/// Resolve the hostile actors near the player reported by `ProcessLists`.
+///
+/// This is the higher-level companion to [`are_hostile_actors_nearby`]: it
+/// upgrades the cached handle set into resolved actor references when possible.
 pub fn collect_hostile_actors_nearby() -> Vec<Resolved<Actor>> {
     let mut handles = BSScrapArray::new();
     let any_hostile = unsafe {
@@ -95,16 +126,19 @@ pub fn collect_hostile_actors_nearby() -> Vec<Resolved<Actor>> {
     actors
 }
 
+/// Clear cached faction fight-reaction state inside `ProcessLists`.
 #[inline(always)]
 pub fn clear_cached_faction_fight_reactions() {
     singleton().clear_cached_faction_fight_reactions();
 }
 
+/// Whether the player is currently in combat.
 #[inline(always)]
 pub fn is_player_in_combat() -> bool {
     player::is_in_combat()
 }
 
+/// Stop combat on one actor when it is safe to do so.
 #[inline(always)]
 pub fn stop_combat_on_actor(actor: &mut Actor, suppress_alarm: bool) {
     if !can_stop_combat_on_actor(actor) {
@@ -121,6 +155,7 @@ pub fn stop_combat_on_actor(actor: &mut Actor, suppress_alarm: bool) {
     };
 }
 
+/// Pointer-friendly variant of [`stop_combat_on_actor`].
 #[inline(always)]
 pub fn stop_combat_on_actor_ptr(actor: GamePtr<Actor>, suppress_alarm: bool) -> bool {
     let Some(actor) = actor_from_ptr(actor, "sdk::gameplay::combat::stop_combat_on_actor_ptr()")
@@ -134,11 +169,13 @@ pub fn stop_combat_on_actor_ptr(actor: GamePtr<Actor>, suppress_alarm: bool) -> 
     true
 }
 
+/// `NiPointer`-friendly variant of [`stop_combat_on_actor`].
 #[inline(always)]
 pub fn stop_combat_on_actor_owner(actor: &NiPointer<Actor>, suppress_alarm: bool) -> bool {
     stop_combat_on_actor_ptr(unsafe { GamePtr::from_raw(actor.get()) }, suppress_alarm)
 }
 
+/// Stop combat on all resolved actors in the slice.
 pub fn stop_combat_on_actors(actors: &mut [Resolved<Actor>], suppress_alarm: bool) {
     if actors.is_empty() {
         return;
@@ -149,6 +186,7 @@ pub fn stop_combat_on_actors(actors: &mut [Resolved<Actor>], suppress_alarm: boo
     }
 }
 
+/// Stop combat on the player.
 #[inline(always)]
 pub fn stop_combat_on_player(suppress_alarm: bool) {
     unsafe {
@@ -157,11 +195,16 @@ pub fn stop_combat_on_player(suppress_alarm: bool) {
     };
 }
 
+/// Stop combat on actors currently reported as hostile and near.
+///
+/// This uses the engine's cached hostile-near query rather than a fresh
+/// world-space radius scan.
 pub fn stop_combat_on_hostile_actors_nearby(suppress_alarm: bool) {
     let mut actors = collect_hostile_actors_nearby();
     stop_combat_on_actors(&mut actors, suppress_alarm);
 }
 
+/// Stop combat on actors near the player within a supplied radius.
 pub fn stop_combat_on_nearby_actors(radius: f32, suppress_alarm: bool) {
     if !is_valid_radius(
         radius,
@@ -174,6 +217,7 @@ pub fn stop_combat_on_nearby_actors(radius: f32, suppress_alarm: bool) {
     stop_combat_on_actors(&mut actors, suppress_alarm);
 }
 
+/// Stop combat on hostile actors near the player within a supplied radius.
 pub fn stop_combat_on_hostile_nearby_actors(radius: f32, suppress_alarm: bool) {
     if !is_valid_radius(
         radius,

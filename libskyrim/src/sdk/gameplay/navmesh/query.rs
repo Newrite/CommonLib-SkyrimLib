@@ -9,6 +9,7 @@ use super::shared::{
 };
 use super::types::{NavMeshCellSnapshot, NavMeshPointQuery};
 
+/// Snapshot all navmeshes referenced by one cell.
 pub fn snapshot_cell_navmeshes(cell: &TESObjectCELL) -> NavMeshCellSnapshot {
     let Some(nav_meshes) = nav_mesh_array(cell) else {
         return NavMeshCellSnapshot::default();
@@ -26,6 +27,7 @@ pub fn snapshot_cell_navmeshes(cell: &TESObjectCELL) -> NavMeshCellSnapshot {
     NavMeshCellSnapshot { meshes }
 }
 
+/// Snapshot the navmeshes referenced by the parent cell of one reference.
 pub fn snapshot_reference_navmeshes(reference: &TESObjectREFR) -> NavMeshCellSnapshot {
     let Some(cell) = (unsafe { reference.get_parent_cell().as_ref() }) else {
         crate::defensive_sdk_warn!(
@@ -109,6 +111,7 @@ pub fn collect_navmesh_triangle_centers_in_cell_range(
     centers
 }
 
+/// Query nearest navmesh support around a point inside one cell.
 pub fn query_point_in_cell(
     cell: &TESObjectCELL,
     origin: crate::re::NiPoint3,
@@ -125,6 +128,7 @@ pub fn query_point_in_cell(
     query_point_in_snapshot(&snapshot, origin, minimum_offset)
 }
 
+/// Query nearest navmesh support around a reference's current position.
 pub fn query_point_from_reference(
     reference: &TESObjectREFR,
     minimum_offset: f32,
@@ -182,6 +186,8 @@ pub fn nearest_triangle_center_from_reference(
     query_point_from_reference(reference, minimum_offset)?.nearest_triangle_center
 }
 
+/// Whether one cell-local point has any navmesh support within
+/// `maximum_distance`.
 #[inline(always)]
 pub fn has_navmesh_support_in_cell(
     cell: &TESObjectCELL,
@@ -200,6 +206,8 @@ pub fn has_navmesh_support_in_cell(
         .is_some_and(|distance| distance <= maximum_distance)
 }
 
+/// Whether a reference's current position has any navmesh support within
+/// `maximum_distance`.
 #[inline(always)]
 pub fn has_navmesh_support_for_reference(reference: &TESObjectREFR, maximum_distance: f32) -> bool {
     query_point_from_reference(reference, 0.0)

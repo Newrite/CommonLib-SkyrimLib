@@ -7,8 +7,11 @@ use crate::sdk::core::{HandleFamilyTarget, ResolvableHandle, Resolved, ResolvedH
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum HookGuardFailure {
+    /// One required pointer-like ABI argument was null.
     Null,
+    /// One handle-like ABI argument could not be resolved into a live object.
     Unresolved,
+    /// The resolved runtime object could not be converted into the requested wrapper.
     ConvertFail,
 }
 
@@ -24,13 +27,17 @@ impl fmt::Display for HookGuardFailure {
 
 impl core::error::Error for HookGuardFailure {}
 
+/// Failure while installing one high-level hook.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum HookInstallError {
+    /// Address resolution or relocation failed before the hook could be written.
     Relocation(RelocationError),
+    /// The named hook was already installed once.
     AlreadyInstalled(&'static str),
 }
 
 impl HookInstallError {
+    /// Abort plugin startup with a fatal runtime error for one named hook.
     #[inline(always)]
     pub fn install_or_fatal(self, hook_name: &str) -> ! {
         match self {
@@ -63,19 +70,23 @@ impl From<RelocationError> for HookInstallError {
 impl core::error::Error for HookInstallError {}
 
 #[repr(transparent)]
+/// Wrapper around the original function pointer exposed to attribute hooks.
 pub struct Original<F>(F);
 
 impl<F> Original<F> {
+    /// Construct an [`Original`] wrapper around one raw function pointer.
     #[inline(always)]
     pub const fn new(inner: F) -> Self {
         Self(inner)
     }
 
+    /// Consume the wrapper and return the raw function pointer.
     #[inline(always)]
     pub fn into_inner(self) -> F {
         self.0
     }
 
+    /// Borrows the raw function pointer.
     #[inline(always)]
     pub const fn as_ref(&self) -> &F {
         &self.0
@@ -111,9 +122,17 @@ impl_original_call!(
     (A0 a0, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11),
 );
 
+/// Conversion trait used by SDK attribute hooks to adapt ABI arguments into
+/// ergonomic Rust parameters.
+///
+/// Attribute-hook codegen relies on this trait to turn raw ABI arguments into
+/// references, optional references, resolved handles, and other Rust-facing
+/// values while keeping the actual detour signature honest.
 pub trait HookArg<'a, Abi>: Sized {
+    /// Convert one ABI argument into the Rust-facing hook parameter.
     fn from_abi(arg: Abi) -> Result<Self, HookGuardFailure>;
 
+    /// Converts the Rust-facing value back into its ABI representation.
     fn into_abi(self) -> Abi;
 }
 
@@ -220,7 +239,9 @@ where
     }
 }
 
+/// Helper trait supplying a canonical “null” ABI value for optional hook args.
 pub trait HookNullAbi<Abi> {
+    /// Returns the ABI representation used for an absent value.
     fn from_abi_default_null() -> Abi;
 }
 

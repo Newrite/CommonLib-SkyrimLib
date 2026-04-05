@@ -4,6 +4,19 @@ use crate::re::{ButtonEvent, CharEvent, IDEvent, InputEvent, MouseMoveEvent, Thu
 
 /// Borrowed view of one `InputEvent*` chain delivered through
 /// `BSInputDeviceManager`.
+///
+/// `InputEvents` is the core convenience wrapper for Skyrim's linked-list input
+/// packets. It keeps the original chain shape, but exposes iterator/filter
+/// helpers for common plugin workflows:
+///
+/// - inspect all events in order through [`InputEvents::iter`]
+/// - scan one event family such as [`InputEvents::buttons`] or
+///   [`InputEvents::thumbsticks`]
+/// - gate work by device with [`InputEvents::keyboard`],
+///   [`InputEvents::mouse`], or [`InputEvents::gamepad`]
+///
+/// The wrapper is intentionally borrowed and short-lived: it reflects one live
+/// dispatch chain, not a retained copy of input state.
 pub struct InputEvents<'a> {
     head: *mut InputEvent,
     marker: PhantomData<&'a mut InputEvent>,
@@ -169,6 +182,8 @@ impl<'a> Default for InputEvents<'a> {
 }
 
 /// Immutable iterator over one input-event chain.
+///
+/// Produced by [`InputEvents::iter`].
 pub struct InputEventIter<'a> {
     current: *mut InputEvent,
     marker: PhantomData<&'a InputEvent>,
@@ -185,6 +200,9 @@ impl<'a> Iterator for InputEventIter<'a> {
 }
 
 /// Mutable iterator over one input-event chain.
+///
+/// Produced by [`InputEvents::iter_mut`] when the sink wants to mutate events
+/// in-place before later listeners observe them.
 pub struct InputEventIterMut<'a> {
     current: *mut InputEvent,
     marker: PhantomData<&'a mut InputEvent>,

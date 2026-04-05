@@ -46,6 +46,14 @@ where
 }
 
 /// Small provider-side wrapper around a single exported service table.
+///
+/// This is useful when a plugin wants to model one capability as:
+///
+/// - available with a concrete `'static` table
+/// - unavailable and therefore exported as null
+///
+/// without rebuilding the same `Option<&'static T> -> *mut c_void` glue in
+/// every export function.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ExportedService<T: 'static> {
     service: Option<&'static T>,
@@ -100,6 +108,10 @@ impl<T: 'static> From<Option<&'static T>> for ExportedService<T> {
 }
 
 /// Provider-side registry for versioned exported service tables.
+///
+/// This is the provider-side companion to `RequestPluginAPI`-style consumers:
+/// a plugin can keep one small table of supported versions and then export the
+/// matching table for the requested version.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct VersionedServiceRegistry<V, T: 'static, const N: usize> {
     supported: [(V, &'static T); N],

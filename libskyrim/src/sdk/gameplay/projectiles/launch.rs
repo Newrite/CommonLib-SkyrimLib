@@ -6,12 +6,20 @@ use crate::sdk::core::Resolved;
 
 use super::shared::launched_projectile;
 
+/// Launch a projectile using a fully prepared `ProjectileLaunchData` block.
+///
+/// Prefer this when plugin code already has a source-backed launch packet and
+/// wants the SDK only for safe-ish handle resolution afterward.
 pub fn launch_with_data(data: &mut ProjectileLaunchData) -> Option<Resolved<Projectile>> {
     let mut result = ProjectileHandle::new();
     Projectile::launch(&mut result, data);
     launched_projectile(result, "sdk::gameplay::projectiles::launch_with_data()")
 }
 
+/// Launch a spell projectile from an explicit origin and rotation.
+///
+/// This is the manual placement variant for spell launches when the plugin
+/// wants to override the engine's automatic origin/aim choice.
 pub fn launch_spell(
     shooter: &mut Actor,
     spell: &SpellItem,
@@ -29,6 +37,10 @@ pub fn launch_spell(
     launched_projectile(result, "sdk::gameplay::projectiles::launch_spell()")
 }
 
+/// Launch a spell projectile from one actor/casting source combination.
+///
+/// Prefer this when the engine should derive the origin/aiming transform from
+/// the actor and casting source.
 pub fn launch_spell_from_source(
     shooter: &mut Actor,
     spell: &SpellItem,
@@ -47,6 +59,9 @@ pub fn launch_spell_from_source(
     )
 }
 
+/// Launch an arrow projectile with explicit origin and rotation.
+///
+/// This is the manual placement variant for arrow-style launches.
 pub fn launch_arrow(
     shooter: &mut Actor,
     ammo: &TESAmmo,
@@ -66,6 +81,10 @@ pub fn launch_arrow(
     launched_projectile(result, "sdk::gameplay::projectiles::launch_arrow()")
 }
 
+/// Launch an arrow projectile using the engine's automatic origin/angle logic.
+///
+/// Prefer this when the plugin wants normal bow launch semantics and only
+/// needs the resolved projectile handle afterward.
 pub fn launch_arrow_auto(
     shooter: &mut Actor,
     ammo: &TESAmmo,

@@ -8,6 +8,10 @@ use crate::sdk::events::input::InputEvents;
 use crate::skse::input_map;
 
 /// Failure to parse one user-facing hotkey spec.
+///
+/// These errors are intentionally user-facing and field-oriented. They are
+/// useful both when validating config at load time and when reporting why one
+/// binding string could not be accepted.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum HotkeyParseError {
     Empty,
@@ -18,6 +22,28 @@ pub enum HotkeyParseError {
 }
 
 /// Parsed config hotkey combo.
+///
+/// `HotkeyCombo` stores an ordered list of resolved key codes. The final key is
+/// treated as the primary trigger, while preceding keys act as modifiers for
+/// helpers such as [`HotkeyCombo::just_pressed_in`].
+///
+/// Typical workflow:
+///
+/// 1. parse once from config with [`HotkeyCombo::parse`]
+/// 2. store the combo in plugin state
+/// 3. compare it against live input through [`HotkeyCombo::just_pressed_in`] or
+///    [`HotkeyCombo::matches_events`]
+///
+/// Example:
+///
+/// ```rust,ignore
+/// use libskyrim::sdk::events::input::InputEvents;
+/// use libskyrim::sdk::plugin::config::HotkeyCombo;
+///
+/// fn should_toggle(combo: &HotkeyCombo, events: &InputEvents<'_>) -> bool {
+///     combo.just_pressed_in(events)
+/// }
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HotkeyCombo {
     keys: Vec<u32>,

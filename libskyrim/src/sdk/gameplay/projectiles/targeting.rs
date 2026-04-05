@@ -357,6 +357,8 @@ fn select_projectile_target(
     Some(targets[index])
 }
 
+/// Collect all valid projectile targets around one caster using the supplied
+/// search controls.
 pub fn collect_projectile_targets(
     caster: &Actor,
     options: ProjectileTargetSearchOptions,
@@ -376,6 +378,8 @@ pub fn collect_projectile_targets(
     )
 }
 
+/// Collect all valid projectile targets for one live projectile by reusing the
+/// projectile's shooter when possible.
 pub fn collect_projectile_targets_for_projectile(
     projectile: &Projectile,
     options: ProjectileTargetSearchOptions,
@@ -399,6 +403,7 @@ pub fn collect_projectile_targets_for_projectile(
     )
 }
 
+/// Find the nearest valid projectile target.
 pub fn find_nearest_projectile_target(
     caster: &Actor,
     options: ProjectileTargetSearchOptions,
@@ -413,6 +418,7 @@ pub fn find_nearest_projectile_target_for_projectile(
     find_projectile_target_for_projectile(projectile, ProjectileRetargetStrategy::Nearest, options)
 }
 
+/// Find the best view-aligned valid projectile target.
 pub fn find_view_aligned_projectile_target(
     caster: &Actor,
     options: ProjectileTargetSearchOptions,
@@ -431,6 +437,10 @@ pub fn find_view_aligned_projectile_target_for_projectile(
     )
 }
 
+/// Find the best projectile target using the supplied retarget strategy.
+///
+/// This is the strategy-parameterized entrypoint behind the convenience
+/// nearest/view-aligned helpers.
 pub fn find_projectile_target(
     caster: &Actor,
     strategy: ProjectileRetargetStrategy,
@@ -439,6 +449,10 @@ pub fn find_projectile_target(
     select_projectile_target(collect_projectile_targets(caster, options), strategy)
 }
 
+/// Find the best projectile target for one live projectile.
+///
+/// This reuses the projectile's shooter when possible and falls back to the
+/// projectile position as the search origin.
 pub fn find_projectile_target_for_projectile(
     projectile: &Projectile,
     strategy: ProjectileRetargetStrategy,
@@ -450,6 +464,7 @@ pub fn find_projectile_target_for_projectile(
     )
 }
 
+/// Reacquire and store a projectile desired target using the supplied strategy.
 pub fn reacquire_projectile_desired_target(
     projectile: &mut Projectile,
     strategy: ProjectileRetargetStrategy,
@@ -459,6 +474,7 @@ pub fn reacquire_projectile_desired_target(
     apply_reacquired_desired_target(projectile, snapshot)
 }
 
+/// Reacquire and store the nearest valid desired target.
 pub fn reacquire_nearest_projectile_desired_target(
     projectile: &mut Projectile,
     options: ProjectileTargetSearchOptions,
@@ -466,6 +482,7 @@ pub fn reacquire_nearest_projectile_desired_target(
     reacquire_projectile_desired_target(projectile, ProjectileRetargetStrategy::Nearest, options)
 }
 
+/// Reacquire and store the best view-aligned desired target.
 pub fn reacquire_view_aligned_projectile_desired_target(
     projectile: &mut Projectile,
     options: ProjectileTargetSearchOptions,

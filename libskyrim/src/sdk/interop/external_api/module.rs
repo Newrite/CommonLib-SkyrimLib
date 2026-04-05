@@ -17,6 +17,17 @@ use super::types::{
 };
 
 /// Handle to a loaded module discovered through `GetModuleHandleW`.
+///
+/// `LoadedModule` is the low-level starting point for most `external_api`
+/// workflows:
+///
+/// - request one versioned table through `RequestPluginAPI`
+/// - resolve one getter-style exported service
+/// - probe one optional symbol/capability
+/// - build callback/subscriber helpers over flat exported functions
+///
+/// It intentionally stays close to the Windows export model while removing the
+/// repeated `GetModuleHandleW` / `GetProcAddress` boilerplate from plugin code.
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct LoadedModule {
     handle: NonNull<c_void>,

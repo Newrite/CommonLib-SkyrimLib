@@ -4,6 +4,14 @@
 //! effects typically stay alive for the whole game session. Callers often want
 //! to resolve them once from config and then keep a stronger, sendable handle
 //! than a generic `GamePtr`.
+//!
+//! These wrappers are the usual bridge from `sdk::plugin::config` /
+//! `sdk::forms::lookup` into long-lived plugin-owned state:
+//!
+//! 1. resolve a config or editor-ID spec into `GamePtr<T>`
+//! 2. keep it as [`PersistentFormPtr<T>`] while validation is still optional
+//! 3. upgrade it into [`PersistentForm<T>`] once the plugin decides the form is
+//!    required and session-stable
 
 use core::any::type_name;
 use core::fmt;
@@ -23,6 +31,10 @@ pub struct PersistentForm<T> {
 }
 
 impl<T> PersistentForm<T> {
+    /// Construct a persistent wrapper from a known non-null pointer.
+    ///
+    /// This is the low-level escape hatch used after source-backed lookup paths
+    /// have already established that the form is plugin-owned and session-long.
     /// # Safety
     /// `raw` must point to a live plugin-loaded form that remains valid for the
     /// whole session where this wrapper is used.
@@ -31,31 +43,43 @@ impl<T> PersistentForm<T> {
         Self { raw }
     }
 
+    /// Upgrade a non-null [`GameRef<T>`] into a persistent wrapper.
     #[inline(always)]
     pub fn from_game_ref(raw: GameRef<T>) -> Self {
         unsafe { Self::from_non_null(raw.as_non_null()) }
     }
 
+    /// Return the raw non-null pointer carried by this wrapper.
     #[inline(always)]
     pub const fn as_non_null(self) -> NonNull<T> {
         self.raw
     }
 
+    /// Return the wrapped raw pointer.
     #[inline(always)]
     pub const fn as_ptr(self) -> *mut T {
         self.raw.as_ptr()
     }
 
+    /// Cast the stored pointer to another raw target type.
+    ///
+    /// This stays pointer-level on purpose; use normal typed form casts when
+    /// you want RTTI-aware gameplay logic.
     #[inline(always)]
     pub const fn cast<U>(self) -> *mut U {
         self.as_ptr().cast::<U>()
     }
 
+    /// Reborrow this persistent wrapper as a [`GameRef<T>`].
+    ///
+    /// This is useful when runtime code wants the stronger non-null SDK view
+    /// without re-running any config or lookup logic.
     #[inline(always)]
     pub fn as_game_ref(self) -> GameRef<T> {
         unsafe { GameRef::from_non_null(self.raw) }
     }
 
+    /// Runs a closure with an immutable borrow of the wrapped form.
     #[inline(always)]
     pub fn with<R>(self, f: impl FnOnce(&T) -> R) -> R {
         f(self.as_ref())
@@ -118,11 +142,13 @@ pub struct PersistentFormPtr<T> {
 }
 
 impl<T> PersistentFormPtr<T> {
+    /// Construct an explicitly missing persistent lookup result.
     #[inline(always)]
     pub const fn missing() -> Self {
         Self { raw: None }
     }
 
+    /// Wraps a nullable [`GamePtr<T>`] result from config or lookup code.
     #[inline(always)]
     pub fn from_game_ptr(raw: GamePtr<T>) -> Self {
         Self {
@@ -130,21 +156,25 @@ impl<T> PersistentFormPtr<T> {
         }
     }
 
+    /// Return `true` when the referenced form was found and is loaded.
     #[inline(always)]
     pub const fn is_loaded(self) -> bool {
         self.raw.is_some()
     }
 
+    /// Return `true` when the lookup did not produce a loaded form.
     #[inline(always)]
     pub const fn is_missing(self) -> bool {
         self.raw.is_none()
     }
 
+    /// Expose the underlying nullable non-null pointer.
     #[inline(always)]
     pub fn as_non_null(self) -> Option<NonNull<T>> {
         self.raw
     }
 
+    /// Expose the wrapped raw pointer, returning null when missing.
     #[inline(always)]
     pub const fn as_ptr(self) -> *mut T {
         match self.raw {
@@ -153,17 +183,27 @@ impl<T> PersistentFormPtr<T> {
         }
     }
 
+    /// Upgrades into [`PersistentForm<T>`] when the lookup succeeded.
+    ///
+    /// This is the ergonomic transition point from optional config/lookup state
+    /// into required plugin-owned state.
     #[inline(always)]
     pub fn try_get(self) -> Option<PersistentForm<T>> {
         self.raw
             .map(|raw| unsafe { PersistentForm::from_non_null(raw) })
     }
 
+    /// Reborrows the loaded form as a nullable [`GameRef<T>`].
     #[inline(always)]
     pub fn try_ref(self) -> Option<GameRef<T>> {
         self.try_get().map(PersistentForm::as_game_ref)
     }
 
+    /// Require the lookup to have succeeded, logging a fatal runtime error
+    /// otherwise.
+    ///
+    /// Use this after configuration or startup validation has already decided
+    /// that the form is mandatory for the plugin to continue.
     #[inline(always)]
     pub fn require(self, context: &str) -> PersistentForm<T> {
         self.try_get().unwrap_or_else(|| {

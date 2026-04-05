@@ -14,6 +14,7 @@ crate::relocation_func! {
     ) => RelocationID::new(51909, 52847)
 }
 
+/// Queues a typed fade request through the `Fader Menu`.
 #[inline(always)]
 pub fn queue_fade(request: FadeRequest) -> bool {
     let queued = queue_named_message_with::<FaderMenu, FaderData>(request.message_type, |data| {
@@ -33,6 +34,7 @@ pub fn queue_fade(request: FadeRequest) -> bool {
     queued
 }
 
+/// Queues a fade-to-black request.
 #[inline(always)]
 pub fn fade_to_black(min_duration: f32, fade_duration: f32, pauses_game: bool) -> bool {
     queue_fade(FadeRequest::to_black(
@@ -42,6 +44,7 @@ pub fn fade_to_black(min_duration: f32, fade_duration: f32, pauses_game: bool) -
     ))
 }
 
+/// Queues a fade-from-black request.
 #[inline(always)]
 pub fn fade_from_black(fade_duration: f32, pauses_game: bool) -> bool {
     queue_fade(FadeRequest::from_black(fade_duration, pauses_game))
@@ -80,11 +83,13 @@ pub fn fade_to_black_direct(min_duration: f32, fade_duration: f32, pauses_game: 
     fade_out_game_direct(true, true, fade_duration, pauses_game, min_duration);
 }
 
+/// Direct-engine variant of [`fade_from_black`].
 #[inline(always)]
 pub fn fade_from_black_direct(fade_duration: f32, pauses_game: bool) {
     fade_out_game_direct(false, true, fade_duration, pauses_game, 0.0);
 }
 
+/// Queues a typed loading-menu request.
 #[inline(always)]
 pub fn queue_loading_menu(request: LoadingMenuRequest) -> bool {
     let queued =
@@ -102,6 +107,7 @@ pub fn queue_loading_menu(request: LoadingMenuRequest) -> bool {
     queued
 }
 
+/// Queues a loading-menu show request.
 #[inline(always)]
 pub fn show_loading_menu(current_location: GamePtr<BGSLocation>, show_loading_text: bool) -> bool {
     queue_loading_menu(LoadingMenuRequest::show(

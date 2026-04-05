@@ -146,10 +146,19 @@ fn build_intercept_snapshot_from_velocity(
 }
 
 #[inline(always)]
+/// Return the current linear target velocity estimate for a reference.
+///
+/// This is the lightweight building block used by intercept and anticipation
+/// helpers when the caller already has a target reference.
 pub fn projectile_target_linear_velocity(target: &TESObjectREFR) -> NiPoint3 {
     reference_linear_velocity(target)
 }
 
+/// Predict a target position by advancing its current velocity for
+/// `delta_seconds`.
+///
+/// Prefer this when a full intercept solve is unnecessary and the caller only
+/// wants simple forward prediction.
 pub fn anticipated_projectile_target_position(
     target: &TESObjectREFR,
     delta_seconds: f32,
@@ -165,6 +174,10 @@ pub fn anticipated_projectile_target_position(
     )
 }
 
+/// Solve an intercept for a live projectile against a target reference.
+///
+/// This is the main aiming helper when a moving projectile should lead a
+/// moving target instead of aiming at its current position directly.
 pub fn projectile_intercept_snapshot(
     projectile: &Projectile,
     target: &TESObjectREFR,
@@ -181,6 +194,11 @@ pub fn projectile_intercept_snapshot(
     )
 }
 
+/// Solve an intercept for a projectile against an already collected target
+/// snapshot.
+///
+/// Prefer this when the caller already ran target acquisition and wants to
+/// reuse the stored target velocity/position instead of re-reading the actor.
 pub fn projectile_intercept_snapshot_for_target(
     projectile: &Projectile,
     target: ProjectileTargetSnapshot,
@@ -197,6 +215,10 @@ pub fn projectile_intercept_snapshot_for_target(
     )
 }
 
+/// Convert one direction vector into projectile rotation angles.
+///
+/// Use this when a gameplay system already has a desired direction instead of
+/// an origin/target point pair.
 pub fn projectile_rotation_to_direction(direction: NiPoint3) -> Option<ProjectileRot> {
     let direction = validated_target_point(
         direction,
@@ -207,6 +229,9 @@ pub fn projectile_rotation_to_direction(direction: NiPoint3) -> Option<Projectil
     projectile_rotation_from_direction(direction)
 }
 
+/// Convert an origin/target point pair into projectile rotation angles.
+///
+/// This is the usual helper for point-based aiming workflows.
 pub fn projectile_rotation_to_point(origin: NiPoint3, target: NiPoint3) -> Option<ProjectileRot> {
     let (origin, target) = validated_target_points(
         origin,
@@ -218,15 +243,21 @@ pub fn projectile_rotation_to_point(origin: NiPoint3, target: NiPoint3) -> Optio
 }
 
 #[inline(always)]
+/// Set the projectile's desired target handle directly.
+///
+/// This is the low-level target assignment primitive used by higher-level
+/// reacquire helpers.
 pub fn set_projectile_desired_target(projectile: &mut Projectile, target: &TESObjectREFR) {
     projectile.get_projectile_runtime_data_mut().desired_target = target.get_handle();
 }
 
 #[inline(always)]
+/// Clear the projectile's desired target handle.
 pub fn clear_projectile_desired_target(projectile: &mut Projectile) {
     projectile.get_projectile_runtime_data_mut().desired_target = ObjectRefHandle::new();
 }
 
+/// Whether the projectile's current desired target still looks worth keeping.
 pub fn should_keep_projectile_desired_target(projectile: &Projectile) -> bool {
     let desired_target = projectile_desired_target(projectile);
     let Some(desired_target) = desired_target.as_ref() else {
@@ -254,6 +285,10 @@ pub fn should_keep_projectile_desired_target(projectile: &Projectile) -> bool {
     origin.get_squared_distance(target_position) <= range * range
 }
 
+/// Reacquire and store a desired target for the projectile.
+///
+/// This is the “keep steering but refresh the chosen target” helper that sits
+/// between target acquisition and steering/aiming.
 pub fn refresh_projectile_desired_target(
     projectile: &mut Projectile,
     strategy: ProjectileRetargetStrategy,
@@ -262,6 +297,10 @@ pub fn refresh_projectile_desired_target(
     reacquire_projectile_desired_target(projectile, strategy, options)
 }
 
+/// Align projectile rotation to its current linear velocity vector.
+///
+/// Use this after directly mutating projectile velocity when the visible
+/// rotation should keep tracking the current movement vector.
 pub fn align_projectile_rotation_to_linear_velocity(
     projectile: &mut Projectile,
 ) -> Option<ProjectileRot> {
@@ -271,6 +310,10 @@ pub fn align_projectile_rotation_to_linear_velocity(
     Some(rotation)
 }
 
+/// Aim a projectile directly at one point.
+///
+/// This rotates the projectile immediately and does not try to preserve the
+/// previous steering path.
 pub fn aim_projectile_at_point(
     projectile: &mut Projectile,
     target_point: NiPoint3,
@@ -284,6 +327,10 @@ pub fn aim_projectile_at_point(
     Some(rotation)
 }
 
+/// Aim a projectile directly at one target reference.
+///
+/// This prefers an intercept solve and falls back to simple anticipation when
+/// an exact intercept is unavailable.
 pub fn aim_projectile_at_target(
     projectile: &mut Projectile,
     target: &TESObjectREFR,
@@ -295,6 +342,10 @@ pub fn aim_projectile_at_target(
     aim_projectile_at_point(projectile, aim_point)
 }
 
+/// Aim a projectile at its current desired target.
+///
+/// Prefer this when target management is already handled elsewhere and the
+/// caller only wants to refresh orientation.
 pub fn aim_projectile_at_desired_target(
     projectile: &mut Projectile,
     initial_prediction_seconds: f32,
@@ -304,6 +355,11 @@ pub fn aim_projectile_at_desired_target(
     aim_projectile_at_target(projectile, target, initial_prediction_seconds)
 }
 
+/// Steer projectile velocity toward one point using the supplied steering
+/// policy.
+///
+/// Unlike the `aim_*` helpers, this changes the projectile's velocity and then
+/// keeps rotation aligned to the steered movement vector.
 pub fn steer_projectile_towards_point(
     projectile: &mut Projectile,
     target_point: NiPoint3,
@@ -342,6 +398,10 @@ pub fn steer_projectile_towards_point(
     Some(steered_velocity)
 }
 
+/// Steer projectile velocity toward one target reference.
+///
+/// This is the main homing-style helper when steering should follow a live
+/// target rather than a fixed point.
 pub fn steer_projectile_towards_target(
     projectile: &mut Projectile,
     target: &TESObjectREFR,
@@ -359,6 +419,10 @@ pub fn steer_projectile_towards_target(
     Some(snapshot)
 }
 
+/// Steer projectile velocity toward the current desired target.
+///
+/// Prefer this when desired-target management is already in place and the
+/// caller only wants to apply homing steering each update.
 pub fn steer_projectile_towards_desired_target(
     projectile: &mut Projectile,
     delta_seconds: f32,

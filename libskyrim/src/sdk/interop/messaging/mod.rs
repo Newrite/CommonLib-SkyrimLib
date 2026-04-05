@@ -5,6 +5,50 @@
 //! - install-once listeners for non-SKSE plugin messages
 //! - synchronous request / response protocols built on message payloads
 //!
+//! Reach for [`crate::sdk::interop::external_api`] when another plugin exposes
+//! exports or service getters. Reach for `sdk::interop::messaging` when the
+//! contract is driven by `SKSE::MessagingInterface`, listener installation, or
+//! request/response packets sent through message payloads.
+//!
+//! Decision guide:
+//!
+//! - use this module when the contract is fundamentally message-driven
+//! - use [`crate::sdk::interop::external_api`] when the dependency already
+//!   exports a stable callable surface
+//! - use `sdk::plugin::messaging` when the plugin only cares about its own
+//!   SKSE lifecycle/custom messages rather than a reusable inter-plugin
+//!   protocol
+//!
+//! Typical protocol flow:
+//!
+//! 1. install a listener or `RequestServer`
+//! 2. negotiate compatibility through [`ApiVersion`] and
+//!    [`VersionHandshake`] when needed
+//! 3. exchange typed payloads through dispatch/query helpers
+//! 4. keep any exported API loading in `external_api`, not here
+//!
+//! Smaller fire-and-forget protocols can stay at the listener/dispatch layer:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::interop::messaging::{dispatch_value, listen_type_sender};
+//!
+//! const MSG_RELOAD: u32 = 0xCAFE;
+//!
+//! fn install_reload_listener() {
+//!     let _ = listen_type_sender(
+//!         MSG_RELOAD,
+//!         c\"ExamplePlugin\",
+//!         |_message| {
+//!             // reload internal caches
+//!         },
+//!     );
+//! }
+//!
+//! fn request_reload() {
+//!     let _ = dispatch_value(c\"ExamplePlugin\", MSG_RELOAD, &1u32);
+//! }
+//! ```
+//!
 //! Example server:
 //!
 //! ```rust,ignore

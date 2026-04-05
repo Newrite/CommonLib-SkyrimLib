@@ -16,18 +16,27 @@ use super::shared::{
 };
 use super::targeting::view_cone_threshold_dot;
 
+/// High-level projectile family used by SDK-side helpers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ProjectileKind {
+    /// Bow/crossbow projectile behavior.
     Arrow,
+    /// Stationary or anchored barrier-style projectile.
     Barrier,
+    /// Beam-style sustained projectile.
     Beam,
+    /// Cone-style spray projectile.
     Cone,
+    /// Flamethrower-style continuous projectile.
     Flame,
+    /// Grenade or lobbed explosive projectile.
     Grenade,
+    /// Standard moving missile projectile.
     Missile,
 }
 
 impl ProjectileKind {
+    /// Classify a projectile kind from the base-form projectile type flags.
     #[inline(always)]
     pub fn from_types(types: EnumSet<BGSProjectileType, u16>) -> Option<Self> {
         if types.all(BGSProjectileType::Arrow) {
@@ -49,12 +58,18 @@ impl ProjectileKind {
         }
     }
 
+    /// Classify a live kind from a projectile base form.
     #[inline(always)]
     pub fn from_base(projectile: &BGSProjectile) -> Option<Self> {
         Self::from_types(projectile.data.types)
     }
 }
 
+/// Snapshot of the global projectile manager's handle buckets.
+///
+/// This is the widest runtime view in the module. It mirrors the three handle
+/// buckets exposed by `ProjectileManager` and offers convenience helpers to
+/// deduplicate and resolve them into live projectiles.
 #[derive(Debug, Clone)]
 pub struct ProjectileManagerSnapshot {
     pub unlimited: Vec<ProjectileHandle>,
@@ -63,16 +78,19 @@ pub struct ProjectileManagerSnapshot {
 }
 
 impl ProjectileManagerSnapshot {
+    /// Whether the manager currently reports no tracked projectile handles.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.unlimited.is_empty() && self.limited.is_empty() && self.pending.is_empty()
     }
 
+    /// Total number of handle entries across all manager buckets.
     #[inline(always)]
     pub fn total_entries(&self) -> usize {
         self.unlimited.len() + self.limited.len() + self.pending.len()
     }
 
+    /// Collect unique projectile handles across all manager buckets.
     pub fn managed_handles(&self) -> Vec<ProjectileHandle> {
         let mut handles = Vec::with_capacity(self.total_entries());
         for handle in self.unlimited.iter().copied() {
@@ -87,6 +105,7 @@ impl ProjectileManagerSnapshot {
         handles
     }
 
+    /// Resolve all currently managed projectile handles.
     pub fn managed_projectiles(&self) -> Vec<Resolved<Projectile>> {
         self.managed_handles()
             .into_iter()
@@ -95,6 +114,11 @@ impl ProjectileManagerSnapshot {
     }
 }
 
+/// Snapshot of a projectile base form.
+///
+/// This is the stable "form data" side of projectile inspection. Combine it
+/// with [`ProjectileSnapshot`] when plugin logic needs both static projectile
+/// metadata and live runtime state.
 #[derive(Debug, Clone)]
 pub struct ProjectileBaseSnapshot {
     pub projectile: GamePtr<BGSProjectile>,
@@ -119,29 +143,45 @@ pub struct ProjectileBaseSnapshot {
 }
 
 impl ProjectileBaseSnapshot {
+    /// Whether the projectile base is flagged as hitscan.
     #[inline(always)]
     pub fn is_hitscan(&self) -> bool {
         self.flags.all(BGSProjectileFlags::HitScan)
     }
 
+    /// Whether the projectile base has an explosion behavior configured.
     #[inline(always)]
     pub fn has_explosion(&self) -> bool {
         self.flags.all(BGSProjectileFlags::Explosion) || self.explosion_type.is_some()
     }
 
+    /// Whether this base resolves to an arrow projectile kind.
     #[inline(always)]
     pub fn is_arrow(&self) -> bool {
         self.kind == Some(ProjectileKind::Arrow)
     }
 }
 
+/// Relationship filter used by projectile target search helpers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ProjectileTargetDisposition {
+    /// Accept candidates that are merely aggressive toward the shooter/caster.
     AggressiveToCaster,
+    /// Accept only candidates considered hostile to the shooter/caster.
     HostileToCaster,
+    /// Accept any actor regardless of hostility.
     AnyActor,
 }
 
+/// Target-search controls used by the projectile targeting helpers.
+///
+/// This is the main policy object for acquisition/reacquisition. It answers:
+///
+/// - how far to search
+/// - which relationship counts as a valid target
+/// - whether line of sight is required
+/// - whether view-cone alignment matters
+/// - where line-of-sight samples should be taken
 #[derive(Debug, Clone, Copy)]
 pub struct ProjectileTargetSearchOptions {
     pub radius: f32,
@@ -154,6 +194,8 @@ pub struct ProjectileTargetSearchOptions {
 }
 
 impl ProjectileTargetSearchOptions {
+    /// Construct a search description with the supplied radius and default
+    /// hostility-based filtering.
     #[inline(always)]
     pub const fn new(radius: f32) -> Self {
         Self {
@@ -167,36 +209,49 @@ impl ProjectileTargetSearchOptions {
         }
     }
 
+    /// Override which disposition relationship is accepted.
     #[inline(always)]
     pub const fn with_disposition(mut self, disposition: ProjectileTargetDisposition) -> Self {
         self.disposition = disposition;
         self
     }
 
+    /// Require line of sight between source and candidate.
     #[inline(always)]
     pub const fn with_line_of_sight(mut self, require_line_of_sight: bool) -> Self {
         self.require_line_of_sight = require_line_of_sight;
         self
     }
 
+    /// Restrict candidates to a view cone measured in degrees.
+    ///
+    /// Use this for aim-assist or front-facing retarget flows where the
+    /// projectile should prefer what the shooter is already looking at.
     #[inline(always)]
     pub const fn with_view_cone_degrees(mut self, maximum_view_cone_degrees: f32) -> Self {
         self.maximum_view_cone_degrees = Some(maximum_view_cone_degrees);
         self
     }
 
+    /// Remove any view-cone restriction.
     #[inline(always)]
     pub const fn without_view_cone(mut self) -> Self {
         self.maximum_view_cone_degrees = None;
         self
     }
 
+    /// Override the search origin instead of using the shooter/projectile
+    /// position.
+    ///
+    /// This is useful for retarget flows where the search should start from a
+    /// predicted intercept point or another gameplay-defined origin.
     #[inline(always)]
     pub const fn with_search_origin(mut self, search_origin: NiPoint3) -> Self {
         self.search_origin = Some(search_origin);
         self
     }
 
+    /// Override line-of-sight sample locations.
     #[inline(always)]
     pub const fn with_los_locations(
         mut self,
@@ -209,6 +264,11 @@ impl ProjectileTargetSearchOptions {
     }
 }
 
+/// Snapshot of one target candidate produced by projectile search helpers.
+///
+/// These values are the bridge between target acquisition and behavior
+/// steering: they carry distance, hostility, line-of-sight, view-alignment,
+/// and simple velocity prediction data in one flat result.
 #[derive(Debug, Clone, Copy)]
 pub struct ProjectileTargetSnapshot {
     pub actor: GamePtr<Actor>,
@@ -225,6 +285,7 @@ pub struct ProjectileTargetSnapshot {
 }
 
 impl ProjectileTargetSnapshot {
+    /// Resolve the actor handle into a live actor.
     #[inline(always)]
     pub fn resolved_actor(self) -> Option<Resolved<Actor>> {
         if !self.handle.has_value() {
@@ -234,21 +295,25 @@ impl ProjectileTargetSnapshot {
         }
     }
 
+    /// Reborrow the actor as a generic object reference.
     #[inline(always)]
     pub fn reference(self) -> GamePtr<TESObjectREFR> {
         unsafe { GamePtr::from_raw(self.actor.as_ptr().cast()) }
     }
 
+    /// Whether the target is moving with a non-trivial velocity.
     #[inline(always)]
     pub fn is_moving(self) -> bool {
         self.speed > f32::EPSILON
     }
 
+    /// Project the target position forward by the supplied time delta.
     #[inline(always)]
     pub fn anticipated_position(self, delta_seconds: f32) -> Option<NiPoint3> {
         anticipated_position_from_velocity(self.position, self.velocity, delta_seconds)
     }
 
+    /// Check whether the snapshot lies inside the supplied view cone.
     #[inline(always)]
     pub fn within_view_cone(self, maximum_view_cone_degrees: f32) -> bool {
         let Some(dot) = self.view_alignment_dot else {
@@ -259,6 +324,10 @@ impl ProjectileTargetSnapshot {
     }
 }
 
+/// Snapshot of a solved intercept for a constant-speed projectile.
+///
+/// This is the output of the constant-speed lead helpers used by homing and
+/// retargeting workflows.
 #[derive(Debug, Clone, Copy)]
 pub struct ProjectileInterceptSnapshot {
     pub origin: NiPoint3,
@@ -272,41 +341,55 @@ pub struct ProjectileInterceptSnapshot {
 }
 
 impl ProjectileInterceptSnapshot {
+    /// Total lead time including any initial prediction horizon.
     #[inline(always)]
     pub fn total_lead_seconds(self) -> f32 {
         self.initial_prediction_seconds + self.travel_time_seconds
     }
 
+    /// Travel distance between the origin and the solved intercept point.
     #[inline(always)]
     pub fn travel_distance(self) -> f32 {
         self.origin.get_distance(self.intercept_point)
     }
 }
 
+/// Strategy used when reacquiring or selecting a desired target.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ProjectileRetargetStrategy {
+    /// Prefer the nearest valid target.
     Nearest,
+    /// Prefer the target most aligned with the current forward/view direction.
     ViewAligned,
 }
 
+/// Steering policy used by the projectile behavior helpers.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ProjectileSteeringBehavior {
+    /// Rotate toward the target by a capped angular velocity per second.
     ConstantTurnRateRadians { radians_per_second: f32 },
+    /// Accelerate velocity toward the target by a constant amount.
     ConstantAcceleration { acceleration: f32 },
 }
 
 impl ProjectileSteeringBehavior {
+    /// Turn toward the target using a capped angular velocity.
     #[inline(always)]
     pub const fn constant_turn_rate_radians(radians_per_second: f32) -> Self {
         Self::ConstantTurnRateRadians { radians_per_second }
     }
 
+    /// Change velocity by applying a constant acceleration toward the target.
     #[inline(always)]
     pub const fn constant_acceleration(acceleration: f32) -> Self {
         Self::ConstantAcceleration { acceleration }
     }
 }
 
+/// Snapshot of one stored projectile impact entry.
+///
+/// This is useful for plugins that care about recent collision history without
+/// holding onto the live engine-owned impact records directly.
 #[derive(Debug, Clone, Copy)]
 pub struct ProjectileImpactSnapshot {
     pub collidee_handle: ObjectRefHandle,
@@ -318,12 +401,18 @@ pub struct ProjectileImpactSnapshot {
 }
 
 impl ProjectileImpactSnapshot {
+    /// Resolve the collidee handle into a nullable object reference.
     #[inline(always)]
     pub fn collidee(&self) -> GamePtr<TESObjectREFR> {
         handle_to_ptr(self.collidee_handle)
     }
 }
 
+/// Snapshot of one live projectile and its most useful runtime fields.
+///
+/// This is the main runtime-inspection result for projectile-heavy plugins. It
+/// flattens the most useful live state into a cloneable value while still
+/// leaving source-backed handles and pointers visible where that matters.
 #[derive(Debug, Clone)]
 pub struct ProjectileSnapshot {
     pub projectile: GamePtr<Projectile>,
@@ -359,21 +448,37 @@ pub struct ProjectileSnapshot {
 }
 
 impl ProjectileSnapshot {
+    /// Resolve the shooter handle into a nullable object reference.
+    ///
+    /// Use this when snapshot-driven code still needs to step back into a live
+    /// reference for later gameplay inspection.
     #[inline(always)]
     pub fn shooter(&self) -> GamePtr<TESObjectREFR> {
         handle_to_ptr(self.shooter_handle)
     }
 
+    /// Resolve the desired-target handle into a nullable object reference.
+    ///
+    /// This is the bridge from a flat snapshot back into a live desired-target
+    /// reference when retarget or debug code needs it.
     #[inline(always)]
     pub fn desired_target(&self) -> GamePtr<TESObjectREFR> {
         handle_to_ptr(self.desired_target_handle)
     }
 
+    /// Resolve the shooter to `Actor` when possible.
+    ///
+    /// Prefer this over [`Self::shooter`] when the next step is actor-specific
+    /// and non-actor shooter cases can simply fall away.
     #[inline(always)]
     pub fn shooter_actor(&self) -> GamePtr<Actor> {
         self.shooter().try_cast::<Actor>()
     }
 
+    /// Resolve the desired target to `Actor` when possible.
+    ///
+    /// Prefer this over [`Self::desired_target`] when the next step is
+    /// actor-specific targeting or steering logic.
     #[inline(always)]
     pub fn desired_target_actor(&self) -> GamePtr<Actor> {
         self.desired_target().try_cast::<Actor>()

@@ -664,11 +664,28 @@ impl<'a> Registry<'a> {
     where
         F: PapyrusFunctionSignature,
     {
+        self.register_function_with_options(
+            fn_name,
+            callback,
+            FunctionOptions::new().callable_from_tasklets(callable_from_tasklets),
+        )
+    }
+
+    #[inline(always)]
+    pub fn register_function_with_options<F>(
+        &mut self,
+        fn_name: &str,
+        callback: F,
+        options: FunctionOptions,
+    ) -> bool
+    where
+        F: PapyrusFunctionSignature,
+    {
         self.note(self.vm.register_function(
             fn_name,
             self.class_name,
             callback,
-            callable_from_tasklets,
+            options.callable_from_tasklets,
         ))
     }
 
@@ -682,11 +699,28 @@ impl<'a> Registry<'a> {
     where
         F: PapyrusLongFunctionSignature,
     {
+        self.register_long_function_with_options(
+            fn_name,
+            callback,
+            FunctionOptions::new().callable_from_tasklets(callable_from_tasklets),
+        )
+    }
+
+    #[inline(always)]
+    pub fn register_long_function_with_options<F>(
+        &mut self,
+        fn_name: &str,
+        callback: F,
+        options: FunctionOptions,
+    ) -> bool
+    where
+        F: PapyrusLongFunctionSignature,
+    {
         self.note(self.vm.register_long_function(
             fn_name,
             self.class_name,
             callback,
-            callable_from_tasklets,
+            options.callable_from_tasklets,
         ))
     }
 
@@ -701,12 +735,67 @@ impl<'a> Registry<'a> {
         R: PapyrusReturn + PapyrusReturnConvertible + 'static,
         F: PapyrusLatentFunctionSignature,
     {
+        self.register_latent_function_with_options::<R, F>(
+            fn_name,
+            callback,
+            FunctionOptions::new().callable_from_tasklets(callable_from_tasklets),
+        )
+    }
+
+    #[inline(always)]
+    pub fn register_latent_function_with_options<R, F>(
+        &mut self,
+        fn_name: &str,
+        callback: F,
+        options: FunctionOptions,
+    ) -> bool
+    where
+        R: PapyrusReturn + PapyrusReturnConvertible + 'static,
+        F: PapyrusLatentFunctionSignature,
+    {
         self.note(self.vm.register_latent_function::<R, F>(
             fn_name,
             self.class_name,
             callback,
-            callable_from_tasklets,
+            options.callable_from_tasklets,
         ))
+    }
+
+    #[inline(always)]
+    pub fn register_tasklet_function<F>(&mut self, fn_name: &str, callback: F) -> bool
+    where
+        F: PapyrusFunctionSignature,
+    {
+        self.register_function_with_options(
+            fn_name,
+            callback,
+            FunctionOptions::new().callable_from_tasklets(true),
+        )
+    }
+
+    #[inline(always)]
+    pub fn register_tasklet_long_function<F>(&mut self, fn_name: &str, callback: F) -> bool
+    where
+        F: PapyrusLongFunctionSignature,
+    {
+        self.register_long_function_with_options(
+            fn_name,
+            callback,
+            FunctionOptions::new().callable_from_tasklets(true),
+        )
+    }
+
+    #[inline(always)]
+    pub fn register_tasklet_latent_function<R, F>(&mut self, fn_name: &str, callback: F) -> bool
+    where
+        R: PapyrusReturn + PapyrusReturnConvertible + 'static,
+        F: PapyrusLatentFunctionSignature,
+    {
+        self.register_latent_function_with_options::<R, F>(
+            fn_name,
+            callback,
+            FunctionOptions::new().callable_from_tasklets(true),
+        )
     }
 
     #[inline(always)]

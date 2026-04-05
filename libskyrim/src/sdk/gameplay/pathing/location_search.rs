@@ -9,6 +9,8 @@ use crate::sdk::core::{
 use super::runtime::singleton;
 use super::types::is_valid_positive_radius;
 
+/// Collect navmesh objects that the runtime considers potential matches for a
+/// pathing location within `radius`.
 pub fn collect_potential_navmeshes_for_location(
     location: &mut BSPathingLocation,
     radius: f32,
@@ -37,6 +39,8 @@ pub fn collect_potential_navmeshes_for_location(
     .collect()
 }
 
+/// Collect connected navmesh-info records for a pathing location within
+/// `radius`.
 pub fn collect_connected_navmesh_infos_for_location(
     location: &mut BSPathingLocation,
     radius: f32,
@@ -66,6 +70,7 @@ pub fn collect_connected_navmesh_infos_for_location(
     .collect()
 }
 
+/// Collect connected navmesh objects for a pathing location within `radius`.
 pub fn collect_connected_navmeshes_for_location(
     location: &mut BSPathingLocation,
     radius: f32,

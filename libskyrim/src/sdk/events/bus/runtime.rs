@@ -167,6 +167,7 @@ impl<T> Default for Bus<T> {
 }
 
 impl<T> Bus<T> {
+    /// Construct an empty plugin-local event bus.
     #[inline(always)]
     pub const fn new() -> Self {
         Self {
@@ -180,11 +181,17 @@ impl<T> Bus<T> {
         }
     }
 
+    /// Whether the bus currently has no active subscribers.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.state.lock().subscribers.is_empty()
     }
 
+    /// Subscribes at the default [`SubscriberPriority::NORMAL`] priority.
+    ///
+    /// This is the normal entrypoint for plugin-local orchestration when the
+    /// callback does not need to run before or after other subscribers
+    /// explicitly.
     #[inline(always)]
     pub fn subscribe<F, R>(&self, callback: F) -> BusSubscription<'_, T>
     where
@@ -194,6 +201,10 @@ impl<T> Bus<T> {
         self.subscribe_with_priority(SubscriberPriority::NORMAL, callback)
     }
 
+    /// Subscribe with one explicit priority value.
+    ///
+    /// Higher priorities run earlier. Equal priorities keep subscription
+    /// order.
     pub fn subscribe_with_priority<F, R>(
         &self,
         priority: SubscriberPriority,
@@ -215,6 +226,7 @@ impl<T> Bus<T> {
         }
     }
 
+    /// Subscribe at [`SubscriberPriority::FIRST`].
     #[inline(always)]
     pub fn subscribe_first<F, R>(&self, callback: F) -> BusSubscription<'_, T>
     where
@@ -224,6 +236,7 @@ impl<T> Bus<T> {
         self.subscribe_with_priority(SubscriberPriority::FIRST, callback)
     }
 
+    /// Subscribe at [`SubscriberPriority::EARLY`].
     #[inline(always)]
     pub fn subscribe_early<F, R>(&self, callback: F) -> BusSubscription<'_, T>
     where
@@ -233,6 +246,7 @@ impl<T> Bus<T> {
         self.subscribe_with_priority(SubscriberPriority::EARLY, callback)
     }
 
+    /// Subscribe at [`SubscriberPriority::LATE`].
     #[inline(always)]
     pub fn subscribe_late<F, R>(&self, callback: F) -> BusSubscription<'_, T>
     where
@@ -242,6 +256,7 @@ impl<T> Bus<T> {
         self.subscribe_with_priority(SubscriberPriority::LATE, callback)
     }
 
+    /// Subscribe at [`SubscriberPriority::LAST`].
     #[inline(always)]
     pub fn subscribe_last<F, R>(&self, callback: F) -> BusSubscription<'_, T>
     where
@@ -281,12 +296,21 @@ impl<T> Bus<T> {
         result
     }
 
+    /// Publish an owned payload and return the final event plus propagation
+    /// flow.
+    ///
+    /// This is the ergonomic path when the publisher wants subscribers to
+    /// mutate an event payload and then inspect the finished value afterward.
     #[inline(always)]
     pub fn publish_owned(&self, mut event: T) -> PublishResult<T> {
         let flow = self.publish(&mut event);
         PublishResult::new(event, flow)
     }
 
+    /// Publish `T::default()` and return the final payload plus flow.
+    ///
+    /// Prefer this when the event type already has a sensible default state
+    /// and the publisher only needs subscriber mutations as output.
     #[inline(always)]
     pub fn publish_default(&self) -> PublishResult<T>
     where
@@ -295,6 +319,10 @@ impl<T> Bus<T> {
         self.publish_owned(T::default())
     }
 
+    /// Construct a default payload, initialize it, then publish it.
+    ///
+    /// This is a convenient middle ground between [`Self::publish_default`]
+    /// and [`Self::publish_owned`] for “default plus a few fields” workflows.
     #[inline(always)]
     pub fn publish_with<F>(&self, init: F) -> PublishResult<T>
     where
@@ -331,16 +359,22 @@ pub struct BusSubscription<'a, T> {
 }
 
 impl<T> BusSubscription<'_, T> {
+    /// Opaque subscription identifier.
     #[inline(always)]
     pub const fn id(&self) -> u64 {
         self.id
     }
 
+    /// Whether this subscription still owns an active registration.
     #[inline(always)]
     pub const fn is_active(&self) -> bool {
         self.active
     }
 
+    /// Unsubscribe immediately.
+    ///
+    /// Returns `false` when the subscription had already been removed or was
+    /// never active.
     pub fn unsubscribe(&mut self) -> bool {
         if !self.active {
             return false;

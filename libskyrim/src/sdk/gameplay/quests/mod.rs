@@ -4,6 +4,9 @@
 //! higher-level Rust-first layer around the common plugin workflows:
 //! quest state inspection, alias/objective/stage traversal, and small safe
 //! wrappers around the most common lifecycle operations.
+//!
+//! The most important entry points are the snapshot types in [`types`] plus the
+//! traversal helpers in [`aliases`], [`objectives`], and [`stages`].
 
 mod aliases;
 mod lifecycle;

@@ -8,6 +8,342 @@ For ongoing SDK research, backlog ideas, and architecture memory, also see
 [`MEMORY.md`](./MEMORY.md) and
 [`SKSEPROJECTS_RESEARCH.md`](./SKSEPROJECTS_RESEARCH.md).
 
+## Documentation Surfaces
+
+The SDK now has two parallel documentation layers and both should stay in sync:
+
+- rustdoc-facing module docs under `libskyrim::sdk`, starting with the
+  module-level overview in [`OVERVIEW.md`](./OVERVIEW.md) and the domain
+  `mod.rs` files
+- human-oriented repository docs in this README plus
+  [`MEMORY.md`](./MEMORY.md) and [`PLUGIN_AUDIT.md`](./PLUGIN_AUDIT.md)
+
+The rustdoc layer should explain how to use the SDK. The markdown notes should
+capture design direction, research memory, and alignment against real plugins.
+
+## Plugin Archetypes
+
+One useful way to navigate the SDK is to start from the *shape of the plugin*
+rather than from the module tree.
+
+### 1. Papyrus Utility Plugin
+
+Typical stack:
+
+- `sdk::plugin`
+- `sdk::papyrus`
+- `sdk::forms`
+- sometimes `sdk::plugin::task`
+
+This is the classic "bind a few functions to one script name" plugin. The
+smallest version only needs `PapyrusScript`, `register_script::<T>()`, and
+bootstrap/lifecycle glue. A larger version may also own persistent Papyrus
+event registries or config-driven form lookup.
+
+### 2. Event-Driven Gameplay Plugin
+
+Typical stack:
+
+- `sdk::plugin`
+- `sdk::events`
+- `sdk::gameplay`
+- sometimes `sdk::core::phase`
+
+This covers plugins that primarily react to hits, menu state, input, lifecycle,
+or other event streams and then inspect or mutate gameplay state. Examples in
+the local research pool include dodge/input plugins, quest/gameplay utilities,
+and combat-heavy behavior mods.
+
+### 3. UI / HUD Plugin
+
+Typical stack:
+
+- `sdk::plugin`
+- `sdk::events::ui` and `sdk::events::skse::messages`
+- `sdk::ui::{menus, scaleform, controls, notifications}`
+- `sdk::ui::{widgets, hud_runtime, driver, controller}`
+
+This is the menu-owned widget/HUD plugin shape seen in projects like
+`TrueHUD` and `QuickLootIE`: menu lifecycle, deferred surface work, visibility
+policy, and controller-style orchestration all matter more than isolated GFx
+calls.
+
+### 4. External API Bridge Plugin
+
+Typical stack:
+
+- `sdk::plugin`
+- `sdk::interop::external_api`
+- `sdk::interop::messaging`
+- sometimes `sdk::events::skse::messages`
+
+This is the right starting point when a plugin integrates with another mod
+through `RequestPluginAPI`, exported callback-symbol pairs, flat subscriber
+functions, or SKSE messaging handshakes.
+
+### 5. Spatial / Respawn / Teleport Plugin
+
+Typical stack:
+
+- `sdk::gameplay::{world, navmesh, pathing, spatial}`
+- `sdk::advanced::physics`
+- sometimes `sdk::gameplay::{actors, projectiles}`
+
+This is the stack for plugins that score spawn points, validate teleport
+destinations, find safe fallback positions, or evaluate pathability and
+visibility around candidate locations.
+
+## Decision Guide
+
+When the module tree feels too broad, choose the SDK surface by *workflow
+shape* rather than by raw type name.
+
+### Papyrus Choice
+
+- Use `PapyrusScript` / `register_script::<T>()`
+  when you are binding a handful of native functions to one script name.
+- Use `PapyrusModule` / `papyrus_module!`
+  when registration should stay grouped by feature or subsystem.
+- Use `PapyrusEventRegistry*`
+  when the plugin owns persistent `RegisterFor...` style handles that must
+  survive save/load/revert/delete flows.
+
+### Interop Choice
+
+- Use `sdk::interop::external_api`
+  for `RequestPluginAPI`, exported symbols, callback/subscriber pairs, and
+  other stable callable surfaces.
+- Use `sdk::interop::messaging`
+  for lifecycle-sensitive SKSE messaging handshakes, request/response
+  protocols, or "dependency becomes ready later" coordination.
+
+Many real plugins use both: messaging tells you *when* to negotiate, and
+`external_api` provides the actual callable interface.
+
+### UI Choice
+
+- Start at `ui::menus` / `ui::scaleform`
+  if the plugin only needs menu state and direct GFx calls.
+- Start at `ui::widgets`
+  if work must wait until a menu surface is actually ready.
+- Add `ui::hud_runtime`
+  when visibility modes or refresh aggregation matter.
+- Add `ui::driver`
+  when menu events, cached menu state, and pending tasks must be synchronized.
+- Add `ui::controller`
+  when request bundles should be translated into concrete show/hide/refresh
+  actions through a handler object.
+
+### Config / Forms Choice
+
+- Use `forms::lookup`
+  when install/reload code resolves editor IDs or `plugin:FormID` strings.
+- Use `forms::persistent`
+  when the resolved form should remain as a plugin-owned stable value.
+- Use `plugin::config` plus `forms::*`
+  when config parsing, validation, and installation must stay in one workflow.
+
+## Workflow Notes
+
+These are the most common "stitch the pieces together" seams in real plugins.
+
+### Config-Driven Install Flow
+
+Typical order:
+
+1. Load config through `sdk::plugin::config`.
+2. Parse editor IDs / `plugin:FormID` specs through `sdk::forms::lookup`.
+3. Upgrade long-lived references into `sdk::forms::persistent` or another
+   plugin-owned stable representation.
+4. Use the resolved values to install gameplay, Papyrus, or UI behavior.
+
+This keeps string parsing and validation close to plugin bootstrap instead of
+scattering lookup logic throughout runtime callbacks.
+
+### Callback -> Task -> Gameplay Flow
+
+Typical order:
+
+1. Subscribe through `sdk::events` or `sdk::papyrus`.
+2. Check `sdk::core::phase` when the work is unsafe during loading, fading,
+   menu capture, or heavy UI states.
+3. Hand off through `sdk::plugin::task` when the callback should not perform
+   the gameplay mutation directly.
+4. Run the actual gameplay logic in `sdk::gameplay`.
+
+This pattern matches many input, UI, Papyrus, and event-driven gameplay mods.
+
+### External API Negotiation Flow
+
+Typical order:
+
+1. Use `sdk::interop::messaging` if the dependency becomes ready only after a
+   lifecycle message or handshake.
+2. Load the actual callable surface through `sdk::interop::external_api`.
+3. Cache the optional interface locally.
+4. Keep any C++ shim boundary plugin-local when the external API is not flat C
+   or flat function-pointer based.
+
+This is the intended split for APIs like `RequestPluginAPI`, exported symbol
+families, callback registrars, and messaging-driven interface loaders.
+
+### UI / HUD Runtime Flow
+
+Typical order:
+
+1. Use `ui::menus` and `ui::scaleform` for raw menu/movie access.
+2. Put deferred menu work into `ui::widgets`.
+3. Aggregate visibility and refresh state in `ui::hud_runtime`.
+4. Sync menu events and cached state through `ui::driver`.
+5. Translate request bundles into concrete menu/HUD actions through
+   `ui::controller`.
+
+This is the reusable SDK shape behind menu-owned widgets and custom HUDs.
+
+## Minimal Skeletons
+
+These are intentionally small end-to-end sketches. They are not meant to be
+copy-paste complete plugins, but they show which SDK layers are expected to be
+owned together.
+
+### Papyrus Utility Skeleton
+
+```rust,ignore
+use libskyrim::sdk::{papyrus, plugin};
+
+papyrus::papyrus_script! {
+    pub ExampleScript("Example:Utility") {
+        fn "GetVersion" => get_version => fn(
+            _base: *mut libskyrim::re::StaticFunctionTag
+        ) -> i32;
+    }
+}
+
+fn install() {
+    let _post_load = plugin::on_post_load(|_message| {
+        let _ = papyrus::register_script::<ExampleScript>();
+    });
+}
+```
+
+### Event-Driven Gameplay Skeleton
+
+```rust,ignore
+use libskyrim::re::Actor;
+use libskyrim::sdk::{events, gameplay, plugin};
+
+fn install() {
+    let _data_loaded = plugin::on_data_loaded(|_message| {
+        let _input = events::input::subscribe(|events| {
+            if events.buttons().any(|button| button.is_down()) {
+                let _nearby = gameplay::actors::collect_hostile_nearby_player_actors(1500.0);
+            }
+            events::EventFlow::Continue
+        });
+    });
+}
+```
+
+### UI / HUD Skeleton
+
+```rust,ignore
+use libskyrim::re::MenuOpenCloseEvent;
+use libskyrim::sdk::{events, ui};
+
+struct ExampleHudMenu;
+
+impl ui::menus::NamedMenu for ExampleHudMenu {
+    const MENU_NAME: &'static str = "ExampleHudMenu";
+}
+
+#[derive(Default)]
+struct ExampleHudHandler;
+
+impl ui::controller::WidgetRequestHandler for ExampleHudHandler {}
+impl ui::controller::HudRequestHandler for ExampleHudHandler {}
+
+fn install() {
+    let mut controller =
+        ui::controller::HudRuntimeController::<ExampleHudMenu, ExampleHudHandler>::with_policy(
+            ExampleHudHandler::default(),
+            ui::widgets::WidgetVisibilityPolicy::hud_like(),
+        );
+
+    let _menu_events = events::ui::subscribe::<MenuOpenCloseEvent>(move |event| {
+        let _cycle = controller.drive_menu_event(event);
+        events::EventFlow::Continue
+    });
+}
+```
+
+### External API Bridge Skeleton
+
+```rust,ignore
+use libskyrim::sdk::{interop::external_api, plugin};
+
+type HudCallback = unsafe extern "system" fn(i32);
+
+unsafe extern "system" fn on_hud_mode_changed(_mode: i32) {}
+
+fn install() {
+    let _data_loaded = plugin::on_data_loaded(|_message| {
+        let registrar = unsafe {
+            external_api::callback_registrar_for_plugin::<HudCallback, u32>(
+                "SomeHudPlugin",
+                "RegisterHudCallback",
+                "UnregisterHudCallback",
+            )
+        };
+
+        if let Ok(registrar) = registrar {
+            let _registration = unsafe { registrar.register(on_hud_mode_changed) };
+        }
+    });
+}
+```
+
+### Spatial / Respawn Skeleton
+
+```rust,ignore
+use libskyrim::sdk::{advanced::physics, gameplay::spatial};
+
+fn choose_respawn_point(
+    cell: &libskyrim::re::TESObjectCELL,
+    candidates: &[libskyrim::re::NiPoint3],
+) -> Option<libskyrim::re::NiPoint3> {
+    let physics_options = physics::SpawnPointValidationOptions::respawn_default(
+        physics::filter_for_layer(libskyrim::re::ColLayer::kLOS),
+        physics::LayerMask::all(),
+    );
+
+    let options = spatial::SpatialCandidateEvaluationOptions {
+        scene_radius: 1536.0,
+        minimum_actor_distance: 256.0,
+        minimum_hostile_distance: 512.0,
+        maximum_navmesh_distance: 128.0,
+        reachability_origin: None,
+        reachability: Default::default(),
+        physics: physics_options,
+    };
+
+    let selection = spatial::select_spawn_candidate_with_fallbacks(
+        cell,
+        candidates,
+        options,
+        Default::default(),
+        &[
+            spatial::SpatialCandidateTier::strict_respawn(),
+            spatial::SpatialCandidateTier::relaxed_respawn(),
+            spatial::SpatialCandidateTier::emergency_respawn(),
+        ],
+    );
+
+    selection
+        .selected
+        .and_then(|selected| selected.selected.evaluation.scene_center)
+}
+```
+
 ## Purpose
 
 The low-level layers have a different job from the future SDK:
@@ -1374,8 +1710,10 @@ Implemented foundation:
   `GameRef`, `GamePtr`, `ResolvedHandle<H>`, `Resolved<T>`,
   `PapyrusEventRegistry*`, grouped save/load/revert/form-delete helpers, event
   runtime registration, installed event-set runtime state,
-  `last_runtime_error()` / `take_last_runtime_error()` diagnostics, and macro
-  sugar for `RegisterFor...` style modules
+  `last_runtime_error()` / `take_last_runtime_error()` diagnostics, direct
+  `PapyrusScript` / `register_script(...)` authoring for `Bind(VM*)`-style
+  plugins, and macro sugar for both direct script bindings and
+  `RegisterFor...` style modules
 - `sdk::core::handles`
   family-based resolved runtime-object model with immediate support for the
   `Actor`, `TESObjectREFR`, and `Projectile` handle families
@@ -1440,6 +1778,21 @@ Implemented foundation:
   HUD notification/message builders over `HUDData`, covering common text,
   subtitle, hint, quest/objective, location, word-of-power, dragon-soul, and
   HUD-mode update flows
+- `sdk::ui::widgets`
+  menu-owned widget runtime helpers covering deferred surface tasks, menu
+  open/close request tracking, reusable visibility policies, and Scaleform
+  task sugar over named menu surfaces
+- `sdk::ui::hud_runtime`
+  HUD-oriented runtime orchestration over `widgets`, including visibility-mode
+  tracking, aggregated refresh flags, and visibility-state Scaleform helpers
+- `sdk::ui::driver`
+  event/policy/task orchestration glue over `widgets` and `hud_runtime`,
+  covering menu-event reconciliation, policy sync, task draining, and
+  per-cycle request bundles
+- `sdk::ui::controller`
+  higher-level controller recipes over `driver`, translating widget/HUD
+  request bundles into runtime-facing `show/hide/refresh/mode change`
+  operations through pluggable handlers
 - `sdk::ui::scaleform`
   owner-backed menu-side Scaleform surface covering open-menu `GFxMovieView`
   and `FxDelegate` lookup, plus movie `invoke` / `get_variable` /
@@ -1487,8 +1840,8 @@ Implemented foundation:
 
 Still intentionally placeholder-heavy:
 
-- broader widget/HUD synchronization on top of `sdk::ui::{menus, controls,
-  notifications, scaleform}`
+- higher-level HUD/controller recipes on top of `sdk::ui::{driver, widgets,
+  hud_runtime, notifications, scaleform}`
 - higher-level hook recipes and policy-driven install patterns beyond the
   current attribute/trampoline/patch surface
 - `sdk::advanced::{render, scene}` and broader rendering workflows

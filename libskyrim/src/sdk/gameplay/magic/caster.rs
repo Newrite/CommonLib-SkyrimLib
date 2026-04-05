@@ -8,6 +8,11 @@ use super::shared::{invalid_casting_source, with_magic_caster_mut};
 use super::spells::selected_actor_spell;
 use super::types::{CastCheck, CastingSourceSnapshot, ImmediateCastOptions};
 
+/// Returns the actor's `MagicCaster` for one casting source.
+///
+/// This is the lowest-level caster-side entrypoint in this module. Most plugin
+/// code will prefer the higher-level snapshot/check/cast helpers unless it
+/// truly needs the raw caster object.
 #[inline(always)]
 pub fn magic_caster_for_source(
     actor: &mut Actor,
@@ -22,6 +27,7 @@ pub fn magic_caster_for_source(
     .unwrap_or(GamePtr::null())
 }
 
+/// Returns the currently active spell being cast from one source.
 #[inline(always)]
 pub fn current_spell_for_source(actor: &mut Actor, source: CastingSource) -> GamePtr<MagicItem> {
     magic_caster_for_source(actor, source)
@@ -31,11 +37,13 @@ pub fn current_spell_for_source(actor: &mut Actor, source: CastingSource) -> Gam
         })
 }
 
+/// Returns `true` when the source is currently casting a spell.
 #[inline(always)]
 pub fn is_casting_for_source(actor: &mut Actor, source: CastingSource) -> bool {
     current_spell_for_source(actor, source).is_some()
 }
 
+/// Captures a snapshot of one actor casting source.
 pub fn snapshot_casting_source(actor: &mut Actor, source: CastingSource) -> CastingSourceSnapshot {
     let selected_spell = selected_actor_spell(actor, source);
     let caster = magic_caster_for_source(actor, source);
@@ -59,6 +67,9 @@ pub fn snapshot_casting_source(actor: &mut Actor, source: CastingSource) -> Cast
     }
 }
 
+/// Checks whether a spell can be cast from the selected source.
+///
+/// This is the main diagnostic preflight helper before immediate cast flows.
 pub fn check_spell_cast(
     actor: &mut Actor,
     source: CastingSource,
@@ -94,6 +105,7 @@ pub fn check_spell_cast(
     })
 }
 
+/// Returns `true` when the spell can be cast from the selected source.
 #[inline(always)]
 pub fn can_cast_spell(
     actor: &mut Actor,
@@ -104,6 +116,7 @@ pub fn can_cast_spell(
     check_spell_cast(actor, source, spell, dual_cast, false).can_cast
 }
 
+/// Returns the current spell cost for one casting source.
 #[inline(always)]
 pub fn current_spell_cost_for_source(actor: &mut Actor, source: CastingSource) -> f32 {
     with_magic_caster_mut(
@@ -115,6 +128,7 @@ pub fn current_spell_cost_for_source(actor: &mut Actor, source: CastingSource) -
     .unwrap_or(0.0)
 }
 
+/// Returns `true` when the casting source is currently dual-casting.
 #[inline(always)]
 pub fn is_dual_casting_for_source(actor: &mut Actor, source: CastingSource) -> bool {
     magic_caster_for_source(actor, source)
@@ -122,6 +136,7 @@ pub fn is_dual_casting_for_source(actor: &mut Actor, source: CastingSource) -> b
         .is_some_and(crate::re::MagicCaster::get_is_dual_casting)
 }
 
+/// Enables or disables dual-casting for one source.
 pub fn set_dual_casting_for_source(actor: &mut Actor, source: CastingSource, set: bool) -> bool {
     with_magic_caster_mut(
         actor,
@@ -132,6 +147,7 @@ pub fn set_dual_casting_for_source(actor: &mut Actor, source: CastingSource, set
     .is_some()
 }
 
+/// Overrides the current spell assigned to one casting source.
 pub fn set_current_spell_for_source(
     actor: &mut Actor,
     source: CastingSource,
@@ -146,11 +162,13 @@ pub fn set_current_spell_for_source(
     .is_some()
 }
 
+/// Clears the current spell assigned to one casting source.
 #[inline(always)]
 pub fn clear_current_spell_for_source(actor: &mut Actor, source: CastingSource) -> bool {
     set_current_spell_for_source(actor, source, GamePtr::null())
 }
 
+/// Interrupts the current cast on one source.
 pub fn interrupt_cast_for_source(actor: &mut Actor, source: CastingSource, refund: bool) -> bool {
     with_magic_caster_mut(
         actor,
@@ -161,6 +179,7 @@ pub fn interrupt_cast_for_source(actor: &mut Actor, source: CastingSource, refun
     .is_some()
 }
 
+/// Forces the current cast on one source to finish.
 pub fn finish_cast_for_source(actor: &mut Actor, source: CastingSource) -> bool {
     with_magic_caster_mut(
         actor,
@@ -171,6 +190,7 @@ pub fn finish_cast_for_source(actor: &mut Actor, source: CastingSource) -> bool 
     .is_some()
 }
 
+/// Returns `true` when the given spell is the current spell on the source.
 #[inline(always)]
 pub fn is_current_spell_for_source(
     actor: &mut Actor,
@@ -180,6 +200,10 @@ pub fn is_current_spell_for_source(
     current_spell_for_source(actor, source).as_ptr() == spell as *const MagicItem as *mut MagicItem
 }
 
+/// Casts a spell immediately from an arbitrary reference.
+///
+/// This is the core immediate-cast helper; actor-specific wrappers below are
+/// mostly ergonomic adapters around it.
 pub fn cast_spell_immediate(
     caster: &mut TESObjectREFR,
     source: CastingSource,
@@ -219,6 +243,7 @@ pub fn cast_spell_immediate(
     true
 }
 
+/// Casts a spell immediately from a reference onto itself.
 #[inline(always)]
 pub fn cast_spell_immediate_on_self(
     caster: &mut TESObjectREFR,
@@ -230,6 +255,7 @@ pub fn cast_spell_immediate_on_self(
     cast_spell_immediate(caster, source, spell, caster_ptr, options)
 }
 
+/// Casts a spell immediately from a reference onto another reference.
 #[inline(always)]
 pub fn cast_spell_immediate_on_reference(
     caster: &mut TESObjectREFR,
@@ -242,6 +268,7 @@ pub fn cast_spell_immediate_on_reference(
     cast_spell_immediate(caster, source, spell, target, options)
 }
 
+/// Checks castability and then casts immediately from an actor when possible.
 pub fn try_cast_spell_immediate_from_actor(
     actor: &mut Actor,
     source: CastingSource,
@@ -257,6 +284,7 @@ pub fn try_cast_spell_immediate_from_actor(
     check
 }
 
+/// Casts a spell immediately from an actor onto an arbitrary target reference.
 #[inline(always)]
 pub fn cast_spell_immediate_from_actor(
     actor: &mut Actor,
@@ -268,6 +296,7 @@ pub fn cast_spell_immediate_from_actor(
     cast_spell_immediate(&mut actor.base, source, spell, target, options)
 }
 
+/// Casts a spell immediately from an actor onto itself.
 #[inline(always)]
 pub fn cast_spell_immediate_from_actor_on_self(
     actor: &mut Actor,
@@ -278,6 +307,7 @@ pub fn cast_spell_immediate_from_actor_on_self(
     cast_spell_immediate_on_self(&mut actor.base, source, spell, options)
 }
 
+/// Checks castability and then casts immediately from an actor onto itself.
 #[inline(always)]
 pub fn try_cast_spell_immediate_from_actor_on_self(
     actor: &mut Actor,
@@ -289,6 +319,7 @@ pub fn try_cast_spell_immediate_from_actor_on_self(
     try_cast_spell_immediate_from_actor(actor, source, spell, target, options)
 }
 
+/// Casts a spell immediately from one actor onto another actor.
 #[inline(always)]
 pub fn cast_spell_immediate_from_actor_on_actor(
     actor: &mut Actor,
@@ -300,6 +331,7 @@ pub fn cast_spell_immediate_from_actor_on_actor(
     cast_spell_immediate_on_reference(&mut actor.base, source, spell, &target.base, options)
 }
 
+/// Checks castability and then casts immediately from one actor onto another actor.
 #[inline(always)]
 pub fn try_cast_spell_immediate_from_actor_on_actor(
     actor: &mut Actor,

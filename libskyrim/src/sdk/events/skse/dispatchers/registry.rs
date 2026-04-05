@@ -8,7 +8,13 @@ mod sealed {
     pub trait Sealed {}
 }
 
+/// Marker trait for SKSE event families exposed as dispatcher-backed
+/// `BSTEventSource<T>` values.
+///
+/// This keeps the public `dispatchers` helpers limited to event types that are
+/// actually retrievable through the SKSE API storage layer.
 pub trait DispatcherEvent: Sized + sealed::Sealed {
+    /// Returns the raw dispatcher-owned `BSTEventSource<Self>` pointer.
     fn source() -> *mut BSTEventSource<Self>;
 }
 

@@ -3,6 +3,8 @@ use crate::re::{
 };
 use crate::sdk::core::GamePtr;
 
+/// Minimal pathing-cell readiness state shared by concrete and abstract cell
+/// views.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PathingCellState {
     pub type_id: u32,
@@ -12,12 +14,17 @@ pub struct PathingCellState {
 }
 
 impl PathingCellState {
+    /// Whether the cell looks valid, attached, and loaded.
     #[inline(always)]
     pub fn ready(&self) -> bool {
         self.valid && self.attached && self.loaded
     }
 }
 
+/// Extended state snapshot for a concrete `PathingCell`.
+///
+/// Use this when plugin code needs to carry cell/world identifiers alongside
+/// the shared readiness state from [`PathingCellState`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ConcretePathingCellState {
     pub base: PathingCellState,
@@ -26,6 +33,7 @@ pub struct ConcretePathingCellState {
     pub cell_coordinates: CellID,
 }
 
+/// Flat descriptor for one navmesh portal edge.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NavMeshPortalDescriptor {
     pub triangle_index: u16,
@@ -33,6 +41,7 @@ pub struct NavMeshPortalDescriptor {
     pub nav_mesh: GamePtr<NavMesh>,
 }
 
+/// Flat descriptor for a cross-edge navmesh transition.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NavMeshEdgeTransitionDescriptor {
     pub source_triangle_index: u16,
@@ -42,6 +51,10 @@ pub struct NavMeshEdgeTransitionDescriptor {
     pub destination_edge_index: i8,
 }
 
+/// Approximate path summary through the navmesh-info graph.
+///
+/// This stays intentionally heuristic and graph-level: it is useful for plugin
+/// routing decisions, not as a promise of full engine path solvability.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct NavMeshInfoGraphPath {
     pub start_nav_mesh_id: FormID,
@@ -50,12 +63,20 @@ pub struct NavMeshInfoGraphPath {
     pub approximate_cost: f32,
 }
 
+/// Descriptor for a currently loaded pathing cell.
+///
+/// This keeps the original `PathingCellInfo` side-by-side with the retained
+/// smart pointer so pathing code can inspect either metadata or the live cell.
 #[derive(Clone)]
 pub struct LoadedPathingCellDescriptor {
     pub info: PathingCellInfo,
     pub cell: crate::re::BSTSmartPointer<PathingCell>,
 }
 
+/// Descriptor for a recently used pathing cell retained by the runtime.
+///
+/// The `age_stamp` is useful for heuristics that prefer fresh pathing cells
+/// without assuming every recent entry is still loaded.
 #[derive(Clone)]
 pub struct RecentPathingCellDescriptor {
     pub age_stamp: u64,

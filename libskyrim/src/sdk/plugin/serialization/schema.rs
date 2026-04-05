@@ -1,3 +1,52 @@
+//! Declarative schema builders for plugin serialization models.
+//!
+//! This module sits between low-level `cosave` records and the registered-model
+//! runtime in [`super::runtime`]. It answers one question: "how does this
+//! plugin-owned model map onto named records and versions?"
+//!
+//! Decision guide:
+//!
+//! - use [`Schema::value`] when one model field already implements
+//!   [`CosaveEncode`] / [`CosaveDecode`] and can live in its own record;
+//! - use [`Schema::record`] when save/load logic needs a custom binary layout or
+//!   direct access to the whole [`LoadedRecord`];
+//! - use [`Schema::migrating_record`] when one stable record ID must continue to
+//!   accept older on-disk versions during load;
+//! - use [`write_value_record`] for tests or ad-hoc helpers that want one typed
+//!   record without defining a full [`Schema`].
+//!
+//! Typical schema sketch:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::plugin::serialization::{
+//!     self, LoadContext, LoadStatus, LoadedRecord, RecordWriter, Schema,
+//! };
+//!
+//! #[derive(Default)]
+//! struct SaveState {
+//!     counter: u32,
+//!     tags: Vec<String>,
+//! }
+//!
+//! fn build_schema(schema: &mut Schema<SaveState>) {
+//!     schema.value(serialization::record_id!("CNT1"), 1, |s| &s.counter, |s, v| s.counter = v);
+//!
+//!     schema
+//!         .migrating_record(serialization::record_id!("TAGS"), 2, |state, writer| {
+//!             writer.write_value(&state.tags)
+//!         })
+//!         .load(1, |state, record, context| {
+//!             state.tags = record.decode::<Vec<String>>(context)?;
+//!             Ok(LoadStatus::Handled)
+//!         })
+//!         .load(2, |state, record, context| {
+//!             state.tags = record.decode::<Vec<String>>(context)?;
+//!             Ok(LoadStatus::Handled)
+//!         })
+//!         .finish();
+//! }
+//! ```
+
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::marker::PhantomData;
@@ -227,6 +276,11 @@ where
     }
 }
 
+/// Builder returned by [`Schema::migrating_record`] for one record ID that
+/// supports multiple historical load versions.
+///
+/// This is the right tool when a plugin wants to keep one stable record ID but
+/// accept several older on-disk versions during load.
 pub struct MigratingRecordBuilder<'a, T: Send + 'static> {
     schema: Option<&'a mut Schema<T>>,
     record: Option<MigratingRecord<T>>,
@@ -249,6 +303,11 @@ where
         }
     }
 
+    /// Adds a loader for one historical record version.
+    ///
+    /// Register loaders in the versions you still want to accept on disk. The
+    /// current save path always uses the `save_version` passed to
+    /// [`Schema::migrating_record`].
     pub fn load(mut self, version: u32, load: CustomLoadFn<T>) -> Self {
         if let Some(record) = self.record.as_mut() {
             if let Err(error) = record.push_load(version, load) {
@@ -263,6 +322,11 @@ where
         self
     }
 
+    /// Finalizes the builder and returns the parent schema.
+    ///
+    /// Calling this is optional because the builder also auto-finalizes on
+    /// drop, but an explicit `finish()` can make longer schema definitions read
+    /// more clearly.
     pub fn finish(mut self) -> &'a mut Schema<T> {
         let schema = self
             .schema
@@ -290,12 +354,18 @@ where
     }
 }
 
+/// Declarative serialization schema for a plugin [`Model`](super::Model).
+///
+/// Use [`Schema::value`] for plain encoded fields, [`Schema::record`] for
+/// custom binary records, and [`Schema::migrating_record`] when a record ID
+/// needs multiple historical loaders.
 pub struct Schema<T> {
     records: Vec<Box<dyn RecordCodec<T> + Send>>,
     error: Option<SchemaBuildError>,
 }
 
 impl<T> Schema<T> {
+    /// Construct an empty schema builder.
     #[inline(always)]
     pub fn new() -> Self {
         Self {
@@ -304,6 +374,21 @@ impl<T> Schema<T> {
         }
     }
 
+    /// Registers a simple field-backed record.
+    ///
+    /// This is the most common entrypoint for plain value-like model fields
+    /// that already implement [`CosaveEncode`] and [`CosaveDecode`].
+    ///
+    /// ```rust,ignore
+    /// # use libskyrim::sdk::plugin::serialization::{RecordId, Schema};
+    /// #[derive(Default)]
+    /// struct SaveState {
+    ///     counter: u32,
+    /// }
+    ///
+    /// let mut schema = Schema::<SaveState>::new();
+    /// schema.value(RecordId::from_bytes(*b"CNT1"), 1, |s| &s.counter, |s, v| s.counter = v);
+    /// ```
     pub fn value<V>(
         &mut self,
         id: RecordId,
@@ -319,6 +404,39 @@ impl<T> Schema<T> {
         self
     }
 
+    /// Registers a custom save/load record pair.
+    ///
+    /// Use this when a record's binary layout is not a simple one-field value
+    /// or when loading needs direct access to the full [`LoadedRecord`].
+    ///
+    /// ```rust,ignore
+    /// # use libskyrim::sdk::plugin::serialization::{
+    /// #     LoadContext, LoadStatus, LoadedRecord, RecordId, RecordWriter, Schema,
+    /// # };
+    /// #[derive(Default)]
+    /// struct SaveState {
+    ///     first: u32,
+    ///     second: u32,
+    /// }
+    ///
+    /// let mut schema = Schema::<SaveState>::new();
+    /// schema.record(
+    ///     RecordId::from_bytes(*b"PAIR"),
+    ///     1,
+    ///     |state, writer| {
+    ///         writer.write_u32(state.first);
+    ///         writer.write_u32(state.second);
+    ///         Ok(())
+    ///     },
+    ///     |state, record, _context| {
+    ///         let mut reader = record.reader(LoadContext::empty());
+    ///         state.first = reader.read_u32()?;
+    ///         state.second = reader.read_u32()?;
+    ///         reader.finish()?;
+    ///         Ok(LoadStatus::Handled)
+    ///     },
+    /// );
+    /// ```
     pub fn record(
         &mut self,
         id: RecordId,
@@ -333,6 +451,11 @@ impl<T> Schema<T> {
         self
     }
 
+    /// Begins building a versioned custom record with historical loaders.
+    ///
+    /// This is the normal entry point for compatibility-preserving migrations:
+    /// keep one stable record ID for current saves, but accept several historic
+    /// versions during load through [`MigratingRecordBuilder::load`].
     pub fn migrating_record(
         &mut self,
         id: RecordId,
@@ -428,6 +551,18 @@ impl<T> BuiltSchema<T> {
     }
 }
 
+/// Encode a single value as a standalone record without building a full
+/// [`Schema`].
+///
+/// This is useful for tests, ad-hoc utilities, or helper code that wants one
+/// typed record but does not need a full plugin [`Model`](super::Model).
+///
+/// ```rust,ignore
+/// # use libskyrim::sdk::plugin::serialization::{RecordId, write_value_record};
+/// let record = write_value_record(RecordId::from_bytes(*b"CNT1"), 1, &42_u32)?;
+/// assert_eq!(record.header().version(), 1);
+/// # Ok::<(), libskyrim::sdk::plugin::serialization::SaveError>(())
+/// ```
 #[inline(always)]
 pub fn write_value_record<T: CosaveEncode>(
     id: RecordId,

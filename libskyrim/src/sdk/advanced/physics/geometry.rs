@@ -1,10 +1,15 @@
 use crate::re::NiPoint3;
 
+/// Returns the point at `fraction` along the segment `from -> to`.
 #[inline(always)]
 pub fn point_on_segment(from: NiPoint3, to: NiPoint3, fraction: f32) -> NiPoint3 {
     from + (to - from) * fraction
 }
 
+/// Returns a point slightly backed away from a segment hit.
+///
+/// This is useful when a caller wants to place an object or actor just before a
+/// collision point instead of exactly on it.
 #[inline(always)]
 pub fn backoff_point(from: NiPoint3, to: NiPoint3, fraction: f32, distance: f32) -> NiPoint3 {
     let delta = to - from;
@@ -17,6 +22,7 @@ pub fn backoff_point(from: NiPoint3, to: NiPoint3, fraction: f32, distance: f32)
     point_on_segment(from, to, backed_off_fraction)
 }
 
+/// Offsets `point` along the normalized `normal` direction by `distance`.
 #[inline(always)]
 pub fn offset_point_along_normal(point: NiPoint3, normal: NiPoint3, distance: f32) -> NiPoint3 {
     let mut direction = normal;

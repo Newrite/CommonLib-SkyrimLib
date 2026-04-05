@@ -17,10 +17,18 @@ use super::types::{
 };
 
 #[inline(always)]
+/// Returns the live projectile manager singleton.
+///
+/// This is the strict entrypoint when higher-level helpers need direct access
+/// to the engine-owned manager object.
 pub fn singleton() -> GameRef<ProjectileManager> {
     unsafe { GameRef::from_raw(ProjectileManager::get_singleton()) }
 }
 
+/// Snapshot the projectile manager's current handle buckets.
+///
+/// This is the lightest entry point when plugin code wants a broad view of the
+/// manager before deciding whether to resolve live projectiles or not.
 pub fn manager_snapshot() -> ProjectileManagerSnapshot {
     singleton().with(|manager| ProjectileManagerSnapshot {
         unlimited: snapshot_handle_bucket(
@@ -38,10 +46,18 @@ pub fn manager_snapshot() -> ProjectileManagerSnapshot {
     })
 }
 
+/// Resolve all currently managed projectiles reported by the manager.
+///
+/// Prefer this over manual bucket traversal when the next step needs live
+/// `Resolved<Projectile>` values rather than just snapshot metadata.
 pub fn collect_managed_projectiles() -> Vec<Resolved<Projectile>> {
     manager_snapshot().managed_projectiles()
 }
 
+/// Snapshot all currently managed projectiles.
+///
+/// This is the common entry point for diagnostic, targeting, and behavior code
+/// that wants one flat runtime view per projectile.
 pub fn collect_managed_projectile_snapshots() -> Vec<ProjectileSnapshot> {
     collect_managed_projectiles()
         .into_iter()
@@ -49,6 +65,10 @@ pub fn collect_managed_projectile_snapshots() -> Vec<ProjectileSnapshot> {
         .collect()
 }
 
+/// Snapshot only the managed projectiles that satisfy a predicate.
+///
+/// Use this when plugin logic naturally filters projectiles through one
+/// snapshot-driven predicate without needing to hold live `Resolved` values.
 pub fn collect_managed_projectile_snapshots_matching(
     mut predicate: impl FnMut(&ProjectileSnapshot) -> bool,
 ) -> Vec<ProjectileSnapshot> {
@@ -61,6 +81,10 @@ pub fn collect_managed_projectile_snapshots_matching(
     projectiles
 }
 
+/// Find the first managed projectile snapshot satisfying a predicate.
+///
+/// This is a convenience query for "find one interesting projectile" flows
+/// such as nearest/first active behavior scans.
 pub fn find_managed_projectile_snapshot_matching(
     mut predicate: impl FnMut(&ProjectileSnapshot) -> bool,
 ) -> Option<ProjectileSnapshot> {
@@ -73,10 +97,12 @@ pub fn find_managed_projectile_snapshot_matching(
 }
 
 #[inline(always)]
+/// Returns the projectile base form currently attached to one projectile.
 pub fn projectile_base(projectile: &Projectile) -> GamePtr<BGSProjectile> {
     game_ptr(projectile.get_projectile_base())
 }
 
+/// Classify a live projectile into the SDK-facing [`ProjectileKind`] family.
 #[inline(always)]
 pub fn projectile_kind(projectile: &Projectile) -> Option<ProjectileKind> {
     let base = projectile_base(projectile);
@@ -86,55 +112,67 @@ pub fn projectile_kind(projectile: &Projectile) -> Option<ProjectileKind> {
 }
 
 #[inline(always)]
+/// Returns the shooter's recorded handle without resolving it.
 pub fn projectile_shooter_handle(projectile: &Projectile) -> ObjectRefHandle {
     projectile.get_projectile_runtime_data().shooter
 }
 
+/// Resolve the shooter reference currently recorded in one projectile.
 #[inline(always)]
 pub fn projectile_shooter(projectile: &Projectile) -> GamePtr<TESObjectREFR> {
     handle_to_ptr(projectile_shooter_handle(projectile))
 }
 
+/// Resolve the shooter as an actor when that downcast is valid.
 #[inline(always)]
 pub fn projectile_shooter_actor(projectile: &Projectile) -> GamePtr<Actor> {
     projectile_shooter(projectile).try_cast::<Actor>()
 }
 
 #[inline(always)]
+/// Returns the desired target handle without resolving it.
 pub fn projectile_desired_target_handle(projectile: &Projectile) -> ObjectRefHandle {
     projectile.get_projectile_runtime_data().desired_target
 }
 
+/// Resolve the projectile's current desired target reference.
 #[inline(always)]
 pub fn projectile_desired_target(projectile: &Projectile) -> GamePtr<TESObjectREFR> {
     handle_to_ptr(projectile_desired_target_handle(projectile))
 }
 
+/// Resolve the current desired target as an actor when possible.
 #[inline(always)]
 pub fn projectile_desired_target_actor(projectile: &Projectile) -> GamePtr<Actor> {
     projectile_desired_target(projectile).try_cast::<Actor>()
 }
 
+/// Check whether the projectile currently carries any desired target handle.
 #[inline(always)]
+/// Returns whether the projectile currently carries any desired target handle.
 pub fn projectile_has_desired_target(projectile: &Projectile) -> bool {
     projectile_desired_target_handle(projectile).has_value()
 }
 
+/// Resolve the spell source currently recorded in one projectile.
 #[inline(always)]
 pub fn projectile_spell(projectile: &Projectile) -> GamePtr<MagicItem> {
     game_ptr(projectile.get_projectile_runtime_data().spell)
 }
 
+/// Resolve the weapon source currently recorded in one projectile.
 #[inline(always)]
 pub fn projectile_weapon_source(projectile: &Projectile) -> GamePtr<TESObjectWEAP> {
     game_ptr(projectile.get_projectile_runtime_data().weapon_source)
 }
 
+/// Resolve the ammo source currently recorded in one projectile.
 #[inline(always)]
 pub fn projectile_ammo_source(projectile: &Projectile) -> GamePtr<TESAmmo> {
     game_ptr(projectile.get_projectile_runtime_data().ammo_source)
 }
 
+/// Snapshot one projectile base form into a stable SDK-facing value.
 pub fn snapshot_projectile_base(projectile: &BGSProjectile) -> ProjectileBaseSnapshot {
     ProjectileBaseSnapshot {
         projectile: game_ptr(projectile as *const BGSProjectile as *mut BGSProjectile),
@@ -160,10 +198,18 @@ pub fn snapshot_projectile_base(projectile: &BGSProjectile) -> ProjectileBaseSna
 }
 
 #[inline(always)]
+/// Snapshot the current projectile base, if one is attached.
+///
+/// Prefer this over [`snapshot_projectile_base`] when the caller starts from a
+/// live `Projectile` rather than a `BGSProjectile` form.
 pub fn snapshot_projectile_base_of(projectile: &Projectile) -> Option<ProjectileBaseSnapshot> {
     projectile_base(projectile).with(snapshot_projectile_base)
 }
 
+/// Snapshot all stored impact records for one projectile.
+///
+/// This intentionally returns a bounded, defensive snapshot rather than
+/// exposing the raw retained impact pointers directly.
 pub fn snapshot_projectile_impacts(projectile: &Projectile) -> Vec<ProjectileImpactSnapshot> {
     let runtime = projectile.get_projectile_runtime_data();
     let mut impacts = Vec::new();
@@ -184,6 +230,10 @@ pub fn snapshot_projectile_impacts(projectile: &Projectile) -> Vec<ProjectileImp
     impacts
 }
 
+/// Snapshot one live projectile into the main flat runtime result.
+///
+/// This is the main bridge from live `Projectile` references into the SDK's
+/// targeting/behavior/debugging workflows.
 pub fn snapshot_projectile(projectile: &Projectile) -> ProjectileSnapshot {
     let runtime = projectile.get_projectile_runtime_data();
     let base = projectile_base(projectile);

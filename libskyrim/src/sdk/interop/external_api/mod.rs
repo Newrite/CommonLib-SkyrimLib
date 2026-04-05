@@ -10,6 +10,39 @@
 //! - keep the low-level calling convention honest while removing repeated
 //!   Windows boilerplate from plugin code
 //!
+//! Reach for:
+//!
+//! - `request_plugin_api*` when the dependency exports `RequestPluginAPI`
+//! - `request_service*` when the dependency exports one getter-style symbol
+//! - `callback_registrar*` when the dependency exports a register/unregister
+//!   callback pair
+//! - `subscriber*` when the dependency exports one flat subscriber symbol
+//! - `InterfaceLoader*` helpers when negotiation happens through plugin
+//!   messaging instead of exported functions
+//! - `export_plugin_api!` / `export_plugin_symbol!` / provider helpers when
+//!   your plugin is the API provider
+//!
+//! Decision guide:
+//!
+//! - use `request_plugin_api*` for versioned `RequestPluginAPI` exports that
+//!   return one service table or interface pointer
+//! - use `request_service*` for one-off getter-style exports such as
+//!   `GetExampleApi`
+//! - use `callback_registrar*` when the dependency exposes
+//!   `register/unregister` symbol pairs and the plugin wants an RAII-style
+//!   registration token
+//! - use `subscriber*` when the dependency exports one flat subscriber entry
+//!   point instead of a register/unregister pair
+//! - use the `InterfaceLoader*` messaging helpers when the dependency becomes
+//!   ready only after a lifecycle message or explicit handshake
+//!
+//! Correct boundary:
+//!
+//! This module loads and organizes inter-plugin APIs, but it does not remove
+//! the need for a plugin-local C++ shim when the external API itself is a
+//! non-flat C++ interface using `virtual`, `std::function`, `std::vector`, or
+//! overloaded methods.
+//!
 //! Example:
 //!
 //! ```rust,ignore
@@ -66,6 +99,29 @@
 //!     pub as "GetExampleApi" fn get_example_api() -> ExampleApi {
 //!         Some(&EXAMPLE_API_V1)
 //!     }
+//! }
+//! ```
+//!
+//! Flat callback export pattern:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::interop::external_api;
+//!
+//! type HudCallback = unsafe extern "system" fn(i32);
+//!
+//! unsafe extern "system" fn on_hud_mode_changed(_mode: i32) {}
+//!
+//! fn install_dependency_callback() -> Result<(), external_api::SymbolError> {
+//!     let registrar = unsafe {
+//!         external_api::callback_registrar_for_plugin::<HudCallback, u32>(
+//!             "SomeHudPlugin",
+//!             "RegisterHudCallback",
+//!             "UnregisterHudCallback",
+//!         )?
+//!     };
+//!
+//!     let _registration = unsafe { registrar.register(on_hud_mode_changed) };
+//!     Ok(())
 //! }
 //! ```
 

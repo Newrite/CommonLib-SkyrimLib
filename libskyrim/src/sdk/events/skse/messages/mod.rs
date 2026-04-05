@@ -3,6 +3,29 @@
 //! This domain remains distinct from ordinary `BSTEventSource<T>` subscriptions
 //! because `MessagingInterface::RegisterListener` is install-once style and
 //! does not offer the same RAII removal semantics as engine event sinks.
+//!
+//! Most plugins only need one of two entry styles:
+//!
+//! - [`on`] / [`on_sender`] when listening to one concrete [`MessageKind`]
+//! - [`on_plugin_phase`] / [`on_game_lifecycle`] when the plugin wants the
+//!   higher-level SDK lifecycle vocabulary from [`crate::sdk::core::phase`]
+//!
+//! Example:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::core::{GameLifecyclePhase, PluginLifecyclePhase};
+//! use libskyrim::sdk::events::skse::messages;
+//!
+//! fn install_lifecycle_hooks() {
+//!     let _plugin = messages::on_plugin_phase(PluginLifecyclePhase::DataLoaded, |_message| {
+//!         // late bootstrap
+//!     });
+//!
+//!     let _game = messages::on_game_lifecycle(GameLifecyclePhase::PostLoadGame, |_message| {
+//!         // save-dependent refresh
+//!     });
+//! }
+//! ```
 
 mod listen;
 mod types;

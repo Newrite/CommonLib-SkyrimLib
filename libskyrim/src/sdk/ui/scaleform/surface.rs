@@ -17,6 +17,10 @@ pub struct MenuSurface {
 }
 
 impl MenuSurface {
+    /// Wraps one live `IMenu` pointer as a Scaleform-capable menu surface.
+    ///
+    /// Returns `None` when the pointer is null, so callers can keep lookup-style
+    /// flows instead of carrying a nullable owner around manually.
     #[inline(always)]
     pub fn from_menu(menu: GPtr<IMenu>) -> Option<Self> {
         if menu.is_null() {
@@ -26,11 +30,17 @@ impl MenuSurface {
         }
     }
 
+    /// Looks up one currently open menu surface by menu name.
+    ///
+    /// This is the owner-backed variant of the top-level
+    /// `sdk::ui::scaleform::surface(...)` helper and is most useful once the
+    /// caller wants to keep reusing the same resolved menu/movie/delegate trio.
     #[inline(always)]
     pub fn lookup(menu_name: &str) -> Option<Self> {
         Self::from_menu(menus::menu(menu_name))
     }
 
+    /// Typed variant of [`lookup`](Self::lookup).
     #[inline(always)]
     pub fn lookup_named<M>() -> Option<Self>
     where
@@ -39,86 +49,110 @@ impl MenuSurface {
         Self::lookup(M::MENU_NAME)
     }
 
+    /// Returns the top-most menu surface up to the given depth limit.
+    ///
+    /// Use this when the workflow is intentionally focused on the active top-most
+    /// menu rather than a known named menu.
     #[inline(always)]
     pub fn top_most(depth_limit: u32) -> Option<Self> {
         Self::from_menu(menus::top_most_menu(depth_limit))
     }
 
+    /// Returns the top-most menu surface using the default menu depth limit.
     #[inline(always)]
     pub fn top_most_default() -> Option<Self> {
         Self::top_most(menus::DEFAULT_TOP_MOST_MENU_DEPTH_LIMIT)
     }
 
+    /// Returns the owning `IMenu` smart pointer.
     #[inline(always)]
     pub fn menu_owner(&self) -> &GPtr<IMenu> {
         &self.menu
     }
 
+    /// Returns the owning menu as a borrowed `IMenu`.
     #[inline(always)]
     pub fn menu(&self) -> &IMenu {
         &self.menu
     }
 
+    /// Returns the raw owner pointer.
     #[inline(always)]
     pub fn menu_ptr(&self) -> *mut IMenu {
         self.menu.as_ptr()
     }
 
+    /// Consumes the surface and returns the owning smart pointer.
     #[inline(always)]
     pub fn into_menu(self) -> GPtr<IMenu> {
         self.menu
     }
 
+    /// Returns whether the owning menu is still on the UI stack.
     #[inline(always)]
     pub fn is_open(&self) -> bool {
         self.menu.on_stack()
     }
 
+    /// Returns whether the menu pauses gameplay while open.
     #[inline(always)]
     pub fn pauses_game(&self) -> bool {
         self.menu.pauses_game()
     }
 
+    /// Returns whether the menu currently uses the cursor.
     #[inline(always)]
     pub fn uses_cursor(&self) -> bool {
         self.menu.uses_cursor()
     }
 
+    /// Returns whether the menu updates cursor usage dynamically.
     #[inline(always)]
     pub fn update_uses_cursor(&self) -> bool {
         self.menu.update_uses_cursor()
     }
 
+    /// Returns whether the menu behaves as a modal surface.
     #[inline(always)]
     pub fn modal(&self) -> bool {
         self.menu.modal()
     }
 
+    /// Returns whether the menu currently exposes a `GFxMovieView`.
     #[inline(always)]
     pub fn has_movie_view(&self) -> bool {
         !self.menu.ui_movie.is_null()
     }
 
+    /// Returns the menu's `GFxMovieView`, if any.
+    ///
+    /// The returned `GPtr` may still be null; use [`has_movie_view`](Self::has_movie_view)
+    /// or one of the `is_available`/`invoke` helpers when the caller wants the
+    /// warning-on-missing-surface path instead.
     #[inline(always)]
     pub fn movie_view(&self) -> GPtr<GFxMovieView> {
         self.menu.ui_movie.clone()
     }
 
+    /// Returns the raw `GFxMovieView` pointer.
     #[inline(always)]
     pub fn movie_view_ptr(&self) -> *mut GFxMovieView {
         self.menu.ui_movie.as_ptr()
     }
 
+    /// Returns whether the menu currently exposes an `FxDelegate`.
     #[inline(always)]
     pub fn has_delegate(&self) -> bool {
         !self.menu.fx_delegate.is_null()
     }
 
+    /// Returns the menu's `FxDelegate`, if any.
     #[inline(always)]
     pub fn fx_delegate(&self) -> GPtr<FxDelegate> {
         self.menu.fx_delegate.clone()
     }
 
+    /// Returns the raw `FxDelegate` pointer.
     #[inline(always)]
     pub fn fx_delegate_ptr(&self) -> *mut FxDelegate {
         self.menu.fx_delegate.as_ptr()
@@ -138,6 +172,7 @@ impl MenuSurface {
         Some(f(movie))
     }
 
+    /// Returns whether the menu surface exposes one variable or path.
     #[inline(always)]
     pub fn is_available_c_str(&self, path: &CStr) -> bool {
         self.with_movie_view(
@@ -147,6 +182,7 @@ impl MenuSurface {
         .unwrap_or(false)
     }
 
+    /// UTF-8/C-string-checked variant of [`is_available_c_str`](Self::is_available_c_str).
     #[inline(always)]
     pub fn is_available(&self, path: &str) -> Result<bool, NulError> {
         with_cstring(
@@ -156,6 +192,7 @@ impl MenuSurface {
         )
     }
 
+    /// Reads one variable into the caller-provided output slot.
     #[inline(always)]
     pub fn get_variable_c_str(&self, path: &CStr, value: &mut GFxValue) -> bool {
         self.with_movie_view(
@@ -165,6 +202,7 @@ impl MenuSurface {
         .unwrap_or(false)
     }
 
+    /// UTF-8/C-string-checked variant of [`get_variable_c_str`](Self::get_variable_c_str).
     #[inline(always)]
     pub fn get_variable(&self, path: &str, value: &mut GFxValue) -> Result<bool, NulError> {
         with_cstring(
@@ -174,12 +212,14 @@ impl MenuSurface {
         )
     }
 
+    /// Returns one variable value by value when the path exists.
     #[inline(always)]
     pub fn variable_c_str(&self, path: &CStr) -> Option<GFxValue> {
         let mut value = GFxValue::default();
         self.get_variable_c_str(path, &mut value).then_some(value)
     }
 
+    /// UTF-8/C-string-checked variant of [`variable_c_str`](Self::variable_c_str).
     #[inline(always)]
     pub fn variable(&self, path: &str) -> Result<Option<GFxValue>, NulError> {
         with_cstring(
@@ -189,6 +229,7 @@ impl MenuSurface {
         )
     }
 
+    /// Writes one `GFxValue` to the target path.
     #[inline(always)]
     pub fn set_variable_c_str(
         &self,
@@ -203,6 +244,7 @@ impl MenuSurface {
         .unwrap_or(false)
     }
 
+    /// UTF-8/C-string-checked variant of [`set_variable_c_str`](Self::set_variable_c_str).
     #[inline(always)]
     pub fn set_variable(
         &self,
@@ -217,6 +259,7 @@ impl MenuSurface {
         )
     }
 
+    /// Bool convenience variant of [`set_variable_c_str`](Self::set_variable_c_str).
     #[inline(always)]
     pub fn set_variable_bool_c_str(
         &self,
@@ -227,6 +270,7 @@ impl MenuSurface {
         self.set_variable_c_str(path, &GFxValue::from_bool(value), set_type)
     }
 
+    /// UTF-8/C-string-checked variant of [`set_variable_bool_c_str`](Self::set_variable_bool_c_str).
     #[inline(always)]
     pub fn set_variable_bool(
         &self,
@@ -241,6 +285,7 @@ impl MenuSurface {
         )
     }
 
+    /// Number convenience variant of [`set_variable_c_str`](Self::set_variable_c_str).
     #[inline(always)]
     pub fn set_variable_number_c_str(
         &self,
@@ -251,6 +296,8 @@ impl MenuSurface {
         self.set_variable_c_str(path, &GFxValue::from_number(value), set_type)
     }
 
+    /// UTF-8/C-string-checked variant of
+    /// [`set_variable_number_c_str`](Self::set_variable_number_c_str).
     #[inline(always)]
     pub fn set_variable_number(
         &self,
@@ -265,6 +312,7 @@ impl MenuSurface {
         )
     }
 
+    /// Invokes one Scaleform method with an optional return slot.
     #[inline(always)]
     pub fn invoke_c_str(
         &self,
@@ -283,6 +331,7 @@ impl MenuSurface {
         .unwrap_or(false)
     }
 
+    /// UTF-8/C-string-checked variant of [`invoke_c_str`](Self::invoke_c_str).
     #[inline(always)]
     pub fn invoke(
         &self,
@@ -297,11 +346,15 @@ impl MenuSurface {
         )
     }
 
+    /// Convenience variant of [`invoke_c_str`](Self::invoke_c_str) for methods
+    /// without arguments.
     #[inline(always)]
     pub fn invoke_no_args_c_str(&self, method_name: &CStr, result: Option<&mut GFxValue>) -> bool {
         self.invoke_c_str(method_name, result, &[])
     }
 
+    /// UTF-8/C-string-checked variant of
+    /// [`invoke_no_args_c_str`](Self::invoke_no_args_c_str).
     #[inline(always)]
     pub fn invoke_no_args(
         &self,
@@ -315,6 +368,7 @@ impl MenuSurface {
         )
     }
 
+    /// Invokes one Scaleform method and discards the return value.
     #[inline(always)]
     pub fn invoke_no_return_c_str(&self, method_name: &CStr, args: &[GFxValue]) -> bool {
         self.with_movie_view(
@@ -326,6 +380,8 @@ impl MenuSurface {
         .is_some()
     }
 
+    /// UTF-8/C-string-checked variant of
+    /// [`invoke_no_return_c_str`](Self::invoke_no_return_c_str).
     #[inline(always)]
     pub fn invoke_no_return(&self, method_name: &str, args: &[GFxValue]) -> Result<bool, NulError> {
         with_cstring(

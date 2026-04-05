@@ -1,8 +1,4 @@
-//! High-level Rust-first SDK layer built on top of `re` and `skse`.
-//!
-//! This namespace is intentionally domain-oriented. It is the home for
-//! ergonomic, consumer-facing helpers that compose the low-level ABI layers
-//! instead of mirroring them one-to-one.
+#![doc = include_str!("OVERVIEW.md")]
 
 pub mod advanced;
 pub mod core;

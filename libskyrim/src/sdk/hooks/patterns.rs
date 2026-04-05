@@ -32,6 +32,9 @@ pub fn reserve_thunk_stubs(count: usize) {
 }
 
 /// Install one C++-style thunk call patch and return the original function address.
+///
+/// This mirrors the common `write_call<5/6>` pattern used in manual
+/// CommonLib-style hooks.
 #[inline(always)]
 pub fn write_thunk_call<const N: usize, A: TryIntoAddress>(
     src: A,
@@ -41,6 +44,9 @@ pub fn write_thunk_call<const N: usize, A: TryIntoAddress>(
 }
 
 /// Install one C++-style thunk branch patch and return the original function address.
+///
+/// This mirrors the common `write_branch<5/6>` pattern used in manual
+/// CommonLib-style hooks.
 #[inline(always)]
 pub fn write_thunk_branch<const N: usize, A: TryIntoAddress>(
     src: A,
@@ -50,6 +56,9 @@ pub fn write_thunk_branch<const N: usize, A: TryIntoAddress>(
 }
 
 /// Install one C++-style thunk vfunc patch and return the original function address.
+///
+/// Use this when the original C++ code patches a vtable slot and stores the
+/// previous target as an original function pointer.
 #[inline(always)]
 pub fn write_thunk_vfunc<A: TryIntoAddress, I: TryIntoOffset>(
     vtable_addr: A,
@@ -59,6 +68,7 @@ pub fn write_thunk_vfunc<A: TryIntoAddress, I: TryIntoOffset>(
     patch::write_vfunc(vtable_addr, index, thunk)
 }
 
+/// Convenience wrapper for a 5-byte thunk call patch.
 #[inline(always)]
 pub fn write_thunk_call5<A: TryIntoAddress>(
     src: A,
@@ -67,6 +77,7 @@ pub fn write_thunk_call5<A: TryIntoAddress>(
     write_thunk_call::<5, _>(src, thunk)
 }
 
+/// Convenience wrapper for a 6-byte thunk call patch.
 #[inline(always)]
 pub fn write_thunk_call6<A: TryIntoAddress>(
     src: A,
@@ -75,6 +86,7 @@ pub fn write_thunk_call6<A: TryIntoAddress>(
     write_thunk_call::<6, _>(src, thunk)
 }
 
+/// Convenience wrapper for a 5-byte thunk branch patch.
 #[inline(always)]
 pub fn write_thunk_branch5<A: TryIntoAddress>(
     src: A,
@@ -83,6 +95,7 @@ pub fn write_thunk_branch5<A: TryIntoAddress>(
     write_thunk_branch::<5, _>(src, thunk)
 }
 
+/// Convenience wrapper for a 6-byte thunk branch patch.
 #[inline(always)]
 pub fn write_thunk_branch6<A: TryIntoAddress>(
     src: A,
@@ -107,6 +120,9 @@ pub unsafe fn store_original_fn<F: Copy>(slot: &mut F, address: usize) {
 /// # Safety
 ///
 /// `original` must be a function-pointer-like ABI type whose size matches `usize`.
+///
+/// This is the most direct translation of the common C++ pattern
+/// `T::func = trampoline.write_call(...);`.
 pub unsafe fn install_thunk_call<const N: usize, A: TryIntoAddress, F: Copy>(
     src: A,
     thunk: usize,
@@ -122,6 +138,9 @@ pub unsafe fn install_thunk_call<const N: usize, A: TryIntoAddress, F: Copy>(
 /// # Safety
 ///
 /// `original` must be a function-pointer-like ABI type whose size matches `usize`.
+///
+/// This is the most direct translation of the common C++ pattern
+/// `T::func = trampoline.write_branch(...);`.
 pub unsafe fn install_thunk_branch<const N: usize, A: TryIntoAddress, F: Copy>(
     src: A,
     thunk: usize,
@@ -137,6 +156,9 @@ pub unsafe fn install_thunk_branch<const N: usize, A: TryIntoAddress, F: Copy>(
 /// # Safety
 ///
 /// `original` must be a function-pointer-like ABI type whose size matches `usize`.
+///
+/// This is the most direct translation of the common C++ pattern
+/// `T::func = REL::Relocation::write_vfunc(...);`.
 pub unsafe fn install_thunk_vfunc<A: TryIntoAddress, I: TryIntoOffset, F: Copy>(
     vtable_addr: A,
     index: I,
@@ -148,6 +170,7 @@ pub unsafe fn install_thunk_vfunc<A: TryIntoAddress, I: TryIntoOffset, F: Copy>(
     Ok(())
 }
 
+/// Convenience wrapper for [`install_thunk_call`] with a 5-byte patch width.
 #[inline(always)]
 pub unsafe fn install_thunk_call5<A: TryIntoAddress, F: Copy>(
     src: A,
@@ -157,6 +180,7 @@ pub unsafe fn install_thunk_call5<A: TryIntoAddress, F: Copy>(
     unsafe { install_thunk_call::<5, _, _>(src, thunk, original) }
 }
 
+/// Convenience wrapper for [`install_thunk_call`] with a 6-byte patch width.
 #[inline(always)]
 pub unsafe fn install_thunk_call6<A: TryIntoAddress, F: Copy>(
     src: A,
@@ -166,6 +190,7 @@ pub unsafe fn install_thunk_call6<A: TryIntoAddress, F: Copy>(
     unsafe { install_thunk_call::<6, _, _>(src, thunk, original) }
 }
 
+/// Convenience wrapper for [`install_thunk_branch`] with a 5-byte patch width.
 #[inline(always)]
 pub unsafe fn install_thunk_branch5<A: TryIntoAddress, F: Copy>(
     src: A,
@@ -175,6 +200,7 @@ pub unsafe fn install_thunk_branch5<A: TryIntoAddress, F: Copy>(
     unsafe { install_thunk_branch::<5, _, _>(src, thunk, original) }
 }
 
+/// Convenience wrapper for [`install_thunk_branch`] with a 6-byte patch width.
 #[inline(always)]
 pub unsafe fn install_thunk_branch6<A: TryIntoAddress, F: Copy>(
     src: A,

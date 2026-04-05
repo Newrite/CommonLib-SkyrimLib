@@ -48,6 +48,7 @@ pub struct EventSourceRef<'a, T> {
 }
 
 impl<'a, T> EventSourceRef<'a, T> {
+    /// Construct a borrowed wrapper around one known-live event source.
     #[inline(always)]
     pub fn new(source: &'a mut BSTEventSource<T>) -> Self {
         Self {
@@ -58,6 +59,8 @@ impl<'a, T> EventSourceRef<'a, T> {
 
     /// # Safety
     /// `source` must remain valid for the full `'a` lifetime.
+    ///
+    /// Prefer [`Self::new`] whenever a normal mutable borrow is available.
     #[inline(always)]
     pub unsafe fn from_raw(source: *mut BSTEventSource<T>) -> Result<Self, EventInstallError> {
         let Some(source) = NonNull::new(source) else {
@@ -70,11 +73,16 @@ impl<'a, T> EventSourceRef<'a, T> {
         })
     }
 
+    /// Returns the wrapped raw source pointer.
     #[inline(always)]
     pub fn as_ptr(self) -> *mut BSTEventSource<T> {
         self.source.as_ptr()
     }
 
+    /// Subscribes one callback at the end of the source sink list.
+    ///
+    /// This is the usual choice when the new sink should observe events after
+    /// existing engine or plugin listeners.
     #[inline(always)]
     pub fn subscribe<F, R>(self, callback: F) -> Result<EventSubscription<'a, T>, EventInstallError>
     where
@@ -84,6 +92,10 @@ impl<'a, T> EventSourceRef<'a, T> {
         unsafe { subscribe_with_order(self.source.as_ptr(), callback, SubscriptionOrder::Append) }
     }
 
+    /// Subscribes one callback at the front of the source sink list.
+    ///
+    /// Use this when the callback should observe or veto events before later
+    /// sinks see them.
     #[inline(always)]
     pub fn prepend<F, R>(self, callback: F) -> Result<EventSubscription<'a, T>, EventInstallError>
     where
@@ -102,9 +114,14 @@ impl<'a, T> From<&'a mut BSTEventSource<T>> for EventSourceRef<'a, T> {
 }
 
 /// Ergonomic extension trait for owner-bound `BSTEventSource<T>` values.
+///
+/// This keeps common owner-side flows concise by letting callers subscribe
+/// directly on the source value they already borrowed from the engine.
 pub trait EventSourceExt<T> {
+    /// Borrow this source as an [`EventSourceRef`].
     fn event_source_ref(&mut self) -> EventSourceRef<'_, T>;
 
+    /// Subscribe at the end of the sink list.
     fn subscribe_sdk<F, R>(
         &mut self,
         callback: F,
@@ -113,6 +130,7 @@ pub trait EventSourceExt<T> {
         F: FnMut(Option<&T>) -> R + 'static,
         R: IntoEventFlow;
 
+    /// Subscribe at the front of the sink list.
     fn prepend_sdk<F, R>(
         &mut self,
         callback: F,
@@ -154,6 +172,10 @@ impl<T> EventSourceExt<T> for BSTEventSource<T> {
 }
 
 /// RAII handle for a subscription installed on an engine `BSTEventSource<T>`.
+///
+/// Dropping this handle automatically removes the owned sink from the source,
+/// which keeps closure-based subscriptions honest without requiring a separate
+/// unregister call.
 pub struct EventSubscription<'a, T> {
     source: NonNull<BSTEventSource<T>>,
     sink: OwnedBSTEventSink<T, ClosureEventHandler<T>>,
@@ -161,11 +183,13 @@ pub struct EventSubscription<'a, T> {
 }
 
 impl<T> EventSubscription<'_, T> {
+    /// Returns the source pointer this subscription is attached to.
     #[inline(always)]
     pub fn source_ptr(&self) -> *mut BSTEventSource<T> {
         self.source.as_ptr()
     }
 
+    /// Returns the sink pointer owned by this subscription.
     #[inline(always)]
     pub fn sink_ptr(&self) -> *mut crate::re::BSTEventSink<T> {
         self.sink.as_ptr()
@@ -215,7 +239,7 @@ where
     })
 }
 
-/// Register a Rust closure on a raw `BSTEventSource<T>`.
+/// Registers a Rust closure on a raw `BSTEventSource<T>`.
 ///
 /// # Safety
 /// `source` must remain a valid `BSTEventSource<T>` pointer until the returned
@@ -232,7 +256,7 @@ where
     unsafe { subscribe_with_order(source, callback, SubscriptionOrder::Append) }
 }
 
-/// Register a Rust closure at the front of a raw `BSTEventSource<T>`.
+/// Registers a Rust closure at the front of a raw `BSTEventSource<T>`.
 ///
 /// # Safety
 /// `source` must remain a valid `BSTEventSource<T>` pointer until the returned

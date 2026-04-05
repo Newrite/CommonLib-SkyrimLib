@@ -6,7 +6,7 @@
 
 # SDK Memory
 
-Last updated: 2026-04-04
+Last updated: 2026-04-05
 
 This file is a persistent working memory for `libskyrim/src/sdk`.
 
@@ -552,17 +552,22 @@ Current SDK already has meaningful foundations in:
 - advanced VM lookup / dispatch helpers
 - advanced physics / raycast helpers
 - external plugin API and plugin-to-plugin messaging layers
+- broad rustdoc / cookbook / archetype-guided onboarding across most SDK domains
 
 Current weak or placeholder areas:
 
-- deeper widget / notification / HUD synchronization helpers
-- provider-side service registries above the current `sdk::interop::external_api`
-  publication helpers
+- direct config-to-form workflow bridges above `sdk::forms` and
+  `sdk::plugin::config`
+- plugin-shaped UI observer/install glue and mod-specific widget registries on
+  top of the now-real `sdk::ui::{widgets, hud_runtime, driver, controller}`
+  layer
 - higher-level hook recipes and policy-driven install flows beyond the current
   attribute / trampoline / patch surface
 - broader `sdk::advanced::{render, scene}` coverage
 - deeper `sdk::advanced::vm` workflows beyond the current lookup/property/
   dispatch toolkit
+- deeper end-to-end plugin examples beyond the current overview/README
+  skeletons and recipe gallery
 
 ## Progress Notes
 
@@ -915,6 +920,10 @@ The next wave of cross-cutting SDK work is no longer hypothetical:
   helpers, and handle-first deferred resolution
 - `sdk::ui::notifications`
   real HUD notification/message builders instead of a placeholder
+- `sdk::ui::{widgets, hud_runtime, driver}`
+  menu-owned widget runtime, HUD visibility/refresh orchestration, and
+  menu-event/policy/task driver glue over `menus`, `controls`, and
+  `scaleform`
 - `sdk::gameplay::projectiles`
   manager snapshots, launch helpers, target acquisition, intercept
   prediction, desired-target maintenance, and steering behavior helpers
@@ -927,30 +936,78 @@ The next wave of cross-cutting SDK work is no longer hypothetical:
 
 This moves the center of gravity again:
 
-- widget/HUD synchronization remains important, but the SDK now already has
-  the notification and phase primitives it needs
+- broad widget/HUD synchronization is no longer the main gap; the SDK now has
+  a real menu-owned runtime layer plus driver glue
 - higher-level interop registrars and provider-side service patterns stand out
   more clearly as a next cross-cutting gap
 - `advanced::render` / `advanced::scene` and deeper hook/VM workflows now
   outrank "add any projectile/input surface at all"
 
+### 2026-04-04: Papyrus direct-registration and rustdoc pass landed
+
+Two narrower but important gaps also closed:
+
+- `sdk::papyrus` now has an explicit lightweight direct-registration path for
+  the repeated `Bind(VM*) -> RegisterFunction(...)` style visible in
+  `NavigationRestrictions`, `PapyrusTweaks`, and many smaller utility plugins:
+  - `PapyrusScript`
+  - `register_script::<T>()`
+  - `papyrus_script!`
+  - `Registry<'_>::register_*_with_options(...)`
+  - `Registry<'_>::register_tasklet_* (...)`
+- the SDK now has a real rustdoc-facing documentation layer instead of relying
+  mostly on README/memory notes:
+  - `sdk/OVERVIEW.md`
+  - expanded domain `mod.rs` docs for `core`, `plugin`, `papyrus`, `forms`,
+    `gameplay`, `interop`, `ui`, and `advanced`
+
+This changes the remaining `sdk::papyrus` gap:
+
+- the main issue is no longer "missing direct registration path"
+- the next need is cookbook/examples coverage explaining when to choose
+  `PapyrusScript`, `PapyrusModule`, or persistent event sets
+
+### 2026-04-05: archetype-guided onboarding and broad cookbook coverage landed
+
+The SDK documentation is no longer just a set of scattered module notes.
+
+What landed across the last documentation pass:
+
+- broad rustdoc coverage for the main public entrypoints in `core`, `plugin`,
+  `papyrus`, `forms`, `gameplay`, `interop`, `ui`, `events`, `hooks`, and
+  `advanced`
+- recipe-style snippets embedded directly into high-value `mod.rs` files
+- `sdk/OVERVIEW.md` expanded into a real orientation guide with plugin
+  archetypes and a recipe gallery
+- `sdk/README.md` now includes minimal end-to-end skeletons for common plugin
+  shapes such as Papyrus utility, event-driven gameplay, UI/HUD, external API
+  bridge, and spatial/respawn plugins
+
+This changes the documentation gap:
+
+- the main remaining issue is no longer "the SDK lacks onboarding docs"
+- the next documentation work should focus on deeper end-to-end recipes and a
+  few plugin-shaped examples for the trickier workflow seams
+
 ## Recommended Near-Term SDK Backlog
 
 Priority order as of this pass:
 
-1. Add higher-level interop registrars and provider-side service patterns above
-   the current `external_api` publication/export helpers.
-2. Deepen widget/HUD synchronization on top of `ui::controls`,
-   `ui::notifications`, `ui::menus`, and `ui::scaleform`.
-3. Continue the deeper `sdk::ui::scaleform` object/member and callback pass
-   once the more repeated widget/HUD gaps above are covered.
+1. Add direct config-to-form workflow helpers on top of `sdk::forms` and
+   `sdk::plugin::config`.
+2. Continue auditing and deepening `sdk::gameplay::projectiles` plus
+   `sdk::advanced::physics` against `NewProjectilesTMP`-style behavior systems.
+3. Add plugin-shaped UI observer/install glue and a few reusable widget
+   registry patterns on top of `ui::{widgets, hud_runtime, driver,
+   controller}`.
 4. Continue broadening `sdk::hooks` beyond the current attribute / trampoline /
    patch / thunk-install surface when real install recipes repeat.
 5. Deepen `sdk::advanced::vm` with richer lifecycle/runtime glue once repeated
-   plugin-side patterns become clearer.
-6. Keep broadening `sdk::advanced::physics` and `sdk::gameplay::projectiles`
-   where new gameplay helpers still need lower-level collision or steering
-   support.
+   Papyrus-heavy plugin patterns become clearer.
+6. Keep expanding documentation through deeper end-to-end recipes rather than
+   more broad onboarding overviews.
+7. Leave `sdk::advanced::{render, scene}` for later, after collecting stronger
+   plugin evidence.
 
 ### 2026-03-31: respawn / spatial-query backlog clarified
 

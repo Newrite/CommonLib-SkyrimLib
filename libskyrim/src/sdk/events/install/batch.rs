@@ -21,6 +21,7 @@ pub struct EventBatch<'a> {
 }
 
 impl<'a> EventBatch<'a> {
+    /// Construct an empty batch owner.
     #[inline(always)]
     pub const fn new() -> Self {
         Self {
@@ -28,20 +29,27 @@ impl<'a> EventBatch<'a> {
         }
     }
 
+    /// Number of installed event recipes currently retained by the batch.
     #[inline(always)]
     pub fn len(&self) -> usize {
         self.installed.len()
     }
 
+    /// Whether the batch currently retains no event subscriptions.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.installed.is_empty()
     }
 
+    /// Iterate the stable names of all installed recipes in insertion order.
     pub fn names(&self) -> impl Iterator<Item = &'static str> + '_ {
         self.installed.iter().map(InstalledEvent::name)
     }
 
+    /// Install one raw SKSE message listener into the batch.
+    ///
+    /// Prefer the more specific lifecycle helpers when message kind alone is
+    /// not the true intent of the callback.
     #[inline(always)]
     pub fn message<F>(&mut self, name: &'static str, kind: MessageKind, callback: F) -> &mut Self
     where
@@ -55,6 +63,7 @@ impl<'a> EventBatch<'a> {
         self
     }
 
+    /// Installs one SKSE message listener gated by a predicate.
     pub fn message_filtered<P, F>(
         &mut self,
         name: &'static str,
@@ -74,6 +83,7 @@ impl<'a> EventBatch<'a> {
         self
     }
 
+    /// Install one sender-filtered SKSE message listener into the batch.
     #[inline(always)]
     pub fn message_sender_str<F>(
         &mut self,
@@ -110,6 +120,7 @@ impl<'a> EventBatch<'a> {
         self
     }
 
+    /// Install one sender-filtered plugin-phase listener.
     #[inline(always)]
     pub fn message_plugin_phase_sender_str<F>(
         &mut self,
@@ -147,6 +158,7 @@ impl<'a> EventBatch<'a> {
         self
     }
 
+    /// Install one sender-filtered game-lifecycle listener.
     #[inline(always)]
     pub fn message_game_lifecycle_sender_str<F>(
         &mut self,
@@ -185,6 +197,7 @@ impl<'a> EventBatch<'a> {
         self
     }
 
+    /// Install one sender-filtered lifecycle listener.
     #[inline(always)]
     pub fn message_lifecycle_sender_str<F>(
         &mut self,
@@ -205,6 +218,7 @@ impl<'a> EventBatch<'a> {
         self
     }
 
+    /// Installs one gameplay event sink and retains its RAII subscription.
     pub fn game<E, F, R>(
         &mut self,
         name: &'static str,
@@ -220,6 +234,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Install one gameplay event sink at the front of the sink chain.
     pub fn prepend_game<E, F, R>(
         &mut self,
         name: &'static str,
@@ -250,6 +265,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Install one UI event sink at the front of the sink chain.
     pub fn prepend_ui<E, F, R>(
         &mut self,
         name: &'static str,
@@ -280,6 +296,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one dispatcher event sink at the front of the sink chain.
     pub fn prepend_dispatcher<E, F, R>(
         &mut self,
         name: &'static str,
@@ -295,6 +312,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one input-chain listener and retains its RAII subscription.
     pub fn input<F, R>(
         &mut self,
         name: &'static str,
@@ -309,6 +327,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one input-chain listener at the front of the sink chain.
     pub fn prepend_input<F, R>(
         &mut self,
         name: &'static str,
@@ -325,6 +344,9 @@ impl<'a> EventBatch<'a> {
 
     /// # Safety
     /// `source_ptr` must remain valid until this batch is dropped.
+    ///
+    /// Prefer [`Self::source_ref`] when the caller already has a borrowed
+    /// source and does not need a raw pointer entrypoint.
     pub unsafe fn source<T, F, R>(
         &mut self,
         name: &'static str,
@@ -343,6 +365,9 @@ impl<'a> EventBatch<'a> {
 
     /// # Safety
     /// `source_ptr` must remain valid until this batch is dropped.
+    ///
+    /// Prefer [`Self::prepend_source_ref`] when the caller already has a
+    /// borrowed source and does not need a raw pointer entrypoint.
     pub unsafe fn prepend_source<T, F, R>(
         &mut self,
         name: &'static str,
@@ -359,6 +384,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one subscription on a borrowed known-live event source.
     pub fn source_ref<T, F, R>(
         &mut self,
         name: &'static str,
@@ -376,6 +402,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one front-of-chain subscription on a borrowed known-live source.
     pub fn prepend_source_ref<T, F, R>(
         &mut self,
         name: &'static str,
@@ -393,6 +420,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one plugin-local bus subscriber with default priority.
     pub fn bus<T, F, R>(
         &mut self,
         name: &'static str,
@@ -408,6 +436,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one plugin-local bus subscriber with an explicit priority.
     pub fn bus_with_priority<T, F, R>(
         &mut self,
         name: &'static str,
@@ -424,6 +453,7 @@ impl<'a> EventBatch<'a> {
         Ok(self.push_keepalive(name, subscription))
     }
 
+    /// Installs one bus subscriber with `FIRST` priority.
     #[inline(always)]
     pub fn bus_first<T, F, R>(
         &mut self,
@@ -439,6 +469,7 @@ impl<'a> EventBatch<'a> {
         self.bus_with_priority(name, bus, SubscriberPriority::FIRST, callback)
     }
 
+    /// Installs one bus subscriber with `EARLY` priority.
     #[inline(always)]
     pub fn bus_early<T, F, R>(
         &mut self,
@@ -454,6 +485,7 @@ impl<'a> EventBatch<'a> {
         self.bus_with_priority(name, bus, SubscriberPriority::EARLY, callback)
     }
 
+    /// Installs one bus subscriber with `LATE` priority.
     #[inline(always)]
     pub fn bus_late<T, F, R>(
         &mut self,
@@ -469,6 +501,7 @@ impl<'a> EventBatch<'a> {
         self.bus_with_priority(name, bus, SubscriberPriority::LATE, callback)
     }
 
+    /// Installs one bus subscriber with `LAST` priority.
     #[inline(always)]
     pub fn bus_last<T, F, R>(
         &mut self,

@@ -1,3 +1,54 @@
+//! Runtime registration and callback glue for plugin serialization models.
+//!
+//! This layer bridges the declarative [`super::Schema`] / [`super::Model`]
+//! surface to the raw `SKSE::SerializationInterface` callbacks. Most plugin
+//! code should interact with it through:
+//!
+//! - [`register_model`] during bootstrap;
+//! - [`with_registered_model`] or [`with_registered_model_mut`] during runtime;
+//! - [`last_runtime_error`] or [`take_last_runtime_error`] when surfacing
+//!   save/load diagnostics.
+//!
+//! Typical registered-model flow:
+//!
+//! 1. implement [`super::Model`] for one plugin-owned state type;
+//! 2. call [`register_model`] once during bootstrap;
+//! 3. let SKSE drive save/load/revert/form-delete callbacks automatically;
+//! 4. borrow that same model later through [`with_registered_model`] or
+//!    [`with_registered_model_mut`];
+//! 5. inspect [`last_runtime_error`] / [`take_last_runtime_error`] when
+//!    debugging failed save/load passes.
+//!
+//! Sketch:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::plugin::serialization::{self, Model, Schema};
+//!
+//! #[derive(Default)]
+//! struct SaveState {
+//!     counter: u32,
+//! }
+//!
+//! impl Model for SaveState {
+//!     const UNIQUE_ID: serialization::UniqueId = serialization::unique_id!("EXMP");
+//!
+//!     fn schema(schema: &mut Schema<Self>) {
+//!         schema.value(serialization::record_id!("CNT1"), 1, |s| &s.counter, |s, v| s.counter = v);
+//!     }
+//! }
+//!
+//! fn install_serialization() {
+//!     serialization::register_model::<SaveState>().unwrap();
+//! }
+//!
+//! fn increment_counter() {
+//!     serialization::with_registered_model_mut::<SaveState, _>(|state| {
+//!         state.counter += 1;
+//!     })
+//!     .unwrap();
+//! }
+//! ```
+
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::any::Any;
@@ -172,11 +223,27 @@ impl SerializationState {
 
 static SERIALIZATION_STATE: Mutex<Option<SerializationState>> = Mutex::new(None);
 
+/// Whether a serialization model is currently registered for this plugin.
+///
+/// This is mostly useful for diagnostics or defensive install code; most
+/// plugins simply call [`register_model`] once during bootstrap.
 #[inline(always)]
 pub fn has_registered_model() -> bool {
     SERIALIZATION_STATE.lock().is_some()
 }
 
+/// Installs a plugin-owned serialization [`Model`].
+///
+/// Call this once during bootstrap, typically around `PostLoad` or
+/// `DataLoaded`, before any code expects the model to be available through
+/// [`with_registered_model`] or [`with_registered_model_mut`].
+///
+/// On success this function:
+///
+/// - builds the model schema;
+/// - registers the plugin unique ID with SKSE;
+/// - installs save/load/revert/form-delete callbacks;
+/// - stores one live model instance for later access.
 pub fn register_model<T: Model>() -> Result<(), RegistrationError> {
     let serialization_ptr = get_serialization_interface();
     let serialization =
@@ -198,6 +265,13 @@ pub fn register_model<T: Model>() -> Result<(), RegistrationError> {
     Ok(())
 }
 
+/// Removes the registered model and clears installed SKSE callbacks.
+///
+/// This is rarely needed in ordinary plugin code, but it is useful for tests,
+/// reload-like flows, or explicit teardown.
+///
+/// In normal plugins, registration usually happens once and remains installed
+/// for the plugin's whole lifetime.
 pub fn unregister_model() {
     let serialization_ptr = get_serialization_interface();
     if let Some(serialization) = unsafe { serialization_ptr.as_ref() } {
@@ -210,6 +284,14 @@ pub fn unregister_model() {
     *SERIALIZATION_STATE.lock() = None;
 }
 
+/// Return the unique ID of the currently registered model, if any.
+///
+/// This is mainly diagnostic glue when a plugin wants to expose or validate
+/// which registered model currently owns the serialization callbacks.
+///
+/// Ordinary runtime code usually does not need this because
+/// [`with_registered_model`] / [`with_registered_model_mut`] already route
+/// through the installed state directly.
 pub fn registered_model_unique_id() -> Option<UniqueId> {
     SERIALIZATION_STATE
         .lock()
@@ -217,6 +299,10 @@ pub fn registered_model_unique_id() -> Option<UniqueId> {
         .map(|state| state.driver.unique_id())
 }
 
+/// Borrow the last runtime save/load error without clearing it.
+///
+/// Use this when the plugin wants to log or inspect the last failure while
+/// leaving it available for later diagnostics.
 pub fn last_runtime_error() -> Option<RuntimeError> {
     SERIALIZATION_STATE
         .lock()
@@ -224,6 +310,10 @@ pub fn last_runtime_error() -> Option<RuntimeError> {
         .and_then(|state| state.runtime_error.clone())
 }
 
+/// Take and clear the last runtime save/load error.
+///
+/// Use this when the plugin consumes serialization failures as one-shot
+/// diagnostics and does not want them reported repeatedly.
 pub fn take_last_runtime_error() -> Option<RuntimeError> {
     SERIALIZATION_STATE
         .lock()
@@ -257,10 +347,24 @@ fn with_model_driver_mut<T: Model, R>(
     Ok(f(driver))
 }
 
+/// Borrows the currently registered model immutably.
+///
+/// This is the normal read-only entry point for runtime code that wants access
+/// to plugin-owned persistent state.
+///
+/// Prefer this over storing your own global pointer or lock to the model:
+/// it keeps all access routed through the same installed serialization state.
 pub fn with_registered_model<T: Model, R>(f: impl FnOnce(&T) -> R) -> Result<R, ModelAccessError> {
     with_model_driver(|driver| f(&driver.state))
 }
 
+/// Borrows the currently registered model mutably.
+///
+/// This is the normal mutation entry point for runtime code that wants to
+/// update plugin-owned persistent state between save/load callbacks.
+///
+/// Keep callback bodies lightweight: borrow, mutate the model, and hand heavier
+/// gameplay or UI work off through `sdk::plugin::task` when appropriate.
 pub fn with_registered_model_mut<T: Model, R>(
     f: impl FnOnce(&mut T) -> R,
 ) -> Result<R, ModelAccessError> {

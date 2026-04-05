@@ -1,3 +1,28 @@
+//! Standard `CosaveEncode` / `CosaveDecode` implementations for common payload
+//! shapes.
+//!
+//! This module is intentionally boring: it mirrors the byte layout implied by
+//! [`RecordWriter`](super::RecordWriter) and [`RecordReader`](super::RecordReader)
+//! so most plugin payloads can derive or compose codecs without custom binary
+//! glue.
+//!
+//! Patterns to reach for:
+//!
+//! - primitive numbers and `bool` map directly onto the matching `write_*` /
+//!   `read_*` helpers;
+//! - `Option<T>` encodes as presence-bool plus nested value;
+//! - `Vec<T>` and [`BoundedVec<T, N>`](super::BoundedVec) encode as `u32`
+//!   length plus ordered elements;
+//! - [`ResolvedFormId`](super::ResolvedFormId) and
+//!   [`ResolvedVmHandle`](super::ResolvedVmHandle) are the right wrappers when
+//!   on-disk identifiers must be re-resolved through [`super::LoadContext`];
+//! - ordered maps use `BTreeMap` so save and load order stays deterministic.
+//!
+//! If a payload shape does not match these defaults, implement
+//! [`CosaveEncode`](super::CosaveEncode) / [`CosaveDecode`](super::CosaveDecode)
+//! manually and use the contextual helpers on [`SaveError`](super::SaveError)
+//! and [`LoadError`](super::LoadError) to keep diagnostics readable.
+
 use alloc::collections::BTreeMap;
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -7,6 +32,7 @@ use super::types::{
     BoundedVec, LoadError, ResolvedFormId, ResolvedVmHandle, SaveError, usize_from_u32,
 };
 
+/// Numeric primitive codecs mirrored directly to the writer/reader helpers.
 macro_rules! impl_number_codec {
     ($ty:ty, $write:ident, $read:ident) => {
         impl CosaveEncode for $ty {
@@ -37,6 +63,7 @@ impl_number_codec!(i64, write_i64, read_i64);
 impl_number_codec!(f32, write_f32, read_f32);
 impl_number_codec!(f64, write_f64, read_f64);
 
+/// Bool is encoded as a single `u8` using `0` and `1`.
 impl CosaveEncode for bool {
     #[inline(always)]
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
@@ -52,6 +79,7 @@ impl CosaveDecode for bool {
     }
 }
 
+/// Option values are encoded as `bool` presence plus the nested value.
 impl<T: CosaveEncode> CosaveEncode for Option<T> {
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
         match self {
@@ -75,6 +103,7 @@ impl<T: CosaveDecode> CosaveDecode for Option<T> {
     }
 }
 
+/// Strings are encoded as length-prefixed UTF-8.
 impl CosaveEncode for str {
     #[inline(always)]
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
@@ -96,6 +125,7 @@ impl CosaveDecode for String {
     }
 }
 
+/// Fixed-size arrays are encoded element-by-element without a leading length.
 impl<T: CosaveEncode, const N: usize> CosaveEncode for [T; N] {
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
         for (index, value) in self.iter().enumerate() {
@@ -123,6 +153,7 @@ impl<T: CosaveDecode, const N: usize> CosaveDecode for [T; N] {
     }
 }
 
+/// Resolved form IDs encode as their already-resolved runtime value.
 impl CosaveEncode for ResolvedFormId {
     #[inline(always)]
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
@@ -138,6 +169,7 @@ impl CosaveDecode for ResolvedFormId {
     }
 }
 
+/// Resolved VM handles encode as their already-resolved runtime value.
 impl CosaveEncode for ResolvedVmHandle {
     #[inline(always)]
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
@@ -153,6 +185,7 @@ impl CosaveDecode for ResolvedVmHandle {
     }
 }
 
+/// Vectors are encoded as `u32` length plus each element in order.
 impl<T: CosaveEncode> CosaveEncode for Vec<T> {
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
         writer.write_len(self.len())?;
@@ -179,6 +212,7 @@ impl<T: CosaveDecode> CosaveDecode for Vec<T> {
     }
 }
 
+/// Bounded vectors preserve their maximum length during decode.
 impl<T: CosaveEncode, const N: u32> CosaveEncode for BoundedVec<T, N> {
     fn encode(&self, writer: &mut RecordWriter) -> Result<(), SaveError> {
         if self.len() > Self::max_len() {
@@ -223,6 +257,7 @@ impl<T: CosaveDecode, const N: u32> CosaveDecode for BoundedVec<T, N> {
     }
 }
 
+/// Ordered maps are encoded as a length plus key/value pairs in iteration order.
 impl<K, V> CosaveEncode for BTreeMap<K, V>
 where
     K: Ord + CosaveEncode,

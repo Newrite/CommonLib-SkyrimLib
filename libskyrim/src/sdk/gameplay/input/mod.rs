@@ -10,6 +10,13 @@
 //! - simple user-event mapping lookup helpers
 //! - directional snapshots and input-gesture helpers
 //! - scoped movement/look/attack handler toggles
+//!
+//! In practice this module is easiest to read in layers:
+//!
+//! - [`access`] and [`mapping`] expose raw singleton/mapping entry points
+//! - [`contexts`] and [`state`] cover stack state and restore-on-drop guards
+//! - [`directional`] and [`gestures`] derive gameplay intent from input events
+//! - [`handlers`] adds scoped toggles for player-control subsystems
 
 mod access;
 mod contexts;

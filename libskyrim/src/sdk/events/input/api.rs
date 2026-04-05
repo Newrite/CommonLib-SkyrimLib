@@ -15,6 +15,10 @@ fn manager_source() -> *mut crate::re::BSTEventSource<*mut InputEvent> {
 }
 
 /// Subscribe to `BSInputDeviceManager` input chains.
+///
+/// This is the ordinary entry point for plugins that want a borrowed
+/// [`InputEvents`] view every time `BSInputDeviceManager` dispatches a fresh
+/// `InputEvent*` chain.
 pub fn subscribe<F, R>(
     callback: F,
 ) -> Result<EventSubscription<'static, *mut InputEvent>, EventInstallError>
@@ -33,6 +37,9 @@ where
 
 /// Subscribe to `BSInputDeviceManager` input chains at the front of the sink
 /// list.
+///
+/// Use this when ordering matters and the plugin wants to see or mutate input
+/// before later sinks in the dispatcher chain.
 pub fn prepend<F, R>(
     callback: F,
 ) -> Result<EventSubscription<'static, *mut InputEvent>, EventInstallError>

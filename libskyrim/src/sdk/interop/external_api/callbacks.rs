@@ -1,15 +1,27 @@
 use core::fmt;
 
 /// ABI used by flat exported callback-registration symbols.
+///
+/// This matches the common "register returns token/id" pattern used by several
+/// SKSE plugin APIs that expose callback registration through exported symbols.
 pub type RegisterCallbackFn<Callback, Id> = unsafe extern "system" fn(Callback) -> Id;
 
 /// ABI used by flat exported callback-unregistration symbols.
+///
+/// The `Id` must be the same token returned by the matching
+/// [`RegisterCallbackFn`].
 pub type UnregisterCallbackFn<Id> = unsafe extern "system" fn(Id);
 
 /// ABI used by one flat exported subscriber-style symbol.
+///
+/// This pattern is common when another plugin exports one "add subscriber"
+/// function instead of a full `RequestPluginAPI` table.
 pub type ExportedSubscriberFn<Arg> = unsafe extern "system" fn(Arg);
 
 /// One typed wrapper around a flat exported subscriber-style function.
+///
+/// Use this when another plugin exposes a single exported function such as
+/// `AddSubscriber(...)` and there is no matching unregister step.
 #[derive(Clone, Copy)]
 pub struct ExportedSubscriber<Arg> {
     subscribe: ExportedSubscriberFn<Arg>,
@@ -47,6 +59,14 @@ impl<Arg> fmt::Debug for ExportedSubscriber<Arg> {
 }
 
 /// One typed pair of exported callback registration symbols.
+///
+/// This wraps the common exported-symbol pair:
+///
+/// - `RegisterSomethingCallback(...) -> Id`
+/// - `UnregisterSomethingCallback(Id)`
+///
+/// and returns an [`ExportedCallbackRegistration`] token that unregisters on
+/// drop.
 #[derive(Clone, Copy)]
 pub struct ExportedCallbackRegistrar<Callback, Id> {
     register: RegisterCallbackFn<Callback, Id>,
@@ -101,6 +121,12 @@ impl<Callback, Id> fmt::Debug for ExportedCallbackRegistrar<Callback, Id> {
 }
 
 /// RAII token that unregisters one flat exported callback when dropped.
+///
+/// This is intentionally tiny and ownership-oriented:
+///
+/// - if the token is dropped, unregister runs
+/// - if the caller needs to keep the raw registration id, [`forget`](Self::forget)
+///   disables the auto-unregister behavior and returns that id
 pub struct ExportedCallbackRegistration<Id> {
     id: Option<Id>,
     unregister: UnregisterCallbackFn<Id>,

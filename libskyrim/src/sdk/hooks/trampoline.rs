@@ -19,13 +19,16 @@ pub const DEFAULT_THUNK_STUB_RESERVE: usize = 14;
 /// Trampoline allocation pools exposed by the SKSE trampoline interface.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TrampolinePool {
+    /// Branch-trampoline pool used by ordinary branch/call thunk storage.
     Branch,
+    /// Local trampoline pool for plugin-owned scratch trampoline data.
     Local,
 }
 
 /// Failure allocating memory from the SKSE trampoline backend.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TrampolineAllocError {
+    /// The SKSE trampoline backend returned a null allocation pointer.
     AllocationFailed,
 }
 
@@ -41,6 +44,7 @@ impl fmt::Display for TrampolineAllocError {
 
 impl core::error::Error for TrampolineAllocError {}
 
+/// Returns the total reserve size needed for `count` ordinary thunk stubs.
 #[inline(always)]
 pub const fn default_thunk_reserve_size(count: usize) -> usize {
     DEFAULT_THUNK_STUB_RESERVE.saturating_mul(count)
@@ -73,16 +77,24 @@ pub fn reserve_default_thunks(count: usize) {
 }
 
 /// Allocate bytes from the default trampoline allocation path.
+///
+/// Prefer this when the hook needs scratch trampoline-owned storage but does
+/// not care about a particular pool.
 pub fn allocate_bytes(size: usize) -> Result<NonNull<u8>, TrampolineAllocError> {
     non_null_or_alloc_failed(unsafe { crate::skse::allocate(size) })
 }
 
 /// Allocate one typed value from the default trampoline allocation path.
+///
+/// This is a typed convenience over [`allocate_bytes`].
 pub fn allocate_value<T>() -> Result<NonNull<T>, TrampolineAllocError> {
     allocate_bytes(core::mem::size_of::<T>()).map(NonNull::cast)
 }
 
 /// Allocate bytes from one specific trampoline pool.
+///
+/// Use this when the plugin wants to match the pool selection used by a
+/// particular C++ hook pattern.
 pub fn allocate_bytes_from_pool(
     size: usize,
     pool: TrampolinePool,
@@ -97,13 +109,15 @@ pub fn allocate_bytes_from_pool(
 }
 
 /// Allocate one typed value from one specific trampoline pool.
+///
+/// This is a typed convenience over [`allocate_bytes_from_pool`].
 pub fn allocate_value_from_pool<T>(
     pool: TrampolinePool,
 ) -> Result<NonNull<T>, TrampolineAllocError> {
     allocate_bytes_from_pool(core::mem::size_of::<T>(), pool).map(NonNull::cast)
 }
 
-/// Install one trampoline-backed branch patch.
+/// Installs one trampoline-backed branch patch and returns the original address.
 pub fn write_branch<const N: usize, A: TryIntoAddress>(
     src: A,
     dst: usize,
@@ -111,7 +125,7 @@ pub fn write_branch<const N: usize, A: TryIntoAddress>(
     try_write_branch(src, dst, N).map_err(Into::into)
 }
 
-/// Install one trampoline-backed call patch.
+/// Installs one trampoline-backed call patch and returns the original address.
 pub fn write_call<const N: usize, A: TryIntoAddress>(
     src: A,
     dst: usize,

@@ -23,6 +23,59 @@
 //!   plugin messaging / lifecycle listener helpers
 //! - `bus`
 //!   Rust-local plugin event buses for intra-plugin orchestration
+//!
+//! Decision guide:
+//!
+//! - use `game` or `ui` when the plugin is subscribing to engine-owned
+//!   `BSTEventSource<T>` families
+//!   `game` goes through `ScriptEventSourceHolder`; `ui` goes through the
+//!   `UI` singleton
+//! - use `input` when the source of truth is an `InputEvent*` chain or device
+//!   manager callback
+//! - use `source` when plugin code already owns a raw `BSTEventSource<T>*`
+//! - use `skse::dispatchers` for dispatcher-backed SKSE event families
+//! - use `skse::messages` when the underlying primitive is SKSE messaging
+//! - use `bus` for plugin-local Rust orchestration that should not cross the
+//!   plugin boundary
+//! - use `install` when several subscriptions should be named, retained, and
+//!   installed together during bootstrap
+//!
+//! Typical plugin flow:
+//!
+//! 1. install engine/SKSE listeners through `game`, `ui`, `input`, or
+//!    `skse::*`
+//! 2. optionally fan those callbacks into plugin-local `bus` events
+//! 3. retain the whole listener set through `install::EventBatch`
+//!
+//! Example local event bus:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::events::{Bus, EventFlow};
+//!
+//! #[derive(Default)]
+//! struct HudEvent {
+//!     visible: bool,
+//! }
+//!
+//! let bus = Bus::<HudEvent>::new();
+//! let _subscription = bus.subscribe(|event| {
+//!     event.visible = true;
+//!     EventFlow::Continue
+//! });
+//!
+//! let result = bus.publish_default();
+//! assert!(result.event().visible);
+//! ```
+//!
+//! Example batch installation:
+//!
+//! ```rust,ignore
+//! use libskyrim::sdk::events::{self, EventBatch};
+//!
+//! fn install_events(batch: &mut EventBatch<'_>) -> events::EventBatchInstallResult {
+//!     events::install_all(batch, MyGameEvent, MyUiEvent)
+//! }
+//! ```
 
 pub mod bus;
 pub mod game;

@@ -9,6 +9,10 @@ use super::shared::trimmed_editor_id;
 
 type Po3GetFormEditorId = unsafe extern "C" fn(FormID) -> *const c_char;
 
+/// Looks up a form by editor ID.
+///
+/// This is the simplest lookup path when a plugin config or authoring surface
+/// prefers human-readable editor IDs over `plugin|formid` specs.
 #[inline(always)]
 pub fn lookup_editor_id(editor_id: &str) -> GamePtr<TESForm> {
     let Some(editor_id) = trimmed_editor_id(editor_id) else {
@@ -18,6 +22,7 @@ pub fn lookup_editor_id(editor_id: &str) -> GamePtr<TESForm> {
     unsafe { GamePtr::from_raw(form) }
 }
 
+/// Typed variant of [`lookup_editor_id`].
 #[inline(always)]
 pub fn lookup_editor_id_typed<T: FormCastable>(editor_id: &str) -> GamePtr<T> {
     let form = lookup_editor_id(editor_id).as_ptr();
@@ -32,11 +37,16 @@ pub fn lookup_editor_id_typed<T: FormCastable>(editor_id: &str) -> GamePtr<T> {
     }
 }
 
+/// Returns the editor ID for a form, or `""` when none is available.
 #[inline(always)]
 pub fn editor_id(form: &TESForm) -> &str {
     try_editor_id(form).unwrap_or("")
 }
 
+/// Returns the editor ID for a form when one is available.
+///
+/// This prefers the engine-native editor-ID path for supported form types and
+/// falls back to the po3 Tweaks export when needed.
 #[inline]
 pub fn try_editor_id(form: &TESForm) -> Option<&str> {
     if native_editor_id_supported(form.get_form_type()) {
