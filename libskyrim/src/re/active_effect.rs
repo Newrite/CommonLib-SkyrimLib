@@ -47,12 +47,12 @@ impl ActiveEffectForEachHitEffectVisitor {
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_CALL: usize = 0x01;
-        pub fn call(hit_effect: *mut ReferenceEffect) -> BSContainerForEachResult
+        pub fn call(&mut self, hit_effect: *mut ReferenceEffect) -> BSContainerForEachResult
     }
 }
 
@@ -143,17 +143,17 @@ impl ActiveEffect {
 
     virtual_method! {
         pub const VFUNC_ADJUST_FOR_PERKS: usize = 0x00;
-        pub fn adjust_for_perks(caster: *mut Actor, target: *mut MagicTarget)
+        pub fn adjust_for_perks(&mut self, caster: *mut Actor, target: *mut MagicTarget)
     }
 
     virtual_method! {
         pub const VFUNC_ON_ADD: usize = 0x01;
-        pub fn on_add(target: *mut MagicTarget)
+        pub fn on_add(&mut self, target: *mut MagicTarget)
     }
 
     virtual_method! {
         pub const VFUNC_ON_REMOVE: usize = 0x02;
-        pub fn on_remove()
+        pub fn on_remove(&mut self)
     }
 
     virtual_method! {
@@ -163,12 +163,12 @@ impl ActiveEffect {
 
     virtual_method! {
         pub const VFUNC_UPDATE: usize = 0x04;
-        pub fn update(delta: f32)
+        pub fn update(&mut self, delta: f32)
     }
 
     virtual_method! {
         pub const VFUNC_EVALUATE_CONDITIONS: usize = 0x05;
-        pub fn evaluate_conditions(delta: f32, force_update: bool)
+        pub fn evaluate_conditions(&mut self, delta: f32, force_update: bool)
     }
 
     virtual_method! {
@@ -178,27 +178,27 @@ impl ActiveEffect {
 
     virtual_method! {
         pub const VFUNC_SET_LOCATION: usize = 0x07;
-        pub fn set_location(location: *const NiPoint3)
+        pub fn set_location(&mut self, location: *const NiPoint3)
     }
 
     virtual_method! {
         pub const VFUNC_SAVE_GAME: usize = 0x08;
-        pub fn save_game(buf: *mut BGSSaveFormBuffer)
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
     }
 
     virtual_method! {
         pub const VFUNC_LOAD_GAME: usize = 0x09;
-        pub fn load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     virtual_method! {
         pub const VFUNC_FINISH_LOAD_GAME: usize = 0x0A;
-        pub fn finish_load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn finish_load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     virtual_method! {
         pub const VFUNC_REVERT: usize = 0x0B;
-        pub fn revert(buf: *mut BGSLoadFormBuffer)
+        pub fn revert(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     virtual_method! {
@@ -208,17 +208,17 @@ impl ActiveEffect {
 
     virtual_method! {
         pub const VFUNC_HANDLE_EVENT: usize = 0x0D;
-        pub fn handle_event(event_name: *const BSFixedString)
+        pub fn handle_event(&mut self, event_name: *const BSFixedString)
     }
 
     virtual_method! {
         pub const VFUNC_SWITCH_ATTACHED_ROOT: usize = 0x0E;
-        pub fn switch_attached_root(root: *mut NiNode, attach_root: *mut NiNode)
+        pub fn switch_attached_root(&mut self, root: *mut NiNode, attach_root: *mut NiNode)
     }
 
     virtual_method! {
         pub const VFUNC_HANDLE_QUEUED_START: usize = 0x0F;
-        pub fn handle_queued_start()
+        pub fn handle_queued_start(&mut self)
     }
 
     virtual_method! {
@@ -233,22 +233,22 @@ impl ActiveEffect {
 
     virtual_method! {
         pub const VFUNC_CLEAR_TARGET_IMPL: usize = 0x12;
-        pub fn clear_target_impl()
+        pub fn clear_target_impl(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x13;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_START: usize = 0x14;
-        pub fn start()
+        pub fn start(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_FINISH: usize = 0x15;
-        pub fn finish()
+        pub fn finish(&mut self)
     }
 
     virtual_method! {
@@ -310,7 +310,7 @@ pub trait ActiveEffectExt {
     fn finish_load_game(&mut self, buf: *mut BGSLoadFormBuffer);
     fn revert(&mut self, buf: *mut BGSLoadFormBuffer);
     fn compare(&self, other_effect: *mut ActiveEffect) -> i32;
-    fn handle_event(&self, event_name: *const BSFixedString);
+    fn handle_event(&mut self, event_name: *const BSFixedString);
     fn switch_attached_root(&mut self, root: *mut NiNode, attach_root: *mut NiNode);
     fn handle_queued_start(&mut self);
     fn should_dispel_on_death(&self) -> bool;
@@ -382,8 +382,8 @@ impl<T: AsRef<ActiveEffect> + AsMut<ActiveEffect>> ActiveEffectExt for T {
         self.as_ref().compare(other_effect)
     }
 
-    fn handle_event(&self, event_name: *const BSFixedString) {
-        self.as_ref().handle_event(event_name)
+    fn handle_event(&mut self, event_name: *const BSFixedString) {
+        ActiveEffect::handle_event(self.as_mut(), event_name)
     }
 
     fn switch_attached_root(&mut self, root: *mut NiNode, attach_root: *mut NiNode) {

@@ -43,12 +43,12 @@ impl AttachTechniqueInput {
 
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_CLEAR: usize = 0x01;
-        pub fn clear()
+        pub fn clear(&mut self)
     }
 }
 

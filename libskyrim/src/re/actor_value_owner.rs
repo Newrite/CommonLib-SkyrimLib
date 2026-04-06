@@ -56,7 +56,7 @@ impl ActorValueOwner {
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
@@ -76,22 +76,27 @@ impl ActorValueOwner {
 
     virtual_method! {
         pub const VFUNC_SET_BASE_ACTOR_VALUE: usize = 0x04;
-        pub fn set_base_actor_value(actor_value: ActorValue, value: f32)
+        pub fn set_base_actor_value(&mut self, actor_value: ActorValue, value: f32)
     }
 
     virtual_method! {
         pub const VFUNC_MOD_BASE_ACTOR_VALUE: usize = 0x05;
-        pub fn mod_base_actor_value(actor_value: ActorValue, value: f32)
+        pub fn mod_base_actor_value(&mut self, actor_value: ActorValue, value: f32)
     }
 
     virtual_method! {
         pub const VFUNC_MOD_ACTOR_VALUE: usize = 0x06;
-        pub fn mod_actor_value(modifier: ActorValueModifier, actor_value: ActorValue, value: f32)
+        pub fn mod_actor_value(
+            &mut self,
+            modifier: ActorValueModifier,
+            actor_value: ActorValue,
+            value: f32
+        )
     }
 
     virtual_method! {
         pub const VFUNC_SET_ACTOR_VALUE: usize = 0x07;
-        pub fn set_actor_value(actor_value: ActorValue, value: f32)
+        pub fn set_actor_value(&mut self, actor_value: ActorValue, value: f32)
     }
 
     virtual_method! {

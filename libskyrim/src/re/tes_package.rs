@@ -408,42 +408,42 @@ impl TESPackage {
     // override (TESForm)
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_INITIALIZE_DATA: usize = 0x04;
-        pub fn initialize_data()
+        pub fn initialize_data(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_CLEAR_DATA: usize = 0x05;
-        pub fn clear_data()
+        pub fn clear_data(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_LOAD: usize = 0x06;
-        pub fn load(mod_file: *mut TESFile) -> bool
+        pub fn load(&mut self, mod_file: *mut TESFile) -> bool
     }
 
     crate::virtual_method! {
         pub const VFUNC_SAVE_GAME: usize = 0x0E;
-        pub fn save_game(buf: *mut BGSSaveFormBuffer)
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_LOAD_GAME: usize = 0x0F;
-        pub fn load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_REVERT: usize = 0x12;
-        pub fn revert(buf: *mut BGSLoadFormBuffer)
+        pub fn revert(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
-        pub fn init_item_impl()
+        pub fn init_item_impl(&mut self)
     }
 
     crate::virtual_method! {

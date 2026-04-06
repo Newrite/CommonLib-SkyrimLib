@@ -96,27 +96,27 @@ impl TESObjectARMA {
     // override (TESObject)
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_INITIALIZE_DATA: usize = 0x04;
-        pub fn initialize_data()
+        pub fn initialize_data(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_CLEAR_DATA: usize = 0x05;
-        pub fn clear_data()
+        pub fn clear_data(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_LOAD: usize = 0x06;
-        pub fn load(mod_: *mut TESFile) -> bool
+        pub fn load(&mut self, mod_: *mut TESFile) -> bool
     }
 
     virtual_method! {
         pub const VFUNC_INIT_ITEM_IMPL: usize = 0x13;
-        pub fn init_item_impl()
+        pub fn init_item_impl(&mut self)
     }
 
     #[inline]

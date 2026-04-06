@@ -36,17 +36,17 @@ impl TESCamera {
 
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_SET_CAMERA_ROOT: usize = 0x01;
-        fn set_camera_root_impl(root: *mut NiNode)
+        fn set_camera_root_impl(&mut self, root: *mut NiNode)
     }
 
     crate::virtual_method! {
         pub const VFUNC_UPDATE: usize = 0x02;
-        pub fn update()
+        pub fn update(&mut self)
     }
 
     crate::relocation_func! {

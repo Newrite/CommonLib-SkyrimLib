@@ -30,7 +30,7 @@ impl PlayerCameraTransitionState {
 
     crate::virtual_method! {
         pub const VFUNC_BEGIN: usize = 0x01;
-        pub fn begin()
+        pub fn begin(&mut self)
     }
 
     pub fn unk_03(&mut self) {

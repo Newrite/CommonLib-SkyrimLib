@@ -137,7 +137,7 @@ impl ProjectileLaunchData {
 
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     #[inline(always)]
@@ -420,37 +420,37 @@ impl Projectile {
     // override (TESObjectREFR)
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_LOAD: usize = 0x06;
-        pub fn load(mod_: *mut TESFile) -> bool
+        pub fn load(&mut self, mod_: *mut TESFile) -> bool
     }
 
     crate::virtual_method! {
         pub const VFUNC_SAVE_GAME: usize = 0x0E;
-        pub fn save_game(buf: *mut BGSSaveFormBuffer)
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_LOAD_GAME: usize = 0x0F;
-        pub fn load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_INIT_LOAD_GAME: usize = 0x10;
-        pub fn init_load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn init_load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_FINISH_LOAD_GAME: usize = 0x11;
-        pub fn finish_load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn finish_load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_REVERT: usize = 0x12;
-        pub fn revert(buf: *mut BGSLoadFormBuffer)
+        pub fn revert(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
@@ -465,7 +465,7 @@ impl Projectile {
 
     crate::virtual_method! {
         pub const VFUNC_SET_ACTOR_CAUSE: usize = 0x50;
-        pub fn set_actor_cause(cause: *mut ActorCause)
+        pub fn set_actor_cause(&mut self, cause: *mut ActorCause)
     }
 
     crate::virtual_method! {
@@ -475,7 +475,7 @@ impl Projectile {
 
     crate::virtual_method! {
         pub const VFUNC_GET_MAGIC_CASTER: usize = 0x5C;
-        pub fn get_magic_caster(source: CastingSource) -> *mut crate::re::MagicCaster
+        pub fn get_magic_caster(&self, source: CastingSource) -> *mut crate::re::MagicCaster
     }
 
     crate::virtual_method! {
@@ -882,7 +882,7 @@ pub trait ProjectileExt {
     fn has_keyword_helper(&self, keyword: *const BGSKeyword) -> bool;
     fn set_actor_cause(&mut self, cause: *mut ActorCause);
     fn get_actor_cause(&self) -> *mut ActorCause;
-    fn get_magic_caster(&mut self, source: CastingSource) -> *mut crate::re::MagicCaster;
+    fn get_magic_caster(&self, source: CastingSource) -> *mut crate::re::MagicCaster;
     fn detach_havok(&mut self, obj_3d: *mut NiAVObject) -> bool;
     fn init_havok(&mut self);
     fn load_3d(&mut self, background_loading: bool) -> *mut NiAVObject;
@@ -1000,8 +1000,8 @@ impl<T: AsRef<Projectile> + AsMut<Projectile>> ProjectileExt for T {
     }
 
     #[inline(always)]
-    fn get_magic_caster(&mut self, source: CastingSource) -> *mut crate::re::MagicCaster {
-        Projectile::get_magic_caster(self.as_mut(), source)
+    fn get_magic_caster(&self, source: CastingSource) -> *mut crate::re::MagicCaster {
+        Projectile::get_magic_caster(self.as_ref(), source)
     }
 
     #[inline(always)]

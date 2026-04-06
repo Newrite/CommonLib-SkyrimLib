@@ -27,8 +27,8 @@ impl VATSCameraState {
     pub const RTTI: VariantID = RTTI_VATSCameraState;
     pub const VTABLE: &'static [VariantID] = &VTABLE_VATSCameraState;
 
-    crate::virtual_method! { pub const VFUNC_BEGIN: usize = 0x01; pub fn begin() }
-    crate::virtual_method! { pub const VFUNC_END: usize = 0x02; pub fn end() }
+    crate::virtual_method! { pub const VFUNC_BEGIN: usize = 0x01; pub fn begin(&mut self) }
+    crate::virtual_method! { pub const VFUNC_END: usize = 0x02; pub fn end(&mut self) }
 
     pub fn unk_03(&mut self) {
         if crate::runtime::is_vr() {

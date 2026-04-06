@@ -32,22 +32,30 @@ impl BGSOpenCloseForm {
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_HANDLE_OPEN: usize = 0x01;
-        pub fn handle_open(target: *mut TESObjectREFR, activator: *mut TESObjectREFR)
+        pub fn handle_open(
+            &self,
+            target: *mut TESObjectREFR,
+            activator: *mut TESObjectREFR
+        )
     }
 
     virtual_method! {
         pub const VFUNC_HANDLE_CLOSE: usize = 0x02;
-        pub fn handle_close(target: *mut TESObjectREFR, activator: *mut TESObjectREFR)
+        pub fn handle_close(
+            &self,
+            target: *mut TESObjectREFR,
+            activator: *mut TESObjectREFR
+        )
     }
 
     virtual_method! {
         pub const VFUNC_UNK_03: usize = 0x03;
-        pub fn unk_03()
+        pub fn unk_03(&self)
     }
 
     crate::relocation_func! {
@@ -61,9 +69,9 @@ impl BGSOpenCloseForm {
 
 pub trait BGSOpenCloseFormExt {
     fn dtor(&mut self);
-    fn handle_open(&mut self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR);
-    fn handle_close(&mut self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR);
-    fn unk_03(&mut self);
+    fn handle_open(&self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR);
+    fn handle_close(&self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR);
+    fn unk_03(&self);
 }
 
 impl<T: AsRef<BGSOpenCloseForm> + AsMut<BGSOpenCloseForm>> BGSOpenCloseFormExt for T {
@@ -71,15 +79,15 @@ impl<T: AsRef<BGSOpenCloseForm> + AsMut<BGSOpenCloseForm>> BGSOpenCloseFormExt f
         self.as_mut().dtor()
     }
 
-    fn handle_open(&mut self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR) {
-        self.as_mut().handle_open(target, activator)
+    fn handle_open(&self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR) {
+        self.as_ref().handle_open(target, activator)
     }
 
-    fn handle_close(&mut self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR) {
-        self.as_mut().handle_close(target, activator)
+    fn handle_close(&self, target: *mut TESObjectREFR, activator: *mut TESObjectREFR) {
+        self.as_ref().handle_close(target, activator)
     }
 
-    fn unk_03(&mut self) {
-        self.as_mut().unk_03()
+    fn unk_03(&self) {
+        self.as_ref().unk_03()
     }
 }

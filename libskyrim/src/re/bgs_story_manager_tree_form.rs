@@ -46,27 +46,34 @@ impl BGSStoryManagerTreeVisitor {
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_VISIT_BRANCH_NODE: usize = 0x01;
-        pub fn visit_branch_node(node: *mut BGSStoryManagerBranchNode) -> BGSStoryManagerVisitControl
+        pub fn visit_branch_node(
+            &mut self,
+            node: *mut BGSStoryManagerBranchNode
+        ) -> BGSStoryManagerVisitControl
     }
 
     virtual_method! {
         pub const VFUNC_VISIT_QUEST_NODE: usize = 0x02;
-        pub fn visit_quest_node(node: *mut BGSStoryManagerQuestNode, arg2: bool) -> BGSStoryManagerVisitControl
+        pub fn visit_quest_node(
+            &mut self,
+            node: *mut BGSStoryManagerQuestNode,
+            arg2: bool
+        ) -> BGSStoryManagerVisitControl
     }
 
     virtual_method! {
         pub const VFUNC_VISIT_QUEST: usize = 0x03;
-        pub fn visit_quest(quest: *mut TESQuest) -> BGSStoryManagerVisitControl
+        pub fn visit_quest(&mut self, quest: *mut TESQuest) -> BGSStoryManagerVisitControl
     }
 
     virtual_method! {
         pub const VFUNC_REVERT: usize = 0x04;
-        pub fn revert()
+        pub fn revert(&mut self)
     }
 }
 

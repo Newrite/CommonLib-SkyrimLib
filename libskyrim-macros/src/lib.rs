@@ -791,21 +791,38 @@ fn parse_receiver_ident(expr: Expr) -> syn::Result<Ident> {
 
 fn parse_guard_policy(expr: Expr) -> syn::Result<GuardPolicy> {
     match expr {
-        Expr::Path(path) if path.path.is_ident("original") => Ok(GuardPolicy::Original),
-        Expr::Path(path) if path.path.is_ident("skip") => Ok(GuardPolicy::Skip),
-        Expr::Path(path) if path.path.is_ident("default") => Ok(GuardPolicy::Default),
+        Expr::Path(path) => match classify_guard_preset_path(&path).as_deref() {
+            Some("original") => Ok(GuardPolicy::Original),
+            Some("skip") => Ok(GuardPolicy::Skip),
+            Some("default") => Ok(GuardPolicy::Default),
+            _ => Err(syn::Error::new_spanned(
+                path,
+                "guard policy must be one of: original, skip, default, hooks::guards::<policy>(), or return_(expr)",
+            )),
+        },
         Expr::Call(ExprCall { func, args, .. }) => match *func {
             Expr::Path(path) if path.path.is_ident("return_") && args.len() == 1 => {
                 Ok(GuardPolicy::Return(args.into_iter().next().unwrap()))
             }
+            Expr::Path(path) if args.is_empty() => {
+                match classify_guard_preset_path(&path).as_deref() {
+                    Some("original") => Ok(GuardPolicy::Original),
+                    Some("skip") => Ok(GuardPolicy::Skip),
+                    Some("default") => Ok(GuardPolicy::Default),
+                    _ => Err(syn::Error::new_spanned(
+                        path,
+                        "guard policy must be one of: original, skip, default, hooks::guards::<policy>(), or return_(expr)",
+                    )),
+                }
+            }
             other => Err(syn::Error::new_spanned(
                 other,
-                "expected `return_(expr)` for explicit guard return value",
+                "guard policy must be one of: original, skip, default, hooks::guards::<policy>(), or return_(expr)",
             )),
         },
         other => Err(syn::Error::new_spanned(
             other,
-            "guard policy must be one of: original, skip, default, return_(expr)",
+            "guard policy must be one of: original, skip, default, hooks::guards::<policy>(), or return_(expr)",
         )),
     }
 }
@@ -988,6 +1005,7 @@ fn parse_function(function: ItemFn) -> syn::Result<ParsedFn> {
                     "multiple `Original<_>` parameters are not supported",
                 ));
             }
+            validate_original_param_type(&typed.ty)?;
             original_param_ty = Some((*typed.ty).clone());
             continue;
         }
@@ -1162,6 +1180,46 @@ fn is_original_type(ty: &Type) -> bool {
     ))
 }
 
+fn validate_original_param_type(ty: &Type) -> syn::Result<()> {
+    let Type::Path(path) = peel_type(ty) else {
+        return Err(syn::Error::new_spanned(
+            ty,
+            "`Original<_>` parameter must wrap a plain Rust function-pointer type like `Original<fn(&T)>`",
+        ));
+    };
+
+    let inner = last_type_arg(path)?;
+    let Type::BareFn(bare_fn) = peel_type(&inner) else {
+        return Err(syn::Error::new_spanned(
+            inner,
+            "`Original<_>` parameter must wrap a plain Rust function-pointer type like `Original<fn(&T)>`",
+        ));
+    };
+
+    if bare_fn.unsafety.is_some() {
+        return Err(syn::Error::new_spanned(
+            &bare_fn.unsafety,
+            "`Original<_>` must use a safe `fn(...)` signature, not `unsafe fn(...)`",
+        ));
+    }
+
+    if bare_fn.abi.is_some() {
+        return Err(syn::Error::new_spanned(
+            &bare_fn.abi,
+            "`Original<_>` must use a plain Rust `fn(...)` signature, not an `extern fn(...)` ABI",
+        ));
+    }
+
+    if bare_fn.variadic.is_some() {
+        return Err(syn::Error::new_spanned(
+            &bare_fn.variadic,
+            "`Original<_>` does not support variadic function-pointer signatures",
+        ));
+    }
+
+    Ok(())
+}
+
 fn map_user_ty_to_abi(ty: &Type) -> syn::Result<Type> {
     if let Some(path) = find_stable_hook_wrapper_type(ty) {
         return Err(syn::Error::new_spanned(
@@ -1243,40 +1301,81 @@ fn find_stable_hook_wrapper_type(ty: &Type) -> Option<&TypePath> {
 }
 
 fn is_nontrivial_cpp_value_type(ty: &Type) -> bool {
-    matches!(
-        peel_type(ty),
-        Type::Path(path)
-            if path_last_ident(path).is_some_and(|ident| {
-                ident == "ActorHandle"
-                    || ident == "ObjectRefHandle"
-                    || ident == "ProjectileHandle"
-                    || ident == "BSFixedString"
-                    || ident == "BSString"
-                    || ident == "BSStringT"
-                    || ident == "BSStaticStringT"
-                    || ident == "NiPointer"
-                    || ident == "BSTSmartPointer"
-                    || ident == "GPtr"
-                    || ident == "hkRefPtr"
-                    || ident == "BSTArray"
-                    || ident == "BSScrapArray"
-                    || ident == "BSTSmallArray"
-                    || ident == "BSStaticArray"
-                    || ident == "BSTSmallSharedArray"
-                    || ident == "BSTScatterTable"
-                    || ident == "BSTHashMap"
-                    || ident == "BSTSet"
-                    || ident == "BSTFixedHashMap"
-                    || ident == "BSTScrapHashMap"
-                    || ident == "BSTStaticHashMap"
-                    || ident == "BSTArrayHeapAllocator"
-                    || ident == "BSTSmallArrayHeapAllocator"
-                    || ident == "BSScrapArrayAllocator"
-                    || ident == "BSTScatterTableHeapAllocator"
-                    || ident == "BSTScatterTableScrapAllocator"
-                    || ident == "BSTStaticHashMapAllocator"
-            })
-    )
+    matches!(peel_type(ty), Type::Path(path) if type_path_matches_known_paths(
+        path,
+        &[
+            &["re", "ActorHandle"],
+            &["re", "bs_pointer_handle", "ActorHandle"],
+            &["re", "ObjectRefHandle"],
+            &["re", "bs_pointer_handle", "ObjectRefHandle"],
+            &["re", "ProjectileHandle"],
+            &["re", "bs_pointer_handle", "ProjectileHandle"],
+            &["re", "BSFixedString"],
+            &["re", "bs_fixed_string", "BSFixedString"],
+            &["re", "BSString"],
+            &["re", "BSStringT"],
+            &["re", "BSStaticStringT"],
+            &["re", "NiPointer"],
+            &["re", "ni_smart_pointer", "NiPointer"],
+            &["re", "BSTSmartPointer"],
+            &["re", "bst_smart_pointer", "BSTSmartPointer"],
+            &["re", "GPtr"],
+            &["re", "g_ptr", "GPtr"],
+            &["re", "hkRefPtr"],
+            &["re", "hk_ref_ptr", "hkRefPtr"],
+            &["re", "BSTArray"],
+            &["re", "bst_array", "BSTArray"],
+            &["re", "BSScrapArray"],
+            &["re", "bs_scrap_array", "BSScrapArray"],
+            &["re", "BSTSmallArray"],
+            &["re", "bst_small_array", "BSTSmallArray"],
+            &["re", "BSStaticArray"],
+            &["re", "bs_static_array", "BSStaticArray"],
+            &["re", "BSTSmallSharedArray"],
+            &["re", "bst_small_shared_array", "BSTSmallSharedArray"],
+            &["re", "BSTScatterTable"],
+            &["re", "bst_scatter_table", "BSTScatterTable"],
+            &["re", "BSTHashMap"],
+            &["re", "BSTSet"],
+            &["re", "BSTFixedHashMap"],
+            &["re", "BSTScrapHashMap"],
+            &["re", "BSTStaticHashMap"],
+            &["re", "BSTArrayHeapAllocator"],
+            &["re", "BSTSmallArrayHeapAllocator"],
+            &["re", "BSScrapArrayAllocator"],
+            &["re", "BSTScatterTableHeapAllocator"],
+            &["re", "BSTScatterTableScrapAllocator"],
+            &["re", "BSTStaticHashMapAllocator"],
+            &["ActorHandle"],
+            &["ObjectRefHandle"],
+            &["ProjectileHandle"],
+            &["BSFixedString"],
+            &["BSString"],
+            &["BSStringT"],
+            &["BSStaticStringT"],
+            &["NiPointer"],
+            &["BSTSmartPointer"],
+            &["GPtr"],
+            &["hkRefPtr"],
+            &["BSTArray"],
+            &["BSScrapArray"],
+            &["BSTSmallArray"],
+            &["BSStaticArray"],
+            &["BSTSmallSharedArray"],
+            &["BSTScatterTable"],
+            &["BSTHashMap"],
+            &["BSTSet"],
+            &["BSTFixedHashMap"],
+            &["BSTScrapHashMap"],
+            &["BSTStaticHashMap"],
+            &["BSTArrayHeapAllocator"],
+            &["BSTSmallArrayHeapAllocator"],
+            &["BSScrapArrayAllocator"],
+            &["BSTScatterTableHeapAllocator"],
+            &["BSTScatterTableScrapAllocator"],
+            &["BSTStaticHashMapAllocator"],
+        ],
+    ))
 }
 
 fn ensure_supported_hook_abi_ty(ty: &Type, context: &str) -> syn::Result<()> {
@@ -1298,10 +1397,6 @@ fn peel_type(ty: &Type) -> &Type {
         Type::Paren(TypeParen { elem, .. }) => peel_type(elem),
         other => other,
     }
-}
-
-fn path_last_ident(path: &TypePath) -> Option<&Ident> {
-    path.path.segments.last().map(|segment| &segment.ident)
 }
 
 fn path_matches_known_paths(path: &Path, expected_paths: &[&[&str]]) -> bool {
@@ -2580,12 +2675,12 @@ fn is_option_ref_to_type(ty: &Type, target: &Type) -> bool {
     let Type::Path(path) = peel_type_groups(ty) else {
         return false;
     };
+    if !type_path_is_option(path) {
+        return false;
+    }
     let Some(segment) = path.path.segments.last() else {
         return false;
     };
-    if segment.ident != "Option" {
-        return false;
-    }
     let PathArguments::AngleBracketed(arguments) = &segment.arguments else {
         return false;
     };
@@ -3049,6 +3144,28 @@ mod tests {
     }
 
     #[test]
+    fn reject_namespaced_sdk_nontrivial_hook_param() {
+        let ty: Type = parse_quote!(crate::re::g_ptr::GPtr<IMenu>);
+        let err = ensure_supported_hook_abi_ty(&ty, "hook parameter")
+            .expect_err("SDK GPtr path must be rejected");
+        assert!(err.to_string().contains("non-trivial C++ value type"));
+    }
+
+    #[test]
+    fn do_not_reject_foreign_terminal_ident_nontrivial_hook_param() {
+        let ty: Type = parse_quote!(other_crate::GPtr<IMenu>);
+        ensure_supported_hook_abi_ty(&ty, "hook parameter")
+            .expect("foreign terminal-ident match must not be rejected");
+    }
+
+    #[test]
+    fn do_not_reject_foreign_terminal_ident_bs_fixed_string_hook_param() {
+        let ty: Type = parse_quote!(other_crate::BSFixedString);
+        ensure_supported_hook_abi_ty(&ty, "hook parameter")
+            .expect("foreign BSFixedString terminal-ident match must not be rejected");
+    }
+
+    #[test]
     fn types_equal_accepts_bare_imported_ident_against_sdk_path() {
         let left: Type = parse_quote!(TESHitEvent);
         let right: Type = parse_quote!(crate::re::TESHitEvent);
@@ -3075,6 +3192,21 @@ mod tests {
         let event_ty: Type = parse_quote!(crate::re::TESHitEvent);
         let err = match parse_event_callback_param(&callback_ty, &event_ty) {
             Ok(_) => panic!("foreign terminal-ident match must be rejected"),
+            Err(err) => err,
+        };
+        assert!(
+            err.to_string().contains(
+                "event callback parameter must be `&Event`, `Option<&Event>`, or omitted"
+            )
+        );
+    }
+
+    #[test]
+    fn parse_event_callback_param_rejects_foreign_option_path_match() {
+        let callback_ty: Type = parse_quote!(other_crate::Option<&crate::re::TESHitEvent>);
+        let event_ty: Type = parse_quote!(crate::re::TESHitEvent);
+        let err = match parse_event_callback_param(&callback_ty, &event_ty) {
+            Ok(_) => panic!("foreign Option path must be rejected"),
             Err(err) => err,
         };
         assert!(
@@ -3169,6 +3301,43 @@ mod tests {
     }
 
     #[test]
+    fn validate_original_param_type_accepts_plain_fn_pointer() {
+        let ty: Type = parse_quote!(Original<fn(&Actor, u32) -> bool>);
+        validate_original_param_type(&ty).expect("plain fn pointer should be accepted");
+    }
+
+    #[test]
+    fn validate_original_param_type_rejects_unsafe_fn_pointer() {
+        let ty: Type = parse_quote!(Original<unsafe fn(&Actor) -> bool>);
+        let err = validate_original_param_type(&ty).expect_err("unsafe fn must be rejected");
+        assert!(
+            err.to_string()
+                .contains("must use a safe `fn(...)` signature")
+        );
+    }
+
+    #[test]
+    fn validate_original_param_type_rejects_extern_fn_pointer() {
+        let ty: Type = parse_quote!(Original<extern "C" fn(&Actor) -> bool>);
+        let err = validate_original_param_type(&ty).expect_err("extern fn must be rejected");
+        assert!(
+            err.to_string()
+                .contains("must use a plain Rust `fn(...)` signature")
+        );
+    }
+
+    #[test]
+    fn validate_original_param_type_rejects_non_function_inner_type() {
+        let ty: Type = parse_quote!(Original<u32>);
+        let err = validate_original_param_type(&ty)
+            .expect_err("non-function inner type must be rejected");
+        assert!(
+            err.to_string()
+                .contains("must wrap a plain Rust function-pointer type")
+        );
+    }
+
+    #[test]
     fn foreign_resolved_type_is_not_special_cased() {
         let ty: Type = parse_quote!(other_crate::Resolved<Actor>);
         let abi = map_user_ty_to_abi(&ty).expect("foreign Resolved should not be special-cased");
@@ -3190,5 +3359,35 @@ mod tests {
             Err(err) => err,
         };
         assert!(err.to_string().contains("unsupported guard preset"));
+    }
+
+    #[test]
+    fn parse_guard_policy_accepts_namespaced_original_call() {
+        let expr: Expr = parse_quote!(crate::sdk::hooks::guards::original());
+        match parse_guard_policy(expr) {
+            Ok(GuardPolicy::Original) => {}
+            Ok(_) => panic!("expected original guard policy"),
+            Err(err) => panic!("expected namespaced guard policy to be accepted: {err}"),
+        }
+    }
+
+    #[test]
+    fn parse_guard_policy_accepts_namespaced_default_path() {
+        let expr: Expr = parse_quote!(crate::sdk::hooks::guards::default);
+        match parse_guard_policy(expr) {
+            Ok(GuardPolicy::Default) => {}
+            Ok(_) => panic!("expected default guard policy"),
+            Err(err) => panic!("expected namespaced guard path to be accepted: {err}"),
+        }
+    }
+
+    #[test]
+    fn parse_guard_policy_rejects_foreign_namespaced_original_call() {
+        let expr: Expr = parse_quote!(other_crate::original());
+        let err = match parse_guard_policy(expr) {
+            Ok(_) => panic!("foreign original() guard policy must be rejected"),
+            Err(err) => err,
+        };
+        assert!(err.to_string().contains("guard policy must be one of"));
     }
 }

@@ -1135,6 +1135,35 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
             "BSTStaticHashMap is a non-trivial C++ owning container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI, an explicit out-param wrapper, or a C++ bridge."
         );
     };
+    (BSSimpleList<$t:ty>) => {
+        compile_error!(
+            "BSSimpleList is a non-trivial C++ intrusive container type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (NiTMap<$k:ty, $v:ty>) => {
+        compile_error!(
+            "NiTMap is a non-trivial C++ owning map type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (NiTMapBase<$a:ty, $k:ty, $v:ty>) => {
+        compile_error!(
+            "NiTMapBase is a non-trivial C++ owning map base type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (NiTStringTemplateMap<$p:ty, $t:ty>) => {
+        compile_error!(
+            "NiTStringTemplateMap is a non-trivial C++ owning string-map type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (NiTStringMap<$t:ty>) => {
+        compile_error!(
+            "NiTStringMap is a non-trivial C++ owning string-map type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
+        );
+    };
+    (BSTTuple<$t1:ty, $t2:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!($t1);
+        $crate::__abi_guard_nontrivial_handle_ty!($t2);
+    };
     (BSTArrayHeapAllocator) => {
         compile_error!(
             "BSTArrayHeapAllocator is a non-trivial C++ allocator type; do not use it by value in relocation/virtual/hook macro signatures. Use pointer/reference ABI or a C++ bridge."
@@ -1240,6 +1269,24 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     (crate::re::BSTStaticHashMap<$k:ty, $v:ty, $n:tt, $buf:tt>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSTStaticHashMap<$k, $v, $n, $buf>);
     };
+    (crate::re::BSSimpleList<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSSimpleList<$t>);
+    };
+    (crate::re::BSTTuple<$t1:ty, $t2:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTTuple<$t1, $t2>);
+    };
+    (crate::re::NiTMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTMap<$k, $v>);
+    };
+    (crate::re::NiTMapBase<$a:ty, $k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTMapBase<$a, $k, $v>);
+    };
+    (crate::re::NiTStringTemplateMap<$p:ty, $t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTStringTemplateMap<$p, $t>);
+    };
+    (crate::re::NiTStringMap<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTStringMap<$t>);
+    };
     (crate::re::bst_array::BSTArray<$t:ty, $a:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSTArray<$t, $a>);
     };
@@ -1254,6 +1301,12 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     };
     (crate::re::bst_array::BSTSmallSharedArray<$t:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSTSmallSharedArray<$t>);
+    };
+    (crate::re::bssimple_list::BSSimpleList<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSSimpleList<$t>);
+    };
+    (crate::re::bst_tuple::BSTTuple<$t1:ty, $t2:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTTuple<$t1, $t2>);
     };
     (crate::re::NiPointer<$t:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(NiPointer<$t>);
@@ -1273,6 +1326,12 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     (crate::re::ni_smart_pointer::NiPointer<$t:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(NiPointer<$t>);
     };
+    (crate::re::ActorHandlePtr) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiPointer<crate::re::Actor>);
+    };
+    (crate::re::actor::ActorHandlePtr) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiPointer<crate::re::Actor>);
+    };
     (crate::re::bst_smart_pointer::BSTSmartPointer<$t:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSTSmartPointer<$t>);
     };
@@ -1284,6 +1343,55 @@ macro_rules! __abi_guard_nontrivial_handle_ty {
     };
     (crate::re::hk_ref_ptr::hkRefPtr<$t:ty>) => {
         $crate::__abi_guard_nontrivial_handle_ty!(hkRefPtr<$t>);
+    };
+    (crate::re::BSAnimationGraphManagerPtr) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmartPointer<crate::re::BSAnimationGraphManager>);
+    };
+    (crate::re::bs_animation_graph_manager::BSAnimationGraphManagerPtr) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(BSTSmartPointer<crate::re::BSAnimationGraphManager>);
+    };
+    (crate::re::BSPathingRequestArrayRefCounted) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(
+            BSTTuple<crate::re::BSTArray<crate::re::BSPathingAvoidNode>, u32>
+        );
+    };
+    (crate::re::bs_pathing_request::BSPathingRequestArrayRefCounted) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(
+            BSTTuple<crate::re::BSTArray<crate::re::BSPathingAvoidNode>, u32>
+        );
+    };
+    (crate::re::ni_t_map::NiTMap<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTMap<$k, $v>);
+    };
+    (crate::re::ni_t_map::NiTMapSetting) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTMap<*const core::ffi::c_char, *mut crate::re::Setting>);
+    };
+    (crate::re::ni_t_map_base::NiTMapBase<$a:ty, $k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTMapBase<$a, $k, $v>);
+    };
+    (crate::re::ni_t_map_base::DefaultNiTMapBase<$k:ty, $v:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(
+            NiTMapBase<crate::re::ni_t_default_allocator::NiTDefaultAllocator<crate::re::ni_t_map_base::NiTMapItem<$k, $v>>, $k, $v>
+        );
+    };
+    (crate::re::ni_t_map_base::NiTMapBaseSetting) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(
+            NiTMapBase<crate::re::ni_t_default_allocator::NiTDefaultAllocator<crate::re::ni_t_map_base::NiTMapItem<*const core::ffi::c_char, *mut crate::re::Setting>>, *const core::ffi::c_char, *mut crate::re::Setting>
+        );
+    };
+    (crate::re::ni_t_string_map::NiTStringTemplateMap<$p:ty, $t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTStringTemplateMap<$p, $t>);
+    };
+    (crate::re::ni_t_string_map::NiTStringMap<$t:ty>) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTStringMap<$t>);
+    };
+    (crate::re::ni_t_string_map::NiTStringTemplateMapSetting) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(
+            NiTStringTemplateMap<crate::re::NiTMap<*const core::ffi::c_char, *mut crate::re::Setting>, *mut crate::re::Setting>
+        );
+    };
+    (crate::re::ni_t_string_map::NiTStringMapSetting) => {
+        $crate::__abi_guard_nontrivial_handle_ty!(NiTStringMap<*mut crate::re::Setting>);
     };
     (crate::re::bst_array::BSTArrayHeapAllocator) => {
         $crate::__abi_guard_nontrivial_handle_ty!(BSTArrayHeapAllocator);
@@ -1607,6 +1715,10 @@ macro_rules! define_universal_function_hook {
         $vis mod $hook_name {
             #[allow(unused_imports)]
             use super::*;
+            const _: () = {
+                $crate::__abi_guard_nontrivial_handle_params!($($arg_type),*);
+                $crate::__abi_guard_nontrivial_handle_return!($($ret)?);
+            };
             type Signature = extern "C" fn($($arg_name: $arg_type),*) $(-> $ret)?;
             type Original = $crate::relocation::Relocation<Signature>;
             static ORIGINAL: $crate::core_util::Later<Original> = $crate::core_util::Later::new();
@@ -2273,6 +2385,10 @@ mod tests {
         }
     }
 
+    crate::relocation_func! {
+        pub fn tuple_identity(value: crate::re::BSTTuple<u32, u32>) -> crate::re::BSTTuple<u32, u32> => 0usize
+    }
+
     #[test]
     fn hook_macro_expands_for_all_low_level_modes() {
         let _ = TestFunctionHook::install as fn();
@@ -2299,6 +2415,12 @@ mod tests {
         let _ = TestVcallSlotHook::original as fn(*mut u8, u32) -> u32;
         let _ = TestVcallSlotHook::original_virtual_relocation::<u8>
             as fn(*const u8) -> crate::relocation::Relocation<extern "C" fn(*mut u8, u32) -> u32>;
+    }
+
+    #[test]
+    fn relocation_func_accepts_plain_bst_tuple_by_value() {
+        let _ =
+            tuple_identity as fn(crate::re::BSTTuple<u32, u32>) -> crate::re::BSTTuple<u32, u32>;
     }
 
     #[test]

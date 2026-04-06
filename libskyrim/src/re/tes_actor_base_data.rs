@@ -141,7 +141,7 @@ impl TESActorBaseData {
 
     virtual_method! {
         pub const VFUNC_COPY_FROM_TEMPLATE_FORMS: usize = 0x04;
-        pub fn copy_from_template_forms(template_forms: *mut *mut TESActorBase)
+        pub fn copy_from_template_forms(&mut self, template_forms: *mut *mut TESActorBase)
     }
 
     virtual_method! {

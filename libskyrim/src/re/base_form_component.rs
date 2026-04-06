@@ -20,22 +20,22 @@ impl BaseFormComponent {
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_INITIALIZE_DATA_COMPONENT: usize = 0x01;
-        pub fn initialize_data_component()
+        pub fn initialize_data_component(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_CLEAR_DATA_COMPONENT: usize = 0x02;
-        pub fn clear_data_component()
+        pub fn clear_data_component(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_COPY_COMPONENT: usize = 0x03;
-        pub fn copy_component(rhs: *mut BaseFormComponent)
+        pub fn copy_component(&mut self, rhs: *mut BaseFormComponent)
     }
 }
 

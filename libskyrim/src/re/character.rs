@@ -50,37 +50,37 @@ impl Character {
     // override (Actor)
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_SAVE_GAME: usize = 0x0E;
-        pub fn save_game(buf: *mut BGSSaveFormBuffer)
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_LOAD_GAME: usize = 0x0F;
-        pub fn load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_INIT_LOAD_GAME: usize = 0x10;
-        pub fn init_load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn init_load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_FINISH_LOAD_GAME: usize = 0x11;
-        pub fn finish_load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn finish_load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_REVERT: usize = 0x12;
-        pub fn revert(buf: *mut BGSLoadFormBuffer)
+        pub fn revert(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 
     crate::virtual_method! {
         pub const VFUNC_PREDESTROY: usize = 0x3B;
-        pub fn predestroy()
+        pub fn predestroy(&mut self)
     }
 
     crate::virtual_method! {

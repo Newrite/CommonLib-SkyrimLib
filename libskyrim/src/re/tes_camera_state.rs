@@ -43,7 +43,9 @@ impl BSTSmartPointerIntrusiveRefCountable for TESCameraState {
 
     #[inline(always)]
     unsafe fn bst_delete(&self) {
-        self.dtor();
+        unsafe {
+            (*(self as *const Self as *mut Self)).dtor();
+        }
     }
 }
 
@@ -53,17 +55,17 @@ impl TESCameraState {
 
     crate::virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_BEGIN: usize = 0x01;
-        pub fn begin()
+        pub fn begin(&mut self)
     }
 
     crate::virtual_method! {
         pub const VFUNC_END: usize = 0x02;
-        pub fn end()
+        pub fn end(&mut self)
     }
 
     #[inline(always)]

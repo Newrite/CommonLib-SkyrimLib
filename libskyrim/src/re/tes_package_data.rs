@@ -39,12 +39,12 @@ impl TESPackageData {
 
     virtual_method! {
         pub const VFUNC_DTOR: usize = 0x00;
-        pub fn dtor()
+        pub fn dtor(&mut self)
     }
 
     virtual_method! {
         pub const VFUNC_COPY: usize = 0x01;
-        pub fn copy(package: *mut TESPackageData, form: *mut TESForm)
+        pub fn copy(&mut self, package: *mut TESPackageData, form: *mut TESForm)
     }
 
     virtual_method! {
@@ -54,17 +54,17 @@ impl TESPackageData {
 
     virtual_method! {
         pub const VFUNC_INIT_ITEM: usize = 0x03;
-        pub fn init_item(form: *mut TESForm)
+        pub fn init_item(&mut self, form: *mut TESForm)
     }
 
     virtual_method! {
         pub const VFUNC_SAVE_GAME: usize = 0x04;
-        pub fn save_game(buf: *mut BGSSaveFormBuffer)
+        pub fn save_game(&mut self, buf: *mut BGSSaveFormBuffer)
     }
 
     virtual_method! {
         pub const VFUNC_LOAD_GAME: usize = 0x05;
-        pub fn load_game(buf: *mut BGSLoadFormBuffer)
+        pub fn load_game(&mut self, buf: *mut BGSLoadFormBuffer)
     }
 }
 

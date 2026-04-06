@@ -36,7 +36,7 @@ impl BGSEquipType {
 
     virtual_method! {
         pub const SET_EQUIP_SLOT: usize = 0x05;
-        pub fn set_equip_slot(slot: *mut BGSEquipSlot)
+        pub fn set_equip_slot(&mut self, slot: *mut BGSEquipSlot)
     }
 
     #[inline(always)]
